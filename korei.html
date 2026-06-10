@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Korei — Parfumerie de Niche</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- BANNER -->
+    <div class="banner">
+      <span>Livraison offerte dès 60€</span>
+      <span class="banner-sep"></span>
+      <span>Décants 100% authentiques</span>
+      <span class="banner-sep"></span>
+      <span>Expédition sous 24h</span>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+          <i class="ti ti-menu-2"></i>
+        </button>
+        <nav class="nav">
+          <a href="#" class="active">Accueil</a>
+          <a href="#">Parfums</a>
+          <a href="#">Décants</a>
+          <a href="#">Marques</a>
+          <a href="#">Collections</a>
+          <a href="#">Korei+</a>
+        </nav>
+      </div>
+
+      <a href="#" class="logo logo-center">Korei</a>
+
+      <div class="header-right">
+        <div class="search" role="search">
+          <span class="search-icon"><i class="ti ti-search"></i></span>
+          <input
+            type="search"
+            placeholder="Rechercher des marques..."
+            aria-label="Rechercher"
+          />
+        </div>
+
+        <div class="header-actions">
+          <button
+            class="icon-btn search-mobile-btn"
+            onclick="toggleSearch()"
+            aria-label="Rechercher"
+          >
+            <i class="ti ti-search"></i>
+          </button>
+          <button class="icon-btn" aria-label="Favoris">
+            <i class="ti ti-heart"></i>
+          </button>
+          <button class="icon-btn" aria-label="Panier, 2 articles">
+            <i class="ti ti-shopping-bag"></i>
+            <span class="cart-count">2</span>
+          </button>
+          <button class="icon-btn" aria-label="Compte">
+            <i class="ti ti-user"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-overlay" onclick="toggleMenu()"></div>
+      <div class="mobile-drawer">
+        <div class="mobile-drawer-head">
+          <span class="logo">Korei</span>
+          <button
+            onclick="toggleMenu()"
+            style="
+              background: none;
+              border: none;
+              font-size: 26px;
+              cursor: pointer;
+              color: #888;
+            "
+          >
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        <a href="#">Accueil</a>
+        <a href="#">Tous les parfums</a>
+        <a href="#">Décants</a>
+        <a href="#">Marques</a>
+        <a href="#">Collections</a>
+        <a href="#">Programme Korei+</a>
+        <a href="#">À propos</a>
+        <a href="#">Contact</a>
+        <button class="mobile-drawer-cta">Commencer l'essai</button>
+      </div>
+    </div>
+
+    <!-- SEARCH OVERLAY -->
+    <div class="search-overlay" id="searchOverlay">
+      <div class="search-overlay-head">
+        <i class="ti ti-search search-overlay-icon"></i>
+        <input
+          type="search"
+          class="search-overlay-input"
+          placeholder="Rechercher un parfum, une marque…"
+          aria-label="Rechercher"
+        />
+        <button
+          class="search-overlay-close"
+          onclick="toggleSearch()"
+          aria-label="Fermer"
+        >
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+      <p class="search-overlay-hint">
+        Tendances : Oud Wood · Aventus · Interlude Man
+      </p>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-eyebrow">Parfumerie de niche</div>
+        <h1 class="hero-title">Essayez avant<br />d'<em>investir</em>.</h1>
+        <p class="hero-sub">
+          Flacons entiers & décants authentiques des plus grandes maisons de
+          parfum. Découvrez votre signature olfactive à partir de 7€.
+        </p>
+        <div class="hero-ctas">
+          <button class="btn-dark">Explorer la collection</button>
+          <button class="btn-outline">Voir les décants</button>
+        </div>
+        <div class="hero-brands">
+          <span class="hero-brands-label">Disponible :</span>
+          <span class="hero-brand-chip">Amouage</span>
+          <span class="hero-brand-chip">Tom Ford</span>
+          <span class="hero-brand-chip">Xerjoff</span>
+          <span class="hero-brand-chip">Creed</span>
+          <span class="hero-brand-chip">+ 80 marques</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-img-placeholder">
+          <i class="ti ti-photo"></i>
+          <span>Photo hero — à remplacer</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TICKER -->
+    <div class="ticker">
+      <div class="ticker-track">
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>100% authentique
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Flacons & décants
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>100+ maisons de niche
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Expédition sous 24h
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Cadeau mystère offert
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Satisfaction 30 jours
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>100% authentique
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Flacons & décants
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>100+ maisons de niche
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Expédition sous 24h
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Cadeau mystère offert
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Satisfaction 30 jours
+        </div>
+      </div>
+    </div>
+
+    <!-- BEST-SELLERS -->
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title">Préférés <em>du moment</em></h2>
+        <a href="#" class="section-link">Tout voir</a>
+      </div>
+      <div class="products-scroll">
+        <div class="product-card">
+          <div class="card-img">
+            <span class="card-badge badge-best">Best-seller</span>
+            <button class="card-fav" aria-label="Favoris">
+              <i class="ti ti-heart"></i>
+            </button>
+            <div class="card-img-icon">🫙</div>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Amouage</div>
+            <div class="card-name">Interlude Man</div>
+            <div class="card-notes">Oud · Résine · Fumée</div>
+            <div class="card-footer">
+              <div class="card-price">À partir de 14€</div>
+              <div class="card-rating"><span class="star">★</span> 4.8</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="card-img">
+            <span class="card-badge badge-new">Nouveauté</span>
+            <button class="card-fav" aria-label="Favoris">
+              <i class="ti ti-heart"></i>
+            </button>
+            <div class="card-img-icon">🫙</div>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Maison Margiela</div>
+            <div class="card-name">Replica Jazz Club</div>
+            <div class="card-notes">Tabac · Vanille · Vétiver</div>
+            <div class="card-footer">
+              <div class="card-price">À partir de 9€</div>
+              <div class="card-rating"><span class="star">★</span> 4.6</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="card-img">
+            <span class="card-badge badge-best">Best-seller</span>
+            <button class="card-fav" aria-label="Favoris">
+              <i class="ti ti-heart"></i>
+            </button>
+            <div class="card-img-icon">🫙</div>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Tom Ford</div>
+            <div class="card-name">Oud Wood</div>
+            <div class="card-notes">Oud · Santal · Épices</div>
+            <div class="card-footer">
+              <div class="card-price">À partir de 12€</div>
+              <div class="card-rating"><span class="star">★</span> 4.9</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="card-img">
+            <span class="card-badge badge-new">Nouveauté</span>
+            <button class="card-fav" aria-label="Favoris">
+              <i class="ti ti-heart"></i>
+            </button>
+            <div class="card-img-icon">🫙</div>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Xerjoff</div>
+            <div class="card-name">Naxos</div>
+            <div class="card-notes">Lavande · Miel · Tabac</div>
+            <div class="card-footer">
+              <div class="card-price">À partir de 16€</div>
+              <div class="card-rating"><span class="star">★</span> 4.7</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="card-img">
+            <span class="card-badge badge-exclusive">Exclusif</span>
+            <button class="card-fav" aria-label="Favoris">
+              <i class="ti ti-heart"></i>
+            </button>
+            <div class="card-img-icon">🫙</div>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Creed</div>
+            <div class="card-name">Aventus</div>
+            <div class="card-notes">Ananas · Bouleau · Musc</div>
+            <div class="card-footer">
+              <div class="card-price">À partir de 18€</div>
+              <div class="card-rating"><span class="star">★</span> 4.9</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="card-img">
+            <button class="card-fav" aria-label="Favoris">
+              <i class="ti ti-heart"></i>
+            </button>
+            <div class="card-img-icon">🫙</div>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Byredo</div>
+            <div class="card-name">Bal d'Afrique</div>
+            <div class="card-notes">Bergamote · Vétiver · Musc</div>
+            <div class="card-footer">
+              <div class="card-price">À partir de 10€</div>
+              <div class="card-rating"><span class="star">★</span> 4.5</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST -->
+    <div class="trust-strip">
+      <div class="trust-grid">
+        <div class="trust-item">
+          <div class="trust-icon"><i class="ti ti-certificate"></i></div>
+          <div>
+            <div class="trust-title">100% authentique</div>
+            <div class="trust-sub">
+              Approvisionnement direct auprès des distributeurs officiels
+            </div>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon"><i class="ti ti-droplet"></i></div>
+          <div>
+            <div class="trust-title">Essayez d'abord</div>
+            <div class="trust-sub">
+              Décants 2ml, 5ml, 10ml disponibles pour chaque parfum
+            </div>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon"><i class="ti ti-truck-delivery"></i></div>
+          <div>
+            <div class="trust-title">Livraison soignée</div>
+            <div class="trust-sub">
+              Expédition sous 24h, emballage premium protecteur
+            </div>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon"><i class="ti ti-shield-check"></i></div>
+          <div>
+            <div class="trust-title">Satisfaction garantie</div>
+            <div class="trust-sub">
+              30 jours pour changer d'avis, sans question posée
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHY KOREI -->
+    <section class="why">
+      <div>
+        <div class="why-eyebrow">Notre engagement</div>
+        <h2 class="why-title">
+          Les plus belles maisons,<br /><em>accessibles à tous.</em>
+        </h2>
+        <p class="why-text">
+          Korei réunit flacons entiers et décants des maisons les plus
+          remarquables — pour que chaque découverte soit une expérience, sans
+          compromis sur l'authenticité.
+        </p>
+        <div class="why-ctas">
+          <button class="btn-dark">Voir la collection</button>
+          <button class="btn-outline">Best-sellers</button>
+        </div>
+      </div>
+      <div class="why-features">
+        <div class="why-feature">
+          <div class="why-feature-icon"><i class="ti ti-flask"></i></div>
+          <div>
+            <div class="why-feature-title">Décants & flacons entiers</div>
+            <div class="why-feature-sub">
+              La seule boutique qui propose les deux — essayez en petit format,
+              investissez en grand.
+            </div>
+          </div>
+        </div>
+        <div class="why-feature">
+          <div class="why-feature-icon"><i class="ti ti-star"></i></div>
+          <div>
+            <div class="why-feature-title">Sélection curatée</div>
+            <div class="why-feature-sub">
+              Chaque parfum est choisi pour sa singularité — designer, niche, ou
+              introuvable ailleurs.
+            </div>
+          </div>
+        </div>
+        <div class="why-feature">
+          <div class="why-feature-icon"><i class="ti ti-gift"></i></div>
+          <div>
+            <div class="why-feature-title">Cadeau mystère offert</div>
+            <div class="why-feature-sub">
+              Un échantillon surprise inclus avec chaque commande, choisi selon
+              votre profil.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- MARQUES -->
+    <section class="brands-section">
+      <div class="section-head">
+        <h2 class="section-title">Les <em>maisons</em></h2>
+        <a href="#" class="section-link">Toutes les marques</a>
+      </div>
+      <div class="brands-scroll">
+        <div class="brand-chip active">Toutes</div>
+        <div class="brand-chip">Amouage</div>
+        <div class="brand-chip">Tom Ford</div>
+        <div class="brand-chip">Xerjoff</div>
+        <div class="brand-chip">Creed</div>
+        <div class="brand-chip">Kilian</div>
+        <div class="brand-chip">Byredo</div>
+        <div class="brand-chip">Dior</div>
+        <div class="brand-chip">Chanel</div>
+        <div class="brand-chip">Guerlain</div>
+        <div class="brand-chip">Memo Paris</div>
+        <div class="brand-chip">Initio</div>
+        <div class="brand-chip">Parfums de Marly</div>
+      </div>
+    </section>
+
+    <!-- NOUVEAUTÉS -->
+    <section class="section" style="padding-top: 0">
+      <div class="section-head">
+        <h2 class="section-title">⚡ Nouveautés</h2>
+        <a href="#" class="section-link">Tout voir</a>
+      </div>
+      <div class="products-grid">
+        <div class="product-card" style="min-width: 0">
+          <div class="card-img">
+            <span class="card-badge badge-new">Nouveau</span
+            ><button class="card-fav" aria-label="Favoris">
+              <i class="ti ti-heart"></i>
+            </button>
+            <div class="card-img-icon">🫙</div>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Initio</div>
+            <div class="card-name">Oud for Greatness</div>
+            <div class="card-notes">Oud · Safran · Musc</div>
+            <div class="card-footer">
+              <div class="card-price">À partir de 15€</div>
+              <div class="card-rating"><span class="star">★</span> 4.8</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" style="min-width: 0">
+          <div class="card-img">
+            <span class="card-badge badge-new">Nouveau</span
+            ><button class="card-fav" aria-label="Favoris">
+              <i class="ti ti-heart"></i>
+            </button>
+            <div class="card-img-icon">🫙</div>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Memo Paris</div>
+            <div class="card-name">Irish Leather</div>
+            <div class="card-notes">Cuir · Cèdre · Poivre</div>
+            <div class="card-footer">
+              <div class="card-price">À partir de 11€</div>
+              <div class="card-rating"><span class="star">★</span> 4.5</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" style="min-width: 0">
+          <div class="card-img">
+            <span class="card-badge badge-new">Nouveau</span
+            ><button class="card-fav" aria-label="Favoris">
+              <i class="ti ti-heart"></i>
+            </button>
+            <div class="card-img-icon">🫙</div>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Parfums de Marly</div>
+            <div class="card-name">Layton</div>
+            <div class="card-notes">Pomme · Vanille · Poivre</div>
+            <div class="card-footer">
+              <div class="card-price">À partir de 13€</div>
+              <div class="card-rating"><span class="star">★</span> 4.7</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card" style="min-width: 0">
+          <div class="card-img">
+            <span class="card-badge badge-new">Nouveau</span
+            ><button class="card-fav" aria-label="Favoris">
+              <i class="ti ti-heart"></i>
+            </button>
+            <div class="card-img-icon">🫙</div>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Kilian Paris</div>
+            <div class="card-name">Angels' Share</div>
+            <div class="card-notes">Cognac · Cannelle · Vanille</div>
+            <div class="card-footer">
+              <div class="card-price">À partir de 14€</div>
+              <div class="card-rating"><span class="star">★</span> 4.8</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUIZ CTA -->
+    <section class="quiz-cta">
+      <div class="quiz-cta-inner">
+        <div>
+          <div class="quiz-eyebrow">Découverte olfactive</div>
+          <h2 class="quiz-title">
+            Vous ne savez pas<br />par où <em>commencer ?</em>
+          </h2>
+          <p class="quiz-sub">
+            Répondez à 5 questions et notre algorithme vous recommande les
+            parfums qui correspondent exactement à votre personnalité.
+          </p>
+          <button
+            class="btn-dark"
+            style="
+              font-size: 13px;
+              padding: 16px 36px;
+              display: inline-flex;
+              align-items: center;
+              gap: 10px;
+            "
+          >
+            Trouver ma signature <i class="ti ti-arrow-right"></i>
+          </button>
+        </div>
+        <div class="quiz-notes">
+          <div class="quiz-note-chip">🌲 Boisé</div>
+          <div class="quiz-note-chip">🌸 Floral</div>
+          <div class="quiz-note-chip">🔥 Oriental</div>
+          <div class="quiz-note-chip">🌊 Frais</div>
+          <div class="quiz-note-chip">🌿 Aromatique</div>
+          <div class="quiz-note-chip">🍋 Hespéridé</div>
+          <div class="quiz-note-chip">🍬 Poudré</div>
+          <div class="quiz-note-chip">🪵 Oud</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLLECTIONS -->
+    <section
+      class="section"
+      style="
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      "
+    >
+      <div class="section-head">
+        <h2 class="section-title">Collections <em>thématiques</em></h2>
+        <a href="#" class="section-link">Toutes</a>
+      </div>
+      <div class="collections-grid">
+        <div class="collection-card">
+          <div class="collection-icon">🌙</div>
+          <div class="collection-name">Soirée</div>
+          <div class="collection-count">42 parfums</div>
+        </div>
+        <div class="collection-card">
+          <div class="collection-icon">☀️</div>
+          <div class="collection-name">Été</div>
+          <div class="collection-count">38 parfums</div>
+        </div>
+        <div class="collection-card">
+          <div class="collection-icon">💼</div>
+          <div class="collection-name">Bureau</div>
+          <div class="collection-count">27 parfums</div>
+        </div>
+        <div class="collection-card">
+          <div class="collection-icon">🔥</div>
+          <div class="collection-name">Viral</div>
+          <div class="collection-count">18 parfums</div>
+        </div>
+        <div class="collection-card">
+          <div class="collection-icon">❄️</div>
+          <div class="collection-name">Hiver</div>
+          <div class="collection-count">31 parfums</div>
+        </div>
+        <div class="collection-card">
+          <div class="collection-icon">💫</div>
+          <div class="collection-name">Longue tenue</div>
+          <div class="collection-count">24 parfums</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABONNEMENT -->
+    <div class="subscription">
+      <div>
+        <div class="sub-eyebrow">Programme Korei+</div>
+        <div class="sub-title">Votre rituel<br /><em>mensuel.</em></div>
+        <div class="sub-price">
+          <strong>19,90€ / mois</strong> · crédits boutique + avantages
+          exclusifs · résiliable à tout moment
+        </div>
+        <button
+          class="btn-dark"
+          style="margin-top: 8px; font-size: 13px; padding: 16px 36px"
+        >
+          Commencer l'essai gratuit
+        </button>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-title">Rejoindre</div>
+            <div class="step-sub">Inscription en 30 secondes</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <div class="step-title">Crédit boutique</div>
+            <div class="step-sub">19,90€ crédités chaque mois</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <div class="step-title">Cadeau offert</div>
+            <div class="step-sub">Échantillon 5ml à chaque commande</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div>
+            <div class="step-title">Sans engagement</div>
+            <div class="step-sub">Annulable à tout moment</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UGC -->
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title">Fini les achats <em>à l'aveugle</em></h2>
+        <a href="#" class="section-link">Tous les avis</a>
+      </div>
+      <div class="ugc-grid">
+        <div class="ugc-card">
+          <div class="ugc-play"><i class="ti ti-player-play"></i></div>
+          <div class="ugc-label">Ma signature enfin trouvée</div>
+          <div class="ugc-tag">TikTok · 48k vues</div>
+        </div>
+        <div class="ugc-card">
+          <div class="ugc-play"><i class="ti ti-player-play"></i></div>
+          <div class="ugc-label">Unboxing Korei — la surprise</div>
+          <div class="ugc-tag">Instagram · 22k vues</div>
+        </div>
+        <div class="ugc-card">
+          <div class="ugc-play"><i class="ti ti-player-play"></i></div>
+          <div class="ugc-label">Top 5 décants niche 2025</div>
+          <div class="ugc-tag">YouTube · 31k vues</div>
+        </div>
+        <div class="ugc-card">
+          <div class="ugc-play"><i class="ti ti-player-play"></i></div>
+          <div class="ugc-label">Tient dans ma poche</div>
+          <div class="ugc-tag">TikTok · 19k vues</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials">
+      <div class="section-head">
+        <h2 class="section-title">Ce qu'ils <em>disent</em></h2>
+        <a href="#" class="section-link">Tous les avis</a>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">
+            « Je n'aurais jamais pensé porter quelque chose de différent chaque
+            semaine sans me ruiner. Korei a changé ma façon de vivre le parfum.
+            »
+          </p>
+          <div class="testimonial-footer">
+            <div class="testimonial-avatar">🧑</div>
+            <div>
+              <div class="testimonial-name">Sofia M.</div>
+              <div class="testimonial-meta">Tom Ford · Oud Wood</div>
+            </div>
+            <span class="testimonial-badge">Vérifié</span>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">
+            « Enfin un moyen d'essayer un parfum à 300€ avant d'investir. J'ai
+            trouvé ma signature en 3 décants. Le service est impeccable. »
+          </p>
+          <div class="testimonial-footer">
+            <div class="testimonial-avatar">🧑</div>
+            <div>
+              <div class="testimonial-name">Karim B.</div>
+              <div class="testimonial-meta">Amouage · Interlude Man</div>
+            </div>
+            <span class="testimonial-badge">Vérifié</span>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">
+            « L'emballage est soigné, la livraison ultra rapide. J'offre des
+            coffrets Korei à mes proches depuis 6 mois — toujours un succès. »
+          </p>
+          <div class="testimonial-footer">
+            <div class="testimonial-avatar">🧑</div>
+            <div>
+              <div class="testimonial-name">Léa T.</div>
+              <div class="testimonial-meta">Byredo · Bal d'Afrique</div>
+            </div>
+            <span class="testimonial-badge">Vérifié</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq">
+      <div class="section-head">
+        <h2 class="section-title">Questions <em>fréquentes</em></h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            <span>C'est quoi un décant ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Un décant est un petit flacon (2ml, 5ml ou 10ml) rempli directement
+            depuis un flacon original. C'est le meilleur moyen de tester un
+            parfum sur votre peau, dans votre quotidien, avant d'acheter un
+            flacon entier.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            <span>Les parfums sont-ils 100% authentiques ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Oui, sans exception. Tous nos parfums proviennent directement des
+            distributeurs officiels ou de maisons agréées. Nous ne travaillons
+            jamais avec des sources secondaires non vérifiées.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            <span>Quels sont les délais et frais de livraison ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Expédition sous 24h (jours ouvrés). Livraison gratuite dès 60€
+            d'achat. En dessous, les frais varient selon votre zone (4,90€ en
+            France métropolitaine).
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            <span>Comment fonctionne le programme Korei+ ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Pour 19,90€/mois, vous recevez 19,90€ de crédit boutique utilisable
+            sur n'importe quel produit, un cadeau 5ml offert à chaque commande,
+            et des accès prioritaires aux nouveautés. Sans engagement,
+            résiliable à tout moment.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            <span>Puis-je retourner ou échanger ma commande ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Nous offrons 30 jours de satisfaction garantie. Si un produit ne
+            vous convient pas, contactez notre équipe — nous trouvons toujours
+            une solution, sans question posée.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section class="newsletter">
+      <div class="newsletter-inner">
+        <div class="newsletter-eyebrow">Newsletter</div>
+        <h2 class="newsletter-title">
+          Les nouveautés, <em>en avant-première.</em>
+        </h2>
+        <p class="newsletter-sub">
+          Accès prioritaire aux nouvelles maisons, offres exclusives et conseils
+          olfactifs — directement dans votre boîte mail.
+        </p>
+        <form class="newsletter-form" onsubmit="return false;">
+          <input
+            type="email"
+            class="newsletter-input"
+            placeholder="votre@email.com"
+            aria-label="Adresse email"
+          />
+          <button type="submit" class="btn-dark">S'abonner</button>
+        </form>
+        <p class="newsletter-legal">Pas de spam. Désabonnement en un clic.</p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">Korei</div>
+          <div class="footer-tagline">Parfumerie de niche · Paris</div>
+          <div class="footer-socials">
+            <button class="social-btn" aria-label="Instagram">
+              <i class="ti ti-brand-instagram"></i>
+            </button>
+            <button class="social-btn" aria-label="TikTok">
+              <i class="ti ti-brand-tiktok"></i>
+            </button>
+            <button class="social-btn" aria-label="Facebook">
+              <i class="ti ti-brand-facebook"></i>
+            </button>
+            <button class="social-btn" aria-label="Pinterest">
+              <i class="ti ti-brand-pinterest"></i>
+            </button>
+          </div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Boutique</div>
+          <a href="#">Tous les parfums</a>
+          <a href="#">Décants</a>
+          <a href="#">Flacons entiers</a>
+          <a href="#">Marques</a>
+          <a href="#">Collections</a>
+          <a href="#">Nouveautés</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Korei</div>
+          <a href="#">À propos</a>
+          <a href="#">Programme Korei+</a>
+          <a href="#">Affiliation</a>
+          <a href="#">Blog</a>
+          <a href="#">Recrutement</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Aide</div>
+          <a href="#">Contact</a>
+          <a href="#">Livraison</a>
+          <a href="#">Retours</a>
+          <a href="#">CGV</a>
+          <a href="#">Confidentialité</a>
+          <a href="#">Plan du site</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-payments">
+          <span class="payment-chip">Visa</span>
+          <span class="payment-chip">Mastercard</span>
+          <span class="payment-chip">PayPal</span>
+          <span class="payment-chip">Apple Pay</span>
+          <span class="payment-chip">Google Pay</span>
+          <span class="payment-chip">Amex</span>
+        </div>
+        <div class="footer-copy">© 2026 Korei — Tous droits réservés</div>
+      </div>
+    </footer>
+
+    <script src="main.js"></script>
+  </body>
+</html>
