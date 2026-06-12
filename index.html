@@ -116,11 +116,16 @@
           <span class="hero-brand-chip">+ 80 marques</span>
         </div>
       </div>
-      <div class="hero-visual media-slot">
+      <!-- Image hero : remplacer assets/images/hero/hero-main.jpg (800×1000, ratio 4:5) -->
+      <div class="hero-visual media-slot" data-slot="hero">
         <img class="media-slot__image" src="assets/images/hero/hero-main.jpg" alt="Collection parfums de niche Korei" width="800" height="1000" hidden />
-        <div class="media-slot__placeholder hero-img-placeholder">
-          <i class="ti ti-photo"></i>
-          <span>assets/images/hero/hero-main.jpg</span>
+        <div class="media-slot__placeholder placeholder-premium placeholder-premium--hero">
+          <div class="placeholder-premium__pattern" aria-hidden="true"></div>
+          <div class="placeholder-premium__content">
+            <span class="placeholder-premium__eyebrow">Korei</span>
+            <span class="placeholder-premium__title">Parfumerie<br>de niche</span>
+            <span class="placeholder-premium__sub">Décants & flacons authentiques</span>
+          </div>
         </div>
       </div>
     </section>
@@ -309,11 +314,12 @@
       </div>
     </section>
 
+    <!-- Lifestyle : remplacer assets/images/lifestyle/lifestyle-1.jpg … lifestyle-3.jpg -->
     <section class="lifestyle-section">
       <div class="section-head" style="margin-bottom: 0">
         <h2 class="section-title">L'expérience <em>Korei</em></h2>
       </div>
-      <p class="page-hero-sub" style="margin-top: 12px">Visuels lifestyle — photos à ajouter dans assets/images/lifestyle/</p>
+      <p class="lifestyle-section-sub">L'art de la découverte olfactive — authenticité, élégance et accessibilité.</p>
       <div class="lifestyle-grid" id="lifestyle-grid" data-base-path=""></div>
     </section>
 
@@ -389,6 +395,7 @@
 
     <script src="assets/js/site.js"></script>
     <script src="assets/js/products.js"></script>
+    <script src="assets/js/product-store.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/chatbot.js"></script>
   </body>
