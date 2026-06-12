@@ -1,42 +1,41 @@
 /**
  * Korei — Chatbot conseiller olfactif (mock MVP)
  *
- * FUTURE INTÉGRATION IA :
- * ─────────────────────
- * 1. Remplacer sendMockResponse() par sendToAI(userMessage)
- * 2. Appeler une serverless function (Vercel / Netlify / AWS Lambda)
- * 3. Exemple endpoint : POST /api/chat
- *    Body: { message, context: buildChatContext() }
- * 4. Contexte à envoyer : notes, budget, occasion, saison, genre, intensité, marques, catalogue
- * 5. Providers possibles : OpenAI GPT-4, AWS Bedrock (Claude), Anthropic API
- * 6. Ajouter gestion streaming pour réponses progressives
+ * FUTURE INTÉGRATION IA — brancher ici :
+ * ─────────────────────────────────────
+ * 1. Dans handleUserMessage(), remplacer sendMockResponse() par :
+ *
+ *    async function sendToAI(userMessage) {
+ *      const res = await fetch('/api/chat', {
+ *        method: 'POST',
+ *        headers: { 'Content-Type': 'application/json' },
+ *        body: JSON.stringify({
+ *          message: userMessage,
+ *          history: messages.slice(-6),
+ *          catalog: KoreiProductStore.buildCatalogContext(),
+ *        }),
+ *      });
+ *      const data = await res.json();
+ *      return data.reply; // HTML ou markdown léger
+ *    }
+ *
+ * 2. Serverless (Vercel api/chat.js / Netlify functions/chat) :
+ *    - Clé API OpenAI / Bedrock côté serveur uniquement
+ *    - Prompt système + catalogue JSON en contexte
+ *    - Retourner texte + productIds recommandés
+ *
+ * 3. Garder recommendProducts() pour fallback ou hybrid RAG local
  */
 (function (global) {
-  const MOCK_RESPONSES = {
-    default:
-      "Je suis votre conseiller olfactif Korei. Décrivez ce que vous recherchez : une note (oud, vanille, cuir…), une occasion ou un budget.",
-    oud: "Pour l'oud, je recommande **Oud Wood** (Tom Ford) — accessible et élégant — ou **Interlude Man** (Amouage) pour une version plus intense et fumée. Décants dès 12€.",
-    vanille:
-      "Côté vanille gourmande : **Angels' Share** (Kilian) est un incontournable cognac-vanille. **Layton** (Parfums de Marly) offre une vanille plus classique et raffinée.",
-    bureau:
-      "Pour le bureau, privilégiez des parfums modérés : **Oud Wood**, **Bal d'Afrique** ou **Aventus**. Évitez les compositions trop intenses en journée.",
-    soirée:
-      "Pour une soirée : **Interlude Man**, **Black Phantom** ou **Oud for Greatness** — présence olfactive garantie.",
-    budget:
-      "Nos décants commencent à 9€ (**Replica Jazz Club**). Le meilleur rapport qualité-prix : **Bal d'Afrique** à 10€ ou **Oud Wood** à 12€.",
-    été: "Pour l'été : **Bal d'Afrique** (frais et lumineux) ou **Aventus** (fruité et aérien). Notes légères, tenue modérée.",
-    homme: "Signatures masculines populaires : **Aventus**, **Layton**, **Oud Wood** et **Interlude Man**. Souhaitez-vous boisé, oriental ou gourmand ?",
-    femme: "Pour une signature féminine ou unisexe : **Bal d'Afrique**, **Angels' Share** ou **Replica Jazz Club** — tous très portables.",
-    salut: "Bonjour ! Je suis le conseiller Korei. Quel parfum cherchez-vous ? Note, occasion, budget — je vous guide.",
-    bonjour: "Bonjour ! Je suis le conseiller Korei. Quel parfum cherchez-vous ? Note, occasion, budget — je vous guide.",
-    merci: "Avec plaisir ! N'hésitez pas si vous voulez d'autres recommandations. Bonne découverte olfactive 🌿",
-  };
+  const store = () => global.KoreiProductStore;
 
   const SUGGESTIONS = [
     "Parfum oud pour soirée",
     "Quel parfum pour le bureau ?",
     "Budget moins de 12€",
     "Parfum vanille gourmand",
+    "Frais pour l'été",
+    "Cuir et boisé",
   ];
 
   let isOpen = false;
@@ -55,55 +54,96 @@
     };
   }
 
+  function productPageUrl(id) {
+    const inPages = window.location.pathname.includes("/pages/");
+    return inPages ? `product.html?id=${id}` : `pages/product.html?id=${id}`;
+  }
+
   function buildChatContext() {
-    const { PRODUCTS, BRANDS } = global.KoreiProducts || { PRODUCTS: [], BRANDS: [] };
+    const s = store();
+    if (!s) return { products: [], brands: [], criteria: [] };
     return {
-      products: PRODUCTS.map((p) => ({
-        id: p.id,
-        name: p.name,
-        brand: p.brand,
-        notes: p.notes,
-        price: p.price,
-        gender: p.gender,
-        intensity: p.intensity,
-        occasions: p.occasions,
-        seasons: p.seasons,
-        family: p.family,
-      })),
-      brands: BRANDS.map((b) => ({ id: b.id, name: b.name })),
-      criteria: ["notes", "budget", "occasion", "saison", "genre", "intensité", "marques"],
+      products: s.buildCatalogContext(),
+      brands: s.getBrands().map((b) => ({ id: b.id, name: b.name })),
+      criteria: [
+        "notesTop",
+        "notesHeart",
+        "notesBase",
+        "family",
+        "gender",
+        "seasons",
+        "occasions",
+        "intensity",
+        "priceRange",
+        "supplierAvailable",
+      ],
     };
   }
 
-  /**
-   * FUTURE : remplacer par appel API réel
-   * async function sendToAI(userMessage) {
-   *   const res = await fetch('/api/chat', {
-   *     method: 'POST',
-   *     headers: { 'Content-Type': 'application/json' },
-   *     body: JSON.stringify({
-   *       message: userMessage,
-   *       context: buildChatContext(),
-   *     }),
-   *   });
-   *   const data = await res.json();
-   *   return data.reply;
-   * }
-   */
+  function formatProductLine(product, index) {
+    const notes = global.KoreiProducts?.formatNotes(product.notes.slice(0, 3)) || product.notes.join(", ");
+    const url = productPageUrl(product.id);
+    return `${index + 1}. <a href="${url}" class="chatbot-product-link">${product.name}</a> (${product.brand}) — dès ${product.price}€ · ${notes}`;
+  }
+
+  function detectTopic(query) {
+    const q = query.toLowerCase();
+    const topics = [
+      { re: /oud/, label: "oud" },
+      { re: /vanille|gourmand/, label: "vanille & gourmand" },
+      { re: /cuir|leather/, label: "cuir" },
+      { re: /frais|fraiche|leger|aerien/, label: "fraîcheur" },
+      { re: /ete/, label: "l'été" },
+      { re: /hiver/, label: "l'hiver" },
+      { re: /bureau|travail/, label: "le bureau" },
+      { re: /soiree/, label: "la soirée" },
+      { re: /boise|bois/, label: "les notes boisées" },
+      { re: /homme|masculin/, label: "homme" },
+      { re: /budget|pas cher|moins de/, label: "petit budget" },
+    ];
+    const hit = topics.find((t) => t.re.test(q));
+    return hit?.label || null;
+  }
+
   function sendMockResponse(userMessage) {
-    const lower = userMessage.toLowerCase();
-    for (const [key, reply] of Object.entries(MOCK_RESPONSES)) {
-      if (key !== "default" && lower.includes(key)) return reply;
+    const q = userMessage.trim().toLowerCase();
+    const s = store();
+
+    if (/^(salut|bonjour|hello|coucou|hey)\b/.test(q)) {
+      return "Bonjour ! Je suis votre conseiller Korei. Décrivez une note (oud, vanille, cuir…), une saison, une occasion ou un budget — je vous propose 2 ou 3 parfums du catalogue.";
     }
-    if (lower.includes("oud")) return MOCK_RESPONSES.oud;
-    if (lower.includes("vanille") || lower.includes("gourmand")) return MOCK_RESPONSES.vanille;
-    if (lower.includes("bureau") || lower.includes("travail")) return MOCK_RESPONSES.bureau;
-    if (lower.includes("soirée") || lower.includes("soiree")) return MOCK_RESPONSES.soirée;
-    if (lower.includes("budget") || lower.includes("€") || lower.includes("euro")) return MOCK_RESPONSES.budget;
-    if (lower.includes("été") || lower.includes("ete")) return MOCK_RESPONSES.été;
-    if (lower.includes("homme")) return MOCK_RESPONSES.homme;
-    if (lower.includes("femme")) return MOCK_RESPONSES.femme;
-    return MOCK_RESPONSES.default;
+    if (/merci|thanks/.test(q)) {
+      return "Avec plaisir ! Dites-moi si vous voulez d'autres idées olfactives.";
+    }
+
+    if (!s) {
+      return "Le catalogue n'est pas chargé. Rechargez la page et réessayez.";
+    }
+
+    const recommendations = s.recommendProducts(userMessage, 3);
+    if (!recommendations.length) {
+      return "Je n'ai pas trouvé une correspondance précise. Essayez : « oud soirée », « vanille gourmand », « frais été » ou « budget 10€ ».";
+    }
+
+    const topic = detectTopic(userMessage);
+    const hasStrongMatch = recommendations.some((p) => s.scoreProductForQuery(p, userMessage) > 3);
+    const intro = topic && hasStrongMatch
+      ? `Pour <strong>${topic}</strong>, voici mes suggestions :`
+      : hasStrongMatch
+        ? "Voici ce qui correspond à votre recherche :"
+        : "Nos coups de cœur du moment — peut-être un bon point de départ :";
+
+    const lines = recommendations.map((p, i) => formatProductLine(p, i));
+    const available = recommendations.filter((p) => p.supplierAvailable).length;
+
+    let footer = "";
+    if (available < recommendations.length) {
+      footer = "<br><em>Certains produits peuvent être temporairement indisponibles.</em>";
+    } else {
+      footer = "<br>Cliquez sur un parfum pour voir la fiche détaillée.";
+    }
+
+    return `${intro}<br><br>${lines.join("<br>")}${footer}`;
   }
 
   function formatBotText(text) {
@@ -147,12 +187,11 @@
 
     const typing = showTyping();
 
-    // Simule latence réseau — à supprimer avec vraie API
     setTimeout(() => {
       typing?.remove();
       const reply = sendMockResponse(trimmed);
       addMessage(reply, "bot");
-    }, 800);
+    }, 700);
   }
 
   function renderSuggestions() {
@@ -177,7 +216,7 @@
 
     if (messages.length === 0) {
       addMessage(
-        "Bonjour ! Je suis votre conseiller olfactif Korei. Décrivez une note, une occasion ou un budget — je vous oriente vers les parfums idéaux.",
+        "Bonjour ! Décrivez ce que vous cherchez — note, saison, occasion ou budget. Je recommande des parfums depuis notre catalogue.",
         "bot"
       );
     }
@@ -209,9 +248,7 @@
     });
 
     renderSuggestions();
-
-    // Contexte prêt pour future API (non envoyé en MVP)
-    if (global.KoreiProducts) buildChatContext();
+    if (store()) buildChatContext();
   }
 
   global.KoreiChatbot = { open, close, toggle, buildChatContext };
