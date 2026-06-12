@@ -4,14 +4,15 @@
 (function (global) {
   function initBrandsPage() {
     const grid = document.getElementById("brands-grid");
-    const { BRANDS, getProductsByBrand } = global.KoreiProducts;
-    if (!grid || !BRANDS) return;
+    const store = global.KoreiProductStore;
+    if (!grid || !store) return;
+    const BRANDS = store.getBrands();
 
     const params = new URLSearchParams(window.location.search);
     const highlightBrand = params.get("brand");
 
     grid.innerHTML = BRANDS.map((brand) => {
-      const count = getProductsByBrand(brand.id).length;
+      const count = store.getProductsByBrand(brand.id).length;
       const isHighlight = highlightBrand === brand.id;
       return `
         <a href="catalogue.html?brand=${brand.id}" class="brand-card${isHighlight ? " brand-card--highlight" : ""}" data-brand-id="${brand.id}">
