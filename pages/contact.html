@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Contactez Korei — questions sur les parfums, décants, livraison ou conseils olfactifs." />
+    <title>Contact — Korei</title>
+    <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="../manifest.webmanifest" />
+    <meta name="theme-color" content="#1a1a18" />
+    <link rel="canonical" href="https://korei.fr/pages/contact" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Korei" />
+    <meta property="og:title" content="Contact — Korei" />
+    <meta property="og:description" content="Contactez l'équipe Korei pour toute question." />
+    <meta property="og:url" content="https://korei.fr/pages/contact" />
+    <meta property="og:image" content="https://korei.fr/assets/images/og/og-default.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Contact — Korei" />
+    <meta name="twitter:image" content="https://korei.fr/assets/images/og/og-default.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+  </head>
+  <body data-page="static">
+    <header class="header header--minimal">
+      <a href="../index.html" class="logo">Korei</a>
+      <nav class="nav nav--minimal">
+        <a href="catalogue.html">Parfums</a>
+        <a href="about.html">À propos</a>
+        <a href="cgv.html">CGV</a>
+      </nav>
+    </header>
+
+    <section class="page-hero">
+      <div class="page-hero-eyebrow">Aide</div>
+      <h1 class="page-hero-title">Nous <em>contacter</em></h1>
+      <p class="page-hero-sub">Une question sur un parfum, une commande ou un conseil olfactif ?</p>
+    </section>
+
+    <article class="static-content">
+      <div class="contact-cards">
+        <div class="contact-card">
+          <div class="contact-card-icon"><i class="ti ti-mail"></i></div>
+          <h2>Email</h2>
+          <p><a href="mailto:contact@korei.fr">contact@korei.fr</a></p>
+          <p class="contact-card-hint">Réponse sous 24h ouvrées</p>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-icon"><i class="ti ti-message-chatbot"></i></div>
+          <h2>Conseiller olfactif</h2>
+          <p>Version démo disponible sur le site.</p>
+          <p><button type="button" class="btn-text" data-open-chatbot>ouvrir le chatbot</button></p>
+        </div>
+      </div>
+
+      <form class="contact-form" onsubmit="return false;">
+        <h2>Formulaire</h2>
+        <p class="static-note">Formulaire placeholder — intégration Netlify Forms ou email en Phase 2.</p>
+        <label>
+          <span>Nom</span>
+          <input type="text" name="name" placeholder="Votre nom" disabled />
+        </label>
+        <label>
+          <span>Email</span>
+          <input type="email" name="email" placeholder="votre@email.com" disabled />
+        </label>
+        <label>
+          <span>Message</span>
+          <textarea name="message" rows="4" placeholder="Votre message…" disabled></textarea>
+        </label>
+        <button type="submit" class="btn-dark" disabled>Bientôt disponible</button>
+      </form>
+    </article>
+
+    <footer class="footer-minimal">
+      <a href="../index.html">Accueil</a>
+      <a href="about.html">À propos</a>
+      <a href="cgv.html">CGV</a>
+      <span>© 2026 Korei</span>
+    </footer>
+
+    <script src="../assets/js/site.js"></script>
+    <script src="../assets/js/products.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/chatbot.js"></script>
+
+    <div id="chatbot-widget" class="chatbot-widget">
+      <div id="chatbot-panel" class="chatbot-panel" role="dialog" aria-label="Conseiller olfactif Korei">
+        <div class="chatbot-head">
+          <div>
+            <div class="chatbot-head-title">Conseiller Korei</div>
+            <div class="chatbot-head-sub">Assistant olfactif · Démo</div>
+          </div>
+          <button type="button" id="chatbot-close" class="chatbot-close" aria-label="Fermer"><i class="ti ti-x"></i></button>
+        </div>
+        <div id="chatbot-messages" class="chatbot-messages"></div>
+        <div id="chatbot-suggestions" class="chatbot-suggestions"></div>
+        <div class="chatbot-foot">
+          <form id="chatbot-form" class="chatbot-form">
+            <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Décrivez ce que vous cherchez…" autocomplete="off" />
+            <button type="submit" class="chatbot-send" aria-label="Envoyer"><i class="ti ti-send"></i></button>
+          </form>
+        </div>
+        <div class="chatbot-mock-badge">Mode démo — IA à connecter</div>
+      </div>
+      <button type="button" id="chatbot-toggle" class="chatbot-toggle" aria-label="Ouvrir le conseiller olfactif" aria-expanded="false">
+        <i class="ti ti-message-chatbot"></i>
+      </button>
+    </div>
+  </body>
+</html>

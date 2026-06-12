@@ -3,8 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Korei — Parfumerie de niche. Flacons entiers et décants authentiques des plus grandes maisons." />
+    <meta name="description" content="Korei — Parfumerie de niche. Flacons entiers et décants authentiques des plus grandes maisons. Essayez avant d'investir, dès 7€." />
+    <meta name="robots" content="index, follow" />
     <title>Korei — Parfumerie de Niche</title>
+    <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#1a1a18" />
+    <link rel="canonical" href="https://korei.fr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Korei" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content="Korei — Parfumerie de Niche" />
+    <meta property="og:description" content="Flacons entiers et décants authentiques. Découvrez votre signature olfactive à partir de 7€." />
+    <meta property="og:url" content="https://korei.fr/" />
+    <meta property="og:image" content="https://korei.fr/assets/images/og/og-default.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Korei — Parfumerie de Niche" />
+    <meta name="twitter:description" content="Flacons entiers et décants authentiques des plus grandes maisons." />
+    <meta name="twitter:image" content="https://korei.fr/assets/images/og/og-default.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
@@ -100,10 +116,11 @@
           <span class="hero-brand-chip">+ 80 marques</span>
         </div>
       </div>
-      <div class="hero-visual">
-        <div class="hero-img-placeholder">
+      <div class="hero-visual media-slot">
+        <img class="media-slot__image" src="assets/images/hero/hero-main.jpg" alt="Collection parfums de niche Korei" width="800" height="1000" hidden />
+        <div class="media-slot__placeholder hero-img-placeholder">
           <i class="ti ti-photo"></i>
-          <span>Photo hero — à remplacer</span>
+          <span>assets/images/hero/hero-main.jpg</span>
         </div>
       </div>
     </section>
@@ -292,6 +309,14 @@
       </div>
     </section>
 
+    <section class="lifestyle-section">
+      <div class="section-head" style="margin-bottom: 0">
+        <h2 class="section-title">L'expérience <em>Korei</em></h2>
+      </div>
+      <p class="page-hero-sub" style="margin-top: 12px">Visuels lifestyle — photos à ajouter dans assets/images/lifestyle/</p>
+      <div class="lifestyle-grid" id="lifestyle-grid" data-base-path=""></div>
+    </section>
+
     <section class="newsletter">
       <div class="newsletter-inner">
         <div class="newsletter-eyebrow">Newsletter</div>
@@ -324,14 +349,13 @@
         </div>
         <div class="footer-col">
           <div class="footer-col-title">Korei</div>
-          <a href="#">À propos</a>
+          <a href="pages/about.html">À propos</a>
           <a href="#" data-open-chatbot>Conseiller IA</a>
         </div>
         <div class="footer-col">
           <div class="footer-col-title">Aide</div>
-          <a href="#">Contact</a>
-          <a href="#">Livraison</a>
-          <a href="#">CGV</a>
+          <a href="pages/contact.html">Contact</a>
+          <a href="pages/cgv.html">CGV</a>
         </div>
       </div>
       <div class="footer-bottom">
@@ -363,6 +387,7 @@
       </button>
     </div>
 
+    <script src="assets/js/site.js"></script>
     <script src="assets/js/products.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/chatbot.js"></script>

@@ -35,7 +35,19 @@ npx serve .
 
 ## Déploiement
 
-Site statique — compatible Vercel, Netlify ou AWS Amplify. Voir `docs/PROJECT_SCOPE.md`.
+Site statique — compatible Vercel ou Netlify (sans build).
+
+```bash
+# Vercel
+vercel deploy
+
+# Netlify CLI
+netlify deploy --prod --dir=.
+```
+
+Avant la mise en production, mettre à jour `SITE_URL` dans `assets/js/site.js` et les URLs dans `robots.txt` / `sitemap.xml`.
+
+Voir `docs/PROJECT_SCOPE.md` pour le détail.
 
 ## Stack
 

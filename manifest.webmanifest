@@ -1,0 +1,19 @@
+{
+  "name": "Korei — Parfumerie de Niche",
+  "short_name": "Korei",
+  "description": "Flacons entiers et décants authentiques des plus grandes maisons de parfum.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a1a18",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "/assets/images/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -16,12 +16,17 @@
 
 ## Phase 1 — Contenu & polish (1–2 semaines)
 
-- [ ] Images produits réelles (`assets/images/`)
-- [ ] Photo hero et visuels lifestyle
-- [ ] Balises meta Open Graph / Twitter Card
-- [ ] Favicon et manifest PWA léger
-- [ ] Page 404 custom
-- [ ] Liens footer (À propos, Contact, CGV)
+- [ ] Images produits réelles (`assets/images/products/{id}.jpg`)
+- [ ] Photo hero (`assets/images/hero/hero-main.jpg`)
+- [ ] Visuels lifestyle (`assets/images/lifestyle/`)
+- [x] Balises meta SEO + Open Graph / Twitter Card
+- [x] Favicon SVG + manifest PWA léger
+- [x] Page 404 custom
+- [x] robots.txt + sitemap.xml
+- [x] Pages placeholder : À propos, Contact, CGV
+- [x] Liens footer mis à jour
+- [x] Emplacements images (media-slot + `site.js`)
+- [x] Config déploiement Vercel / Netlify
 - [ ] Newsletter — Netlify Forms ou Mailchimp embed
 
 ---

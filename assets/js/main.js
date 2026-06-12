@@ -4,6 +4,26 @@
  */
 (function (global) {
   const { formatNotes, formatPrice } = global.KoreiProducts || {};
+  const site = global.KoreiSite;
+
+  function productImageSrc(product, basePath = "") {
+    const custom = product.image;
+    const defaultPath = site?.IMAGES?.product(product.id) || `assets/images/products/${product.id}.jpg`;
+    const path = custom || defaultPath;
+    return site?.withBase(path, basePath) || `${basePath}${path}`;
+  }
+
+  function productPlaceholderSrc(basePath = "") {
+    const path = site?.IMAGES?.productPlaceholder || "assets/images/products/placeholder.svg";
+    return site?.withBase(path, basePath) || `${basePath}${path}`;
+  }
+
+  function renderProductImageHtml(product, basePath = "", className = "card-img-photo") {
+    const src = productImageSrc(product, basePath);
+    const fallback = productPlaceholderSrc(basePath);
+    const alt = `${product.brand} ${product.name}`;
+    return `<img class="${className} media-slot__image" src="${src}" alt="${alt}" loading="lazy" hidden onerror="this.src='${fallback}'" />`;
+  }
 
   // ── FAQ accordion
   function toggleFaq(btn) {
@@ -84,12 +104,15 @@
 
     return `
       <a href="${productUrl}" class="product-card" ${minWidth} data-product-id="${product.id}">
-        <div class="card-img">
+        <div class="card-img media-slot media-slot--card">
           ${badgeHtml}
           <button class="card-fav" type="button" aria-label="Favoris" data-fav-btn>
             <i class="ti ti-heart"></i>
           </button>
-          <div class="card-img-icon">🫙</div>
+          ${renderProductImageHtml(product, basePath)}
+          <div class="media-slot__placeholder card-img-fallback">
+            <div class="card-img-icon">🫙</div>
+          </div>
         </div>
         <div class="card-body">
           <div class="card-brand">${product.brand}</div>
@@ -107,6 +130,7 @@
     if (!container) return;
     container.innerHTML = products.map((p) => renderProductCard(p, options)).join("");
     initProductCardInteractions(container);
+    site?.initMediaSlots();
   }
 
   function initProductCardInteractions(container) {
@@ -271,7 +295,17 @@
       return;
     }
 
-    document.title = `${product.name} — ${product.brand} | Korei`;
+    const pageTitle = `${product.name} — ${product.brand} | Korei`;
+    const pageDescription = `${product.description} Décant dès ${product.price}€.`;
+
+    site?.setPageMeta({
+      title: pageTitle,
+      description: pageDescription,
+      image: productImageSrc(product, "../"),
+      path: `pages/product?id=${product.id}`,
+      type: "product",
+      basePath: "../",
+    });
 
     const badgeClass =
       product.badge === "best"
@@ -293,11 +327,12 @@
         <span>${product.name}</span>
       </nav>
       <div class="product-detail">
-        <div class="product-visual">
+        <div class="product-visual media-slot">
           ${product.badge ? `<span class="card-badge ${badgeClass}">${product.badgeLabel}</span>` : ""}
-          <div class="product-img-placeholder">
+          ${renderProductImageHtml(product, "../", "product-detail__img")}
+          <div class="media-slot__placeholder product-img-placeholder">
             <i class="ti ti-photo"></i>
-            <span>Photo produit — à remplacer</span>
+            <span>assets/images/products/${product.id}.jpg</span>
           </div>
         </div>
         <div class="product-info">
@@ -332,6 +367,7 @@
       renderProducts(relatedGrid, related, { basePath: "../", grid: true });
     }
 
+    site?.initMediaSlots();
     initChatbotTriggers();
   }
 
