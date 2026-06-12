@@ -1,5 +1,13 @@
 /**
  * Korei — Configuration site (SEO, assets, déploiement)
+ *
+ * IMAGES À REMPLACER (JPG ou WebP recommandé) :
+ * ─────────────────────────────────────────────
+ * Hero      → assets/images/hero/hero-main.jpg        (800×1000 min, ratio 4:5)
+ * Lifestyle → assets/images/lifestyle/lifestyle-1.jpg … lifestyle-3.jpg (800×1000)
+ * Produits  → assets/images/products/{id}.jpg         (800×1000, ex: oud-wood.jpg)
+ * Social    → assets/images/og/og-default.jpg         (1200×630, optionnel)
+ *
  * Mettre à jour SITE_URL avant la mise en production.
  */
 (function (global) {
@@ -13,13 +21,6 @@
     email: "contact@korei.fr",
   };
 
-  /**
-   * Emplacements images — ajouter les fichiers JPG/WebP ici :
-   * assets/images/hero/hero-main.jpg
-   * assets/images/lifestyle/lifestyle-1.jpg … lifestyle-3.jpg
-   * assets/images/products/{product-id}.jpg  (ex: oud-wood.jpg)
-   * assets/images/og/og-default.jpg (1200×630, optionnel — SVG par défaut)
-   */
   const IMAGES = {
     favicon: "assets/images/favicon.svg",
     ogDefault: "assets/images/og/og-default.svg",
@@ -32,6 +33,13 @@
     ],
     product: (id) => `assets/images/products/${id}.jpg`,
   };
+
+  /** Labels affichés tant que les photos lifestyle ne sont pas ajoutées */
+  const LIFESTYLE_SLOTS = [
+    { title: "L'atelier", subtitle: "Sélection curatée" },
+    { title: "La collection", subtitle: "Maisons de niche" },
+    { title: "Le rituel", subtitle: "Essayer avant d'investir" },
+  ];
 
   function absoluteUrl(path) {
     if (!path) return SITE.url;
@@ -67,17 +75,8 @@
     el.setAttribute("href", href);
   }
 
-  /** Met à jour title, description, canonical, OG et Twitter */
   function setPageMeta(options = {}) {
-    const {
-      title,
-      description,
-      image,
-      path = "",
-      type = "website",
-      basePath = "",
-    } = options;
-
+    const { title, description, image, path = "", type = "website" } = options;
     const pageUrl = path ? absoluteUrl(path.replace(/^\//, "")) : SITE.url;
     const imageUrl = absoluteUrl(image || IMAGES.ogDefault);
 
@@ -100,21 +99,68 @@
     setMetaTag("name", "twitter:card", "summary_large_image");
   }
 
-  /** Affiche le placeholder si l'image source est absente */
+  /** Placeholder premium affiché quand la photo réelle est absente */
+  function renderPlaceholder(type, data = {}) {
+    const family = data.family || "default";
+
+    if (type === "hero") {
+      return `
+        <div class="media-slot__placeholder placeholder-premium placeholder-premium--hero">
+          <div class="placeholder-premium__pattern" aria-hidden="true"></div>
+          <div class="placeholder-premium__content">
+            <span class="placeholder-premium__eyebrow">Korei</span>
+            <span class="placeholder-premium__title">Parfumerie<br>de niche</span>
+            <span class="placeholder-premium__sub">Décants & flacons authentiques</span>
+          </div>
+        </div>`;
+    }
+
+    if (type === "lifestyle") {
+      const idx = data.index ?? 0;
+      return `
+        <div class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle" data-variant="${idx}">
+          <div class="placeholder-premium__pattern" aria-hidden="true"></div>
+          <div class="placeholder-premium__content">
+            <i class="ti ti-photo placeholder-premium__icon" aria-hidden="true"></i>
+            <span class="placeholder-premium__title">${data.title || "Korei"}</span>
+            <span class="placeholder-premium__sub">${data.subtitle || ""}</span>
+          </div>
+        </div>`;
+    }
+
+    if (type === "product" || type === "product-detail") {
+      const sizeClass = type === "product-detail" ? "placeholder-premium--detail" : "";
+      return `
+        <div class="media-slot__placeholder placeholder-premium placeholder-premium--product ${sizeClass}" data-family="${family}">
+          <div class="placeholder-premium__pattern" aria-hidden="true"></div>
+          <div class="placeholder-premium__content">
+            <i class="ti ti-bottle placeholder-premium__icon" aria-hidden="true"></i>
+            <span class="placeholder-premium__brand">${data.brand || ""}</span>
+            <span class="placeholder-premium__name">${data.name || ""}</span>
+          </div>
+        </div>`;
+    }
+
+    return "";
+  }
+
   function initMediaSlots() {
-    document.querySelectorAll(".media-slot").forEach((slot) => {
+    document.querySelectorAll(".media-slot:not([data-slot-init])").forEach((slot) => {
       const img = slot.querySelector(".media-slot__image");
       const placeholder = slot.querySelector(".media-slot__placeholder");
       if (!img) return;
+      slot.dataset.slotInit = "1";
 
       const showPlaceholder = () => {
         slot.classList.add("media-slot--empty");
+        slot.classList.remove("media-slot--loaded");
         if (placeholder) placeholder.hidden = false;
         img.hidden = true;
       };
 
       const showImage = () => {
         slot.classList.remove("media-slot--empty");
+        slot.classList.add("media-slot--loaded");
         if (placeholder) placeholder.hidden = true;
         img.hidden = false;
       };
@@ -140,14 +186,11 @@
     grid.innerHTML = IMAGES.lifestyle
       .map((src, i) => {
         const path = withBase(src, basePath);
-        const placeholderPath = withBase(IMAGES.productPlaceholder, basePath);
+        const meta = LIFESTYLE_SLOTS[i] || { title: "Korei", subtitle: "" };
         return `
-          <div class="lifestyle-slot media-slot">
-            <img class="media-slot__image lifestyle-slot__img" src="${path}" alt="Korei lifestyle ${i + 1}" loading="lazy" hidden />
-            <div class="media-slot__placeholder lifestyle-slot__placeholder">
-              <i class="ti ti-photo"></i>
-              <span>Lifestyle ${i + 1}</span>
-            </div>
+          <div class="lifestyle-slot media-slot" data-slot="lifestyle-${i + 1}">
+            <img class="media-slot__image lifestyle-slot__img" src="${path}" alt="${meta.title} — Korei" loading="lazy" hidden />
+            ${renderPlaceholder("lifestyle", { ...meta, index: i })}
           </div>`;
       })
       .join("");
@@ -158,9 +201,11 @@
   global.KoreiSite = {
     SITE,
     IMAGES,
+    LIFESTYLE_SLOTS,
     absoluteUrl,
     withBase,
     setPageMeta,
+    renderPlaceholder,
     initMediaSlots,
     initLifestyleSlots,
   };
