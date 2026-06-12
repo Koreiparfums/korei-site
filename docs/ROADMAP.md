@@ -18,7 +18,8 @@
 
 - [ ] Images produits réelles (`assets/images/products/{id}.jpg`)
 - [ ] Photo hero (`assets/images/hero/hero-main.jpg`)
-- [ ] Visuels lifestyle (`assets/images/lifestyle/`)
+- [ ] Visuels lifestyle (`assets/images/lifestyle/lifestyle-1.jpg` … `3.jpg`)
+- [x] Placeholders premium (hero, produits, lifestyle)
 - [x] Balises meta SEO + Open Graph / Twitter Card
 - [x] Favicon SVG + manifest PWA léger
 - [x] Page 404 custom
@@ -31,12 +32,23 @@
 
 ---
 
+## Phase 1b — Données & store API-ready ✅
+
+- [x] Schéma produit enrichi (notesTop/Heart/Base, priceRange, shopifyHandle…)
+- [x] `product-store.js` — getAllProducts, filter, search, recommend
+- [x] Catalogue et fiches via KoreiProductStore
+- [x] Chatbot mock basé sur scoring catalogue local
+- [x] Pyramide olfactive sur fiche produit
+- [x] `buildCatalogContext()` pour future API IA
+
+---
+
 ## Phase 2 — Chatbot IA (2–4 semaines)
 
 - [ ] Endpoint serverless `/api/chat`
 - [ ] Prompt système conseiller olfactif
 - [ ] Intégration OpenAI ou AWS Bedrock
-- [ ] Contexte catalogue via `buildChatContext()`
+- [ ] Contexte catalogue via `KoreiProductStore.buildCatalogContext()`
 - [ ] Historique conversation (sessionStorage)
 - [ ] Liens produits cliquables dans les réponses
 - [ ] Rate limiting et monitoring coûts API

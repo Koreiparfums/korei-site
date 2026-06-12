@@ -14,7 +14,8 @@ korei-site/
 ├── assets/
 │   ├── css/styles.css
 │   ├── js/
-│   │   ├── products.js        # Données catalogue
+│   │   ├── products.js        # Données brutes catalogue
+│   │   ├── product-store.js   # Couche data access (API-ready)
 │   │   ├── main.js            # UI partagée + rendu
 │   │   ├── chatbot.js         # Widget conseiller (mock)
 │   │   └── brands.js          # Page marques
