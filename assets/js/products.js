@@ -1,15 +1,44 @@
 /**
- * Korei — Catalogue produits (données statiques)
- * Source de vérité pour le front MVP. À migrer vers API / Shopify plus tard.
+ * Korei — Catalogue produits (données brutes)
+ *
+ * Couche d'accès : KoreiProductStore (product-store.js)
+ * Ne pas filtrer/rechercher ici — utiliser le store.
+ *
+ * Images (optionnel) : assets/images/products/{id}.jpg
+ * Shopify futur : renseigner shopifyHandle (défaut = id)
  */
 (function (global) {
-  const PRODUCTS = [
-    {
+  function derivePriceRange(price) {
+    if (price <= 10) return "budget";
+    if (price <= 14) return "mid";
+    return "premium";
+  }
+
+  function createProduct(raw) {
+    const notes = [
+      ...(raw.notesTop || []),
+      ...(raw.notesHeart || []),
+      ...(raw.notesBase || []),
+    ];
+    return {
+      ...raw,
+      notes,
+      priceRange: raw.priceRange || derivePriceRange(raw.price),
+      supplierAvailable: raw.supplierAvailable ?? true,
+      affiliateUrl: raw.affiliateUrl ?? null,
+      shopifyHandle: raw.shopifyHandle ?? raw.id,
+    };
+  }
+
+  const PRODUCT_CATALOG = [
+    createProduct({
       id: "interlude-man",
       brand: "Amouage",
       brandId: "amouage",
       name: "Interlude Man",
-      notes: ["Oud", "Résine", "Fumée"],
+      notesTop: ["Oud", "Bergamote"],
+      notesHeart: ["Résine", "Oliban"],
+      notesBase: ["Fumée", "Ambre"],
       family: "oriental",
       gender: "homme",
       intensity: "intense",
@@ -24,19 +53,22 @@
       type: "decant",
       description:
         "Un oud fumé et résineux, profond et charismatique. Interlude Man est une signature audacieuse pour les amateurs de parfums orientaux intenses.",
-    },
-    {
+    }),
+    createProduct({
       id: "replica-jazz-club",
       brand: "Maison Margiela",
       brandId: "maison-margiela",
       name: "Replica Jazz Club",
-      notes: ["Tabac", "Vanille", "Vétiver"],
+      notesTop: ["Tabac", "Pink pepper"],
+      notesHeart: ["Rhum", "Styrax"],
+      notesBase: ["Vanille", "Vétiver"],
       family: "boisé",
       gender: "unisexe",
       intensity: "modéré",
       occasions: ["soirée", "date"],
       seasons: ["automne", "hiver"],
       price: 9,
+      priceRange: "budget",
       rating: 4.6,
       badge: "new",
       badgeLabel: "Nouveauté",
@@ -45,13 +77,15 @@
       type: "decant",
       description:
         "Ambiance club de jazz fumé : tabac blond, rhum et vanille crémeuse. Chaleureux et enveloppant.",
-    },
-    {
+    }),
+    createProduct({
       id: "oud-wood",
       brand: "Tom Ford",
       brandId: "tom-ford",
       name: "Oud Wood",
-      notes: ["Oud", "Santal", "Épices"],
+      notesTop: ["Oud", "Cardamome"],
+      notesHeart: ["Santal", "Vétiver"],
+      notesBase: ["Épices", "Ambre"],
       family: "boisé",
       gender: "unisexe",
       intensity: "modéré",
@@ -66,19 +100,22 @@
       type: "decant",
       description:
         "L'oud revisité en version accessible : bois de santal, cardamome et bois de oud fumé. L'icône moderne du niche.",
-    },
-    {
+    }),
+    createProduct({
       id: "naxos",
       brand: "Xerjoff",
       brandId: "xerjoff",
       name: "Naxos",
-      notes: ["Lavande", "Miel", "Tabac"],
+      notesTop: ["Bergamote", "Lavande"],
+      notesHeart: ["Miel", "Cannelle"],
+      notesBase: ["Tabac", "Tonka"],
       family: "oriental",
       gender: "homme",
       intensity: "intense",
       occasions: ["soirée", "date"],
       seasons: ["automne", "hiver"],
       price: 16,
+      priceRange: "premium",
       rating: 4.7,
       badge: "new",
       badgeLabel: "Nouveauté",
@@ -87,19 +124,22 @@
       type: "decant",
       description:
         "Miel doré, lavande et tabac corsé — une composition sicilienne gourmande et sophistiquée.",
-    },
-    {
+    }),
+    createProduct({
       id: "aventus",
       brand: "Creed",
       brandId: "creed",
       name: "Aventus",
-      notes: ["Ananas", "Bouleau", "Musc"],
+      notesTop: ["Ananas", "Bergamote"],
+      notesHeart: ["Bouleau", "Jasmin"],
+      notesBase: ["Musc", "Mousse"],
       family: "fruity",
       gender: "homme",
       intensity: "modéré",
       occasions: ["bureau", "quotidien"],
       seasons: ["printemps", "été"],
       price: 18,
+      priceRange: "premium",
       rating: 4.9,
       badge: "exclusive",
       badgeLabel: "Exclusif",
@@ -108,19 +148,22 @@
       type: "decant",
       description:
         "Ananas juteux, bouleau fumé et musc — le parfum viral qui a redéfini le niche masculin.",
-    },
-    {
+    }),
+    createProduct({
       id: "bal-dafrique",
       brand: "Byredo",
       brandId: "byredo",
       name: "Bal d'Afrique",
-      notes: ["Bergamote", "Vétiver", "Musc"],
+      notesTop: ["Bergamote", "Citron"],
+      notesHeart: ["Violet", "Jasmin"],
+      notesBase: ["Vétiver", "Musc"],
       family: "floral",
       gender: "unisexe",
       intensity: "léger",
       occasions: ["quotidien", "été"],
       seasons: ["printemps", "été"],
       price: 10,
+      priceRange: "budget",
       rating: 4.5,
       badge: null,
       badgeLabel: null,
@@ -129,13 +172,15 @@
       type: "decant",
       description:
         "Bergamote lumineuse et vétiver poudré — une ode solaire et élégante à l'Afrique.",
-    },
-    {
+    }),
+    createProduct({
       id: "oud-for-greatness",
       brand: "Initio",
       brandId: "initio",
       name: "Oud for Greatness",
-      notes: ["Oud", "Safran", "Musc"],
+      notesTop: ["Safran", "Lavande"],
+      notesHeart: ["Oud", "Nutmeg"],
+      notesBase: ["Musc", "Patchouli"],
       family: "oriental",
       gender: "unisexe",
       intensity: "intense",
@@ -150,13 +195,15 @@
       type: "decant",
       description:
         "Oud royal, safran épicé et musc sensuel. Une puissance olfactive assumée.",
-    },
-    {
+    }),
+    createProduct({
       id: "irish-leather",
       brand: "Memo Paris",
       brandId: "memo-paris",
       name: "Irish Leather",
-      notes: ["Cuir", "Cèdre", "Poivre"],
+      notesTop: ["Cuir", "Star anise"],
+      notesHeart: ["Cèdre", "Iris"],
+      notesBase: ["Poivre", "Gaïac"],
       family: "cuir",
       gender: "unisexe",
       intensity: "modéré",
@@ -171,13 +218,15 @@
       type: "decant",
       description:
         "Cuir fumé et cèdre vert, poivre piquant — l'Irlande en flacon, brut et raffiné.",
-    },
-    {
+    }),
+    createProduct({
       id: "layton",
       brand: "Parfums de Marly",
       brandId: "parfums-de-marly",
       name: "Layton",
-      notes: ["Pomme", "Vanille", "Poivre"],
+      notesTop: ["Pomme", "Bergamote"],
+      notesHeart: ["Vanille", "Jasmin"],
+      notesBase: ["Poivre", "Bois de gaiac"],
       family: "oriental",
       gender: "homme",
       intensity: "modéré",
@@ -192,13 +241,15 @@
       type: "decant",
       description:
         "Pomme croquante, vanille gourmande et poivre rose — le gentleman moderne.",
-    },
-    {
+    }),
+    createProduct({
       id: "angels-share",
       brand: "Kilian Paris",
       brandId: "kilian",
       name: "Angels' Share",
-      notes: ["Cognac", "Cannelle", "Vanille"],
+      notesTop: ["Cognac", "Cannelle"],
+      notesHeart: ["Tonka", "Oak"],
+      notesBase: ["Vanille", "Praliné"],
       family: "gourmand",
       gender: "unisexe",
       intensity: "intense",
@@ -213,19 +264,22 @@
       type: "decant",
       description:
         "Cognac onctueux, cannelle chaude et vanille bourbon — un dessert olfactif addictif.",
-    },
-    {
+    }),
+    createProduct({
       id: "black-phantom",
       brand: "Kilian",
       brandId: "kilian",
       name: "Black Phantom",
-      notes: ["Rhum", "Café", "Chocolat"],
+      notesTop: ["Rhum", "Bergamote"],
+      notesHeart: ["Café", "Cyanide"],
+      notesBase: ["Chocolat", "Vanille"],
       family: "gourmand",
       gender: "unisexe",
       intensity: "intense",
       occasions: ["soirée"],
       seasons: ["automne", "hiver"],
       price: 17,
+      priceRange: "premium",
       rating: 4.6,
       badge: null,
       badgeLabel: null,
@@ -234,13 +288,15 @@
       type: "decant",
       description:
         "Rhum des Caraïbes, café torréfié et chocolat noir — mystérieux et envoûtant.",
-    },
-    {
+    }),
+    createProduct({
       id: "sauvage-elixir",
       brand: "Dior",
       brandId: "dior",
       name: "Sauvage Elixir",
-      notes: ["Lavande", "Anis", "Vanille"],
+      notesTop: ["Lavande", "Anis"],
+      notesHeart: ["Vanille", "Résine"],
+      notesBase: ["Ambre", "Bois"],
       family: "aromatique",
       gender: "homme",
       intensity: "intense",
@@ -255,7 +311,7 @@
       type: "decant",
       description:
         "Concentré aromatique : lavande, anis étoilé et vanille boisée. Intensité maximale.",
-    },
+    }),
   ];
 
   const BRANDS = [
@@ -282,35 +338,10 @@
     return `À partir de ${price}€`;
   }
 
-  function getProductById(id) {
-    return PRODUCTS.find((p) => p.id === id);
-  }
-
-  function getProductsByBrand(brandId) {
-    return PRODUCTS.filter((p) => p.brandId === brandId);
-  }
-
-  function getBestsellers() {
-    return PRODUCTS.filter((p) => p.bestseller);
-  }
-
-  function getNewProducts() {
-    return PRODUCTS.filter((p) => p.new);
-  }
-
-  function getBrandById(id) {
-    return BRANDS.find((b) => b.id === id);
-  }
-
   global.KoreiProducts = {
-    PRODUCTS,
+    PRODUCTS: PRODUCT_CATALOG,
     BRANDS,
     formatNotes,
     formatPrice,
-    getProductById,
-    getProductsByBrand,
-    getBestsellers,
-    getNewProducts,
-    getBrandById,
   };
 })(window);
