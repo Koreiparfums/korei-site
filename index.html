@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Korei — Parfumerie de niche. Flacons entiers et décants authentiques des plus grandes maisons." />
+    <title>Korei — Parfumerie de Niche</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body data-page="home">
+    <div class="banner">
+      <span>Livraison offerte dès 60€</span>
+      <span class="banner-sep"></span>
+      <span>Décants 100% authentiques</span>
+      <span class="banner-sep"></span>
+      <span>Expédition sous 24h</span>
+    </div>
+
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger" onclick="toggleMenu()" aria-label="Menu" type="button">
+          <i class="ti ti-menu-2"></i>
+        </button>
+        <nav class="nav">
+          <a href="index.html" class="active">Accueil</a>
+          <a href="pages/catalogue.html">Parfums</a>
+          <a href="pages/catalogue.html">Décants</a>
+          <a href="pages/brands.html">Marques</a>
+          <a href="pages/catalogue.html">Collections</a>
+        </nav>
+      </div>
+      <a href="index.html" class="logo logo-center">Korei</a>
+      <div class="header-right">
+        <div class="search" role="search">
+          <span class="search-icon"><i class="ti ti-search"></i></span>
+          <input type="search" placeholder="Rechercher des marques..." aria-label="Rechercher" />
+        </div>
+        <div class="header-actions">
+          <button class="icon-btn search-mobile-btn" onclick="toggleSearch()" aria-label="Rechercher" type="button">
+            <i class="ti ti-search"></i>
+          </button>
+          <button class="icon-btn" aria-label="Favoris" type="button"><i class="ti ti-heart"></i></button>
+          <button class="icon-btn" aria-label="Panier" type="button"><i class="ti ti-shopping-bag"></i></button>
+          <button class="icon-btn" aria-label="Compte" type="button"><i class="ti ti-user"></i></button>
+        </div>
+      </div>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-overlay" onclick="toggleMenu()"></div>
+      <div class="mobile-drawer">
+        <div class="mobile-drawer-head">
+          <span class="logo">Korei</span>
+          <button onclick="toggleMenu()" type="button" style="background:none;border:none;font-size:26px;cursor:pointer;color:#888">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        <a href="index.html">Accueil</a>
+        <a href="pages/catalogue.html">Tous les parfums</a>
+        <a href="pages/catalogue.html">Décants</a>
+        <a href="pages/brands.html">Marques</a>
+        <a href="pages/catalogue.html">Collections</a>
+        <a href="#" data-open-chatbot>Conseiller IA</a>
+      </div>
+    </div>
+
+    <div class="search-overlay" id="searchOverlay">
+      <div class="search-overlay-head">
+        <i class="ti ti-search search-overlay-icon"></i>
+        <input type="search" class="search-overlay-input" placeholder="Rechercher un parfum, une marque…" aria-label="Rechercher" />
+        <button class="search-overlay-close" onclick="toggleSearch()" aria-label="Fermer" type="button">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+      <p class="search-overlay-hint">Tendances : Oud Wood · Aventus · Interlude Man</p>
+    </div>
+
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-eyebrow">Parfumerie de niche</div>
+        <h1 class="hero-title">Essayez avant<br />d'<em>investir</em>.</h1>
+        <p class="hero-sub">
+          Flacons entiers & décants authentiques des plus grandes maisons de parfum.
+          Découvrez votre signature olfactive à partir de 7€.
+        </p>
+        <div class="hero-ctas">
+          <a href="pages/catalogue.html" class="btn-dark">Explorer la collection</a>
+          <a href="pages/catalogue.html" class="btn-outline">Voir les décants</a>
+        </div>
+        <div class="hero-brands">
+          <span class="hero-brands-label">Disponible :</span>
+          <span class="hero-brand-chip">Amouage</span>
+          <span class="hero-brand-chip">Tom Ford</span>
+          <span class="hero-brand-chip">Xerjoff</span>
+          <span class="hero-brand-chip">Creed</span>
+          <span class="hero-brand-chip">+ 80 marques</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-img-placeholder">
+          <i class="ti ti-photo"></i>
+          <span>Photo hero — à remplacer</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="ticker">
+      <div class="ticker-track">
+        <div class="ticker-item"><span class="ticker-dot"></span>100% authentique</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Flacons & décants</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>100+ maisons de niche</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Expédition sous 24h</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Cadeau mystère offert</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Satisfaction 30 jours</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>100% authentique</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Flacons & décants</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>100+ maisons de niche</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Expédition sous 24h</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Cadeau mystère offert</div>
+        <div class="ticker-item"><span class="ticker-dot"></span>Satisfaction 30 jours</div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title">Préférés <em>du moment</em></h2>
+        <a href="pages/catalogue.html" class="section-link">Tout voir</a>
+      </div>
+      <div class="products-scroll" id="bestsellers-grid"></div>
+    </section>
+
+    <div class="trust-strip">
+      <div class="trust-grid">
+        <div class="trust-item">
+          <div class="trust-icon"><i class="ti ti-certificate"></i></div>
+          <div>
+            <div class="trust-title">100% authentique</div>
+            <div class="trust-sub">Approvisionnement direct auprès des distributeurs officiels</div>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon"><i class="ti ti-droplet"></i></div>
+          <div>
+            <div class="trust-title">Essayez d'abord</div>
+            <div class="trust-sub">Décants 2ml, 5ml, 10ml disponibles pour chaque parfum</div>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon"><i class="ti ti-truck-delivery"></i></div>
+          <div>
+            <div class="trust-title">Livraison soignée</div>
+            <div class="trust-sub">Expédition sous 24h, emballage premium protecteur</div>
+          </div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon"><i class="ti ti-shield-check"></i></div>
+          <div>
+            <div class="trust-title">Satisfaction garantie</div>
+            <div class="trust-sub">30 jours pour changer d'avis, sans question posée</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="why">
+      <div>
+        <div class="why-eyebrow">Notre engagement</div>
+        <h2 class="why-title">Les plus belles maisons,<br /><em>accessibles à tous.</em></h2>
+        <p class="why-text">
+          Korei réunit flacons entiers et décants des maisons les plus remarquables —
+          pour que chaque découverte soit une expérience, sans compromis sur l'authenticité.
+        </p>
+        <div class="why-ctas">
+          <a href="pages/catalogue.html" class="btn-dark">Voir la collection</a>
+          <a href="pages/catalogue.html" class="btn-outline">Best-sellers</a>
+        </div>
+      </div>
+      <div class="why-features">
+        <div class="why-feature">
+          <div class="why-feature-icon"><i class="ti ti-flask"></i></div>
+          <div>
+            <div class="why-feature-title">Décants & flacons entiers</div>
+            <div class="why-feature-sub">Essayez en petit format, investissez en grand.</div>
+          </div>
+        </div>
+        <div class="why-feature">
+          <div class="why-feature-icon"><i class="ti ti-star"></i></div>
+          <div>
+            <div class="why-feature-title">Sélection curatée</div>
+            <div class="why-feature-sub">Chaque parfum est choisi pour sa singularité.</div>
+          </div>
+        </div>
+        <div class="why-feature">
+          <div class="why-feature-icon"><i class="ti ti-gift"></i></div>
+          <div>
+            <div class="why-feature-title">Cadeau mystère offert</div>
+            <div class="why-feature-sub">Un échantillon surprise inclus avec chaque commande.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="brands-section">
+      <div class="section-head">
+        <h2 class="section-title">Les <em>maisons</em></h2>
+        <a href="pages/brands.html" class="section-link">Toutes les marques</a>
+      </div>
+      <div class="brands-scroll" id="home-brands-chips">
+        <a href="pages/catalogue.html" class="brand-chip active" data-brand="">Toutes</a>
+        <a href="pages/catalogue.html?brand=amouage" class="brand-chip" data-brand="amouage">Amouage</a>
+        <a href="pages/catalogue.html?brand=tom-ford" class="brand-chip" data-brand="tom-ford">Tom Ford</a>
+        <a href="pages/catalogue.html?brand=xerjoff" class="brand-chip" data-brand="xerjoff">Xerjoff</a>
+        <a href="pages/catalogue.html?brand=creed" class="brand-chip" data-brand="creed">Creed</a>
+        <a href="pages/catalogue.html?brand=kilian" class="brand-chip" data-brand="kilian">Kilian</a>
+        <a href="pages/catalogue.html?brand=byredo" class="brand-chip" data-brand="byredo">Byredo</a>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top: 0">
+      <div class="section-head">
+        <h2 class="section-title">Nouveautés</h2>
+        <a href="pages/catalogue.html" class="section-link">Tout voir</a>
+      </div>
+      <div class="products-grid" id="new-products-grid"></div>
+    </section>
+
+    <section class="quiz-cta">
+      <div class="quiz-cta-inner">
+        <div>
+          <div class="quiz-eyebrow">Découverte olfactive</div>
+          <h2 class="quiz-title">Vous ne savez pas<br />par où <em>commencer ?</em></h2>
+          <p class="quiz-sub">
+            Notre conseiller IA vous oriente vers les parfums qui correspondent à votre style,
+            votre budget et vos occasions — en quelques questions.
+          </p>
+          <button class="btn-dark" type="button" data-open-chatbot style="font-size:13px;padding:16px 36px;display:inline-flex;align-items:center;gap:10px">
+            Trouver ma signature <i class="ti ti-arrow-right"></i>
+          </button>
+        </div>
+        <div class="quiz-notes">
+          <button type="button" class="quiz-note-chip" data-open-chatbot>🌲 Boisé</button>
+          <button type="button" class="quiz-note-chip" data-open-chatbot>🌸 Floral</button>
+          <button type="button" class="quiz-note-chip" data-open-chatbot>🔥 Oriental</button>
+          <button type="button" class="quiz-note-chip" data-open-chatbot>🌊 Frais</button>
+          <button type="button" class="quiz-note-chip" data-open-chatbot>🌿 Aromatique</button>
+          <button type="button" class="quiz-note-chip" data-open-chatbot>🍋 Hespéridé</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq">
+      <div class="section-head">
+        <h2 class="section-title">Questions <em>fréquentes</em></h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)" type="button">
+            <span>C'est quoi un décant ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Un décant est un petit flacon (2ml, 5ml ou 10ml) rempli directement depuis un flacon original.
+            C'est le meilleur moyen de tester un parfum avant d'acheter un flacon entier.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)" type="button">
+            <span>Les parfums sont-ils 100% authentiques ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Oui, sans exception. Tous nos parfums proviennent directement des distributeurs officiels
+            ou de maisons agréées.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)" type="button">
+            <span>Comment fonctionne le conseiller IA ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Décrivez vos préférences (notes, occasion, budget) et notre assistant vous recommande
+            des parfums du catalogue. Version démo pour l'instant — l'IA complète arrive bientôt.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="newsletter">
+      <div class="newsletter-inner">
+        <div class="newsletter-eyebrow">Newsletter</div>
+        <h2 class="newsletter-title">Les nouveautés, <em>en avant-première.</em></h2>
+        <p class="newsletter-sub">Accès prioritaire aux nouvelles maisons et conseils olfactifs.</p>
+        <form class="newsletter-form" onsubmit="return false;">
+          <input type="email" class="newsletter-input" placeholder="votre@email.com" aria-label="Adresse email" />
+          <button type="submit" class="btn-dark">S'abonner</button>
+        </form>
+        <p class="newsletter-legal">Pas de spam. Désabonnement en un clic.</p>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">Korei</div>
+          <div class="footer-tagline">Parfumerie de niche · Paris</div>
+          <div class="footer-socials">
+            <button class="social-btn" aria-label="Instagram" type="button"><i class="ti ti-brand-instagram"></i></button>
+            <button class="social-btn" aria-label="TikTok" type="button"><i class="ti ti-brand-tiktok"></i></button>
+          </div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Boutique</div>
+          <a href="pages/catalogue.html">Tous les parfums</a>
+          <a href="pages/catalogue.html">Décants</a>
+          <a href="pages/brands.html">Marques</a>
+          <a href="pages/catalogue.html">Nouveautés</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Korei</div>
+          <a href="#">À propos</a>
+          <a href="#" data-open-chatbot>Conseiller IA</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Aide</div>
+          <a href="#">Contact</a>
+          <a href="#">Livraison</a>
+          <a href="#">CGV</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2026 Korei — Tous droits réservés</div>
+      </div>
+    </footer>
+
+    <div id="chatbot-widget" class="chatbot-widget">
+      <div id="chatbot-panel" class="chatbot-panel" role="dialog" aria-label="Conseiller olfactif Korei">
+        <div class="chatbot-head">
+          <div>
+            <div class="chatbot-head-title">Conseiller Korei</div>
+            <div class="chatbot-head-sub">Assistant olfactif · Démo</div>
+          </div>
+          <button type="button" id="chatbot-close" class="chatbot-close" aria-label="Fermer"><i class="ti ti-x"></i></button>
+        </div>
+        <div id="chatbot-messages" class="chatbot-messages"></div>
+        <div id="chatbot-suggestions" class="chatbot-suggestions"></div>
+        <div class="chatbot-foot">
+          <form id="chatbot-form" class="chatbot-form">
+            <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Décrivez ce que vous cherchez…" autocomplete="off" />
+            <button type="submit" class="chatbot-send" aria-label="Envoyer"><i class="ti ti-send"></i></button>
+          </form>
+        </div>
+        <div class="chatbot-mock-badge">Mode démo — IA à connecter</div>
+      </div>
+      <button type="button" id="chatbot-toggle" class="chatbot-toggle" aria-label="Ouvrir le conseiller olfactif" aria-expanded="false">
+        <i class="ti ti-message-chatbot"></i>
+      </button>
+    </div>
+
+    <script src="assets/js/products.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/chatbot.js"></script>
+  </body>
+</html>

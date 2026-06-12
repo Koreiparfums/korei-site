@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Marques de niche disponibles sur Korei." />
+    <title>Marques — Korei</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+  </head>
+  <body data-page="brands">
+    <div class="banner">
+      <span>100+ maisons de niche</span>
+    </div>
+
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger" onclick="toggleMenu()" aria-label="Menu" type="button">
+          <i class="ti ti-menu-2"></i>
+        </button>
+        <nav class="nav">
+          <a href="../index.html">Accueil</a>
+          <a href="catalogue.html">Parfums</a>
+          <a href="brands.html" class="active">Marques</a>
+        </nav>
+      </div>
+      <a href="../index.html" class="logo logo-center">Korei</a>
+      <div class="header-right">
+        <div class="header-actions">
+          <button class="icon-btn" aria-label="Panier" type="button"><i class="ti ti-shopping-bag"></i></button>
+        </div>
+      </div>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-overlay" onclick="toggleMenu()"></div>
+      <div class="mobile-drawer">
+        <a href="../index.html">Accueil</a>
+        <a href="catalogue.html">Parfums</a>
+        <a href="brands.html">Marques</a>
+      </div>
+    </div>
+
+    <section class="page-hero">
+      <div class="page-hero-eyebrow">Maisons</div>
+      <h1 class="page-hero-title">Les <em>marques</em></h1>
+      <p class="page-hero-sub">Des créateurs indépendants aux grandes maisons historiques — toutes authentiques.</p>
+    </section>
+
+    <div class="brands-grid" id="brands-grid"></div>
+
+    <footer>
+      <div class="footer-bottom" style="padding: 36px var(--px); background: var(--text); color: rgba(255,255,255,0.25)">
+        <div class="footer-copy">© 2026 Korei</div>
+      </div>
+    </footer>
+
+    <div id="chatbot-widget" class="chatbot-widget">
+      <div id="chatbot-panel" class="chatbot-panel" role="dialog" aria-label="Conseiller olfactif Korei">
+        <div class="chatbot-head">
+          <div>
+            <div class="chatbot-head-title">Conseiller Korei</div>
+            <div class="chatbot-head-sub">Assistant olfactif · Démo</div>
+          </div>
+          <button type="button" id="chatbot-close" class="chatbot-close" aria-label="Fermer"><i class="ti ti-x"></i></button>
+        </div>
+        <div id="chatbot-messages" class="chatbot-messages"></div>
+        <div id="chatbot-suggestions" class="chatbot-suggestions"></div>
+        <div class="chatbot-foot">
+          <form id="chatbot-form" class="chatbot-form">
+            <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Décrivez ce que vous cherchez…" autocomplete="off" />
+            <button type="submit" class="chatbot-send" aria-label="Envoyer"><i class="ti ti-send"></i></button>
+          </form>
+        </div>
+        <div class="chatbot-mock-badge">Mode démo — IA à connecter</div>
+      </div>
+      <button type="button" id="chatbot-toggle" class="chatbot-toggle" aria-label="Ouvrir le conseiller olfactif" aria-expanded="false">
+        <i class="ti ti-message-chatbot"></i>
+      </button>
+    </div>
+
+    <script src="../assets/js/products.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/chatbot.js"></script>
+    <script src="../assets/js/brands.js"></script>
+  </body>
+</html>

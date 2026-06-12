@@ -1,73 +1,57 @@
 # Korei — Parfumerie de Niche
 
-Site e-commerce de vente de parfums de niche et décants.
+MVP front-end premium pour une parfumerie de niche : décants et flacons authentiques.
 
----
-
-## Structure du projet
+## Structure
 
 ```
-korei/
-├── korei.html       # Page principale (homepage)
-├── styles.css       # Tous les styles
-├── main.js          # Interactions UI (menu, favoris, filtres, recherche...)
-├── .gitignore
-└── README.md
+korei-site/
+├── index.html                 # Homepage
+├── pages/
+│   ├── catalogue.html         # Catalogue + filtres
+│   ├── product.html           # Fiche produit (?id=)
+│   └── brands.html            # Marques
+├── assets/
+│   ├── css/styles.css
+│   ├── js/
+│   │   ├── products.js        # Données catalogue
+│   │   ├── main.js            # UI partagée + rendu
+│   │   ├── chatbot.js         # Widget conseiller (mock)
+│   │   └── brands.js          # Page marques
+│   └── images/                # Assets images
+└── docs/
+    ├── PROJECT_SCOPE.md
+    └── ROADMAP.md
 ```
-
----
 
 ## Lancer en local
 
-Pas de dépendances, pas de serveur requis.  
-Ouvrir simplement `korei.html` dans un navigateur.
+Pas de dépendances ni build requis.
 
-> Recommandé : utiliser l'extension **Live Server** sur VS Code pour le rechargement automatique.
+```bash
+npx serve .
+# ou ouvrir index.html avec Live Server (VS Code)
+```
 
----
+## Déploiement
 
-## Stack technique
+Site statique — compatible Vercel, Netlify ou AWS Amplify. Voir `docs/PROJECT_SCOPE.md`.
+
+## Stack
 
 - HTML / CSS / JavaScript vanilla
-- Icônes : [Tabler Icons](https://tabler.io/icons)
-- Fonts : Google Fonts (Playfair Display + DM Sans)
+- Tabler Icons (CDN)
+- Google Fonts : Playfair Display + DM Sans
 
----
+## Chatbot IA (futur)
 
-## Fonctionnalités actuelles
+Le widget est mocké côté front. Pour connecter une IA :
 
-- Header sticky avec navigation desktop + menu mobile
-- Hero section avec CTA
-- Ticker animé
-- Carrousel best-sellers (scroll horizontal)
-- Filtres marques
-- Favoris (toggle cœur)
-- Overlay de recherche (Echap pour fermer)
-- Section trust (4 garanties)
-- Section "Pourquoi Korei"
-- Grille nouveautés
-- Collections thématiques
-- Programme Korei+
-- UGC / vidéos sociales
-- Footer complet avec liens et moyens de paiement
+1. Créer une serverless function (`/api/chat`)
+2. Remplacer `sendMockResponse()` dans `assets/js/chatbot.js`
+3. Utiliser `buildChatContext()` pour envoyer le catalogue
 
----
+## Documentation
 
-## Conventions de code
-
-- **CSS** : variables CSS dans `:root`, nommage BEM simplifié (`.card-body`, `.card-fav`...)
-- **JS** : vanilla, pas de framework, fonctions nommées explicitement
-- **Commits** : messages en français, format `type: description` — ex: `feat: ajout page fiche produit`
-
----
-
-## Roadmap
-
-- [ ] Fiche produit
-- [ ] Page catalogue avec filtres
-- [ ] Page marques
-- [ ] Panier / checkout
-- [ ] Compte utilisateur
-- [ ] Programme Korei+
-- [ ] Intégration Supabase (base de données)
-- [ ] SEO (balises meta, sitemap)
+- [Scope MVP & architecture](docs/PROJECT_SCOPE.md)
+- [Roadmap](docs/ROADMAP.md)

@@ -1,0 +1,78 @@
+# Korei — Roadmap
+
+## Phase 0 — MVP (actuel) ✅
+
+- [x] Refactorisation HTML / CSS / JS séparés
+- [x] Données produits dans `products.js`
+- [x] Cartes produits dynamiques
+- [x] Homepage premium responsive
+- [x] Page catalogue + filtres (marque, genre, famille, tri, recherche)
+- [x] Fiche produit dynamique
+- [x] Page marques
+- [x] Chatbot mock + structure API-ready
+- [x] Documentation scope et déploiement
+
+---
+
+## Phase 1 — Contenu & polish (1–2 semaines)
+
+- [ ] Images produits réelles (`assets/images/`)
+- [ ] Photo hero et visuels lifestyle
+- [ ] Balises meta Open Graph / Twitter Card
+- [ ] Favicon et manifest PWA léger
+- [ ] Page 404 custom
+- [ ] Liens footer (À propos, Contact, CGV)
+- [ ] Newsletter — Netlify Forms ou Mailchimp embed
+
+---
+
+## Phase 2 — Chatbot IA (2–4 semaines)
+
+- [ ] Endpoint serverless `/api/chat`
+- [ ] Prompt système conseiller olfactif
+- [ ] Intégration OpenAI ou AWS Bedrock
+- [ ] Contexte catalogue via `buildChatContext()`
+- [ ] Historique conversation (sessionStorage)
+- [ ] Liens produits cliquables dans les réponses
+- [ ] Rate limiting et monitoring coûts API
+
+---
+
+## Phase 3 — E-commerce (4–8 semaines)
+
+- [ ] Choix : Shopify headless vs panier custom
+- [ ] Panier fonctionnel (localStorage MVP ou Shopify Cart API)
+- [ ] Checkout (Shopify Checkout ou Stripe)
+- [ ] Gestion stocks
+- [ ] Compte client (Shopify Customer API)
+
+---
+
+## Phase 4 — Scale & SEO (ongoing)
+
+- [ ] Sitemap.xml et robots.txt
+- [ ] Schema.org Product / Organization
+- [ ] Blog / contenu SEO (familles olfactives, guides)
+- [ ] Analytics (Plausible ou GA4)
+- [ ] A/B tests CTA et chatbot
+- [ ] Programme Korei+ (subscription)
+
+---
+
+## Jalons suggérés
+
+| Jalon | Critère de succès |
+|-------|-------------------|
+| MVP live | Site déployé sur Vercel/Netlify, 4 pages fonctionnelles |
+| IA v1 | Chatbot répond avec recommandations catalogue réelles |
+| Shop v1 | Premier achat décant via Shopify |
+| Growth | 100+ produits, images, SEO indexé |
+
+---
+
+## Priorités recommandées (budget limité)
+
+1. **Déployer le MVP** — valeur immédiate, zéro coût
+2. **Images produits** — impact visuel maximal
+3. **Chatbot IA** — différenciation vs concurrents
+4. **Shopify** — quand le flux d'achat est validé avec le client

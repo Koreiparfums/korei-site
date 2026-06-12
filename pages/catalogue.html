@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Catalogue Korei — parfums de niche et décants authentiques." />
+    <title>Catalogue — Korei</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+  </head>
+  <body data-page="catalogue">
+    <div class="banner">
+      <span>Livraison offerte dès 60€</span>
+      <span class="banner-sep"></span>
+      <span>Décants 100% authentiques</span>
+    </div>
+
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger" onclick="toggleMenu()" aria-label="Menu" type="button">
+          <i class="ti ti-menu-2"></i>
+        </button>
+        <nav class="nav">
+          <a href="../index.html">Accueil</a>
+          <a href="catalogue.html" class="active">Parfums</a>
+          <a href="catalogue.html">Décants</a>
+          <a href="brands.html">Marques</a>
+        </nav>
+      </div>
+      <a href="../index.html" class="logo logo-center">Korei</a>
+      <div class="header-right">
+        <div class="search" role="search">
+          <span class="search-icon"><i class="ti ti-search"></i></span>
+          <input type="search" id="filter-search" placeholder="Rechercher…" aria-label="Rechercher" />
+        </div>
+        <div class="header-actions">
+          <button class="icon-btn search-mobile-btn" onclick="toggleSearch()" aria-label="Rechercher" type="button">
+            <i class="ti ti-search"></i>
+          </button>
+          <button class="icon-btn" aria-label="Panier" type="button"><i class="ti ti-shopping-bag"></i></button>
+        </div>
+      </div>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-overlay" onclick="toggleMenu()"></div>
+      <div class="mobile-drawer">
+        <div class="mobile-drawer-head">
+          <span class="logo">Korei</span>
+          <button onclick="toggleMenu()" type="button" style="background:none;border:none;font-size:26px;cursor:pointer;color:#888">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        <a href="../index.html">Accueil</a>
+        <a href="catalogue.html">Tous les parfums</a>
+        <a href="brands.html">Marques</a>
+        <a href="#" data-open-chatbot>Conseiller IA</a>
+      </div>
+    </div>
+
+    <div class="search-overlay" id="searchOverlay">
+      <div class="search-overlay-head">
+        <i class="ti ti-search search-overlay-icon"></i>
+        <input type="search" class="search-overlay-input" placeholder="Rechercher un parfum…" aria-label="Rechercher" />
+        <button class="search-overlay-close" onclick="toggleSearch()" aria-label="Fermer" type="button">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+    </div>
+
+    <section class="page-hero">
+      <div class="page-hero-eyebrow">Collection</div>
+      <h1 class="page-hero-title">Tous les <em>parfums</em></h1>
+      <p class="page-hero-sub">Décants et flacons des maisons de niche les plus remarquables.</p>
+    </section>
+
+    <div class="catalogue-layout">
+      <div class="catalogue-toolbar">
+        <select id="filter-brand" aria-label="Filtrer par marque">
+          <option value="">Toutes les marques</option>
+          <option value="amouage">Amouage</option>
+          <option value="tom-ford">Tom Ford</option>
+          <option value="xerjoff">Xerjoff</option>
+          <option value="creed">Creed</option>
+          <option value="kilian">Kilian</option>
+          <option value="byredo">Byredo</option>
+          <option value="initio">Initio</option>
+          <option value="memo-paris">Memo Paris</option>
+          <option value="parfums-de-marly">Parfums de Marly</option>
+          <option value="maison-margiela">Maison Margiela</option>
+          <option value="dior">Dior</option>
+        </select>
+        <select id="filter-gender" aria-label="Filtrer par genre">
+          <option value="">Tous genres</option>
+          <option value="homme">Homme</option>
+          <option value="unisexe">Unisexe</option>
+        </select>
+        <select id="filter-family" aria-label="Filtrer par famille">
+          <option value="">Toutes familles</option>
+          <option value="oriental">Oriental</option>
+          <option value="boisé">Boisé</option>
+          <option value="floral">Floral</option>
+          <option value="gourmand">Gourmand</option>
+          <option value="cuir">Cuir</option>
+          <option value="fruity">Fruité</option>
+          <option value="aromatique">Aromatique</option>
+        </select>
+        <select id="filter-sort" aria-label="Tri">
+          <option value="popular">Populaires</option>
+          <option value="rating">Meilleures notes</option>
+          <option value="price-asc">Prix croissant</option>
+          <option value="price-desc">Prix décroissant</option>
+        </select>
+        <button type="button" id="clear-filters" class="btn-text">Réinitialiser</button>
+        <span id="catalogue-count" class="catalogue-count"></span>
+      </div>
+
+      <div id="catalogue-empty" class="catalogue-empty" hidden>
+        <p>Aucun parfum correspond à vos filtres.</p>
+        <button type="button" id="clear-filters-empty" class="btn-dark" onclick="document.getElementById('clear-filters').click()">Réinitialiser les filtres</button>
+      </div>
+
+      <div class="products-grid" id="catalogue-grid"></div>
+    </div>
+
+    <footer>
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">Korei</div>
+          <div class="footer-tagline">Parfumerie de niche · Paris</div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Boutique</div>
+          <a href="catalogue.html">Parfums</a>
+          <a href="brands.html">Marques</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Aide</div>
+          <a href="#" data-open-chatbot>Conseiller IA</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2026 Korei</div>
+      </div>
+    </footer>
+
+    <div id="chatbot-widget" class="chatbot-widget">
+      <div id="chatbot-panel" class="chatbot-panel" role="dialog" aria-label="Conseiller olfactif Korei">
+        <div class="chatbot-head">
+          <div>
+            <div class="chatbot-head-title">Conseiller Korei</div>
+            <div class="chatbot-head-sub">Assistant olfactif · Démo</div>
+          </div>
+          <button type="button" id="chatbot-close" class="chatbot-close" aria-label="Fermer"><i class="ti ti-x"></i></button>
+        </div>
+        <div id="chatbot-messages" class="chatbot-messages"></div>
+        <div id="chatbot-suggestions" class="chatbot-suggestions"></div>
+        <div class="chatbot-foot">
+          <form id="chatbot-form" class="chatbot-form">
+            <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Décrivez ce que vous cherchez…" autocomplete="off" />
+            <button type="submit" class="chatbot-send" aria-label="Envoyer"><i class="ti ti-send"></i></button>
+          </form>
+        </div>
+        <div class="chatbot-mock-badge">Mode démo — IA à connecter</div>
+      </div>
+      <button type="button" id="chatbot-toggle" class="chatbot-toggle" aria-label="Ouvrir le conseiller olfactif" aria-expanded="false">
+        <i class="ti ti-message-chatbot"></i>
+      </button>
+    </div>
+
+    <script src="../assets/js/products.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/chatbot.js"></script>
+  </body>
+</html>
