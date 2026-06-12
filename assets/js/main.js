@@ -1,6 +1,9 @@
 /**
  * Korei — main.js
  * UI partagée : navigation, produits, FAQ, favoris
+ *
+ * Images produits : déposer assets/images/products/{product.id}.jpg
+ * ou définir product.image dans products.js pour un chemin custom.
  */
 (function (global) {
   const { formatNotes, formatPrice } = global.KoreiProducts || {};
@@ -13,16 +16,18 @@
     return site?.withBase(path, basePath) || `${basePath}${path}`;
   }
 
-  function productPlaceholderSrc(basePath = "") {
-    const path = site?.IMAGES?.productPlaceholder || "assets/images/products/placeholder.svg";
-    return site?.withBase(path, basePath) || `${basePath}${path}`;
-  }
-
   function renderProductImageHtml(product, basePath = "", className = "card-img-photo") {
     const src = productImageSrc(product, basePath);
-    const fallback = productPlaceholderSrc(basePath);
     const alt = `${product.brand} ${product.name}`;
-    return `<img class="${className} media-slot__image" src="${src}" alt="${alt}" loading="lazy" hidden onerror="this.src='${fallback}'" />`;
+    return `<img class="${className} media-slot__image" src="${src}" alt="${alt}" loading="lazy" hidden />`;
+  }
+
+  function renderProductPlaceholderHtml(product, type = "product") {
+    return site?.renderPlaceholder(type, {
+      brand: product.brand,
+      name: product.name,
+      family: product.family,
+    }) || "";
   }
 
   // ── FAQ accordion
@@ -110,9 +115,7 @@
             <i class="ti ti-heart"></i>
           </button>
           ${renderProductImageHtml(product, basePath)}
-          <div class="media-slot__placeholder card-img-fallback">
-            <div class="card-img-icon">🫙</div>
-          </div>
+          ${renderProductPlaceholderHtml(product, "product")}
         </div>
         <div class="card-body">
           <div class="card-brand">${product.brand}</div>
@@ -174,12 +177,33 @@
     });
   }
 
+  function renderNotesPyramid(product) {
+    const layers = [
+      { label: "Tête", notes: product.notesTop },
+      { label: "Cœur", notes: product.notesHeart },
+      { label: "Base", notes: product.notesBase },
+    ];
+    return `
+      <div class="product-pyramid">
+        <p class="product-pyramid-title">Pyramide olfactive</p>
+        ${layers
+          .map(
+            (layer) =>
+              `<div class="product-pyramid-row">
+                <span class="product-pyramid-label">${layer.label}</span>
+                <span class="product-pyramid-notes">${layer.notes.join(" · ")}</span>
+              </div>`
+          )
+          .join("")}
+      </div>`;
+  }
+
   // ── Init page accueil
   function initHomePage() {
-    const { getBestsellers, getNewProducts } = global.KoreiProducts;
+    const store = global.KoreiProductStore;
 
-    renderProducts(document.getElementById("bestsellers-grid"), getBestsellers(), { basePath: "" });
-    renderProducts(document.getElementById("new-products-grid"), getNewProducts(), {
+    renderProducts(document.getElementById("bestsellers-grid"), store.getBestsellers(), { basePath: "" });
+    renderProducts(document.getElementById("new-products-grid"), store.getNewProducts(), {
       basePath: "",
       grid: true,
     });
@@ -193,7 +217,7 @@
     const grid = document.getElementById("catalogue-grid");
     const countEl = document.getElementById("catalogue-count");
     const emptyEl = document.getElementById("catalogue-empty");
-    const { PRODUCTS } = global.KoreiProducts;
+    const store = global.KoreiProductStore;
 
     const filters = {
       brand: "",
@@ -204,25 +228,13 @@
     };
 
     function applyFilters() {
-      let list = [...PRODUCTS];
-
-      if (filters.brand) list = list.filter((p) => p.brandId === filters.brand);
-      if (filters.gender) list = list.filter((p) => p.gender === filters.gender);
-      if (filters.family) list = list.filter((p) => p.family === filters.family);
-      if (filters.search) {
-        const q = filters.search.toLowerCase();
-        list = list.filter(
-          (p) =>
-            p.name.toLowerCase().includes(q) ||
-            p.brand.toLowerCase().includes(q) ||
-            p.notes.some((n) => n.toLowerCase().includes(q))
-        );
-      }
-
-      if (filters.sort === "price-asc") list.sort((a, b) => a.price - b.price);
-      else if (filters.sort === "price-desc") list.sort((a, b) => b.price - a.price);
-      else if (filters.sort === "rating") list.sort((a, b) => b.rating - a.rating);
-      else list.sort((a, b) => (b.bestseller ? 1 : 0) - (a.bestseller ? 1 : 0));
+      const list = store.filterProducts({
+        brand: filters.brand,
+        gender: filters.gender,
+        family: filters.family,
+        search: filters.search,
+        sort: filters.sort,
+      });
 
       if (countEl) countEl.textContent = `${list.length} parfum${list.length > 1 ? "s" : ""}`;
       if (emptyEl) emptyEl.hidden = list.length > 0;
@@ -279,8 +291,8 @@
   function initProductPage() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
-    const { getProductById, getProductsByBrand } = global.KoreiProducts;
-    const product = id ? getProductById(id) : null;
+    const store = global.KoreiProductStore;
+    const product = id ? store.getProductById(id) : null;
     const main = document.getElementById("product-main");
 
     if (!product || !main) {
@@ -330,16 +342,14 @@
         <div class="product-visual media-slot">
           ${product.badge ? `<span class="card-badge ${badgeClass}">${product.badgeLabel}</span>` : ""}
           ${renderProductImageHtml(product, "../", "product-detail__img")}
-          <div class="media-slot__placeholder product-img-placeholder">
-            <i class="ti ti-photo"></i>
-            <span>assets/images/products/${product.id}.jpg</span>
-          </div>
+          ${renderProductPlaceholderHtml(product, "product-detail")}
         </div>
         <div class="product-info">
           <div class="card-brand">${product.brand}</div>
           <h1 class="product-title">${product.name}</h1>
           <div class="product-rating">${renderStars(product.rating)}</div>
           <p class="product-notes">${formatNotes(product.notes)}</p>
+          ${renderNotesPyramid(product)}
           <p class="product-description">${product.description}</p>
           <div class="product-meta">
             <span class="meta-chip">${product.gender}</span>
@@ -361,7 +371,10 @@
         </div>
       </div>`;
 
-    const related = getProductsByBrand(product.brandId).filter((p) => p.id !== product.id).slice(0, 4);
+    const related = store
+      .getProductsByBrand(product.brandId)
+      .filter((p) => p.id !== product.id)
+      .slice(0, 4);
     const relatedGrid = document.getElementById("related-products");
     if (relatedGrid && related.length) {
       renderProducts(relatedGrid, related, { basePath: "../", grid: true });
