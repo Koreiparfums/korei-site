@@ -19,7 +19,7 @@
   function renderProductImageHtml(product, basePath = "", className = "card-img-photo") {
     const src = productImageSrc(product, basePath);
     const alt = `${product.brand} ${product.name}`;
-    return `<img class="${className} media-slot__image" src="${src}" alt="${alt}" loading="lazy" hidden />`;
+    return `<img class="${className} media-slot__image" src="${src}" alt="${alt}" hidden />`;
   }
 
   function renderProductPlaceholderHtml(product, type = "product") {

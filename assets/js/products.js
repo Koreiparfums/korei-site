@@ -51,6 +51,7 @@
       bestseller: true,
       new: false,
       type: "decant",
+      image: "assets/images/products/interlude-man.jpg",
       description:
         "Un oud fumé et résineux, profond et charismatique. Interlude Man est une signature audacieuse pour les amateurs de parfums orientaux intenses.",
     }),
@@ -98,6 +99,7 @@
       bestseller: true,
       new: false,
       type: "decant",
+      image: "assets/images/products/oud-wood.png",
       description:
         "L'oud revisité en version accessible : bois de santal, cardamome et bois de oud fumé. L'icône moderne du niche.",
     }),
@@ -146,6 +148,7 @@
       bestseller: true,
       new: false,
       type: "decant",
+      image: "assets/images/products/aventus.png",
       description:
         "Ananas juteux, bouleau fumé et musc — le parfum viral qui a redéfini le niche masculin.",
     }),
