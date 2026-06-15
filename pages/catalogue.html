@@ -45,7 +45,7 @@
           <a href="brands.html">Marques</a>
         </nav>
       </div>
-      <a href="../index.html" class="logo logo-center">Korei</a>
+      <a href="../index.html" class="logo logo-center">Kōrei</a>
       <div class="header-right">
         <div class="search" role="search">
           <span class="search-icon"><i class="ti ti-search"></i></span>
@@ -64,7 +64,7 @@
       <div class="mobile-overlay" onclick="toggleMenu()"></div>
       <div class="mobile-drawer">
         <div class="mobile-drawer-head">
-          <span class="logo">Korei</span>
+          <span class="logo">Kōrei</span>
           <button onclick="toggleMenu()" type="button" style="background:none;border:none;font-size:26px;cursor:pointer;color:#888">
             <i class="ti ti-x"></i>
           </button>
@@ -93,58 +93,89 @@
     </section>
 
     <div class="catalogue-layout">
-      <div class="catalogue-toolbar">
-        <select id="filter-brand" aria-label="Filtrer par marque">
-          <option value="">Toutes les marques</option>
-          <option value="amouage">Amouage</option>
-          <option value="tom-ford">Tom Ford</option>
-          <option value="xerjoff">Xerjoff</option>
-          <option value="creed">Creed</option>
-          <option value="kilian">Kilian</option>
-          <option value="byredo">Byredo</option>
-          <option value="initio">Initio</option>
-          <option value="memo-paris">Memo Paris</option>
-          <option value="parfums-de-marly">Parfums de Marly</option>
-          <option value="maison-margiela">Maison Margiela</option>
-          <option value="dior">Dior</option>
-        </select>
-        <select id="filter-gender" aria-label="Filtrer par genre">
-          <option value="">Tous genres</option>
-          <option value="homme">Homme</option>
-          <option value="unisexe">Unisexe</option>
-        </select>
-        <select id="filter-family" aria-label="Filtrer par famille">
-          <option value="">Toutes familles</option>
-          <option value="oriental">Oriental</option>
-          <option value="boisé">Boisé</option>
-          <option value="floral">Floral</option>
-          <option value="gourmand">Gourmand</option>
-          <option value="cuir">Cuir</option>
-          <option value="fruity">Fruité</option>
-          <option value="aromatique">Aromatique</option>
-        </select>
-        <select id="filter-sort" aria-label="Tri">
-          <option value="popular">Populaires</option>
-          <option value="rating">Meilleures notes</option>
-          <option value="price-asc">Prix croissant</option>
-          <option value="price-desc">Prix décroissant</option>
-        </select>
-        <button type="button" id="clear-filters" class="btn-text">Réinitialiser</button>
-        <span id="catalogue-count" class="catalogue-count"></span>
-      </div>
+      <!-- Sidebar filtres -->
+      <aside class="catalogue-sidebar">
+        <div class="sidebar-head">
+          <span class="sidebar-head-title">Filtres</span>
+          <button type="button" id="clear-filters" class="sidebar-reset">Réinitialiser</button>
+        </div>
 
-      <div id="catalogue-empty" class="catalogue-empty" hidden>
-        <p>Aucun parfum correspond à vos filtres.</p>
-        <button type="button" id="clear-filters-empty" class="btn-dark" onclick="document.getElementById('clear-filters').click()">Réinitialiser les filtres</button>
-      </div>
+        <div class="filter-section open">
+          <button class="filter-section-toggle" type="button" aria-expanded="true">
+            <span>Marques</span>
+            <i class="ti ti-chevron-up filter-chevron"></i>
+          </button>
+          <div class="filter-section-body">
+            <label class="filter-check"><input type="radio" name="brand" value="" checked /><span>Toutes</span></label>
+            <label class="filter-check"><input type="radio" name="brand" value="amouage" /><span>Amouage</span></label>
+            <label class="filter-check"><input type="radio" name="brand" value="tom-ford" /><span>Tom Ford</span></label>
+            <label class="filter-check"><input type="radio" name="brand" value="xerjoff" /><span>Xerjoff</span></label>
+            <label class="filter-check"><input type="radio" name="brand" value="creed" /><span>Creed</span></label>
+            <label class="filter-check"><input type="radio" name="brand" value="kilian" /><span>Kilian</span></label>
+            <label class="filter-check"><input type="radio" name="brand" value="byredo" /><span>Byredo</span></label>
+            <label class="filter-check"><input type="radio" name="brand" value="initio" /><span>Initio</span></label>
+            <label class="filter-check"><input type="radio" name="brand" value="memo-paris" /><span>Memo Paris</span></label>
+            <label class="filter-check"><input type="radio" name="brand" value="parfums-de-marly" /><span>Parfums de Marly</span></label>
+            <label class="filter-check"><input type="radio" name="brand" value="maison-margiela" /><span>Maison Margiela</span></label>
+            <label class="filter-check"><input type="radio" name="brand" value="dior" /><span>Dior</span></label>
+          </div>
+        </div>
 
-      <div class="products-grid" id="catalogue-grid"></div>
+        <div class="filter-section open">
+          <button class="filter-section-toggle" type="button" aria-expanded="true">
+            <span>Famille olfactive</span>
+            <i class="ti ti-chevron-up filter-chevron"></i>
+          </button>
+          <div class="filter-section-body">
+            <label class="filter-check"><input type="radio" name="family" value="" checked /><span>Toutes</span></label>
+            <label class="filter-check"><input type="radio" name="family" value="oriental" /><span>Oriental</span></label>
+            <label class="filter-check"><input type="radio" name="family" value="boisé" /><span>Boisé</span></label>
+            <label class="filter-check"><input type="radio" name="family" value="floral" /><span>Floral</span></label>
+            <label class="filter-check"><input type="radio" name="family" value="gourmand" /><span>Gourmand</span></label>
+            <label class="filter-check"><input type="radio" name="family" value="cuir" /><span>Cuir</span></label>
+            <label class="filter-check"><input type="radio" name="family" value="fruity" /><span>Fruité</span></label>
+            <label class="filter-check"><input type="radio" name="family" value="aromatique" /><span>Aromatique</span></label>
+          </div>
+        </div>
+
+        <div class="filter-section open">
+          <button class="filter-section-toggle" type="button" aria-expanded="true">
+            <span>Genre</span>
+            <i class="ti ti-chevron-up filter-chevron"></i>
+          </button>
+          <div class="filter-section-body">
+            <label class="filter-check"><input type="radio" name="gender" value="" checked /><span>Tous</span></label>
+            <label class="filter-check"><input type="radio" name="gender" value="homme" /><span>Homme</span></label>
+            <label class="filter-check"><input type="radio" name="gender" value="unisexe" /><span>Unisexe</span></label>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Grille produits -->
+      <div class="catalogue-main">
+        <div class="catalogue-topbar">
+          <span id="catalogue-count" class="catalogue-count"></span>
+          <select id="filter-sort" aria-label="Tri">
+            <option value="popular">Populaires</option>
+            <option value="rating">Meilleures notes</option>
+            <option value="price-asc">Prix croissant</option>
+            <option value="price-desc">Prix décroissant</option>
+          </select>
+        </div>
+
+        <div id="catalogue-empty" class="catalogue-empty" hidden>
+          <p>Aucun parfum correspond à vos filtres.</p>
+          <button type="button" class="btn-dark" onclick="document.getElementById('clear-filters').click()">Réinitialiser les filtres</button>
+        </div>
+
+        <div class="products-grid" id="catalogue-grid"></div>
+      </div>
     </div>
 
     <footer>
       <div class="footer-top">
         <div>
-          <div class="footer-logo">Korei</div>
+          <div class="footer-logo">Kōrei</div>
           <div class="footer-tagline">Parfumerie de niche · Paris</div>
         </div>
         <div class="footer-col">
