@@ -16,10 +16,15 @@
       const isHighlight = highlightBrand === brand.id;
       return `
         <a href="catalogue.html?brand=${brand.id}" class="brand-card${isHighlight ? " brand-card--highlight" : ""}" data-brand-id="${brand.id}">
-          <div class="brand-card-name">${brand.name}</div>
-          <div class="brand-card-country">${brand.country}</div>
-          <p class="brand-card-tagline">${brand.tagline}</p>
-          <div class="brand-card-count">${count} parfum${count > 1 ? "s" : ""}</div>
+          <div>
+            <div class="brand-card-eyebrow">${brand.country}</div>
+            <div class="brand-card-name">${brand.name}</div>
+            <p class="brand-card-tagline">${brand.tagline}</p>
+          </div>
+          <div class="brand-card-footer">
+            <span class="brand-card-count">${count} parfum${count > 1 ? "s" : ""}</span>
+            <i class="ti ti-arrow-right brand-card-arrow"></i>
+          </div>
         </a>`;
     }).join("");
 
