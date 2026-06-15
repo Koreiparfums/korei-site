@@ -241,17 +241,23 @@
       renderProducts(grid, list, { basePath: "../", grid: true });
     }
 
-    document.getElementById("filter-brand")?.addEventListener("change", (e) => {
-      filters.brand = e.target.value;
-      applyFilters();
+    document.querySelectorAll('input[name="brand"]').forEach((radio) => {
+      radio.addEventListener("change", (e) => {
+        filters.brand = e.target.value;
+        applyFilters();
+      });
     });
-    document.getElementById("filter-gender")?.addEventListener("change", (e) => {
-      filters.gender = e.target.value;
-      applyFilters();
+    document.querySelectorAll('input[name="family"]').forEach((radio) => {
+      radio.addEventListener("change", (e) => {
+        filters.family = e.target.value;
+        applyFilters();
+      });
     });
-    document.getElementById("filter-family")?.addEventListener("change", (e) => {
-      filters.family = e.target.value;
-      applyFilters();
+    document.querySelectorAll('input[name="gender"]').forEach((radio) => {
+      radio.addEventListener("change", (e) => {
+        filters.gender = e.target.value;
+        applyFilters();
+      });
     });
     document.getElementById("filter-sort")?.addEventListener("change", (e) => {
       filters.sort = e.target.value;
@@ -262,25 +268,32 @@
       applyFilters();
     });
 
+    document.querySelectorAll(".filter-section-toggle").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        this.closest(".filter-section").classList.toggle("open");
+      });
+    });
+
     document.getElementById("clear-filters")?.addEventListener("click", () => {
       filters.brand = "";
       filters.gender = "";
       filters.family = "";
       filters.search = "";
       filters.sort = "popular";
-      document.getElementById("filter-brand").value = "";
-      document.getElementById("filter-gender").value = "";
-      document.getElementById("filter-family").value = "";
+      document.querySelector('input[name="brand"][value=""]').checked = true;
+      document.querySelector('input[name="family"][value=""]').checked = true;
+      document.querySelector('input[name="gender"][value=""]').checked = true;
       document.getElementById("filter-sort").value = "popular";
-      document.getElementById("filter-search").value = "";
+      const searchEl = document.getElementById("filter-search");
+      if (searchEl) searchEl.value = "";
       applyFilters();
     });
 
     const urlBrand = new URLSearchParams(window.location.search).get("brand");
     if (urlBrand) {
       filters.brand = urlBrand;
-      const select = document.getElementById("filter-brand");
-      if (select) select.value = urlBrand;
+      const radio = document.querySelector(`input[name="brand"][value="${urlBrand}"]`);
+      if (radio) radio.checked = true;
     }
 
     applyFilters();
@@ -328,6 +341,10 @@
             ? "badge-exclusive"
             : "";
 
+    const price2ml = product.price;
+    const price5ml = Math.round(product.price * 2.2);
+    const price10ml = Math.round(product.price * 3.8);
+
     main.innerHTML = `
       <nav class="breadcrumb">
         <a href="../index.html">Accueil</a>
@@ -357,12 +374,25 @@
             <span class="meta-chip">${product.family}</span>
           </div>
           <div class="product-price-block">
-            <span class="product-price">${formatPrice(product.price)}</span>
-            <span class="product-price-hint">Décants 2ml · 5ml · 10ml disponibles</span>
+            <span class="product-price-label">Choisir un format</span>
+            <div class="format-selector">
+              <button class="format-btn active" type="button" data-format="2ml" data-price="${price2ml}">
+                <span class="format-vol">2 ml</span>
+                <span class="format-price">${price2ml}€</span>
+              </button>
+              <button class="format-btn" type="button" data-format="5ml" data-price="${price5ml}">
+                <span class="format-vol">5 ml</span>
+                <span class="format-price">${price5ml}€</span>
+              </button>
+              <button class="format-btn" type="button" data-format="10ml" data-price="${price10ml}">
+                <span class="format-vol">10 ml</span>
+                <span class="format-price">${price10ml}€</span>
+              </button>
+            </div>
           </div>
           <div class="product-actions">
-            <button class="btn-dark product-cta" type="button" disabled title="Bientôt disponible">
-              Ajouter au panier — bientôt
+            <button class="btn-dark product-cta" id="product-cta" type="button" disabled title="Bientôt disponible">
+              Ajouter — 2ml · ${price2ml}€
             </button>
             <button class="btn-outline" type="button" data-open-chatbot>
               Demander conseil IA
@@ -370,6 +400,15 @@
           </div>
         </div>
       </div>`;
+
+    main.querySelectorAll(".format-btn").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        main.querySelectorAll(".format-btn").forEach((b) => b.classList.remove("active"));
+        this.classList.add("active");
+        const cta = main.querySelector("#product-cta");
+        if (cta) cta.textContent = `Ajouter — ${this.dataset.format} · ${this.dataset.price}€`;
+      });
+    });
 
     const related = store
       .getProductsByBrand(product.brandId)
