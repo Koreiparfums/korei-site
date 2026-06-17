@@ -417,7 +417,19 @@ a.brand-chip {
   z-index: 1;
   width: 100%;
   max-width: 420px;
-  height: 200px;
+  height: 260px;
+  top: -85px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-bottle-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
 }
 .hero-bottom {
   position: relative;
