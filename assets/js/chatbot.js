@@ -1,33 +1,14 @@
 /**
- * Korei — Chatbot conseiller olfactif (mock MVP)
+ * Korei — Chatbot conseiller olfactif
  *
- * FUTURE INTÉGRATION IA — brancher ici :
- * ─────────────────────────────────────
- * 1. Dans handleUserMessage(), remplacer sendMockResponse() par :
- *
- *    async function sendToAI(userMessage) {
- *      const res = await fetch('/api/chat', {
- *        method: 'POST',
- *        headers: { 'Content-Type': 'application/json' },
- *        body: JSON.stringify({
- *          message: userMessage,
- *          history: messages.slice(-6),
- *          catalog: KoreiProductStore.buildCatalogContext(),
- *        }),
- *      });
- *      const data = await res.json();
- *      return data.reply; // HTML ou markdown léger
- *    }
- *
- * 2. Serverless (Vercel api/chat.js / Netlify functions/chat) :
- *    - Clé API OpenAI / Bedrock côté serveur uniquement
- *    - Prompt système + catalogue JSON en contexte
- *    - Retourner texte + productIds recommandés
- *
- * 3. Garder recommendProducts() pour fallback ou hybrid RAG local
+ * Le widget appelle /api/chat lorsque GROQ_API_KEY est configurée côté serveur.
+ * Le mock local reste disponible en fallback pour le développement statique.
  */
 (function (global) {
   const store = () => global.KoreiProductStore;
+  const API_ENDPOINT = "/api/chat";
+  const STORAGE_KEY = "korei-chat-history";
+  const MAX_STORED_MESSAGES = 12;
 
   const SUGGESTIONS = [
     "Parfum oud pour soirée",
@@ -40,6 +21,36 @@
 
   let isOpen = false;
   let messages = [];
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function loadMessages() {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
+      if (!Array.isArray(saved)) return [];
+      return saved
+        .filter((item) => (item.role === "user" || item.role === "bot") && typeof item.text === "string")
+        .map((item) => ({ ...item, trustedHtml: Boolean(item.trustedHtml) }))
+        .slice(-MAX_STORED_MESSAGES);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveMessages() {
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-MAX_STORED_MESSAGES)));
+    } catch (error) {
+      // sessionStorage can be unavailable in private contexts.
+    }
+  }
 
   function getElements() {
     return {
@@ -78,6 +89,10 @@
         "supplierAvailable",
       ],
     };
+  }
+
+  function productById(id) {
+    return store()?.getProductById(id) || null;
   }
 
   function formatProductLine(product, index) {
@@ -146,12 +161,63 @@
     return `${intro}<br><br>${lines.join("<br>")}${footer}`;
   }
 
-  function formatBotText(text) {
-    return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  function formatBotText(text, trustedHtml = false) {
+    const safe = trustedHtml ? String(text || "") : escapeHtml(text).replace(/\n/g, "<br>");
+    return safe.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
   }
 
-  function addMessage(text, role) {
-    messages.push({ text, role });
+  function renderProductLinks(productIds = []) {
+    const products = [...new Set(productIds)]
+      .map(productById)
+      .filter(Boolean)
+      .slice(0, 3);
+
+    if (!products.length) return "";
+
+    const links = products.map((product, index) => formatProductLine(product, index));
+    return `<br><br>${links.join("<br>")}<br>Cliquez sur un parfum pour voir la fiche détaillée.`;
+  }
+
+  function buildApiHistory() {
+    return messages
+      .slice(-MAX_STORED_MESSAGES)
+      .map((message) => ({
+        role: message.role,
+        text: message.text.replace(/<[^>]+>/g, " "),
+      }));
+  }
+
+  async function sendToAI(userMessage) {
+    const s = store();
+    if (!s) throw new Error("Product store unavailable");
+
+    const res = await fetch(API_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: userMessage,
+        history: buildApiHistory().slice(0, -1),
+        catalog: s.buildCatalogContext(),
+      }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.message || "Chat API unavailable");
+    }
+
+    const productLinks = renderProductLinks(data.productIds);
+    const safeReply = escapeHtml(data.reply || "").replace(/\n/g, "<br>");
+
+    return {
+      text: productLinks ? `${safeReply}${productLinks}` : data.reply || "",
+      trustedHtml: Boolean(productLinks),
+    };
+  }
+
+  function addMessage(text, role, options = {}) {
+    messages.push({ text, role, trustedHtml: Boolean(options.trustedHtml) });
+    saveMessages();
     const el = getElements();
     if (!el.messages) return;
 
@@ -159,10 +225,20 @@
     div.className = `chatbot-msg chatbot-msg--${role}`;
     div.innerHTML =
       role === "bot"
-        ? `<div class="chatbot-avatar"><i class="ti ti-sparkles"></i></div><div class="chatbot-bubble">${formatBotText(text)}</div>`
-        : `<div class="chatbot-bubble">${text}</div>`;
+        ? `<div class="chatbot-avatar"><i class="ti ti-sparkles"></i></div><div class="chatbot-bubble">${formatBotText(text, options.trustedHtml)}</div>`
+        : `<div class="chatbot-bubble">${escapeHtml(text)}</div>`;
     el.messages.appendChild(div);
     el.messages.scrollTop = el.messages.scrollHeight;
+  }
+
+  function renderSavedMessages() {
+    const saved = loadMessages();
+    if (!saved.length) return;
+
+    messages = [];
+    saved.forEach((message) => {
+      addMessage(message.text, message.role, { trustedHtml: message.trustedHtml });
+    });
   }
 
   function showTyping() {
@@ -177,7 +253,7 @@
     return div;
   }
 
-  function handleUserMessage(text) {
+  async function handleUserMessage(text) {
     const trimmed = text.trim();
     if (!trimmed) return;
 
@@ -187,11 +263,17 @@
 
     const typing = showTyping();
 
-    setTimeout(() => {
+    try {
+      const reply = await sendToAI(trimmed);
       typing?.remove();
-      const reply = sendMockResponse(trimmed);
-      addMessage(reply, "bot");
-    }, 700);
+      addMessage(reply.text, "bot", { trustedHtml: reply.trustedHtml });
+    } catch (error) {
+      window.setTimeout(() => {
+        typing?.remove();
+        const reply = sendMockResponse(trimmed);
+        addMessage(reply, "bot", { trustedHtml: true });
+      }, 300);
+    }
   }
 
   function renderSuggestions() {
@@ -215,10 +297,13 @@
     el.input?.focus();
 
     if (messages.length === 0) {
-      addMessage(
-        "Bonjour ! Décrivez ce que vous cherchez — note, saison, occasion ou budget. Je recommande des parfums depuis notre catalogue.",
-        "bot"
-      );
+      renderSavedMessages();
+      if (messages.length === 0) {
+        addMessage(
+          "Bonjour ! Décrivez ce que vous cherchez — note, saison, occasion ou budget. Je recommande des parfums depuis notre catalogue.",
+          "bot"
+        );
+      }
     }
   }
 
