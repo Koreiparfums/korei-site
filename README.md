@@ -63,7 +63,7 @@ Le widget utilise `/api/chat` lorsque `GROQ_API_KEY` est configurée côté serv
 ```bash
 cp .env.example .env.local
 # renseigner GROQ_API_KEY dans .env.local
-vercel dev
+node dev-server.js
 ```
 
 Variables :
@@ -72,6 +72,12 @@ Variables :
 - `GROQ_MODEL` — optionnel, défaut `llama-3.3-70b-versatile`
 
 Le front envoie le message, l'historique court et `KoreiProductStore.buildCatalogContext()` à la function. La function retourne une réponse JSON et des `productIds`, puis le front génère les liens produits localement.
+
+Le serveur local écoute par défaut sur `http://localhost:4173` et ne nécessite pas de compte Vercel. Pour changer le port :
+
+```bash
+PORT=3000 node dev-server.js
+```
 
 ## Documentation
 
