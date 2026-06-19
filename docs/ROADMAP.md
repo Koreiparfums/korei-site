@@ -45,12 +45,12 @@
 
 ## Phase 2 — Chatbot IA (2–4 semaines)
 
-- [ ] Endpoint serverless `/api/chat`
-- [ ] Prompt système conseiller olfactif
-- [ ] Intégration OpenAI ou AWS Bedrock
-- [ ] Contexte catalogue via `KoreiProductStore.buildCatalogContext()`
-- [ ] Historique conversation (sessionStorage)
-- [ ] Liens produits cliquables dans les réponses
+- [x] Endpoint serverless `/api/chat` — base Groq
+- [x] Prompt système conseiller olfactif — version MVP
+- [x] Intégration Groq — fallback mock si clé absente
+- [x] Contexte catalogue via `KoreiProductStore.buildCatalogContext()`
+- [x] Historique conversation (sessionStorage)
+- [x] Liens produits cliquables dans les réponses
 - [ ] Rate limiting et monitoring coûts API
 
 ---

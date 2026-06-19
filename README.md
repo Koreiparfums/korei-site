@@ -56,13 +56,22 @@ Voir `docs/PROJECT_SCOPE.md` pour le détail.
 - Tabler Icons (CDN)
 - Google Fonts : Playfair Display + DM Sans
 
-## Chatbot IA (futur)
+## Chatbot IA Groq
 
-Le widget est mocké côté front. Pour connecter une IA :
+Le widget utilise `/api/chat` lorsque `GROQ_API_KEY` est configurée côté serveur. Si l'API n'est pas disponible, le mock local reste actif automatiquement.
 
-1. Créer une serverless function (`/api/chat`)
-2. Remplacer `sendMockResponse()` dans `assets/js/chatbot.js`
-3. Utiliser `buildChatContext()` pour envoyer le catalogue
+```bash
+cp .env.example .env.local
+# renseigner GROQ_API_KEY dans .env.local
+vercel dev
+```
+
+Variables :
+
+- `GROQ_API_KEY` — clé API Groq, côté serveur uniquement
+- `GROQ_MODEL` — optionnel, défaut `llama-3.3-70b-versatile`
+
+Le front envoie le message, l'historique court et `KoreiProductStore.buildCatalogContext()` à la function. La function retourne une réponse JSON et des `productIds`, puis le front génère les liens produits localement.
 
 ## Documentation
 
