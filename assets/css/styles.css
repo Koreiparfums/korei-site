@@ -32,7 +32,7 @@ body {
   --text: #1a1a18;
   --text-muted: #888480;
   --text-light: #b0ada8;
-  --accent: #B8965A;
+  --accent: #b8965a;
   --accent-light: #faf5ec;
   --badge-bg: #faf5ec;
   --badge-border: #dfc99a;
@@ -416,9 +416,10 @@ a.brand-chip {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 420px;
-  height: 260px;
-  top: -85px;
+  max-width: 180px;
+  height: 230px;
+  top: -90px;
+  left: -40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -438,7 +439,7 @@ a.brand-chip {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 28px;
+  gap: 35px;
 }
 .hero-tagline {
   font-family: "Cormorant Garamond", serif;
@@ -458,7 +459,9 @@ a.brand-chip {
   text-decoration: none;
   border: 1px solid var(--text);
   padding: 15px 52px;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 .btn-hero:hover {
   background: var(--text);
@@ -494,12 +497,14 @@ a.brand-chip {
   border: 1px solid var(--border);
   padding: 32px 28px 32px 36px;
   text-decoration: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   min-height: 160px;
 }
 .format-card:hover {
   border-color: var(--text);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
 }
 .format-card-info {
   display: flex;
@@ -526,7 +531,9 @@ a.brand-chip {
   font-size: 18px;
   color: var(--text-muted);
   margin-top: 8px;
-  transition: transform 0.2s, color 0.2s;
+  transition:
+    transform 0.2s,
+    color 0.2s;
 }
 .format-card:hover .format-card-arrow {
   transform: translateX(4px);
@@ -969,7 +976,9 @@ a.brand-chip {
   border: 1px solid var(--border);
   padding: 28px 20px;
   text-decoration: none;
-  transition: border-color 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
   min-height: 90px;
 }
 .brand-tile:hover {
@@ -1892,7 +1901,9 @@ footer {
   border-radius: 2px;
   flex-shrink: 0;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
   position: relative;
 }
 .filter-check input[type="radio"]:checked {
@@ -2078,7 +2089,9 @@ footer {
   border: 1px solid var(--border);
   background: var(--bg);
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 .format-btn:hover {
   border-color: var(--border-dark);
@@ -2215,7 +2228,9 @@ footer {
 .brand-card-arrow {
   font-size: 16px;
   color: var(--text-muted);
-  transition: transform 0.15s, color 0.15s;
+  transition:
+    transform 0.15s,
+    color 0.15s;
 }
 .brand-card:hover .brand-card-arrow {
   transform: translateX(4px);
