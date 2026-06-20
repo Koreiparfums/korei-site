@@ -88,7 +88,6 @@
   function renderProductCard(product, options = {}) {
     const basePath = options.basePath || "";
     const productUrl = `${basePath}pages/product.html?id=${product.id}`;
-    const notes = formatNotes ? formatNotes(product.notes) : product.notes.join(" · ");
     const price = formatPrice ? formatPrice(product.price) : `À partir de ${product.price}€`;
 
     const badgeClass =
@@ -120,7 +119,6 @@
         <div class="card-body">
           <div class="card-brand">${product.brand}</div>
           <div class="card-name">${product.name}</div>
-          <div class="card-notes">${notes}</div>
           <div class="card-footer">
             <div class="card-rating">${renderStars(product.rating)}</div>
           </div>
