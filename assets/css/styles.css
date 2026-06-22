@@ -401,13 +401,16 @@ a.brand-chip {
   padding: 0 var(--px) 32px;
   gap: 0;
 }
+.hero {
+  --ghost-fs: clamp(104px, 19vw, 240px);
+}
 .hero-ghost {
   position: absolute;
   top: 42%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-family: "Cormorant Garamond", serif;
-  font-size: clamp(104px, 19vw, 240px);
+  font-size: var(--ghost-fs);
   font-weight: 300;
   letter-spacing: 0.2em;
   color: var(--text);
@@ -421,10 +424,13 @@ a.brand-chip {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 144px;
-  height: 184px;
-  top: -72px;
-  left: -32px;
+  /* size and offsets scale with --ghost-fs so the bottle shrinks with the
+     watermark and stays anchored on the "Ō" across breakpoints instead of
+     desyncing on mobile */
+  max-width: clamp(96px, calc(var(--ghost-fs) * 0.6), 144px);
+  height: clamp(115px, calc(var(--ghost-fs) * 0.7667), 184px);
+  top: calc(var(--ghost-fs) * -0.3);
+  left: calc(var(--ghost-fs) * -0.1333);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -473,89 +479,162 @@ a.brand-chip {
   color: #fff;
 }
 
-/* ─── FORMATS ─── */
-.formats-section {
-  padding: 51.2px var(--px);
+/* ─── FORMATS (échelle des doses) ─── */
+.dose-section {
+  padding: 76.8px var(--px) 64px;
   background: transparent;
   border-bottom: 0.8px solid var(--border);
 }
-.formats-eyebrow {
+.dose-head {
+  text-align: center;
+  max-width: 384px;
+  margin: 0 auto 57.6px;
+}
+.dose-eyebrow {
   font-size: 8.8px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--text-muted);
-  text-align: center;
-  margin-bottom: 28.8px;
+  color: var(--accent);
+  margin-bottom: 9.6px;
 }
-.formats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12.8px;
+.dose-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 30.4px;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--text);
+}
+.dose-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+.dose-scale {
+  position: relative;
   max-width: var(--max-w);
   margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
-.format-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--bg);
-  border: 0.8px solid var(--border);
-  padding: 25.6px 22.4px 25.6px 28.8px;
-  text-decoration: none;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
-  min-height: 128px;
+.dose-scale::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 64px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--border-dark) 8%,
+    var(--border-dark) 92%,
+    transparent 100%
+  );
 }
-.format-card:hover {
-  border-color: var(--text);
-  box-shadow: 0 3.2px 19.2px rgba(0, 0, 0, 0.06);
-}
-.format-card-info {
+.dose-stop {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 4.8px;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  padding: 0 22.4px;
 }
-.format-card-label {
-  font-family: "DM Sans", sans-serif;
-  font-size: 8.8px;
-  font-weight: 400;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+.dose-stop:not(:last-child) {
+  border-right: 0.8px solid var(--border);
 }
-.format-card-size {
+.dose-node-wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 64px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.dose-node {
+  border-radius: 50%;
+  background: linear-gradient(155deg, #fff 0%, var(--accent) 145%);
+  border: 0.8px solid var(--border-dark);
+  box-shadow: 0 3.2px 12.8px rgba(0, 0, 0, 0.08);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.dose-node--sm {
+  width: 22.4px;
+  height: 22.4px;
+}
+.dose-node--md {
+  width: 38.4px;
+  height: 38.4px;
+}
+.dose-node--lg {
+  width: 54.4px;
+  height: 54.4px;
+}
+.dose-stop:hover .dose-node {
+  transform: translateY(-3.2px);
+  box-shadow: 0 8px 20.8px rgba(0, 0, 0, 0.12);
+}
+.dose-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.dose-ml {
+  margin-top: 22.4px;
   font-family: "DM Sans", sans-serif;
-  font-size: 33.6px;
+  font-size: 35.2px;
   font-weight: 300;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   color: var(--text);
   line-height: 1;
 }
-.format-card-arrow {
+.dose-ml span {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
   font-size: 14.4px;
+  font-weight: 400;
   color: var(--text-muted);
+  margin-left: 2.4px;
+}
+.dose-label {
   margin-top: 6.4px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.6px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+.dose-stop:hover .dose-label {
+  color: var(--text);
+}
+.dose-caption {
+  margin: 11.2px 0 0;
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: 13.6px;
+  color: var(--text-light);
+  line-height: 1.5;
+  max-width: 184px;
+}
+.dose-arrow {
+  display: block;
+  margin-top: 14.4px;
+  font-size: 12.8px;
+  color: var(--text-muted);
+  opacity: 0;
+  transform: translateX(-3.2px);
   transition:
+    opacity 0.2s,
     transform 0.2s,
     color 0.2s;
 }
-.format-card:hover .format-card-arrow {
-  transform: translateX(3.2px);
+.dose-stop:hover .dose-arrow {
+  opacity: 1;
+  transform: translateX(0);
   color: var(--text);
-}
-.format-card-img-wrap {
-  width: 88px;
-  height: 88px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.format-card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
 }
 
 /* ─── TICKER ─── */
@@ -977,6 +1056,49 @@ a.brand-chip {
 .brands-section {
   padding: 64px var(--px);
   border-bottom: 0.8px solid var(--border);
+}
+.houses-head {
+  text-align: center;
+  max-width: 384px;
+  margin: 0 auto 32px;
+}
+.houses-eyebrow {
+  font-size: 8.8px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 9.6px;
+}
+.houses-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 30.4px;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.houses-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+.houses-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6.4px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.6px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 0.8px solid var(--text);
+  padding-bottom: 3.2px;
+}
+.houses-link-arrow {
+  transition: transform 0.2s;
+}
+.houses-link:hover .houses-link-arrow {
+  transform: translateX(3.2px);
 }
 .brands-marquee {
   background: var(--text);
@@ -1682,23 +1804,43 @@ footer {
     padding: 44.8px var(--px) 38.4px;
     gap: 28.8px;
   }
-  .hero-img-slot {
-    left: 0;
-  }
-  .hero-title {
-    font-size: 38.4px;
-  }
-  .hero-sub {
-    max-width: 100%;
-  }
-  .hero-visual {
-    order: -1;
-  }
-  .hero-img-placeholder {
-    aspect-ratio: 16/9;
-  }
-  .formats-grid {
+  .dose-scale {
     grid-template-columns: 1fr;
+    row-gap: 32px;
+  }
+  .dose-scale::before {
+    display: none;
+  }
+  .dose-stop {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    padding: 0;
+    gap: 19.2px;
+  }
+  .dose-stop:not(:last-child) {
+    border-right: none;
+    border-bottom: 0.8px solid var(--border);
+    padding-bottom: 25.6px;
+  }
+  .dose-node-wrap {
+    width: 54.4px;
+    height: 54.4px;
+    flex-shrink: 0;
+    align-items: center;
+  }
+  .dose-info {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .dose-ml {
+    margin-top: 0;
+  }
+  .dose-caption {
+    max-width: none;
+  }
+  .dose-arrow {
+    display: none;
   }
   .trust-strip {
     padding: 32px var(--px);
