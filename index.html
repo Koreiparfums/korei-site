@@ -72,7 +72,7 @@
           <a href="pages/catalogue.html">Parfums</a>
           <a href="pages/catalogue.html">Décants</a>
           <a href="pages/brands.html">Marques</a>
-          <a href="pages/catalogue.html">Collections</a>
+          <a href="pages/collections.html">Collections</a>
         </nav>
       </div>
       <a href="index.html" class="logo logo-center">Kōrei</a>
@@ -130,7 +130,7 @@
         <a href="pages/catalogue.html">Tous les parfums</a>
         <a href="pages/catalogue.html">Décants</a>
         <a href="pages/brands.html">Marques</a>
-        <a href="pages/catalogue.html">Collections</a>
+        <a href="pages/collections.html">Collections</a>
         <a href="#" data-open-chatbot>Conseiller IA</a>
       </div>
     </div>
@@ -214,6 +214,112 @@
       </div>
     </div>
 
+    <section class="favorites-section">
+      <div class="favorites-head">
+        <div class="favorites-heading">
+          <div class="favorites-eyebrow">Les plus aimés</div>
+          <h2 class="favorites-title">Les parfums qu'on <em>s'arrache</em></h2>
+        </div>
+        <div class="favorites-controls">
+          <a href="pages/catalogue.html" class="favorites-link">Tout voir</a>
+          <div class="favorites-nav">
+            <button
+              class="favorites-nav-btn"
+              type="button"
+              aria-label="Précédent"
+              data-scroll-dir="-1"
+            >
+              <i class="ti ti-chevron-left"></i>
+            </button>
+            <button
+              class="favorites-nav-btn"
+              type="button"
+              aria-label="Suivant"
+              data-scroll-dir="1"
+            >
+              <i class="ti ti-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="products-scroll" id="bestsellers-grid"></div>
+    </section>
+
+    <section class="collections-section">
+      <div class="dose-head">
+        <div class="dose-eyebrow">Par univers</div>
+        <h2 class="dose-title">Choisissez votre <em>collection</em></h2>
+        <a href="pages/collections.html" class="houses-link collections-head-link">
+          Tout voir <span class="houses-link-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+      <div class="home-collections-grid">
+        <a href="pages/catalogue.html?season=été" class="home-collection-card">
+          <div class="home-collection-card__media media-slot" data-slot="collection-ete">
+            <img
+              class="media-slot__image"
+              src="assets/images/collections/ete.jpg"
+              alt="Collection Été — Kōrei"
+              loading="lazy"
+              hidden
+            />
+            <div class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle" data-variant="0">
+              <div class="placeholder-premium__pattern" aria-hidden="true"></div>
+              <div class="placeholder-premium__content">
+                <i class="ti ti-sun placeholder-premium__icon" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+          <div class="home-collection-card__overlay">
+            <span class="home-collection-card__name">Été</span>
+            <span class="home-collection-card__cta">Découvrir <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+        <a href="pages/catalogue.html?season=hiver" class="home-collection-card">
+          <div class="home-collection-card__media media-slot" data-slot="collection-hiver">
+            <img
+              class="media-slot__image"
+              src="assets/images/collections/hiver.jpg"
+              alt="Collection Hiver — Kōrei"
+              loading="lazy"
+              hidden
+            />
+            <div class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle" data-variant="1">
+              <div class="placeholder-premium__pattern" aria-hidden="true"></div>
+              <div class="placeholder-premium__content">
+                <i class="ti ti-snowflake placeholder-premium__icon" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+          <div class="home-collection-card__overlay">
+            <span class="home-collection-card__name">Hiver</span>
+            <span class="home-collection-card__cta">Découvrir <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+        <a href="pages/catalogue.html?family=boisé" class="home-collection-card">
+          <div class="home-collection-card__media media-slot" data-slot="collection-boise">
+            <img
+              class="media-slot__image"
+              src="assets/images/collections/boise.jpg"
+              alt="Collection Boisé — Kōrei"
+              loading="lazy"
+              hidden
+            />
+            <div class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle" data-variant="2">
+              <div class="placeholder-premium__pattern" aria-hidden="true"></div>
+              <div class="placeholder-premium__content">
+                <i class="ti ti-leaf placeholder-premium__icon" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+          <div class="home-collection-card__overlay">
+            <span class="home-collection-card__name">Boisé</span>
+            <span class="home-collection-card__cta">Découvrir <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </div>
+    </section>
+
     <section class="dose-section">
       <div class="dose-head">
         <div class="dose-eyebrow">Trouvez votre dose</div>
@@ -221,7 +327,9 @@
       </div>
       <div class="dose-scale">
         <a href="pages/catalogue.html?format=2ml" class="dose-stop">
-          <div class="dose-node-wrap"><span class="dose-node dose-node--sm"></span></div>
+          <div class="dose-node-wrap">
+            <span class="dose-node dose-node--sm"></span>
+          </div>
           <div class="dose-info">
             <div class="dose-ml">2<span>ml</span></div>
             <div class="dose-label">Découvrir</div>
@@ -230,16 +338,22 @@
           </div>
         </a>
         <a href="pages/catalogue.html?format=5ml" class="dose-stop">
-          <div class="dose-node-wrap"><span class="dose-node dose-node--md"></span></div>
+          <div class="dose-node-wrap">
+            <span class="dose-node dose-node--md"></span>
+          </div>
           <div class="dose-info">
             <div class="dose-ml">5<span>ml</span></div>
             <div class="dose-label">Explorer</div>
-            <p class="dose-caption">Le temps de l'apprivoiser, jour après jour.</p>
+            <p class="dose-caption">
+              Le temps de l'apprivoiser, jour après jour.
+            </p>
             <span class="dose-arrow">→</span>
           </div>
         </a>
         <a href="pages/catalogue.html?format=10ml" class="dose-stop">
-          <div class="dose-node-wrap"><span class="dose-node dose-node--lg"></span></div>
+          <div class="dose-node-wrap">
+            <span class="dose-node dose-node--lg"></span>
+          </div>
           <div class="dose-info">
             <div class="dose-ml">10<span>ml</span></div>
             <div class="dose-label">Adopter</div>
@@ -248,14 +362,6 @@
           </div>
         </a>
       </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <h2 class="section-title">Préférés <em>du moment</em></h2>
-        <a href="pages/catalogue.html" class="section-link">Tout voir</a>
-      </div>
-      <div class="products-scroll" id="bestsellers-grid"></div>
     </section>
 
     <div class="trust-strip">
@@ -473,9 +579,12 @@
     </section>
 
     <section class="section" style="padding-top: 0">
-      <div class="section-head">
-        <h2 class="section-title">Nouveautés</h2>
-        <a href="pages/catalogue.html" class="section-link">Tout voir</a>
+      <div class="dose-head">
+        <div class="dose-eyebrow">Fraîchement arrivé</div>
+        <h2 class="dose-title">Les nouveautés <em>du moment</em></h2>
+        <a href="pages/catalogue.html" class="houses-link collections-head-link">
+          Tout voir <span class="houses-link-arrow" aria-hidden="true">→</span>
+        </a>
       </div>
       <div class="products-grid" id="new-products-grid"></div>
     </section>

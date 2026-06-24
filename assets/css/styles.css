@@ -32,8 +32,8 @@ body {
   --text: #1a1a18;
   --text-muted: #888480;
   --text-light: #b0ada8;
-  --accent: #9aa1a8;
-  --accent-light: #eef0f1;
+  --accent: #cc9a36;
+  --accent-light: #f8efd7;
   --nav-accent: #b8965a;
   --badge-bg: #faf5ec;
   --badge-border: #dfc99a;
@@ -107,11 +107,7 @@ body {
   letter-spacing: 0.12em;
   text-decoration: none;
   line-height: 1;
-  color: #aeb4ba;
-  text-shadow:
-    0 0 10px rgba(255, 255, 255, 0.8),
-    0 1px 1px rgba(255, 255, 255, 0.9),
-    0 -1px 1px rgba(60, 64, 68, 0.5);
+  color: var(--text);
 }
 .logo-center {
   justify-self: center;
@@ -123,19 +119,16 @@ body {
 }
 .nav a {
   font-size: 11.2px;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--text);
   text-decoration: none;
   transition: color 0.12s;
   padding: 4.8px 0;
 }
-.nav a:hover,
-.nav a.active {
-  color: var(--text);
-}
-.nav a.active {
-  font-weight: 500;
+.nav a:hover {
+  color: var(--accent);
 }
 .header-right {
   display: flex;
@@ -190,14 +183,14 @@ body {
   background: none;
   border: none;
   font-size: 19.2px;
-  color: var(--text-muted);
+  color: var(--text);
   cursor: pointer;
   position: relative;
   padding: 3.2px;
   transition: color 0.2s;
 }
 .icon-btn:hover {
-  color: var(--text);
+  color: var(--accent);
 }
 .cart-count {
   position: absolute;
@@ -724,6 +717,84 @@ a.brand-chip {
 }
 
 /* ─── PRODUCT CARDS ─── */
+/* ─── FAVORIS (éditorial, même gabarit que la dose-section) ─── */
+.favorites-section {
+  padding: 76.8px var(--px) 64px;
+  border-bottom: 0.8px solid var(--border);
+}
+.favorites-head {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.favorites-heading {
+  grid-column: 2;
+  text-align: center;
+}
+.favorites-eyebrow {
+  font-size: 8.8px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 9.6px;
+}
+.favorites-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 30.4px;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--text);
+}
+.favorites-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+.favorites-controls {
+  grid-column: 3;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 22.4px;
+  flex-shrink: 0;
+}
+.favorites-link {
+  font-family: "DM Sans", sans-serif;
+  font-size: 15.2px;
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--border-dark);
+  text-underline-offset: 3.2px;
+  transition: text-decoration-color 0.2s;
+}
+.favorites-link:hover {
+  text-decoration-color: var(--text);
+}
+.favorites-nav {
+  display: flex;
+  gap: 9.6px;
+}
+.favorites-nav-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 0.8px solid var(--border);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19.2px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
+}
+.favorites-nav-btn:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
 .products-scroll {
   display: flex;
   gap: 16px;
@@ -1052,6 +1123,96 @@ a.brand-chip {
   line-height: 1.6;
 }
 
+/* ─── COLLECTIONS (par univers) ─── */
+.collections-head-link {
+  margin-top: 16px;
+}
+.collections-page-head {
+  padding: 57.6px var(--px) 44.8px;
+  border-bottom: 0.8px solid var(--border);
+}
+.collections-page-sub {
+  margin-top: 12.8px;
+  font-size: 12.8px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+.collections-section {
+  padding: 76.8px var(--px) 64px;
+  background: transparent;
+  border-bottom: 0.8px solid var(--border);
+}
+.home-collections-grid {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25.6px;
+}
+.home-collection-card {
+  position: relative;
+  display: block;
+  aspect-ratio: 2/3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 0.8px solid var(--border);
+  text-decoration: none;
+}
+.home-collection-card .home-collection-card__media {
+  position: absolute;
+  inset: 0;
+}
+.home-collection-card__media .media-slot__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.home-collection-card:hover .media-slot__image {
+  transform: scale(1.05);
+}
+.home-collection-card__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 6.4px;
+  padding: 28.8px;
+  background: linear-gradient(
+    to top,
+    rgba(20, 18, 16, 0.65) 0%,
+    transparent 50%
+  );
+}
+.home-collection-card__name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 33.6px;
+  font-weight: 400;
+  color: #fff;
+}
+.home-collection-card__cta {
+  font-size: 10.4px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  gap: 4.8px;
+  transition: gap 0.2s;
+}
+.home-collection-card:hover .home-collection-card__cta {
+  gap: 8px;
+  color: var(--accent);
+}
+.home-collection-card .placeholder-premium__icon {
+  font-size: 44.8px;
+}
+
 /* ─── BRANDS ─── */
 .brands-section {
   padding: 64px var(--px);
@@ -1203,13 +1364,17 @@ a.brand-chip {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 11.2px;
+  margin: 38.4px var(--px) 64px;
 }
 .collection-card {
+  display: block;
   background: var(--surface);
   border: 0.8px solid var(--border);
   border-radius: var(--radius-md);
   padding: 22.4px 16px;
   cursor: pointer;
+  color: var(--text);
+  text-decoration: none;
   transition:
     border-color 0.2s,
     transform 0.2s;
@@ -1657,11 +1822,7 @@ footer {
   font-size: 24px;
   font-weight: 300;
   letter-spacing: 0.12em;
-  color: #aeb4ba;
-  text-shadow:
-    0 0 10px rgba(255, 255, 255, 0.8),
-    0 1px 1px rgba(255, 255, 255, 0.9),
-    0 -1px 1px rgba(60, 64, 68, 0.5);
+  color: #fff;
   margin-bottom: 8px;
 }
 .footer-tagline {
@@ -1773,6 +1934,18 @@ footer {
   html {
     font-size: 12.8px;
   }
+  .favorites-head {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 16px;
+  }
+  .favorites-heading {
+    grid-column: 1;
+  }
+  .favorites-controls {
+    grid-column: 1;
+    justify-self: center;
+  }
   .header {
     grid-template-columns: min-content 1fr min-content;
     min-height: 56px;
@@ -1810,6 +1983,13 @@ footer {
   }
   .dose-scale::before {
     display: none;
+  }
+  .home-collections-grid {
+    grid-template-columns: 1fr;
+    gap: 12.8px;
+  }
+  .home-collection-card {
+    aspect-ratio: 16/9;
   }
   .dose-stop {
     flex-direction: row;

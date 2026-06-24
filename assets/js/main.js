@@ -206,8 +206,71 @@
       grid: true,
     });
 
+    initFavoritesNav();
     initBrandChips();
     initChatbotTriggers();
+  }
+
+  // ── Flèches de défilement "Préférés du moment" (carrousel infini, façon .brands-marquee-track)
+  function initFavoritesNav() {
+    const track = document.getElementById("bestsellers-grid");
+    const nav = document.querySelector(".favorites-nav");
+    if (!track || !nav) return;
+
+    const realCards = Array.from(track.children);
+    if (realCards.length < 2) return;
+
+    const cloneSet = () =>
+      realCards.map((card) => {
+        const clone = card.cloneNode(true);
+        clone.setAttribute("aria-hidden", "true");
+        return clone;
+      });
+
+    // Une copie complète du jeu de cartes avant et après le jeu réel : il y a toujours assez
+    // de "réserve" dans les deux sens pour que l'apparition des flacons soit continue, sans
+    // jamais buter sur un bord ni revenir brutalement au début.
+    const before = cloneSet();
+    const after = cloneSet();
+    before.forEach((clone) => {
+      track.insertBefore(clone, realCards[0]);
+      initProductCardInteractions(clone);
+    });
+    after.forEach((clone) => {
+      track.appendChild(clone);
+      initProductCardInteractions(clone);
+    });
+
+    const offsetOf = (el) =>
+      el.getBoundingClientRect().left - track.getBoundingClientRect().left + track.scrollLeft;
+
+    const homeStart = offsetOf(realCards[0]);
+    const setWidth = offsetOf(after[0]) - homeStart;
+
+    track.scrollLeft = homeStart;
+
+    nav.querySelectorAll(".favorites-nav-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const dir = Number(btn.dataset.scrollDir);
+        track.scrollBy({ left: dir * (track.clientWidth * 0.8), behavior: "smooth" });
+      });
+    });
+
+    // Dès qu'on a trop dérivé d'un côté (vers une copie), on rebascule sans transition d'un
+    // jeu complet dans l'autre sens : le visuel ne change pas (copie identique), le défilement
+    // reste continu indéfiniment dans les deux sens.
+    let settleTimer;
+    track.addEventListener("scroll", () => {
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(() => {
+        const current = track.scrollLeft;
+        if (current < homeStart - setWidth / 2) {
+          track.scrollLeft = current + setWidth;
+        } else if (current > homeStart + setWidth / 2) {
+          track.scrollLeft = current - setWidth;
+        }
+      }, 150);
+    });
   }
 
   // ── Init catalogue
@@ -221,6 +284,9 @@
       brand: "",
       gender: "",
       family: "",
+      season: "",
+      occasion: "",
+      intensity: "",
       search: "",
       sort: "popular",
     };
@@ -230,6 +296,9 @@
         brand: filters.brand,
         gender: filters.gender,
         family: filters.family,
+        season: filters.season,
+        occasion: filters.occasion,
+        intensity: filters.intensity,
         search: filters.search,
         sort: filters.sort,
       });
@@ -287,12 +356,25 @@
       applyFilters();
     });
 
-    const urlBrand = new URLSearchParams(window.location.search).get("brand");
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlBrand = urlParams.get("brand");
     if (urlBrand) {
       filters.brand = urlBrand;
       const radio = document.querySelector(`input[name="brand"][value="${urlBrand}"]`);
       if (radio) radio.checked = true;
     }
+    const urlFamily = urlParams.get("family");
+    if (urlFamily) {
+      filters.family = urlFamily;
+      const radio = document.querySelector(`input[name="family"][value="${urlFamily}"]`);
+      if (radio) radio.checked = true;
+    }
+    const urlSeason = urlParams.get("season");
+    if (urlSeason) filters.season = urlSeason;
+    const urlOccasion = urlParams.get("occasion");
+    if (urlOccasion) filters.occasion = urlOccasion;
+    const urlIntensity = urlParams.get("intensity");
+    if (urlIntensity) filters.intensity = urlIntensity;
 
     applyFilters();
     initChatbotTriggers();
