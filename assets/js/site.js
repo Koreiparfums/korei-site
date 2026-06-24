@@ -189,7 +189,7 @@
         const meta = LIFESTYLE_SLOTS[i] || { title: "Korei", subtitle: "" };
         return `
           <div class="lifestyle-slot media-slot" data-slot="lifestyle-${i + 1}">
-            <img class="media-slot__image lifestyle-slot__img" src="${path}" alt="${meta.title} — Korei" loading="lazy" hidden />
+            <img class="media-slot__image lifestyle-slot__img" src="${path}" alt="${meta.title} — Korei" hidden />
             ${renderPlaceholder("lifestyle", { ...meta, index: i })}
           </div>`;
       })
