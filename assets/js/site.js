@@ -105,6 +105,26 @@
     });
   }
 
+  function setWebsiteSchema() {
+    setJsonLd("korei-website-schema", {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: SITE.name,
+      url: SITE.url,
+      inLanguage: "fr-FR",
+      publisher: {
+        "@type": "Organization",
+        name: SITE.name,
+        url: SITE.url,
+      },
+    });
+  }
+
+  function initStructuredData() {
+    setOrganizationSchema();
+    setWebsiteSchema();
+  }
+
   function setPageMeta(options = {}) {
     const { title, description, image, path = "", type = "website" } = options;
     const pageUrl = path ? absoluteUrl(path.replace(/^\//, "")) : SITE.url;
@@ -237,6 +257,8 @@
     setPageMeta,
     setJsonLd,
     setOrganizationSchema,
+    setWebsiteSchema,
+    initStructuredData,
     renderPlaceholder,
     initMediaSlots,
     initLifestyleSlots,
@@ -244,12 +266,12 @@
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
-      setOrganizationSchema();
+      initStructuredData();
       initMediaSlots();
       initLifestyleSlots();
     });
   } else {
-    setOrganizationSchema();
+    initStructuredData();
     initMediaSlots();
     initLifestyleSlots();
   }

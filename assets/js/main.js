@@ -62,6 +62,39 @@
     };
   }
 
+  function productBreadcrumbSchema(product) {
+    return {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Accueil",
+          item: site?.absoluteUrl("") || "/",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Parfums",
+          item: site?.absoluteUrl("pages/catalogue.html") || "pages/catalogue.html",
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: product.brand,
+          item: site?.absoluteUrl(`pages/brands.html?brand=${product.brandId}`) || `pages/brands.html?brand=${product.brandId}`,
+        },
+        {
+          "@type": "ListItem",
+          position: 4,
+          name: product.name,
+          item: site?.absoluteUrl(`pages/product.html?id=${product.id}`) || `pages/product.html?id=${product.id}`,
+        },
+      ],
+    };
+  }
+
   function renderProductPlaceholderHtml(product, type = "product") {
     return site?.renderPlaceholder(type, {
       brand: product.brand,
@@ -452,6 +485,7 @@
       basePath: "../",
     });
     site?.setJsonLd("korei-product-schema", productSchema(product, "../"));
+    site?.setJsonLd("korei-product-breadcrumb-schema", productBreadcrumbSchema(product));
 
     const badgeClass =
       product.badge === "best"
