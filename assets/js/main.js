@@ -10,16 +10,22 @@
   const site = global.KoreiSite;
 
   function productImageSrc(product, basePath = "") {
-    const custom = product.image;
-    const defaultPath = site?.IMAGES?.product(product.id) || `assets/images/products/${product.id}.jpg`;
-    const path = custom || defaultPath;
+    const path = product.image;
+    if (!path) return null;
     return site?.withBase(path, basePath) || `${basePath}${path}`;
   }
 
   function renderProductImageHtml(product, basePath = "", className = "card-img-photo") {
     const src = productImageSrc(product, basePath);
+    if (!src) return "";
     const alt = `${product.brand} ${product.name}`;
     return `<img class="${className} media-slot__image" src="${src}" alt="${alt}" hidden />`;
+  }
+
+  function productMetaImage(product, basePath = "") {
+    return productImageSrc(product, basePath)
+      || site?.withBase(site.IMAGES.productPlaceholder, basePath)
+      || `${basePath}assets/images/products/placeholder.svg`;
   }
 
   function renderProductPlaceholderHtml(product, type = "product") {
@@ -406,7 +412,7 @@
     site?.setPageMeta({
       title: pageTitle,
       description: pageDescription,
-      image: productImageSrc(product, "../"),
+      image: productMetaImage(product, "../"),
       path: `pages/product?id=${product.id}`,
       type: "product",
       basePath: "../",
