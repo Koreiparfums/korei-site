@@ -48,7 +48,7 @@ netlify deploy --prod --dir=.
 
 Avant la mise en production, mettre à jour `SITE_URL` dans `assets/js/site.js` et les URLs dans `robots.txt` / `sitemap.xml`.
 
-La newsletter est prête pour Netlify Forms. Si le site est déployé sur Vercel, prévoir Mailchimp, Brevo ou une serverless function dédiée pour collecter les emails.
+La newsletter et le formulaire contact sont prêts pour Netlify Forms. Si le site est déployé sur Vercel, prévoir Mailchimp, Brevo ou une serverless function dédiée pour collecter les messages.
 
 Voir `docs/PROJECT_SCOPE.md` pour le détail.
 

@@ -57,22 +57,37 @@
         </div>
       </div>
 
-      <form class="contact-form" onsubmit="return false;">
+      <form
+        class="contact-form"
+        name="contact"
+        method="POST"
+        action="/pages/contact?contact=success"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        data-contact-form
+      >
+        <input type="hidden" name="form-name" value="contact" />
+        <label class="contact-honeypot">
+          Ne pas remplir
+          <input type="text" name="bot-field" tabindex="-1" autocomplete="off" />
+        </label>
         <h2>Formulaire</h2>
-        <p class="static-note">Formulaire placeholder — intégration Netlify Forms ou email en Phase 2.</p>
+        <p class="static-note" data-contact-status role="status" aria-live="polite">
+          Réponse sous 24h ouvrées.
+        </p>
         <label>
           <span>Nom</span>
-          <input type="text" name="name" placeholder="Votre nom" disabled />
+          <input type="text" name="name" placeholder="Votre nom" autocomplete="name" required />
         </label>
         <label>
           <span>Email</span>
-          <input type="email" name="email" placeholder="votre@email.com" disabled />
+          <input type="email" name="email" placeholder="votre@email.com" autocomplete="email" required />
         </label>
         <label>
           <span>Message</span>
-          <textarea name="message" rows="4" placeholder="Votre message…" disabled></textarea>
+          <textarea name="message" rows="4" placeholder="Votre message…" required></textarea>
         </label>
-        <button type="submit" class="btn-dark" disabled>Bientôt disponible</button>
+        <button type="submit" class="btn-dark">Envoyer</button>
       </form>
     </article>
 

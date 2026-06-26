@@ -3342,6 +3342,14 @@ footer {
   display: block;
   margin-bottom: 12.8px;
 }
+.contact-honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
 .contact-form label span {
   display: block;
   font-size: 9.6px;

@@ -642,12 +642,40 @@
     });
   }
 
+  function initContactForm() {
+    const form = document.querySelector("[data-contact-form]");
+    const status = document.querySelector("[data-contact-status]");
+    if (!form || !status) return;
+
+    const showSuccess = () => {
+      status.textContent = "Merci, votre message est bien envoyé.";
+      status.classList.add("is-success");
+      form.reset();
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("contact") === "success") showSuccess();
+
+    const isLocal = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
+    if (!isLocal) return;
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      showSuccess();
+    });
+  }
+
   // ── Bootstrap
   function init() {
     initNavigationAccessibility();
     initSearchOverlay();
     initChatbotTriggers();
     initNewsletterForm();
+    initContactForm();
 
     const page = document.body.dataset.page;
     if (page === "home") initHomePage();
