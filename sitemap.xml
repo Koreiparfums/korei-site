@@ -17,6 +17,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://korei.fr/pages/collections</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://korei.fr/pages/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -37,12 +42,82 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://korei.fr/pages/product?id=replica-jazz-club</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://korei.fr/pages/product?id=oud-wood</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://korei.fr/pages/product?id=naxos</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://korei.fr/pages/product?id=aventus</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://korei.fr/pages/product?id=bal-dafrique</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://korei.fr/pages/product?id=oud-for-greatness</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://korei.fr/pages/product?id=irish-leather</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://korei.fr/pages/product?id=layton</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://korei.fr/pages/product?id=angels-share</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://korei.fr/pages/product?id=black-phantom</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://korei.fr/pages/product?id=sauvage-elixir</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://korei.fr/pages/product?id=rose-centifolia</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://korei.fr/pages/product?id=imagination</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://korei.fr/pages/product?id=oud-ispahan</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://korei.fr/pages/product?id=lettre-de-pushkar</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://korei.fr/pages/product?id=coco-vanille</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
