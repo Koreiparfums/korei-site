@@ -16,7 +16,7 @@
 
 ## Phase 1 — Contenu & polish (1–2 semaines)
 
-- [ ] Images produits réelles complètes (`assets/images/products/{id}.jpg`) — 3/12 produits couverts
+- [ ] Images produits réelles complètes (`assets/images/products/{id}.jpg`) — 3/17 produits couverts
 - [x] Photo hero (`assets/images/hero/hero-main.jpg`)
 - [ ] Visuels lifestyle (`assets/images/lifestyle/lifestyle-1.jpg` … `3.jpg`)
 - [x] Placeholders premium (hero, produits, lifestyle)
@@ -29,6 +29,7 @@
 - [x] Emplacements images (media-slot + `site.js`)
 - [x] Config déploiement Vercel / Netlify
 - [x] Newsletter — Netlify Forms
+- [x] Contact — Netlify Forms
 
 ---
 
@@ -69,7 +70,7 @@
 ## Phase 4 — Scale & SEO (ongoing)
 
 - [x] Sitemap.xml et robots.txt
-- [x] Schema.org Product / Organization
+- [x] Schema.org Organization / WebSite / Product / BreadcrumbList
 - [ ] Blog / contenu SEO (familles olfactives, guides)
 - [ ] Analytics (Plausible ou GA4)
 - [ ] A/B tests CTA et chatbot
