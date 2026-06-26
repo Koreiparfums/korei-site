@@ -148,6 +148,7 @@ vercel deploy
 
 - Build : aucun
 - `vercel.json` optionnel pour redirects
+- Newsletter : prévoir Mailchimp, Brevo ou une serverless function, car Netlify Forms ne collecte pas sur Vercel
 
 ### Option 2 — Netlify
 
@@ -156,7 +157,7 @@ netlify deploy --prod --dir=.
 ```
 
 - Publish directory : racine du repo
-- Formulaires Netlify pour newsletter (phase 2)
+- Formulaires Netlify pour newsletter
 
 ### Option 3 — AWS Amplify
 
