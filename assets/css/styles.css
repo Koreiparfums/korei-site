@@ -2867,6 +2867,11 @@ footer {
 .chatbot-input:focus {
   border-color: var(--border-dark);
 }
+.chatbot-input:disabled,
+.chatbot-send:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
 .chatbot-send {
   width: 35.2px;
   height: 35.2px;

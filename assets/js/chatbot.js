@@ -21,6 +21,7 @@
 
   let isOpen = false;
   let messages = [];
+  let isSending = false;
 
   function escapeHtml(value) {
     return String(value || "")
@@ -203,7 +204,10 @@
 
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      throw new Error(data.message || "Chat API unavailable");
+      const error = new Error(data.message || "Chat API unavailable");
+      error.status = res.status;
+      error.retryAfter = res.headers.get("Retry-After");
+      throw error;
     }
 
     const productLinks = renderProductLinks(data.productIds);
@@ -213,6 +217,23 @@
       text: productLinks ? `${safeReply}${productLinks}` : data.reply || "",
       trustedHtml: Boolean(productLinks),
     };
+  }
+
+  function fallbackIntro(error) {
+    if (error?.status === 429) {
+      const wait = error.retryAfter ? ` Réessayez dans ${error.retryAfter}s.` : "";
+      return `Le conseiller IA reçoit beaucoup de demandes.${wait} En attendant, voici une recommandation locale :`;
+    }
+
+    return "Le conseiller IA est momentanément indisponible. Voici une recommandation locale :";
+  }
+
+  function setSendingState(isBusy) {
+    isSending = isBusy;
+    const el = getElements();
+    if (el.input) el.input.disabled = isBusy;
+    const submit = el.form?.querySelector("button[type=\"submit\"]");
+    if (submit) submit.disabled = isBusy;
   }
 
   function addMessage(text, role, options = {}) {
@@ -254,12 +275,14 @@
   }
 
   async function handleUserMessage(text) {
+    if (isSending) return;
     const trimmed = text.trim();
     if (!trimmed) return;
 
     addMessage(trimmed, "user");
     const el = getElements();
     if (el.input) el.input.value = "";
+    setSendingState(true);
 
     const typing = showTyping();
 
@@ -268,11 +291,11 @@
       typing?.remove();
       addMessage(reply.text, "bot", { trustedHtml: reply.trustedHtml });
     } catch (error) {
-      window.setTimeout(() => {
-        typing?.remove();
-        const reply = sendMockResponse(trimmed);
-        addMessage(reply, "bot", { trustedHtml: true });
-      }, 300);
+      typing?.remove();
+      const reply = sendMockResponse(trimmed);
+      addMessage(`${fallbackIntro(error)}<br><br>${reply}`, "bot", { trustedHtml: true });
+    } finally {
+      setSendingState(false);
     }
   }
 
