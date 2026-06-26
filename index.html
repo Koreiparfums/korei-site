@@ -705,7 +705,7 @@
       </div>
     </section>
 
-    <section class="newsletter">
+    <section class="newsletter" id="newsletter">
       <div class="newsletter-inner">
         <div class="newsletter-eyebrow">Newsletter</div>
         <h2 class="newsletter-title">
@@ -714,16 +714,34 @@
         <p class="newsletter-sub">
           Accès prioritaire aux nouvelles maisons et conseils olfactifs.
         </p>
-        <form class="newsletter-form" onsubmit="return false;">
+        <form
+          class="newsletter-form"
+          name="newsletter"
+          method="POST"
+          action="/?newsletter=success#newsletter"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          data-newsletter-form
+        >
+          <input type="hidden" name="form-name" value="newsletter" />
+          <label class="newsletter-honeypot">
+            Ne pas remplir
+            <input type="text" name="bot-field" tabindex="-1" autocomplete="off" />
+          </label>
           <input
             type="email"
+            name="email"
             class="newsletter-input"
             placeholder="votre@email.com"
             aria-label="Adresse email"
+            autocomplete="email"
+            required
           />
           <button type="submit" class="btn-dark">S'abonner</button>
         </form>
-        <p class="newsletter-legal">Pas de spam. Désabonnement en un clic.</p>
+        <p class="newsletter-legal" data-newsletter-status role="status" aria-live="polite">
+          Pas de spam. Désabonnement en un clic.
+        </p>
       </div>
     </section>
 

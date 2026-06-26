@@ -509,10 +509,38 @@
     initChatbotTriggers();
   }
 
+  function initNewsletterForm() {
+    const form = document.querySelector("[data-newsletter-form]");
+    const status = document.querySelector("[data-newsletter-status]");
+    if (!form || !status) return;
+
+    const showSuccess = () => {
+      status.textContent = "Merci, votre inscription est bien prise en compte.";
+      status.classList.add("is-success");
+      form.reset();
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("newsletter") === "success") showSuccess();
+
+    const isLocal = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
+    if (!isLocal) return;
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      showSuccess();
+    });
+  }
+
   // ── Bootstrap
   function init() {
     initSearchOverlay();
     initChatbotTriggers();
+    initNewsletterForm();
 
     const page = document.body.dataset.page;
     if (page === "home") initHomePage();

@@ -1782,6 +1782,14 @@ a.brand-chip {
   max-width: 384px;
   margin: 0 auto 11.2px;
 }
+.newsletter-honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
 .newsletter-input {
   flex: 1;
   padding: 11.2px 16px;
@@ -1804,6 +1812,9 @@ a.brand-chip {
   font-size: 9.6px;
   color: var(--text-light);
   letter-spacing: 0.04em;
+}
+.newsletter-legal.is-success {
+  color: var(--accent);
 }
 
 /* ─── FOOTER ─── */

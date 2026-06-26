@@ -28,7 +28,7 @@
 - [x] Liens footer mis à jour
 - [x] Emplacements images (media-slot + `site.js`)
 - [x] Config déploiement Vercel / Netlify
-- [ ] Newsletter — Netlify Forms ou Mailchimp embed
+- [x] Newsletter — Netlify Forms
 
 ---
 
