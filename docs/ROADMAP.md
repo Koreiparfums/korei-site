@@ -51,7 +51,8 @@
 - [x] Contexte catalogue via `KoreiProductStore.buildCatalogContext()`
 - [x] Historique conversation (sessionStorage)
 - [x] Liens produits cliquables dans les réponses
-- [ ] Rate limiting et monitoring coûts API
+- [x] Rate limiting API — MVP en mémoire
+- [ ] Monitoring coûts API
 
 ---
 

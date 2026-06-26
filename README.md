@@ -70,8 +70,11 @@ Variables :
 
 - `GROQ_API_KEY` — clé API Groq, côté serveur uniquement
 - `GROQ_MODEL` — optionnel, défaut `llama-3.3-70b-versatile`
+- `CHAT_RATE_LIMIT_WINDOW_MS` — fenêtre de rate limiting, défaut `60000`
+- `CHAT_RATE_LIMIT_MAX_REQUESTS` — requêtes chatbot par fenêtre et par IP, défaut `12`
 
 Le front envoie le message, l'historique court et `KoreiProductStore.buildCatalogContext()` à la function. La function retourne une réponse JSON et des `productIds`, puis le front génère les liens produits localement.
+La function limite aussi les appels par IP avant d'appeler Groq afin de protéger la clé API.
 
 Le serveur local écoute par défaut sur `http://localhost:4173` et ne nécessite pas de compte Vercel. Pour changer le port :
 

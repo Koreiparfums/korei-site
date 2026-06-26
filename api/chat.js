@@ -2,11 +2,56 @@ const GROQ_CHAT_COMPLETIONS_URL = "https://api.groq.com/openai/v1/chat/completio
 const DEFAULT_MODEL = "llama-3.3-70b-versatile";
 const MAX_HISTORY_MESSAGES = 8;
 const MAX_CATALOG_PRODUCTS = 40;
+const RATE_LIMIT_WINDOW_MS = Number(process.env.CHAT_RATE_LIMIT_WINDOW_MS || 60_000);
+const RATE_LIMIT_MAX_REQUESTS = Number(process.env.CHAT_RATE_LIMIT_MAX_REQUESTS || 12);
+
+const rateLimitBuckets = new Map();
 
 function sendJson(res, statusCode, payload) {
   res.statusCode = statusCode;
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.end(JSON.stringify(payload));
+}
+
+function clientIp(req) {
+  const forwardedFor = req.headers?.["x-forwarded-for"];
+  if (typeof forwardedFor === "string" && forwardedFor.trim()) {
+    return forwardedFor.split(",")[0].trim();
+  }
+
+  return req.headers?.["x-real-ip"] || req.socket?.remoteAddress || "unknown";
+}
+
+function pruneRateLimitBuckets(now) {
+  for (const [key, bucket] of rateLimitBuckets.entries()) {
+    if (bucket.resetAt <= now) rateLimitBuckets.delete(key);
+  }
+}
+
+function checkRateLimit(req, res) {
+  const now = Date.now();
+  pruneRateLimitBuckets(now);
+
+  const key = clientIp(req);
+  const current = rateLimitBuckets.get(key);
+  const bucket = current && current.resetAt > now
+    ? current
+    : { count: 0, resetAt: now + RATE_LIMIT_WINDOW_MS };
+
+  bucket.count += 1;
+  rateLimitBuckets.set(key, bucket);
+
+  const remaining = Math.max(RATE_LIMIT_MAX_REQUESTS - bucket.count, 0);
+  const resetSeconds = Math.ceil((bucket.resetAt - now) / 1000);
+
+  res.setHeader("X-RateLimit-Limit", String(RATE_LIMIT_MAX_REQUESTS));
+  res.setHeader("X-RateLimit-Remaining", String(remaining));
+  res.setHeader("X-RateLimit-Reset", String(Math.ceil(bucket.resetAt / 1000)));
+
+  if (bucket.count <= RATE_LIMIT_MAX_REQUESTS) return true;
+
+  res.setHeader("Retry-After", String(resetSeconds));
+  return false;
 }
 
 function sanitizeText(value, maxLength = 1200) {
@@ -97,6 +142,13 @@ module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST, OPTIONS");
     return sendJson(res, 405, { error: "method_not_allowed" });
+  }
+
+  if (!checkRateLimit(req, res)) {
+    return sendJson(res, 429, {
+      error: "rate_limit_exceeded",
+      message: "Trop de demandes au conseiller. Réessayez dans quelques instants.",
+    });
   }
 
   const apiKey = process.env.GROQ_API_KEY;
