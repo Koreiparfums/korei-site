@@ -116,7 +116,12 @@
     const menu = document.getElementById("mobileMenu");
     if (!menu) return;
     menu.classList.toggle("open");
-    document.body.style.overflow = menu.classList.contains("open") ? "hidden" : "";
+    const isOpen = menu.classList.contains("open");
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    menu.setAttribute("aria-hidden", String(!isOpen));
+    document.querySelectorAll(".hamburger").forEach((btn) => {
+      btn.setAttribute("aria-expanded", String(isOpen));
+    });
   }
 
   // ── Search overlay
@@ -137,6 +142,38 @@
     if (!overlay) return;
     overlay.addEventListener("keydown", (e) => {
       if (e.key === "Escape") toggleSearch();
+    });
+  }
+
+  function initNavigationAccessibility() {
+    const menu = document.getElementById("mobileMenu");
+    const currentPath = window.location.pathname.split("/").pop() || "index.html";
+
+    if (menu) {
+      menu.setAttribute("aria-hidden", String(!menu.classList.contains("open")));
+    }
+
+    document.querySelectorAll(".hamburger").forEach((btn) => {
+      btn.setAttribute("aria-controls", "mobileMenu");
+      btn.setAttribute("aria-expanded", String(menu?.classList.contains("open") || false));
+    });
+
+    document.querySelectorAll(".nav a.active").forEach((link) => {
+      link.setAttribute("aria-current", "page");
+    });
+
+    document.querySelectorAll(".mobile-drawer a").forEach((link) => {
+      const hrefPath = (link.getAttribute("href") || "").split("?")[0].split("/").pop();
+      if (hrefPath && hrefPath === currentPath) {
+        link.setAttribute("aria-current", "page");
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+      if (menu?.classList.contains("open")) toggleMenu();
+      const overlay = document.getElementById("searchOverlay");
+      if (overlay?.classList.contains("open")) toggleSearch();
     });
   }
 
@@ -607,6 +644,7 @@
 
   // ── Bootstrap
   function init() {
+    initNavigationAccessibility();
     initSearchOverlay();
     initChatbotTriggers();
     initNewsletterForm();
