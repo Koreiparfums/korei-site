@@ -16,8 +16,8 @@
 
 ## Phase 1 — Contenu & polish (1–2 semaines)
 
-- [ ] Images produits réelles (`assets/images/products/{id}.jpg`)
-- [ ] Photo hero (`assets/images/hero/hero-main.jpg`)
+- [ ] Images produits réelles complètes (`assets/images/products/{id}.jpg`) — 3/12 produits couverts
+- [x] Photo hero (`assets/images/hero/hero-main.jpg`)
 - [ ] Visuels lifestyle (`assets/images/lifestyle/lifestyle-1.jpg` … `3.jpg`)
 - [x] Placeholders premium (hero, produits, lifestyle)
 - [x] Balises meta SEO + Open Graph / Twitter Card
@@ -67,7 +67,7 @@
 
 ## Phase 4 — Scale & SEO (ongoing)
 
-- [ ] Sitemap.xml et robots.txt
+- [x] Sitemap.xml et robots.txt
 - [ ] Schema.org Product / Organization
 - [ ] Blog / contenu SEO (familles olfactives, guides)
 - [ ] Analytics (Plausible ou GA4)
