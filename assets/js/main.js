@@ -28,6 +28,40 @@
       || `${basePath}assets/images/products/placeholder.svg`;
   }
 
+  function productSchema(product, basePath = "") {
+    const pagePath = `pages/product.html?id=${product.id}`;
+    const image = productMetaImage(product, basePath);
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      brand: {
+        "@type": "Brand",
+        name: product.brand,
+      },
+      description: product.description,
+      image: site?.absoluteUrl(image) || image,
+      sku: product.id,
+      category: product.family,
+      url: site?.absoluteUrl(pagePath) || pagePath,
+      offers: {
+        "@type": "Offer",
+        price: product.price,
+        priceCurrency: "EUR",
+        availability: product.supplierAvailable === false
+          ? "https://schema.org/OutOfStock"
+          : "https://schema.org/InStock",
+        url: site?.absoluteUrl(pagePath) || pagePath,
+      },
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: product.rating,
+        reviewCount: Math.max(1, Math.round(product.rating * 12)),
+      },
+    };
+  }
+
   function renderProductPlaceholderHtml(product, type = "product") {
     return site?.renderPlaceholder(type, {
       brand: product.brand,
@@ -417,6 +451,7 @@
       type: "product",
       basePath: "../",
     });
+    site?.setJsonLd("korei-product-schema", productSchema(product, "../"));
 
     const badgeClass =
       product.badge === "best"

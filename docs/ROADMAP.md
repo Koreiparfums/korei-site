@@ -69,7 +69,7 @@
 ## Phase 4 — Scale & SEO (ongoing)
 
 - [x] Sitemap.xml et robots.txt
-- [ ] Schema.org Product / Organization
+- [x] Schema.org Product / Organization
 - [ ] Blog / contenu SEO (familles olfactives, guides)
 - [ ] Analytics (Plausible ou GA4)
 - [ ] A/B tests CTA et chatbot

@@ -75,6 +75,36 @@
     el.setAttribute("href", href);
   }
 
+  function setJsonLd(id, data) {
+    if (!id || !data) return;
+    let el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement("script");
+      el.type = "application/ld+json";
+      el.id = id;
+      document.head.appendChild(el);
+    }
+    el.textContent = JSON.stringify(data);
+  }
+
+  function setOrganizationSchema() {
+    setJsonLd("korei-organization-schema", {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: SITE.name,
+      url: SITE.url,
+      email: SITE.email,
+      logo: absoluteUrl(IMAGES.favicon),
+      sameAs: [],
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer support",
+        email: SITE.email,
+        availableLanguage: ["fr"],
+      },
+    });
+  }
+
   function setPageMeta(options = {}) {
     const { title, description, image, path = "", type = "website" } = options;
     const pageUrl = path ? absoluteUrl(path.replace(/^\//, "")) : SITE.url;
@@ -205,6 +235,8 @@
     absoluteUrl,
     withBase,
     setPageMeta,
+    setJsonLd,
+    setOrganizationSchema,
     renderPlaceholder,
     initMediaSlots,
     initLifestyleSlots,
@@ -212,10 +244,12 @@
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
+      setOrganizationSchema();
       initMediaSlots();
       initLifestyleSlots();
     });
   } else {
+    setOrganizationSchema();
     initMediaSlots();
     initLifestyleSlots();
   }
