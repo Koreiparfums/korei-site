@@ -248,6 +248,19 @@
     initMediaSlots();
   }
 
+  function initHeaderScroll() {
+    const header = document.querySelector(".header");
+    if (!header) return;
+
+    const threshold = 12;
+    const update = () => {
+      header.classList.toggle("header--scrolled", window.scrollY > threshold);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+  }
+
   global.KoreiSite = {
     SITE,
     IMAGES,
@@ -262,6 +275,7 @@
     renderPlaceholder,
     initMediaSlots,
     initLifestyleSlots,
+    initHeaderScroll,
   };
 
   if (document.readyState === "loading") {
@@ -269,10 +283,12 @@
       initStructuredData();
       initMediaSlots();
       initLifestyleSlots();
+      initHeaderScroll();
     });
   } else {
     initStructuredData();
     initMediaSlots();
     initLifestyleSlots();
+    initHeaderScroll();
   }
 })(window);
