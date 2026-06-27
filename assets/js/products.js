@@ -335,6 +335,7 @@
       bestseller: true,
       new: false,
       type: "decant",
+      image: "assets/images/products/rose-centifolia.jpg",
       description:
         "Un bouquet de rose centifolia fraîchement cueillie, sublimé par le litchi et un fond musqué délicat. La signature florale de la maison Guerlain.",
     }),
@@ -358,6 +359,7 @@
       bestseller: true,
       new: false,
       type: "decant",
+      image: "assets/images/products/imagination.jpg",
       description:
         "Un sillage solaire et ambré signé Jacques Cavallier — bergamote pétillante, ambroxan minéral et vanille boisée. Le best-seller masculin de Louis Vuitton.",
     }),
@@ -381,6 +383,7 @@
       bestseller: true,
       new: false,
       type: "decant",
+      image: "assets/images/products/oud-ispahan.jpg",
       description:
         "La rose de Damas rencontre l'oud précieux et le safran épicé — une composition somptueuse signée Collection Privée Christian Dior.",
     }),
@@ -404,6 +407,7 @@
       bestseller: true,
       new: false,
       type: "decant",
+      image: "assets/images/products/lettre-de-pushkar.jpg",
       description:
         "Un carnet de voyage olfactif vers l'Inde : safran, rose et encens enveloppés de bois de santal. Une signature niche rare et envoûtante.",
     }),
@@ -427,6 +431,7 @@
       bestseller: true,
       new: false,
       type: "decant",
+      image: "assets/images/products/coco-vanille.jpg",
       description:
         "Noix de coco gourmande, vanille crémeuse et musc enveloppant — la signature ensoleillée et addictive de Mancera.",
     }),

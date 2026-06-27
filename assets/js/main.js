@@ -350,6 +350,15 @@
       track.appendChild(clone);
       initProductCardInteractions(clone);
     });
+    // Les clones héritent de data-slot-init au moment du cloneNode : sans ce reset,
+    // initMediaSlots() les ignore et leur image ne charge jamais (placeholder qui
+    // clignote à chaque passage sur une copie pendant le défilement infini).
+    [...before, ...after].forEach((clone) => {
+      clone.querySelectorAll(".media-slot[data-slot-init]").forEach((slot) => {
+        slot.removeAttribute("data-slot-init");
+      });
+    });
+    site?.initMediaSlots();
 
     const offsetOf = (el) =>
       el.getBoundingClientRect().left - track.getBoundingClientRect().left + track.scrollLeft;
