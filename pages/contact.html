@@ -26,14 +26,37 @@
     <link rel="stylesheet" href="../assets/css/styles.css" />
   </head>
   <body data-page="static">
-    <header class="header header--minimal">
-      <a href="../index.html" class="logo">Kōrei</a>
-      <nav class="nav nav--minimal">
-        <a href="catalogue.html">Parfums</a>
-        <a href="about.html">À propos</a>
-        <a href="cgv.html">CGV</a>
-      </nav>
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger" onclick="toggleMenu()" aria-label="Menu" type="button">
+          <i class="ti ti-menu-2"></i>
+        </button>
+        <nav class="nav">
+          <a href="../index.html">Accueil</a>
+          <a href="catalogue.html">Parfums</a>
+          <a href="catalogue.html">Décants</a>
+          <a href="brands.html">Marques</a>
+          <a href="collections.html">Collections</a>
+        </nav>
+      </div>
+      <a href="../index.html" class="logo logo-center">Kōrei</a>
+      <div class="header-right">
+        <div class="header-actions">
+          <button class="icon-btn" aria-label="Panier" type="button"><i class="ti ti-shopping-bag"></i></button>
+        </div>
+      </div>
     </header>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-overlay" onclick="toggleMenu()"></div>
+      <div class="mobile-drawer">
+        <a href="../index.html">Accueil</a>
+        <a href="catalogue.html">Parfums</a>
+        <a href="catalogue.html">Décants</a>
+        <a href="brands.html">Marques</a>
+        <a href="collections.html">Collections</a>
+      </div>
+    </div>
 
     <section class="page-hero">
       <div class="page-hero-eyebrow">Aide</div>

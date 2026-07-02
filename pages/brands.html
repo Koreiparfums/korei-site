@@ -39,7 +39,9 @@
         <nav class="nav">
           <a href="../index.html">Accueil</a>
           <a href="catalogue.html">Parfums</a>
+          <a href="catalogue.html">Décants</a>
           <a href="brands.html" class="active">Marques</a>
+          <a href="collections.html">Collections</a>
         </nav>
       </div>
       <a href="../index.html" class="logo logo-center">Kōrei</a>
@@ -55,17 +57,46 @@
       <div class="mobile-drawer">
         <a href="../index.html">Accueil</a>
         <a href="catalogue.html">Parfums</a>
+        <a href="catalogue.html">Décants</a>
         <a href="brands.html">Marques</a>
+        <a href="collections.html">Collections</a>
       </div>
     </div>
 
-    <section class="page-hero">
-      <div class="page-hero-eyebrow">Maisons</div>
-      <h1 class="page-hero-title">Les <em>marques</em></h1>
-      <p class="page-hero-sub">Des créateurs indépendants aux grandes maisons historiques — toutes authentiques.</p>
+    <section class="brands-head">
+      <div class="brands-head-rule" aria-hidden="true"></div>
+      <div class="brands-head-inner">
+        <h1 class="brands-head-title">Maisons</h1>
+        <p class="brands-head-sub">
+          Les plus grandes maisons de parfumerie de niche réunies au même endroit.
+        </p>
+        <div class="brands-head-stat">100+ marques</div>
+      </div>
+      <div class="brands-head-rule" aria-hidden="true"></div>
     </section>
 
+    <div class="brands-search-wrap">
+      <div class="brands-search">
+        <i class="ti ti-search brands-search-icon" aria-hidden="true"></i>
+        <input
+          type="search"
+          id="brands-search-input"
+          placeholder="Rechercher une marque…"
+          aria-label="Rechercher une marque"
+        />
+      </div>
+      <div class="brands-popular">
+        <span class="brands-popular-label">Populaires</span>
+        <div class="brands-popular-list" id="brands-popular-list"></div>
+      </div>
+    </div>
+
+    <div class="brands-filters" id="brands-filters"></div>
+
     <div id="brands-grid"></div>
+    <p id="brands-empty" class="brands-empty" hidden>
+      Aucune marque ne correspond à votre recherche.
+    </p>
 
     <footer>
       <div class="footer-bottom" style="padding: 36px var(--px); background: var(--text); color: rgba(255,255,255,0.25)">

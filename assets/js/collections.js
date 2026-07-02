@@ -2,24 +2,67 @@
  * Korei — Page collections
  */
 (function (global) {
-  const CATEGORIES = [
-    { name: "Quotidien", icon: "ti-coffee", params: { occasion: "quotidien" } },
-    { name: "Bureau", icon: "ti-briefcase", params: { occasion: "bureau" } },
-    { name: "Soirée", icon: "ti-moon-stars", params: { occasion: "soirée" } },
-    { name: "Date", icon: "ti-heart", params: { occasion: "date" } },
-    { name: "Longue tenue", icon: "ti-clock-hour-8", params: { intensity: "intense" } },
-    { name: "Été", icon: "ti-sun", params: { season: "été" } },
-    { name: "Hiver", icon: "ti-snowflake", params: { season: "hiver" } },
-    { name: "Printemps", icon: "ti-flower", params: { season: "printemps" } },
-    { name: "Automne", icon: "ti-leaf", params: { season: "automne" } },
-    { name: "Boisé", icon: "ti-trees", params: { family: "boisé" } },
-    { name: "Floral", icon: "ti-sparkles", params: { family: "floral" } },
-    { name: "Oriental", icon: "ti-flame", params: { family: "oriental" } },
-    { name: "Gourmand", icon: "ti-cookie", params: { family: "gourmand" } },
-    { name: "Cuir", icon: "ti-shoe", params: { family: "cuir" } },
-    { name: "Homme", icon: "ti-man", params: { gender: "homme" } },
-    { name: "Femme", icon: "ti-woman", params: { gender: "femme" } },
-    { name: "Unisexe", icon: "ti-infinity", params: { gender: "unisexe" } },
+  const COLLECTIONS = [
+    {
+      name: "Parfums d'été",
+      tagline: "Frais · Agrumes · Mer",
+      image: "../assets/images/collections/ete.png",
+      params: { season: "été" },
+    },
+    {
+      name: "Parfums d'hiver",
+      tagline: "Ambré · Épicé · Enveloppant",
+      image: "../assets/images/collections/hiver.png",
+      params: { season: "hiver" },
+    },
+    {
+      name: "Collection florale",
+      tagline: "Rose · Jasmin · Pivoine",
+      image: "../assets/images/collections/floral.png",
+      params: { family: "floral" },
+    },
+    {
+      name: "Collection boisée",
+      tagline: "Santal · Cèdre · Vétiver",
+      image: "../assets/images/collections/boise.png",
+      params: { family: "boisé" },
+    },
+    {
+      name: "Notes d'agrumes",
+      tagline: "Bergamote · Citron · Fraîcheur",
+      icon: "ti-droplet",
+      params: { note: "bergamote" },
+    },
+    {
+      name: "Collection gourmande",
+      tagline: "Vanille · Caramel · Cacao",
+      icon: "ti-cookie",
+      params: { family: "gourmand" },
+    },
+    {
+      name: "Pour le soir",
+      tagline: "Intense · Envoûtant · Sensuel",
+      icon: "ti-moon-stars",
+      params: { occasion: "soirée" },
+    },
+    {
+      name: "Pour le bureau",
+      tagline: "Discret · Élégant · Quotidien",
+      icon: "ti-briefcase",
+      params: { occasion: "bureau" },
+    },
+    {
+      name: "Rendez-vous",
+      tagline: "Séduisant · Mémorable",
+      icon: "ti-heart",
+      params: { occasion: "date" },
+    },
+    {
+      name: "Nouveautés",
+      tagline: "Les derniers arrivages",
+      icon: "ti-sparkles",
+      params: { isNew: "1" },
+    },
   ];
 
   function initCollectionsPage() {
@@ -27,14 +70,24 @@
     const store = global.KoreiProductStore;
     if (!grid || !store) return;
 
-    grid.innerHTML = CATEGORIES.map((cat) => {
-      const count = store.filterProducts(cat.params).length;
-      const query = new URLSearchParams(cat.params).toString();
+    grid.innerHTML = COLLECTIONS.map((col) => {
+      const count = store.filterProducts(col.params).length;
+      const query = new URLSearchParams(col.params).toString();
+      const hasPhoto = Boolean(col.image);
+      const media = hasPhoto
+        ? `<div class="collection-card-media" style="background-image: url('${col.image}')"></div>`
+        : `<div class="collection-card-media collection-card-media--fallback">
+             <i class="ti ${col.icon}" aria-hidden="true"></i>
+           </div>`;
       return `
-        <a href="catalogue.html?${query}" class="collection-card">
-          <i class="ti ${cat.icon} collection-icon" aria-hidden="true"></i>
-          <div class="collection-name">${cat.name}</div>
-          <div class="collection-count">${count} parfum${count > 1 ? "s" : ""}</div>
+        <a href="catalogue.html?${query}" class="collection-card${hasPhoto ? " collection-card--photo" : " collection-card--fallback"}">
+          ${media}
+          <div class="collection-card-content">
+            <h3 class="collection-card-name">${col.name}</h3>
+            <p class="collection-card-tagline">${col.tagline}</p>
+            <span class="collection-card-cta">Explorer <i class="ti ti-arrow-right" aria-hidden="true"></i></span>
+          </div>
+          <span class="collection-card-count">${count} parfum${count > 1 ? "s" : ""}</span>
         </a>`;
     }).join("");
   }

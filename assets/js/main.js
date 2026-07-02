@@ -406,6 +406,8 @@
       season: "",
       occasion: "",
       intensity: "",
+      note: "",
+      isNew: false,
       search: "",
       sort: "popular",
     };
@@ -418,6 +420,8 @@
         season: filters.season,
         occasion: filters.occasion,
         intensity: filters.intensity,
+        note: filters.note,
+        isNew: filters.isNew,
         search: filters.search,
         sort: filters.sort,
       });
@@ -494,6 +498,9 @@
     if (urlOccasion) filters.occasion = urlOccasion;
     const urlIntensity = urlParams.get("intensity");
     if (urlIntensity) filters.intensity = urlIntensity;
+    const urlNote = urlParams.get("note");
+    if (urlNote) filters.note = urlNote;
+    if (urlParams.get("isNew") === "1") filters.isNew = true;
 
     applyFilters();
     initChatbotTriggers();

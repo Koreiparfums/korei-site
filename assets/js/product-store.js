@@ -118,6 +118,7 @@
     if (filters.supplierAvailable === true) list = list.filter((p) => p.supplierAvailable);
     if (filters.season) list = list.filter((p) => p.seasons.includes(filters.season));
     if (filters.occasion) list = list.filter((p) => p.occasions.includes(filters.occasion));
+    if (filters.isNew) list = list.filter((p) => p.new);
     if (filters.note) {
       const n = normalizeQuery(filters.note);
       list = list.filter((p) =>

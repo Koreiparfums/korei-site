@@ -1,9 +1,14 @@
-const GROQ_CHAT_COMPLETIONS_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_CHAT_COMPLETIONS_URL =
+  "https://api.groq.com/openai/v1/chat/completions";
 const DEFAULT_MODEL = "llama-3.3-70b-versatile";
 const MAX_HISTORY_MESSAGES = 8;
 const MAX_CATALOG_PRODUCTS = 40;
-const RATE_LIMIT_WINDOW_MS = Number(process.env.CHAT_RATE_LIMIT_WINDOW_MS || 60_000);
-const RATE_LIMIT_MAX_REQUESTS = Number(process.env.CHAT_RATE_LIMIT_MAX_REQUESTS || 12);
+const RATE_LIMIT_WINDOW_MS = Number(
+  process.env.CHAT_RATE_LIMIT_WINDOW_MS || 60_000,
+);
+const RATE_LIMIT_MAX_REQUESTS = Number(
+  process.env.CHAT_RATE_LIMIT_MAX_REQUESTS || 12,
+);
 
 const rateLimitBuckets = new Map();
 
@@ -34,9 +39,10 @@ function checkRateLimit(req, res) {
 
   const key = clientIp(req);
   const current = rateLimitBuckets.get(key);
-  const bucket = current && current.resetAt > now
-    ? current
-    : { count: 0, resetAt: now + RATE_LIMIT_WINDOW_MS };
+  const bucket =
+    current && current.resetAt > now
+      ? current
+      : { count: 0, resetAt: now + RATE_LIMIT_WINDOW_MS };
 
   bucket.count += 1;
   rateLimitBuckets.set(key, bucket);
@@ -55,7 +61,10 @@ function checkRateLimit(req, res) {
 }
 
 function sanitizeText(value, maxLength = 1200) {
-  return String(value || "").replace(/\s+/g, " ").trim().slice(0, maxLength);
+  return String(value || "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, maxLength);
 }
 
 function sanitizeHistory(history) {
@@ -64,7 +73,10 @@ function sanitizeHistory(history) {
   return history
     .slice(-MAX_HISTORY_MESSAGES)
     .map((item) => ({
-      role: item?.role === "bot" || item?.role === "assistant" ? "assistant" : "user",
+      role:
+        item?.role === "bot" || item?.role === "assistant"
+          ? "assistant"
+          : "user",
       content: sanitizeText(item?.text || item?.content, 900),
     }))
     .filter((item) => item.content);
@@ -83,11 +95,21 @@ function sanitizeCatalog(catalog) {
     price: Number(product.price) || null,
     priceRange: sanitizeText(product.priceRange, 80),
     supplierAvailable: product.supplierAvailable !== false,
-    notesTop: Array.isArray(product.notesTop) ? product.notesTop.slice(0, 6).map((n) => sanitizeText(n, 80)) : [],
-    notesHeart: Array.isArray(product.notesHeart) ? product.notesHeart.slice(0, 6).map((n) => sanitizeText(n, 80)) : [],
-    notesBase: Array.isArray(product.notesBase) ? product.notesBase.slice(0, 6).map((n) => sanitizeText(n, 80)) : [],
-    seasons: Array.isArray(product.seasons) ? product.seasons.slice(0, 6).map((n) => sanitizeText(n, 80)) : [],
-    occasions: Array.isArray(product.occasions) ? product.occasions.slice(0, 6).map((n) => sanitizeText(n, 80)) : [],
+    notesTop: Array.isArray(product.notesTop)
+      ? product.notesTop.slice(0, 6).map((n) => sanitizeText(n, 80))
+      : [],
+    notesHeart: Array.isArray(product.notesHeart)
+      ? product.notesHeart.slice(0, 6).map((n) => sanitizeText(n, 80))
+      : [],
+    notesBase: Array.isArray(product.notesBase)
+      ? product.notesBase.slice(0, 6).map((n) => sanitizeText(n, 80))
+      : [],
+    seasons: Array.isArray(product.seasons)
+      ? product.seasons.slice(0, 6).map((n) => sanitizeText(n, 80))
+      : [],
+    occasions: Array.isArray(product.occasions)
+      ? product.occasions.slice(0, 6).map((n) => sanitizeText(n, 80))
+      : [],
   }));
 }
 
@@ -100,7 +122,10 @@ function parseGroqReply(content) {
     return {
       reply: sanitizeText(parsed.reply, 1800),
       productIds: Array.isArray(parsed.productIds)
-        ? parsed.productIds.map((id) => sanitizeText(id, 80)).filter(Boolean).slice(0, 3)
+        ? parsed.productIds
+            .map((id) => sanitizeText(id, 80))
+            .filter(Boolean)
+            .slice(0, 3)
         : [],
     };
   } catch (error) {
@@ -147,7 +172,8 @@ module.exports = async function handler(req, res) {
   if (!checkRateLimit(req, res)) {
     return sendJson(res, 429, {
       error: "rate_limit_exceeded",
-      message: "Trop de demandes au conseiller. Réessayez dans quelques instants.",
+      message:
+        "Trop de demandes au conseiller. Réessayez dans quelques instants.",
     });
   }
 
@@ -205,7 +231,9 @@ module.exports = async function handler(req, res) {
     const aiReply = parseGroqReply(content);
 
     return sendJson(res, 200, {
-      reply: aiReply.reply || "Je n'ai pas réussi à formuler une recommandation précise. Pouvez-vous préciser la note, l'occasion ou le budget ?",
+      reply:
+        aiReply.reply ||
+        "Je n'ai pas réussi à formuler une recommandation précise. Pouvez-vous préciser la note, l'occasion ou le budget ?",
       productIds: aiReply.productIds,
       provider: "groq",
       model: groqData?.model || process.env.GROQ_MODEL || DEFAULT_MODEL,
