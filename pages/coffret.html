@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Coffrets Korei — sets signature ou compositions 100% personnalisées de décants de niche, dès 2ml." />
+    <meta name="robots" content="index, follow" />
+    <title>Coffrets — Korei</title>
+    <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="../manifest.webmanifest" />
+    <meta name="theme-color" content="#1a1a18" />
+    <link rel="canonical" href="https://korei.fr/pages/coffret" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Korei" />
+    <meta property="og:title" content="Coffrets — Korei" />
+    <meta property="og:description" content="Sets signature ou compositions 100% personnalisées de décants de niche, dès 2ml." />
+    <meta property="og:url" content="https://korei.fr/pages/coffret" />
+    <meta property="og:image" content="https://korei.fr/assets/images/og/og-default.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Coffrets — Korei" />
+    <meta name="twitter:description" content="Sets signature ou compositions 100% personnalisées de décants de niche." />
+    <meta name="twitter:image" content="https://korei.fr/assets/images/og/og-default.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+  </head>
+  <body data-page="coffret">
+    <div class="banner">
+      <span>Livraison offerte dès 60€</span>
+      <span class="banner-sep"></span>
+      <span>Décants 100% authentiques</span>
+    </div>
+
+    <header class="header">
+      <div class="header-left">
+        <button class="hamburger" onclick="toggleMenu()" aria-label="Menu" type="button">
+          <i class="ti ti-menu-2"></i>
+        </button>
+        <nav class="nav">
+          <a href="../index.html">Accueil</a>
+          <a href="catalogue.html">Parfums</a>
+          <a href="coffret.html" class="active">Coffret</a>
+          <a href="brands.html">Marques</a>
+          <a href="collections.html">Collections</a>
+        </nav>
+      </div>
+      <a href="../index.html" class="logo logo-center">Kōrei</a>
+      <div class="header-right">
+        <div class="header-actions">
+          <button class="icon-btn search-mobile-btn" onclick="toggleSearch()" aria-label="Rechercher" type="button">
+            <i class="ti ti-search"></i>
+          </button>
+          <button class="icon-btn" aria-label="Panier" type="button"><i class="ti ti-shopping-bag"></i></button>
+        </div>
+      </div>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-overlay" onclick="toggleMenu()"></div>
+      <div class="mobile-drawer">
+        <div class="mobile-drawer-head">
+          <span class="logo">Kōrei</span>
+          <button onclick="toggleMenu()" type="button" style="background:none;border:none;font-size:26px;cursor:pointer;color:#888">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        <a href="../index.html">Accueil</a>
+        <a href="catalogue.html">Parfums</a>
+        <a href="coffret.html" aria-current="page">Coffret</a>
+        <a href="brands.html">Marques</a>
+        <a href="collections.html">Collections</a>
+        <a href="#" data-open-chatbot>Conseiller IA</a>
+      </div>
+    </div>
+
+    <section class="page-hero">
+      <div class="page-hero-eyebrow">Coffrets</div>
+      <h1 class="page-hero-title">Composez votre <em>coffret</em></h1>
+      <p class="page-hero-sub">
+        Un set signature clé en main, ou une sélection 100% personnalisée — à votre rythme, à votre goût.
+      </p>
+    </section>
+
+    <section class="packs-section">
+      <div class="packs-hero-grid">
+        <a
+          href="catalogue.html?type=pack"
+          class="pack-hero-card pack-hero-card--single"
+        >
+          <div
+            class="pack-hero-card__media media-slot"
+            data-slot="pack-signature"
+          >
+            <img
+              class="media-slot__image"
+              src="../assets/images/packs/signature.png"
+              alt="Coffrets Signature — Kōrei"
+              hidden
+            />
+            <div
+              class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
+              data-variant="1"
+            >
+              <div class="placeholder-premium__pattern" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="pack-hero-card__overlay">
+            <span class="pack-hero-card__name">Coffrets Signature</span>
+            <span class="pack-hero-card__cta"
+              >Découvrir <span aria-hidden="true">→</span></span
+            >
+          </div>
+        </a>
+      </div>
+      <div class="pack-builder-banner">
+        <div class="pack-builder-banner__main">
+          <div class="pack-builder-banner__text">
+            <h3 class="pack-builder-banner__title">
+              Votre coffret,<br /><em>vos règles.</em>
+            </h3>
+            <span class="pack-builder-banner__rule" aria-hidden="true"></span>
+            <p class="pack-builder-banner__stat">
+              <span class="pack-builder-banner__stat-num">500+</span> parfums de
+              niche disponibles
+            </p>
+            <p class="pack-builder-banner__desc">
+              Choisissez un format puis composez votre propre sélection.
+            </p>
+            <a
+              href="catalogue.html?custom=1"
+              class="btn-dark pack-builder-banner__cta"
+              >Créer mon coffret</a
+            >
+            <ul class="pack-builder-banner__trust">
+              <li><i class="ti ti-check" aria-hidden="true"></i> Authentique</li>
+              <li><i class="ti ti-check" aria-hidden="true"></i> Préparé en France</li>
+              <li><i class="ti ti-check" aria-hidden="true"></i> Expédition 24h</li>
+            </ul>
+          </div>
+          <div class="pack-builder-banner__illustration" aria-hidden="true">
+            <div class="pack-vitrine">
+              <div class="pack-vitrine__bottle pack-vitrine__bottle--2ml">
+                <img src="../assets/images/hero/hero-decant-2ml.png" alt="" />
+              </div>
+              <div class="pack-vitrine__bottle pack-vitrine__bottle--5ml">
+                <img src="../assets/images/hero/hero-decant-5ml.png" alt="" />
+              </div>
+              <div class="pack-vitrine__bottle pack-vitrine__bottle--10ml">
+                <img src="../assets/images/hero/hero-decant-10ml.png" alt="" />
+              </div>
+              <div class="pack-vitrine__reflection"></div>
+              <div class="pack-vitrine__ground"></div>
+            </div>
+          </div>
+        </div>
+        <div class="pack-builder-banner__formats">
+          <a href="catalogue.html?pack=10x2ml&custom=1" class="pack-format-card">
+            <span class="pack-format-card__ml">10 × 2<em>ml</em></span>
+            <span class="pack-format-card__label">Découverte</span>
+            <span class="pack-format-card__desc"
+              >Idéal pour découvrir plusieurs maisons.</span
+            >
+            <span class="pack-format-card__divider" aria-hidden="true"></span>
+          </a>
+          <a href="catalogue.html?pack=5x5ml&custom=1" class="pack-format-card">
+            <span class="pack-format-card__ml">5 × 5<em>ml</em></span>
+            <span class="pack-format-card__label">Équilibré</span>
+            <span class="pack-format-card__desc"
+              >Le bon dosage entre découverte et quotidien.</span
+            >
+            <span class="pack-format-card__divider" aria-hidden="true"></span>
+          </a>
+          <a href="catalogue.html?pack=3x10ml&custom=1" class="pack-format-card">
+            <span class="pack-format-card__ml">3 × 10<em>ml</em></span>
+            <span class="pack-format-card__label">Passionné</span>
+            <span class="pack-format-card__desc"
+              >Pour vos coups de cœur, à savourer durablement.</span
+            >
+            <span class="pack-format-card__divider" aria-hidden="true"></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">Kōrei</div>
+          <div class="footer-tagline">Parfumerie de niche · Paris</div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Boutique</div>
+          <a href="catalogue.html">Parfums</a>
+          <a href="coffret.html">Coffret</a>
+          <a href="brands.html">Marques</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Korei</div>
+          <a href="about.html">À propos</a>
+          <a href="contact.html">Contact</a>
+          <a href="cgv.html">CGV</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2026 Korei</div>
+      </div>
+    </footer>
+
+    <div id="chatbot-widget" class="chatbot-widget">
+      <div id="chatbot-panel" class="chatbot-panel" role="dialog" aria-label="Conseiller olfactif Korei">
+        <div class="chatbot-head">
+          <div>
+            <div class="chatbot-head-title">Conseiller Korei</div>
+            <div class="chatbot-head-sub">Assistant olfactif · Démo</div>
+          </div>
+          <button type="button" id="chatbot-close" class="chatbot-close" aria-label="Fermer"><i class="ti ti-x"></i></button>
+        </div>
+        <div id="chatbot-messages" class="chatbot-messages"></div>
+        <div id="chatbot-suggestions" class="chatbot-suggestions"></div>
+        <div class="chatbot-foot">
+          <form id="chatbot-form" class="chatbot-form">
+            <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Décrivez ce que vous cherchez…" autocomplete="off" />
+            <button type="submit" class="chatbot-send" aria-label="Envoyer"><i class="ti ti-send"></i></button>
+          </form>
+        </div>
+        <div class="chatbot-mock-badge">Mode démo — IA à connecter</div>
+      </div>
+      <button type="button" id="chatbot-toggle" class="chatbot-toggle" aria-label="Ouvrir le conseiller olfactif" aria-expanded="false">
+        <i class="ti ti-message-chatbot"></i>
+      </button>
+    </div>
+
+    <script src="../assets/js/site.js"></script>
+    <script src="../assets/js/products.js"></script>
+    <script src="../assets/js/product-store.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/chatbot.js"></script>
+  </body>
+</html>
