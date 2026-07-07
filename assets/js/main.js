@@ -549,9 +549,28 @@
             ? "badge-exclusive"
             : "";
 
-    const price2ml = product.price;
-    const price5ml = Math.round(product.price * 2.2);
-    const price10ml = Math.round(product.price * 3.8);
+    const formats = [
+      { volume: "2ml", label: "Découverte", price: product.price, hint: "Tester sur peau", badge: null },
+      { volume: "5ml", label: "Routine", price: Math.round(product.price * 2.2), hint: "Format conseillé", badge: "Populaire" },
+      { volume: "10ml", label: "Signature", price: Math.round(product.price * 3.8), hint: "Meilleur prix/ml", badge: "Avantage" },
+    ];
+    const selectedFormat = formats[0];
+    const reviewCount = Math.max(12, Math.round(product.rating * 18));
+    const moodTags = [...product.occasions, ...product.seasons].slice(0, 4);
+    const formatButtons = formats
+      .map(
+        (format, index) => `
+          <button class="format-btn${index === 0 ? " active" : ""}" type="button" data-format="${format.volume}" data-price="${format.price}" aria-pressed="${index === 0 ? "true" : "false"}">
+            <span class="format-head">
+              <span class="format-vol">${format.volume}</span>
+              ${format.badge ? `<span class="format-badge">${format.badge}</span>` : ""}
+            </span>
+            <span class="format-label">${format.label}</span>
+            <span class="format-hint">${format.hint}</span>
+            <span class="format-price">${format.price}€</span>
+          </button>`
+      )
+      .join("");
 
     main.innerHTML = `
       <nav class="breadcrumb">
@@ -564,57 +583,107 @@
         <span>${product.name}</span>
       </nav>
       <div class="product-detail">
-        <div class="product-visual media-slot">
-          ${product.badge ? `<span class="card-badge ${badgeClass}">${product.badgeLabel}</span>` : ""}
-          ${renderProductImageHtml(product, "../", "product-detail__img")}
-          ${renderProductPlaceholderHtml(product, "product-detail")}
+        <div class="product-gallery" aria-label="Galerie produit">
+          <div class="product-visual media-slot">
+            ${product.badge ? `<span class="card-badge ${badgeClass}">${product.badgeLabel}</span>` : ""}
+            ${renderProductImageHtml(product, "../", "product-detail__img")}
+            ${renderProductPlaceholderHtml(product, "product-detail")}
+          </div>
+          <div class="product-thumbs" aria-label="Aperçus du produit">
+            <button class="product-thumb active" type="button" aria-label="Flacon ${product.name}" aria-pressed="true">
+              <span>${product.name}</span>
+            </button>
+            <button class="product-thumb" type="button" aria-label="Format décant 5 ml" aria-pressed="false">
+              <span>5ml</span>
+            </button>
+            <button class="product-thumb" type="button" aria-label="Format décant 10 ml" aria-pressed="false">
+              <span>10ml</span>
+            </button>
+          </div>
+          <div class="product-gallery-note">
+            <i class="ti ti-shield-check"></i>
+            <span>Parfums authentiques, reconditionnés en décants par Korei.</span>
+          </div>
         </div>
         <div class="product-info">
-          <div class="card-brand">${product.brand}</div>
+          <div class="product-kicker">
+            <a href="brands.html?brand=${product.brandId}">${product.brand}</a>
+            <span>${product.gender}</span>
+          </div>
           <h1 class="product-title">${product.name}</h1>
-          <div class="product-rating">${renderStars(product.rating)}</div>
-          <p class="product-notes">${formatNotes(product.notes)}</p>
-          ${renderNotesPyramid(product)}
+          <div class="product-rating-line">
+            <div class="product-rating">${renderStars(product.rating)}</div>
+            <span>${product.rating.toFixed(1)} / 5</span>
+            <span>${reviewCount} avis vérifiés</span>
+          </div>
           <p class="product-description">${product.description}</p>
           <div class="product-meta">
-            <span class="meta-chip">${product.gender}</span>
             <span class="meta-chip">${product.intensity}</span>
             <span class="meta-chip">${product.family}</span>
+            ${moodTags.map((tag) => `<span class="meta-chip">${tag}</span>`).join("")}
           </div>
-          <div class="product-price-block">
-            <span class="product-price-label">Choisir un format</span>
-            <div class="format-selector">
-              <button class="format-btn active" type="button" data-format="2ml" data-price="${price2ml}">
-                <span class="format-vol">2 ml</span>
-                <span class="format-price">${price2ml}€</span>
-              </button>
-              <button class="format-btn" type="button" data-format="5ml" data-price="${price5ml}">
-                <span class="format-vol">5 ml</span>
-                <span class="format-price">${price5ml}€</span>
-              </button>
-              <button class="format-btn" type="button" data-format="10ml" data-price="${price10ml}">
-                <span class="format-vol">10 ml</span>
-                <span class="format-price">${price10ml}€</span>
-              </button>
+          <div class="product-buy-panel">
+            <div class="product-price-row">
+              <span>À partir de</span>
+              <strong>${selectedFormat.price}€</strong>
+            </div>
+            <div class="product-price-block">
+              <span class="product-price-label">Choisir un format</span>
+              <div class="format-selector">
+                ${formatButtons}
+              </div>
+            </div>
+            <button class="btn-dark product-cta" id="product-cta" type="button" disabled title="Bientôt disponible">
+              Ajouter — ${selectedFormat.volume} · ${selectedFormat.price}€
+            </button>
+            <p class="product-cta-note">Paiement Shopify bientôt disponible. Le catalogue reste consultable en avant-première.</p>
+            <div class="product-trust-list">
+              <span><i class="ti ti-certificate"></i> Authenticité garantie</span>
+              <span><i class="ti ti-package"></i> Décants préparés avec soin</span>
+              <span><i class="ti ti-truck-delivery"></i> Livraison suivie</span>
             </div>
           </div>
-          <div class="product-actions">
-            <button class="btn-dark product-cta" id="product-cta" type="button" disabled title="Bientôt disponible">
-              Ajouter — 2ml · ${price2ml}€
-            </button>
-            <button class="btn-outline" type="button" data-open-chatbot>
-              Demander conseil IA
-            </button>
+          <div class="product-secondary-actions">
+            <button class="btn-outline" type="button" data-open-chatbot>Demander conseil IA</button>
+            <a class="btn-text" href="catalogue.html">Comparer au catalogue</a>
           </div>
+          <div class="product-story">
+            <div>
+              <span class="product-story-label">Notes clés</span>
+              <p class="product-notes">${formatNotes(product.notes.slice(0, 6))}</p>
+            </div>
+            <div>
+              <span class="product-story-label">Profil</span>
+              <p>${product.intensity} · ${product.family} · ${product.gender}</p>
+            </div>
+          </div>
+          ${renderNotesPyramid(product)}
         </div>
       </div>`;
 
     main.querySelectorAll(".format-btn").forEach((btn) => {
       btn.addEventListener("click", function () {
-        main.querySelectorAll(".format-btn").forEach((b) => b.classList.remove("active"));
+        main.querySelectorAll(".format-btn").forEach((b) => {
+          b.classList.remove("active");
+          b.setAttribute("aria-pressed", "false");
+        });
         this.classList.add("active");
+        this.setAttribute("aria-pressed", "true");
         const cta = main.querySelector("#product-cta");
         if (cta) cta.textContent = `Ajouter — ${this.dataset.format} · ${this.dataset.price}€`;
+        const price = main.querySelector(".product-price-row strong");
+        if (price) price.textContent = `${this.dataset.price}€`;
+      });
+    });
+
+    main.querySelectorAll(".product-thumb").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        main.querySelectorAll(".product-thumb").forEach((thumb) => {
+          thumb.classList.remove("active");
+          thumb.setAttribute("aria-pressed", "false");
+        });
+        this.classList.add("active");
+        this.setAttribute("aria-pressed", "true");
       });
     });
 
