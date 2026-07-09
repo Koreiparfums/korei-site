@@ -557,6 +557,51 @@
     const selectedFormat = formats[0];
     const reviewCount = Math.max(12, Math.round(product.rating * 18));
     const moodTags = [...product.occasions, ...product.seasons].slice(0, 4);
+    const keyNotes = [
+      ...(product.notesTop || []),
+      ...(product.notesHeart || []),
+      ...(product.notesBase || []),
+    ].slice(0, 3);
+    const feelGroups = [
+      {
+        title: "Meilleur moment de la journée",
+        items: product.occasions.slice(0, 4).map((item, index) => ({
+          label: item,
+          votes: [70, 60, 35, 30][index] || 24,
+          active: index === 0,
+        })),
+      },
+      {
+        title: "Meilleure saison pour porter",
+        items: product.seasons.slice(0, 4).map((item, index) => ({
+          label: item,
+          votes: [75, 55, 35, 30][index] || 22,
+          active: index === 0,
+        })),
+      },
+      {
+        title: "Tenue",
+        items: ["Faible", "Modérée", "Longue durée", "Éternel"].map((item) => ({
+          label: item,
+          votes: item === "Longue durée" ? 95 : item === "Modérée" ? 45 : 18,
+          active: product.intensity === "intense" ? item === "Longue durée" : item === "Modérée",
+        })),
+      },
+      {
+        title: "Projection",
+        items: ["Doux", "Modéré", "Fort", "Énorme"].map((item) => ({
+          label: item,
+          votes: item === "Fort" ? 85 : item === "Modéré" ? 40 : 20,
+          active: product.intensity === "intense" ? item === "Fort" : item === "Modéré",
+        })),
+      },
+    ];
+    const promiseItems = [
+      { icon: "ti-shield-check", title: "Authenticité garantie", text: "Parfums authentiques, provenant de sources vérifiées." },
+      { icon: "ti-package", title: "Décants préparés avec soin", text: "Formats reconditionnés proprement pour tester avant le flacon." },
+      { icon: "ti-truck-delivery", title: "Livraison suivie", text: "Expédition suivie dès l'ouverture de la boutique." },
+      { icon: "ti-gift", title: "Conseil personnalisé", text: "Le conseiller Korei aide à choisir selon vos goûts." },
+    ];
     const formatButtons = formats
       .map(
         (format, index) => `
@@ -588,17 +633,23 @@
             ${product.badge ? `<span class="card-badge ${badgeClass}">${product.badgeLabel}</span>` : ""}
             ${renderProductImageHtml(product, "../", "product-detail__img")}
             ${renderProductPlaceholderHtml(product, "product-detail")}
+            <button class="product-gallery-arrow product-gallery-arrow--prev" type="button" aria-label="Image précédente">
+              <i class="ti ti-chevron-left"></i>
+            </button>
+            <button class="product-gallery-arrow product-gallery-arrow--next" type="button" aria-label="Image suivante">
+              <i class="ti ti-chevron-right"></i>
+            </button>
           </div>
-          <div class="product-thumbs" aria-label="Aperçus du produit">
-            <button class="product-thumb active" type="button" aria-label="Flacon ${product.name}" aria-pressed="true">
-              <span>${product.name}</span>
-            </button>
-            <button class="product-thumb" type="button" aria-label="Format décant 5 ml" aria-pressed="false">
-              <span>5ml</span>
-            </button>
-            <button class="product-thumb" type="button" aria-label="Format décant 10 ml" aria-pressed="false">
-              <span>10ml</span>
-            </button>
+          <div class="product-note-strip" aria-label="Notes caractéristiques">
+            ${keyNotes
+              .map(
+                (note) => `
+                  <a href="catalogue.html?note=${encodeURIComponent(note)}" class="product-note-token">
+                    <span>${note.slice(0, 1)}</span>
+                    <strong>${note}</strong>
+                  </a>`
+              )
+              .join("")}
           </div>
           <div class="product-gallery-note">
             <i class="ti ti-shield-check"></i>
@@ -643,6 +694,48 @@
               <span><i class="ti ti-truck-delivery"></i> Livraison suivie</span>
             </div>
           </div>
+          <section class="product-promise-block" aria-label="Promesse Korei">
+            <h2>The <span>Korei</span> Promise</h2>
+            <div class="product-promise-grid">
+              ${promiseItems
+                .map(
+                  (item) => `
+                    <article class="product-promise-card">
+                      <i class="ti ${item.icon}"></i>
+                      <div>
+                        <h3>${item.title}</h3>
+                        <p>${item.text}</p>
+                      </div>
+                    </article>`
+                )
+                .join("")}
+            </div>
+          </section>
+          <section class="product-feel-block" aria-label="Ressenti des utilisateurs">
+            <div class="product-section-title">
+              <h2>Ressenti des utilisateurs</h2>
+              <button type="button" aria-label="Réduire la section"><i class="ti ti-minus"></i></button>
+            </div>
+            ${feelGroups
+              .map(
+                (group) => `
+                  <div class="product-feel-group">
+                    <p>${group.title}</p>
+                    <div class="product-feel-grid">
+                      ${group.items
+                        .map(
+                          (item) => `
+                            <button class="product-feel-card${item.active ? " active" : ""}" type="button">
+                              <strong>${item.label}</strong>
+                              <span>${item.votes} votes</span>
+                            </button>`
+                        )
+                        .join("")}
+                    </div>
+                  </div>`
+              )
+              .join("")}
+          </section>
           <div class="product-secondary-actions">
             <button class="btn-outline" type="button" data-open-chatbot>Demander conseil IA</button>
             <a class="btn-text" href="catalogue.html">Comparer au catalogue</a>
@@ -673,17 +766,6 @@
         if (cta) cta.textContent = `Ajouter — ${this.dataset.format} · ${this.dataset.price}€`;
         const price = main.querySelector(".product-price-row strong");
         if (price) price.textContent = `${this.dataset.price}€`;
-      });
-    });
-
-    main.querySelectorAll(".product-thumb").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        main.querySelectorAll(".product-thumb").forEach((thumb) => {
-          thumb.classList.remove("active");
-          thumb.setAttribute("aria-pressed", "false");
-        });
-        this.classList.add("active");
-        this.setAttribute("aria-pressed", "true");
       });
     });
 

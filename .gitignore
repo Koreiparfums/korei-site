@@ -20,5 +20,8 @@ build/
 .env
 .env.local
 
+# Local research references
+research/
+
 # Claude Code
 .claude/
