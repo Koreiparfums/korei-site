@@ -285,21 +285,51 @@
     });
   }
 
+  function noteSlug(note) {
+    return String(note)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  }
+
+  function noteImageHtml(note, basePath = "../") {
+    const slug = noteSlug(note);
+    return `
+      <span class="note-image">
+        <img src="${basePath}assets/images/notes/${slug}.jpg" alt="" loading="lazy" onerror="this.remove()" />
+        <span>${note.slice(0, 1)}</span>
+      </span>`;
+  }
+
   function renderNotesPyramid(product) {
     const layers = [
-      { label: "Tête", notes: product.notesTop },
-      { label: "Cœur", notes: product.notesHeart },
-      { label: "Base", notes: product.notesBase },
+      { label: "Tête", notes: product.notesTop, tone: "top" },
+      { label: "Cœur", notes: product.notesHeart, tone: "heart" },
+      { label: "Base", notes: product.notesBase, tone: "base" },
     ];
     return `
       <div class="product-pyramid">
-        <p class="product-pyramid-title">Pyramide olfactive</p>
+        <div class="product-pyramid-head">
+          <p class="product-pyramid-title">Pyramide olfactive</p>
+          <span>3 étages</span>
+        </div>
         ${layers
           .map(
             (layer) =>
-              `<div class="product-pyramid-row">
+              `<div class="product-pyramid-tier product-pyramid-tier--${layer.tone}">
                 <span class="product-pyramid-label">${layer.label}</span>
-                <span class="product-pyramid-notes">${layer.notes.join(" · ")}</span>
+                <div class="product-pyramid-notes">
+                  ${layer.notes
+                    .map(
+                      (note) => `
+                        <span class="product-pyramid-note">
+                          <span>${note}</span>
+                        </span>`
+                    )
+                    .join("")}
+                </div>
               </div>`
           )
           .join("")}
@@ -645,7 +675,7 @@
               .map(
                 (note) => `
                   <a href="catalogue.html?note=${encodeURIComponent(note)}" class="product-note-token">
-                    <span>${note.slice(0, 1)}</span>
+                    ${noteImageHtml(note)}
                     <strong>${note}</strong>
                   </a>`
               )
@@ -743,11 +773,26 @@
           <div class="product-story">
             <div>
               <span class="product-story-label">Notes clés</span>
-              <p class="product-notes">${formatNotes(product.notes.slice(0, 6))}</p>
+              <div class="product-key-notes">
+                ${product.notes
+                  .slice(0, 6)
+                  .map(
+                    (note) => `
+                      <a href="catalogue.html?note=${encodeURIComponent(note)}" class="product-key-note">
+                        ${noteImageHtml(note)}
+                        <span>${note}</span>
+                      </a>`
+                  )
+                  .join("")}
+              </div>
             </div>
             <div>
               <span class="product-story-label">Profil</span>
-              <p>${product.intensity} · ${product.family} · ${product.gender}</p>
+              <div class="product-profile-list">
+                <span><strong>Intensité</strong>${product.intensity}</span>
+                <span><strong>Famille</strong>${product.family}</span>
+                <span><strong>Genre</strong>${product.gender}</span>
+              </div>
             </div>
           </div>
           ${renderNotesPyramid(product)}
