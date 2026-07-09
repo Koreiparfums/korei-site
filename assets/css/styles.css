@@ -1019,12 +1019,33 @@ body[data-page="home"] .hero {
 }
 .card-img {
   height: 210.61px;
-  background: var(--surface);
+  background:
+    radial-gradient(circle at 50% 44%, rgba(255, 255, 255, 0.88), transparent 46%),
+    var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
+}
+.card-img-glow {
+  position: absolute;
+  inset: 10%;
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  filter: blur(22px) saturate(1.22);
+  opacity: 0.34;
+  transform: scale(1.45);
+  pointer-events: none;
+}
+.card-img .card-img-glow {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+.media-slot--loaded .card-img-glow {
+  display: block;
 }
 .card-img-icon {
   font-size: 77.23px;
@@ -3094,7 +3115,7 @@ footer {
 }
 .product-info {
   max-width: 100%;
-  padding-top: clamp(16px, 2.2vw, 36px);
+  padding-top: clamp(72px, 8vw, 132px);
 }
 .product-kicker,
 .product-rating-line {
@@ -4288,10 +4309,11 @@ footer {
 .product-visual .product-detail__img {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  width: 86%;
+  height: 86%;
+  margin: auto;
   object-fit: contain;
-  padding: clamp(8px, 2.2vw, 24px);
+  object-position: center center;
 }
 .product-visual.media-slot {
   min-height: clamp(620px, 67vw, 820px);

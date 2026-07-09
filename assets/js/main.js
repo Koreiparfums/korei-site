@@ -22,6 +22,12 @@
     return `<img class="${className} media-slot__image" src="${src}" alt="${alt}" hidden />`;
   }
 
+  function renderProductGlowHtml(product, basePath = "") {
+    const src = productImageSrc(product, basePath);
+    if (!src) return "";
+    return `<img class="card-img-glow" src="${src}" alt="" aria-hidden="true" loading="lazy" />`;
+  }
+
   function productMetaImage(product, basePath = "") {
     return productImageSrc(product, basePath)
       || site?.withBase(site.IMAGES.productPlaceholder, basePath)
@@ -224,6 +230,7 @@
     return `
       <a href="${productUrl}" class="product-card" ${minWidth} data-product-id="${product.id}">
         <div class="card-img media-slot media-slot--card">
+          ${renderProductGlowHtml(product, basePath)}
           ${badgeHtml}
           <button class="card-fav" type="button" aria-label="Favoris" data-fav-btn>
             <i class="ti ti-heart"></i>
