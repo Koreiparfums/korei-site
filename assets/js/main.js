@@ -199,6 +199,11 @@
     const basePath = options.basePath || "";
     const productUrl = `${basePath}pages/product.html?id=${product.id}`;
     const price = formatPrice ? formatPrice(product.price) : `À partir de ${product.price}€`;
+    const keyNotes = [
+      ...(product.notesTop || []),
+      ...(product.notesHeart || []),
+      ...(product.notesBase || []),
+    ].slice(0, 3);
 
     const badgeClass =
       product.badge === "best"
@@ -229,6 +234,17 @@
         <div class="card-body">
           <div class="card-brand">${product.brand}</div>
           <div class="card-name">${product.name}</div>
+          <div class="card-note-strip" aria-label="Notes principales">
+            ${keyNotes
+              .map(
+                (note) => `
+                  <span class="card-note" title="${note}">
+                    ${noteImageHtml(note, basePath)}
+                    <span>${note}</span>
+                  </span>`
+              )
+              .join("")}
+          </div>
           <div class="card-footer">
             <div class="card-rating">${renderStars(product.rating)}</div>
           </div>
@@ -301,6 +317,29 @@
         <img src="${basePath}assets/images/notes/${slug}.jpg" alt="" loading="lazy" onerror="this.remove()" />
         <span>${note.slice(0, 1)}</span>
       </span>`;
+  }
+
+  function feelIcon(label) {
+    const key = String(label).toLowerCase();
+    const icons = {
+      soirée: "🌙",
+      bureau: "🏢",
+      quotidien: "☀️",
+      date: "✨",
+      été: "🌴",
+      hiver: "❄️",
+      automne: "🍂",
+      printemps: "🌼",
+      faible: "▫️",
+      modérée: "▰",
+      modéré: "▰",
+      "longue durée": "▰▰▰",
+      éternel: "▰▰▰▰",
+      doux: "〰️",
+      fort: "◉",
+      énorme: "◎",
+    };
+    return icons[key] || "✦";
   }
 
   function renderNotesPyramid(product) {
@@ -599,6 +638,7 @@
           label: item,
           votes: [70, 60, 35, 30][index] || 24,
           active: index === 0,
+          icon: feelIcon(item),
         })),
       },
       {
@@ -607,6 +647,7 @@
           label: item,
           votes: [75, 55, 35, 30][index] || 22,
           active: index === 0,
+          icon: feelIcon(item),
         })),
       },
       {
@@ -615,6 +656,7 @@
           label: item,
           votes: item === "Longue durée" ? 95 : item === "Modérée" ? 45 : 18,
           active: product.intensity === "intense" ? item === "Longue durée" : item === "Modérée",
+          icon: feelIcon(item),
         })),
       },
       {
@@ -623,6 +665,7 @@
           label: item,
           votes: item === "Fort" ? 85 : item === "Modéré" ? 40 : 20,
           active: product.intensity === "intense" ? item === "Fort" : item === "Modéré",
+          icon: feelIcon(item),
         })),
       },
     ];
@@ -756,6 +799,7 @@
                         .map(
                           (item) => `
                             <button class="product-feel-card${item.active ? " active" : ""}" type="button">
+                              <span class="product-feel-icon">${item.icon}</span>
                               <strong>${item.label}</strong>
                               <span>${item.votes} votes</span>
                             </button>`
