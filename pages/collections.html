@@ -46,8 +46,23 @@
       </div>
       <a href="../index.html" class="logo logo-center">Kōrei</a>
       <div class="header-right">
+        <div class="search" role="search">
+          <span class="search-icon"><i class="ti ti-search"></i></span>
+          <input type="search" placeholder="Rechercher des marques..." aria-label="Rechercher" />
+        </div>
         <div class="header-actions">
-          <button class="icon-btn" aria-label="Panier" type="button"><i class="ti ti-shopping-bag"></i></button>
+          <button class="icon-btn search-mobile-btn" onclick="toggleSearch()" aria-label="Rechercher" type="button">
+            <i class="ti ti-search"></i>
+          </button>
+          <button class="icon-btn" aria-label="Favoris" type="button">
+            <i class="ti ti-heart"></i>
+          </button>
+          <button class="icon-btn" aria-label="Panier" type="button">
+            <i class="ti ti-shopping-bag"></i>
+          </button>
+          <button class="icon-btn" aria-label="Compte" type="button">
+            <i class="ti ti-user"></i>
+          </button>
         </div>
       </div>
     </header>
@@ -55,11 +70,28 @@
     <div class="mobile-menu" id="mobileMenu">
       <div class="mobile-overlay" onclick="toggleMenu()"></div>
       <div class="mobile-drawer">
+        <div class="mobile-drawer-head">
+          <span class="logo">Kōrei</span>
+          <button onclick="toggleMenu()" type="button" style="background:none;border:none;font-size:26px;cursor:pointer;color:#888">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
         <a href="../index.html">Accueil</a>
         <a href="catalogue.html">Parfums</a>
         <a href="coffret.html">Coffret</a>
         <a href="brands.html">Marques</a>
         <a href="collections.html">Collections</a>
+        <a href="#" data-open-chatbot>Conseiller IA</a>
+      </div>
+    </div>
+
+    <div class="search-overlay" id="searchOverlay">
+      <div class="search-overlay-head">
+        <i class="ti ti-search search-overlay-icon"></i>
+        <input type="search" class="search-overlay-input" placeholder="Rechercher un parfum…" aria-label="Rechercher" />
+        <button class="search-overlay-close" onclick="toggleSearch()" aria-label="Fermer" type="button">
+          <i class="ti ti-x"></i>
+        </button>
       </div>
     </div>
 

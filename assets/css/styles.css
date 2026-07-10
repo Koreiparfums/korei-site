@@ -2960,6 +2960,11 @@ footer {
   align-items: start;
   margin-bottom: 64px;
 }
+.product-visual-col {
+  display: flex;
+  flex-direction: column;
+  gap: 22.4px;
+}
 .product-visual {
   position: relative;
   background: var(--surface);
@@ -2997,12 +3002,10 @@ footer {
   line-height: 1.15;
   margin-bottom: 12.8px;
 }
-.product-rating {
-  margin-bottom: 12.8px;
-}
 .product-notes {
   font-size: 12.8px;
   color: var(--text-muted);
+  margin-top: 25.6px;
   margin-bottom: 16px;
 }
 .product-description {
@@ -3026,6 +3029,9 @@ footer {
   border-radius: var(--radius-pill);
   color: var(--text-muted);
 }
+.product-price-display {
+  margin-bottom: 16px;
+}
 .product-price-block {
   margin-bottom: 22.4px;
 }
@@ -3045,13 +3051,15 @@ footer {
   gap: 8px;
 }
 .format-btn {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4.8px;
   padding: 14.4px 9.6px;
   border: 0.8px solid var(--border);
-  background: var(--bg);
+  border-radius: var(--radius-sm);
+  background: #fff;
   cursor: pointer;
   transition:
     border-color 0.15s,
@@ -3061,8 +3069,39 @@ footer {
   border-color: var(--border-dark);
 }
 .format-btn.active {
-  border-color: var(--text);
+  border-color: var(--accent);
   background: var(--surface);
+}
+.format-check {
+  position: absolute;
+  top: 6.4px;
+  right: 6.4px;
+  width: 14.4px;
+  height: 14.4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 8.8px;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+}
+.format-btn.active .format-check {
+  opacity: 1;
+  transform: scale(1);
+}
+.format-icon {
+  font-size: 14.4px;
+  color: var(--text-light);
+  margin-bottom: 1.6px;
+}
+.format-btn.active .format-icon {
+  color: var(--accent);
 }
 .format-vol {
   font-family: "DM Sans", sans-serif;
@@ -3070,6 +3109,12 @@ footer {
   font-weight: 300;
   color: var(--text);
   line-height: 1;
+}
+.format-desc {
+  font-size: 8.8px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-light);
 }
 .format-price {
   font-family: "DM Sans", sans-serif;
@@ -3081,10 +3126,12 @@ footer {
   font-weight: 500;
 }
 .product-price {
-  font-size: 19.2px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 30.4px;
   font-weight: 500;
+  color: var(--accent);
   display: block;
-  margin-bottom: 4.8px;
+  line-height: 1;
 }
 .product-price-hint {
   font-size: 10.4px;
@@ -3099,6 +3146,13 @@ footer {
 .product-actions .btn-outline {
   font-size: 9.6px;
   padding: 12.8px 22.4px;
+}
+.product-actions .btn-outline {
+  background: #fff;
+}
+.product-actions .btn-outline i {
+  margin-right: 6.4px;
+  font-size: 12px;
 }
 .product-cta:disabled {
   opacity: 0.55;
@@ -3612,50 +3666,333 @@ footer {
   color: var(--text);
 }
 
-/* ─── PYRAMIDE OLFACTIVE (fiche produit) ─── */
-.product-pyramid {
+/* ─── FICHE PRODUIT — CARTES & COMPOSANTS ─── */
+.info-card {
   margin: 16px 0 19.2px;
   padding: 16px;
-  background: var(--surface);
+  background: #fff;
   border: 0.8px solid var(--border);
   border-radius: var(--radius-md);
 }
-.product-pyramid-title {
+.info-card-title {
   font-size: 8.8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 11.2px;
 }
-.product-pyramid-row {
+.info-card-title--sep {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 0.8px solid var(--border);
+}
+
+/* Ligne de notation */
+.product-rating {
   display: flex;
-  gap: 9.6px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12.8px;
+}
+.rating-sep {
+  color: var(--border-dark);
+}
+.rating-votes {
+  font-size: 10.4px;
+  color: var(--text-muted);
+}
+.rating-source {
+  color: var(--accent);
+}
+
+/* Pyramide olfactive — vraie forme triangulaire */
+.scent-pyramid {
+  display: flex;
+  align-items: stretch;
+  gap: 19.2px;
+}
+.scent-pyramid-shape {
+  flex-shrink: 0;
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+}
+.scent-pyramid-band {
+  flex: 1;
+  display: block;
+}
+.scent-pyramid-band--top {
+  clip-path: polygon(50% 0%, 66.67% 100%, 33.33% 100%);
+  background: var(--accent-light);
+}
+.scent-pyramid-band--mid {
+  clip-path: polygon(33.33% 0%, 66.67% 0%, 83.33% 100%, 16.67% 100%);
+  background: var(--accent);
+}
+.scent-pyramid-band--base {
+  clip-path: polygon(16.67% 0%, 83.33% 0%, 100% 100%, 0% 100%);
+  background: var(--badge-text);
+}
+.scent-pyramid-rows {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.scent-pyramid-row {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 6.4px 0;
   border-bottom: 0.8px solid var(--border);
-  font-size: 11.2px;
-  line-height: 1.5;
 }
-.product-pyramid-row:last-child {
+.scent-pyramid-row:last-child {
   border-bottom: none;
-  padding-bottom: 0;
 }
-.product-pyramid-label {
+.scent-pyramid-row-icon {
   flex-shrink: 0;
-  width: 38.4px;
+  font-size: 14.4px;
+  color: var(--accent);
+}
+.scent-pyramid-row-label {
+  flex-shrink: 0;
+  width: 40px;
   font-size: 8.8px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--text);
   font-weight: 500;
 }
-.product-pyramid-notes {
+.scent-pyramid-row-notes {
+  font-size: 10.4px;
   color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Accords principaux / Pour qui — barres */
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 9.6px;
+  padding: 4.8px 0;
+}
+.bar-label {
+  flex-shrink: 0;
+  width: 51.2px;
+  font-size: 10.4px;
+  color: var(--text);
+}
+.bar-track {
+  flex: 1;
+  height: 6.4px;
+  border-radius: var(--radius-pill);
+  background: var(--border);
+  overflow: hidden;
+}
+.bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+}
+
+/* Performance / Moment idéal — jauges à pastilles */
+.meter-row {
+  display: flex;
+  align-items: center;
+  gap: 9.6px;
+  padding: 4.8px 0;
+}
+.meter-label {
+  flex-shrink: 0;
+  width: 51.2px;
+  font-size: 10.4px;
+  color: var(--text);
+}
+.meter-dots {
+  display: flex;
+  gap: 3.2px;
+}
+.meter-dot {
+  width: 6.4px;
+  height: 6.4px;
+  border-radius: 50%;
+  background: var(--border);
+}
+.meter-dot.is-filled {
+  background: var(--accent);
+}
+.meter-hint {
+  margin-left: auto;
+  font-size: 9.6px;
+  color: var(--text-muted);
+}
+
+/* Saison idéale */
+.product-seasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6.4px;
+}
+.season-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4.8px;
+  padding: 4.8px 11.2px;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-size: 9.6px;
+  color: var(--text-light);
+}
+.season-chip.is-active {
+  border-color: var(--badge-border);
+  background: var(--badge-bg);
+  color: var(--badge-text);
+}
+
+/* Fiche technique */
+.product-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 22.4px;
+  margin-bottom: 16px;
+}
+.product-specs-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4px;
+}
+.product-specs-label {
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-light);
+}
+.product-specs-value {
+  font-size: 11.2px;
+  color: var(--text);
+}
+
+/* Histoire éditoriale */
+.product-story {
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-size: 13.6px;
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 19.2px;
+}
+
+/* Bandeau décant */
+.product-giftbar {
+  display: flex;
+  align-items: center;
+  gap: 12.8px;
+  margin: 22.4px 0;
+  font-size: 10.4px;
+  color: var(--text-muted);
+}
+.product-giftbar::before,
+.product-giftbar::after {
+  content: "";
+  flex: 1;
+  height: 0.8px;
+  background: var(--border);
+}
+.product-giftbar i {
+  flex-shrink: 0;
+  font-size: 14.4px;
+  color: var(--accent);
+}
+
+/* Bandeau de réassurance — slider */
+.trust-strip {
+  overflow: hidden;
+  margin-top: 22.4px;
+  padding: 14.4px 0;
+  background: #fff;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.trust-strip-track {
+  display: flex;
+  align-items: flex-start;
+  width: 200%;
+  list-style: none;
+  animation: trustStripMarquee 16s linear infinite;
+}
+.trust-strip-track:hover {
+  animation-play-state: paused;
+}
+@keyframes trustStripMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.trust-strip-track li {
+  flex: 0 0 10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4.8px;
+  padding: 0 6.4px;
+}
+.trust-strip i {
+  font-size: 17.6px;
+  color: var(--text-light);
+  margin-bottom: 1.6px;
+}
+.trust-strip-title {
+  font-size: 8.8px;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.3;
+}
+.trust-strip-sub {
+  font-size: 8.8px;
+  color: var(--text-light);
+}
+
+/* Profil & performance (bandeau pleine largeur) */
+.product-profile-section {
+  padding-top: 44.8px;
+  border-top: 0.8px solid var(--border);
+}
+.product-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.product-profile-col {
+  padding: 0 25.6px;
+  border-left: 0.8px solid var(--border);
+}
+.product-profile-col:first-child {
+  padding-left: 0;
+  border-left: none;
+}
+.product-profile-col:last-child {
+  padding-right: 0;
 }
 
 @media (max-width: 860px) {
   .product-detail {
     grid-template-columns: 1fr;
     gap: 25.6px;
+  }
+  .product-profile-grid {
+    grid-template-columns: 1fr;
+    gap: 22.4px;
+  }
+  .product-profile-col {
+    padding: 0;
+    border-left: none;
   }
   .page-hero-title {
     font-size: 35.2px;
