@@ -389,12 +389,9 @@
   function renderPerformance(product) {
     const perf = getPerformance(product);
     return `
-      <p class="info-card-title">Performance</p>
-      <div class="product-performance">
-        ${renderMeterRow("Longévité", perf.longevity, LONGEVITY_HINTS)}
-        ${renderMeterRow("Projection", perf.projection)}
-        ${renderMeterRow("Sillage", perf.sillage)}
-      </div>`;
+      ${renderMeterRow("Longévité", perf.longevity, LONGEVITY_HINTS)}
+      ${renderMeterRow("Projection", perf.projection)}
+      ${renderMeterRow("Sillage", perf.sillage)}`;
   }
 
   // ── Saison idéale
@@ -435,7 +432,7 @@
   function renderMoments(product) {
     const moments = getMoments(product);
     return `
-      <p class="info-card-title info-card-title--sep">Moment idéal</p>
+      <p class="info-card-title">Moment idéal</p>
       <div class="product-moments">
         ${renderMeterRow("Journée", moments.jour)}
         ${renderMeterRow("Soirée", moments.soir)}
@@ -810,10 +807,6 @@
             ${renderProductImageHtml(product, "../", "product-detail__img")}
             ${renderProductPlaceholderHtml(product, "product-detail")}
           </div>
-          <div class="info-card">
-            <p class="info-card-title">Pyramide olfactive</p>
-            ${renderNotesPyramid(product)}
-          </div>
         </div>
         <div class="product-info">
           <div class="card-brand">${product.brand}</div>
@@ -872,11 +865,32 @@
           <h2 class="section-title">Profil & <em>performance</em></h2>
         </div>
         ${renderProductSpecs(product)}
-        <div class="product-profile-grid">
-          <div class="product-profile-col">${renderAccords(product)}</div>
-          <div class="product-profile-col">${renderPerformance(product)}</div>
-          <div class="product-profile-col">${renderSeasons(product)}${renderMoments(product)}</div>
-          <div class="product-profile-col">${renderGenderFit(product)}</div>
+
+        <div class="profile-block">
+          <h3 class="profile-block-title">Composition</h3>
+          <div class="profile-block-body profile-block-body--composition">
+            <div class="profile-pyramid">
+              <p class="info-card-title">Pyramide olfactive</p>
+              ${renderNotesPyramid(product)}
+            </div>
+            <div class="profile-accords">${renderAccords(product)}</div>
+          </div>
+        </div>
+
+        <div class="profile-block">
+          <h3 class="profile-block-title">Signature</h3>
+          <div class="profile-block-body profile-block-body--signature">
+            ${renderPerformance(product)}
+          </div>
+        </div>
+
+        <div class="profile-block">
+          <h3 class="profile-block-title">Ambiance</h3>
+          <div class="profile-block-body profile-block-body--ambiance">
+            <div>${renderSeasons(product)}</div>
+            <div>${renderMoments(product)}</div>
+            <div>${renderGenderFit(product)}</div>
+          </div>
         </div>
       </section>`;
 
