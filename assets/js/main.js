@@ -56,8 +56,8 @@
       },
       aggregateRating: {
         "@type": "AggregateRating",
-        ratingValue: product.rating,
-        reviewCount: Math.max(1, Math.round(product.rating * 12)),
+        ratingValue: product.fragrantica?.rating || product.rating,
+        reviewCount: product.fragrantica?.votes || Math.max(1, Math.round(product.rating * 12)),
       },
     };
   }
@@ -287,22 +287,259 @@
 
   function renderNotesPyramid(product) {
     const layers = [
-      { label: "Tête", notes: product.notesTop },
-      { label: "Cœur", notes: product.notesHeart },
-      { label: "Base", notes: product.notesBase },
+      { label: "Tête", icon: "ti-wind", notes: product.notesTop },
+      { label: "Cœur", icon: "ti-flower", notes: product.notesHeart },
+      { label: "Fond", icon: "ti-leaf", notes: product.notesBase },
     ];
     return `
-      <div class="product-pyramid">
-        <p class="product-pyramid-title">Pyramide olfactive</p>
-        ${layers
+      <div class="scent-pyramid">
+        <div class="scent-pyramid-shape" aria-hidden="true">
+          <span class="scent-pyramid-band scent-pyramid-band--top"></span>
+          <span class="scent-pyramid-band scent-pyramid-band--mid"></span>
+          <span class="scent-pyramid-band scent-pyramid-band--base"></span>
+        </div>
+        <div class="scent-pyramid-rows">
+          ${layers
+            .map(
+              (layer) =>
+                `<div class="scent-pyramid-row">
+                  <i class="ti ${layer.icon} scent-pyramid-row-icon"></i>
+                  <span class="scent-pyramid-row-label">${layer.label}</span>
+                  <span class="scent-pyramid-row-notes">${layer.notes.join(" · ")}</span>
+                </div>`
+            )
+            .join("")}
+        </div>
+      </div>`;
+  }
+
+  // ── Accords principaux (surchargeable via product.accords)
+  function getAccords(product) {
+    if (Array.isArray(product.accords) && product.accords.length) return product.accords;
+    const strengths = [100, 82, 64, 46, 28];
+    const seen = new Set();
+    const ordered = [...product.notesHeart, ...product.notesTop, ...product.notesBase];
+    const unique = ordered.filter((note) => {
+      const key = note.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    return unique.slice(0, 5).map((name, i) => ({ name, strength: strengths[i] }));
+  }
+
+  function renderAccords(product) {
+    const accords = getAccords(product);
+    if (!accords.length) return "";
+    return `
+      <p class="info-card-title">Accords principaux</p>
+      <div class="product-accords">
+        ${accords
           .map(
-            (layer) =>
-              `<div class="product-pyramid-row">
-                <span class="product-pyramid-label">${layer.label}</span>
-                <span class="product-pyramid-notes">${layer.notes.join(" · ")}</span>
-              </div>`
+            (a) => `
+          <div class="bar-row">
+            <span class="bar-label">${a.name}</span>
+            <span class="bar-track"><span class="bar-fill" style="width:${a.strength}%"></span></span>
+          </div>`
           )
           .join("")}
+      </div>`;
+  }
+
+  // ── Performance (surchargeable via product.performance)
+  function getPerformance(product) {
+    if (product.performance) return product.performance;
+    const base = product.intensity === "intense" ? 4 : product.intensity === "modéré" ? 3 : 2;
+    return {
+      longevity: Math.min(5, base + 1),
+      projection: base,
+      sillage: Math.min(5, base + (product.intensity === "intense" ? 1 : 0)),
+    };
+  }
+
+  const METER_HINTS = {
+    1: "Faible",
+    2: "Légère",
+    3: "Modérée",
+    4: "Forte",
+    5: "Très forte",
+  };
+  const LONGEVITY_HINTS = {
+    1: "Courte",
+    2: "Modérée",
+    3: "Bonne",
+    4: "Longue",
+    5: "Très longue",
+  };
+
+  function renderMeterRow(label, value, hints = METER_HINTS, max = 5) {
+    const filled = Math.max(0, Math.min(max, Math.round(value)));
+    const dots = Array.from(
+      { length: max },
+      (_, i) => `<span class="meter-dot${i < filled ? " is-filled" : ""}"></span>`
+    ).join("");
+    return `
+      <div class="meter-row">
+        <span class="meter-label">${label}</span>
+        <span class="meter-dots">${dots}</span>
+        <span class="meter-hint">${hints[filled] || ""}</span>
+      </div>`;
+  }
+
+  function renderPerformance(product) {
+    const perf = getPerformance(product);
+    return `
+      ${renderMeterRow("Longévité", perf.longevity, LONGEVITY_HINTS)}
+      ${renderMeterRow("Projection", perf.projection)}
+      ${renderMeterRow("Sillage", perf.sillage)}`;
+  }
+
+  // ── Saison idéale
+  const SEASONS = [
+    { key: "printemps", label: "Printemps", icon: "ti-flower" },
+    { key: "été", label: "Été", icon: "ti-sun" },
+    { key: "automne", label: "Automne", icon: "ti-leaf" },
+    { key: "hiver", label: "Hiver", icon: "ti-snowflake" },
+  ];
+
+  function renderSeasons(product) {
+    const active = product.seasons || [];
+    return `
+      <p class="info-card-title">Saison idéale</p>
+      <div class="product-seasons">
+        ${SEASONS.map(
+          (s) => `
+          <span class="season-chip${active.includes(s.key) ? " is-active" : ""}">
+            <i class="ti ${s.icon}"></i>${s.label}
+          </span>`
+        ).join("")}
+      </div>`;
+  }
+
+  // ── Moment idéal (surchargeable via product.moments)
+  function getMoments(product) {
+    if (product.moments) return product.moments;
+    const occ = product.occasions || [];
+    const boost = product.intensity === "intense" ? 1 : 0;
+    return {
+      jour: occ.includes("quotidien") ? 4 : 2,
+      soir: Math.min(5, (occ.includes("soirée") || occ.includes("date") ? 4 : 2) + boost),
+      bureau: occ.includes("bureau") ? 4 : 2,
+      sortie: Math.min(5, (occ.includes("soirée") || occ.includes("date") ? 4 : 3) + boost),
+    };
+  }
+
+  function renderMoments(product) {
+    const moments = getMoments(product);
+    return `
+      <p class="info-card-title">Moment idéal</p>
+      <div class="product-moments">
+        ${renderMeterRow("Journée", moments.jour)}
+        ${renderMeterRow("Soirée", moments.soir)}
+        ${renderMeterRow("Bureau", moments.bureau)}
+        ${renderMeterRow("Sortie", moments.sortie)}
+      </div>`;
+  }
+
+  // ── Pour qui (surchargeable via product.genderFit)
+  function getGenderFit(product) {
+    if (product.genderFit) return product.genderFit;
+    if (product.gender === "homme") return { homme: 95, femme: 25, mixte: 55 };
+    if (product.gender === "femme") return { homme: 25, femme: 95, mixte: 55 };
+    return { homme: 75, femme: 75, mixte: 95 };
+  }
+
+  function renderGenderFit(product) {
+    const fit = getGenderFit(product);
+    return `
+      <p class="info-card-title">Pour qui ?</p>
+      <div class="product-genderfit">
+        <div class="bar-row">
+          <span class="bar-label">Homme</span>
+          <span class="bar-track"><span class="bar-fill" style="width:${fit.homme}%"></span></span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Femme</span>
+          <span class="bar-track"><span class="bar-fill" style="width:${fit.femme}%"></span></span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Mixte</span>
+          <span class="bar-track"><span class="bar-fill" style="width:${fit.mixte}%"></span></span>
+        </div>
+      </div>`;
+  }
+
+  // ── Fiche technique (n'affiche que les champs renseignés)
+  function renderProductSpecs(product) {
+    const specs = [
+      { label: "Maison", value: product.house || product.brand },
+      { label: "Parfumeur", value: product.perfumer },
+      { label: "Année", value: product.launchYear },
+      { label: "Famille", value: product.family },
+    ].filter((s) => s.value);
+    if (!specs.length) return "";
+    return `
+      <div class="product-specs">
+        ${specs
+          .map(
+            (s) => `
+          <div class="product-specs-item">
+            <span class="product-specs-label">${s.label}</span>
+            <span class="product-specs-value">${s.value}</span>
+          </div>`
+          )
+          .join("")}
+      </div>`;
+  }
+
+  // ── Ligne de notation : avis Fragrantica si renseigné, sinon note locale
+  function renderRatingLine(product) {
+    const fr = product.fragrantica;
+    if (fr && fr.rating) {
+      const votes = fr.votes
+        ? `<span class="rating-sep">|</span><span class="rating-votes">Basé sur ${fr.votes.toLocaleString("fr-FR")} avis <span class="rating-source">Fragrantica</span></span>`
+        : "";
+      return `<div class="product-rating">${renderStars(fr.rating)}${votes}</div>`;
+    }
+    return `<div class="product-rating">${renderStars(product.rating)}</div>`;
+  }
+
+  // ── Histoire éditoriale (n'affiche rien si non renseignée)
+  function renderStory(product) {
+    if (!product.story) return "";
+    return `<p class="product-story">${product.story}</p>`;
+  }
+
+  // ── Bandeau décant (statique)
+  function renderGiftBar() {
+    return `
+      <div class="product-giftbar">
+        <i class="ti ti-gift"></i>
+        <span>Votre décant sera préparé à la commande dans un flacon en verre premium.</span>
+      </div>`;
+  }
+
+  // ── Bandeau de réassurance (statique)
+  function renderTrustStrip() {
+    const items = [
+      { icon: "ti-flask", title: "Préparé à la commande", sub: "avec soin" },
+      { icon: "ti-certificate", title: "Parfum 100%", sub: "authentique" },
+      { icon: "ti-bottle", title: "Flacon en verre", sub: "premium" },
+      { icon: "ti-lock", title: "Paiement", sub: "sécurisé" },
+      { icon: "ti-truck-delivery", title: "Livraison 24-48h", sub: "en France" },
+    ];
+    const renderItem = (it, hidden) => `
+          <li${hidden ? ' aria-hidden="true"' : ""}>
+            <i class="ti ${it.icon}"></i>
+            <span class="trust-strip-title">${it.title}</span>
+            <span class="trust-strip-sub">${it.sub}</span>
+          </li>`;
+    return `
+      <div class="trust-strip">
+        <ul class="trust-strip-track">
+          ${items.map((it) => renderItem(it, false)).join("")}
+          ${items.map((it) => renderItem(it, true)).join("")}
+        </ul>
       </div>`;
   }
 
@@ -564,57 +801,107 @@
         <span>${product.name}</span>
       </nav>
       <div class="product-detail">
-        <div class="product-visual media-slot">
-          ${product.badge ? `<span class="card-badge ${badgeClass}">${product.badgeLabel}</span>` : ""}
-          ${renderProductImageHtml(product, "../", "product-detail__img")}
-          ${renderProductPlaceholderHtml(product, "product-detail")}
+        <div class="product-visual-col">
+          <div class="product-visual media-slot">
+            ${product.badge ? `<span class="card-badge ${badgeClass}">${product.badgeLabel}</span>` : ""}
+            ${renderProductImageHtml(product, "../", "product-detail__img")}
+            ${renderProductPlaceholderHtml(product, "product-detail")}
+          </div>
         </div>
         <div class="product-info">
           <div class="card-brand">${product.brand}</div>
           <h1 class="product-title">${product.name}</h1>
-          <div class="product-rating">${renderStars(product.rating)}</div>
-          <p class="product-notes">${formatNotes(product.notes)}</p>
-          ${renderNotesPyramid(product)}
-          <p class="product-description">${product.description}</p>
-          <div class="product-meta">
-            <span class="meta-chip">${product.gender}</span>
-            <span class="meta-chip">${product.intensity}</span>
-            <span class="meta-chip">${product.family}</span>
+          ${renderRatingLine(product)}
+          <div class="product-price-display">
+            <span class="product-price" id="product-price-value">${price2ml}€</span>
           </div>
           <div class="product-price-block">
             <span class="product-price-label">Choisir un format</span>
             <div class="format-selector">
               <button class="format-btn active" type="button" data-format="2ml" data-price="${price2ml}">
+                <span class="format-check"><i class="ti ti-check"></i></span>
+                <i class="ti ti-flask format-icon"></i>
                 <span class="format-vol">2 ml</span>
+                <span class="format-desc">Découverte</span>
                 <span class="format-price">${price2ml}€</span>
               </button>
               <button class="format-btn" type="button" data-format="5ml" data-price="${price5ml}">
+                <span class="format-check"><i class="ti ti-check"></i></span>
+                <i class="ti ti-flask format-icon"></i>
                 <span class="format-vol">5 ml</span>
+                <span class="format-desc">Quotidien</span>
                 <span class="format-price">${price5ml}€</span>
               </button>
               <button class="format-btn" type="button" data-format="10ml" data-price="${price10ml}">
+                <span class="format-check"><i class="ti ti-check"></i></span>
+                <i class="ti ti-flask format-icon"></i>
                 <span class="format-vol">10 ml</span>
+                <span class="format-desc">Collection</span>
                 <span class="format-price">${price10ml}€</span>
               </button>
             </div>
           </div>
+          ${renderGiftBar()}
           <div class="product-actions">
             <button class="btn-dark product-cta" id="product-cta" type="button" disabled title="Bientôt disponible">
-              Ajouter — 2ml · ${price2ml}€
+              Ajouter au panier · 2ml — ${price2ml}€
             </button>
             <button class="btn-outline" type="button" data-open-chatbot>
-              Demander conseil IA
+              <i class="ti ti-sparkles"></i>Besoin d'un conseil ?
             </button>
           </div>
+          ${renderTrustStrip()}
+          <p class="product-notes">${formatNotes(product.notes)}</p>
+          ${renderStory(product) || `<p class="product-description">${product.description}</p>`}
+          <div class="product-meta">
+            <span class="meta-chip">${product.intensity}</span>
+            <span class="meta-chip">${product.family}</span>
+          </div>
         </div>
-      </div>`;
+      </div>
+
+      <section class="section product-profile-section" style="padding-top: 0">
+        <div class="section-head">
+          <h2 class="section-title">Profil & <em>performance</em></h2>
+        </div>
+        ${renderProductSpecs(product)}
+
+        <div class="profile-block">
+          <h3 class="profile-block-title">Composition</h3>
+          <div class="profile-block-body profile-block-body--composition">
+            <div class="profile-pyramid">
+              <p class="info-card-title">Pyramide olfactive</p>
+              ${renderNotesPyramid(product)}
+            </div>
+            <div class="profile-accords">${renderAccords(product)}</div>
+          </div>
+        </div>
+
+        <div class="profile-block">
+          <h3 class="profile-block-title">Signature</h3>
+          <div class="profile-block-body profile-block-body--signature">
+            ${renderPerformance(product)}
+          </div>
+        </div>
+
+        <div class="profile-block">
+          <h3 class="profile-block-title">Ambiance</h3>
+          <div class="profile-block-body profile-block-body--ambiance">
+            <div>${renderSeasons(product)}</div>
+            <div>${renderMoments(product)}</div>
+            <div>${renderGenderFit(product)}</div>
+          </div>
+        </div>
+      </section>`;
 
     main.querySelectorAll(".format-btn").forEach((btn) => {
       btn.addEventListener("click", function () {
         main.querySelectorAll(".format-btn").forEach((b) => b.classList.remove("active"));
         this.classList.add("active");
         const cta = main.querySelector("#product-cta");
-        if (cta) cta.textContent = `Ajouter — ${this.dataset.format} · ${this.dataset.price}€`;
+        if (cta) cta.textContent = `Ajouter au panier · ${this.dataset.format} — ${this.dataset.price}€`;
+        const priceValue = main.querySelector("#product-price-value");
+        if (priceValue) priceValue.textContent = `${this.dataset.price}€`;
       });
     });
 
@@ -625,6 +912,20 @@
     const relatedGrid = document.getElementById("related-products");
     if (relatedGrid && related.length) {
       renderProducts(relatedGrid, related, { basePath: "../", grid: true });
+    }
+
+    const relatedIds = new Set([product.id, ...related.map((p) => p.id)]);
+    const similar = store
+      .getProductsByFamily(product.family)
+      .filter((p) => !relatedIds.has(p.id))
+      .slice(0, 4);
+    const similarSection = document.getElementById("similar-section");
+    const similarGrid = document.getElementById("similar-products");
+    if (similarSection) {
+      similarSection.style.display = similar.length ? "" : "none";
+      if (similarGrid && similar.length) {
+        renderProducts(similarGrid, similar, { basePath: "../", grid: true });
+      }
     }
 
     site?.initMediaSlots();
