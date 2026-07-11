@@ -157,8 +157,10 @@
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initBrandsPage);
+    document.addEventListener("DOMContentLoaded", () => {
+      Promise.resolve(global.KoreiShopifyCatalog?.load()).finally(initBrandsPage);
+    });
   } else {
-    initBrandsPage();
+    Promise.resolve(global.KoreiShopifyCatalog?.load()).finally(initBrandsPage);
   }
 })(window);

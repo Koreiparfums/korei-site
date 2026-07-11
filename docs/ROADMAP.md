@@ -60,12 +60,12 @@
 ## Phase 3 — E-commerce (4–8 semaines)
 
 - [x] Choix architecture : Shopify comme source de vérité produits / stocks / checkout
-- [ ] Créer la boutique Shopify et récupérer le domaine `*.myshopify.com`
-- [ ] Activer la Storefront API et générer le Storefront access token
-- [ ] Créer 2–3 produits tests complets dans Shopify
+- [x] Créer la boutique Shopify et récupérer le domaine `*.myshopify.com`
+- [x] Activer la Storefront API et générer le Storefront access token
+- [x] Créer 2–3 produits tests dans Shopify
 - [ ] Mapper les champs Korei vers Shopify (variants, collections, tags, metafields)
-- [ ] Catalogue dynamique via Shopify Storefront API
-- [ ] Fiche produit dynamique via Shopify Storefront API
+- [x] Catalogue dynamique via Shopify Storefront API (avec repli local)
+- [x] Fiche produit dynamique via Shopify Storefront API (avec repli local)
 - [ ] Panier fonctionnel via Shopify Cart API
 - [ ] Checkout via Shopify Checkout
 - [ ] Gestion stocks par variant Shopify
@@ -74,7 +74,7 @@
 ### Prérequis production
 
 - [ ] Netlify : créer le compte / projet de production
-- [ ] Netlify : configurer les variables d'environnement (`GROQ_API_KEY`, `GROQ_MODEL`, `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_TOKEN`)
+- [x] Netlify : configurer les variables d'environnement (`GROQ_API_KEY`, `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_PUBLIC_TOKEN`)
 - [ ] DNS : choisir et acheter le domaine officiel (`korei.fr`, `koreiparfums.fr` ou autre)
 - [ ] DNS : pointer le domaine principal et `www` vers Netlify
 - [ ] Email pro : créer au minimum `contact@...` et `support@...`

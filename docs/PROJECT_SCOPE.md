@@ -137,10 +137,9 @@ Contexte : buildChatContext() + historique conversation
 - Emails professionnels créés (`contact@...`, `support@...`)
 - Projet Netlify connecté au repository
 - Variables d'environnement configurées dans Netlify :
-  - `GROQ_API_KEY`
-  - `GROQ_MODEL`
-  - `SHOPIFY_STORE_DOMAIN`
-  - `SHOPIFY_STOREFRONT_TOKEN`
+- `GROQ_API_KEY`
+- `SHOPIFY_STORE_DOMAIN`
+- `SHOPIFY_STOREFRONT_PUBLIC_TOKEN`
 
 ### Migration produits
 
