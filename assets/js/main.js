@@ -22,6 +22,30 @@
     return `<img class="${className} media-slot__image" src="${src}" alt="${alt}" hidden />`;
   }
 
+  function renderProductGlowHtml(product, basePath = "") {
+    const src = productImageSrc(product, basePath);
+    if (!src) return "";
+    return `<img class="card-img-glow" src="${src}" alt="" aria-hidden="true" loading="lazy" />`;
+  }
+
+  function noteSlug(note) {
+    return String(note)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  }
+
+  function noteImageHtml(note, basePath = "") {
+    const slug = noteSlug(note);
+    return `
+      <span class="note-image">
+        <img src="${basePath}assets/images/notes/${slug}.jpg" alt="" loading="lazy" onerror="this.remove()" />
+        <span>${note.slice(0, 1)}</span>
+      </span>`;
+  }
+
   function productMetaImage(product, basePath = "") {
     return productImageSrc(product, basePath)
       || site?.withBase(site.IMAGES.productPlaceholder, basePath)
@@ -199,6 +223,11 @@
     const basePath = options.basePath || "";
     const productUrl = `${basePath}pages/product.html?id=${product.id}`;
     const price = formatPrice ? formatPrice(product.price) : `À partir de ${product.price}€`;
+    const keyNotes = [
+      ...(product.notesTop || []),
+      ...(product.notesHeart || []),
+      ...(product.notesBase || []),
+    ].slice(0, 3);
 
     const badgeClass =
       product.badge === "best"
@@ -219,6 +248,7 @@
     return `
       <a href="${productUrl}" class="product-card" ${minWidth} data-product-id="${product.id}">
         <div class="card-img media-slot media-slot--card">
+          ${renderProductGlowHtml(product, basePath)}
           ${badgeHtml}
           <button class="card-fav" type="button" aria-label="Favoris" data-fav-btn>
             <i class="ti ti-heart"></i>
@@ -229,6 +259,17 @@
         <div class="card-body">
           <div class="card-brand">${product.brand}</div>
           <div class="card-name">${product.name}</div>
+          <div class="card-note-strip" aria-label="Notes principales">
+            ${keyNotes
+              .map(
+                (note) => `
+                  <span class="card-note" title="${note}">
+                    ${noteImageHtml(note, basePath)}
+                    <span>${note}</span>
+                  </span>`
+              )
+              .join("")}
+          </div>
           <div class="card-footer">
             <div class="card-rating">${renderStars(product.rating)}</div>
           </div>
