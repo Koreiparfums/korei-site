@@ -28,6 +28,24 @@
     return `<img class="card-img-glow" src="${src}" alt="" aria-hidden="true" loading="lazy" />`;
   }
 
+  function noteSlug(note) {
+    return String(note)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  }
+
+  function noteImageHtml(note, basePath = "") {
+    const slug = noteSlug(note);
+    return `
+      <span class="note-image">
+        <img src="${basePath}assets/images/notes/${slug}.jpg" alt="" loading="lazy" onerror="this.remove()" />
+        <span>${note.slice(0, 1)}</span>
+      </span>`;
+  }
+
   function productMetaImage(product, basePath = "") {
     return productImageSrc(product, basePath)
       || site?.withBase(site.IMAGES.productPlaceholder, basePath)
@@ -62,8 +80,8 @@
       },
       aggregateRating: {
         "@type": "AggregateRating",
-        ratingValue: product.rating,
-        reviewCount: Math.max(1, Math.round(product.rating * 12)),
+        ratingValue: product.fragrantica?.rating || product.rating,
+        reviewCount: product.fragrantica?.votes || Math.max(1, Math.round(product.rating * 12)),
       },
     };
   }
@@ -308,77 +326,261 @@
     });
   }
 
-  function noteSlug(note) {
-    return String(note)
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
-  }
-
-  function noteImageHtml(note, basePath = "../") {
-    const slug = noteSlug(note);
-    return `
-      <span class="note-image">
-        <img src="${basePath}assets/images/notes/${slug}.jpg" alt="" loading="lazy" onerror="this.remove()" />
-        <span>${note.slice(0, 1)}</span>
-      </span>`;
-  }
-
-  function feelIcon(label) {
-    const key = String(label).toLowerCase();
-    const icons = {
-      soirée: "🌙",
-      bureau: "🏢",
-      quotidien: "☀️",
-      date: "✨",
-      été: "🌴",
-      hiver: "❄️",
-      automne: "🍂",
-      printemps: "🌼",
-      faible: "▫️",
-      modérée: "▰",
-      modéré: "▰",
-      "longue durée": "▰▰▰",
-      éternel: "▰▰▰▰",
-      doux: "〰️",
-      fort: "◉",
-      énorme: "◎",
-    };
-    return icons[key] || "✦";
-  }
-
   function renderNotesPyramid(product) {
     const layers = [
-      { label: "Tête", notes: product.notesTop, tone: "top" },
-      { label: "Cœur", notes: product.notesHeart, tone: "heart" },
-      { label: "Base", notes: product.notesBase, tone: "base" },
+      { label: "Tête", icon: "ti-wind", notes: product.notesTop },
+      { label: "Cœur", icon: "ti-flower", notes: product.notesHeart },
+      { label: "Fond", icon: "ti-leaf", notes: product.notesBase },
     ];
     return `
-      <div class="product-pyramid">
-        <div class="product-pyramid-head">
-          <p class="product-pyramid-title">Pyramide olfactive</p>
-          <span>3 étages</span>
+      <div class="scent-pyramid">
+        <div class="scent-pyramid-shape" aria-hidden="true">
+          <span class="scent-pyramid-band scent-pyramid-band--top"></span>
+          <span class="scent-pyramid-band scent-pyramid-band--mid"></span>
+          <span class="scent-pyramid-band scent-pyramid-band--base"></span>
         </div>
-        ${layers
+        <div class="scent-pyramid-rows">
+          ${layers
+            .map(
+              (layer) =>
+                `<div class="scent-pyramid-row">
+                  <i class="ti ${layer.icon} scent-pyramid-row-icon"></i>
+                  <span class="scent-pyramid-row-label">${layer.label}</span>
+                  <span class="scent-pyramid-row-notes">${layer.notes.join(" · ")}</span>
+                </div>`
+            )
+            .join("")}
+        </div>
+      </div>`;
+  }
+
+  // ── Accords principaux (surchargeable via product.accords)
+  function getAccords(product) {
+    if (Array.isArray(product.accords) && product.accords.length) return product.accords;
+    const strengths = [100, 82, 64, 46, 28];
+    const seen = new Set();
+    const ordered = [...product.notesHeart, ...product.notesTop, ...product.notesBase];
+    const unique = ordered.filter((note) => {
+      const key = note.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    return unique.slice(0, 5).map((name, i) => ({ name, strength: strengths[i] }));
+  }
+
+  function renderAccords(product) {
+    const accords = getAccords(product);
+    if (!accords.length) return "";
+    return `
+      <p class="info-card-title">Accords principaux</p>
+      <div class="product-accords">
+        ${accords
           .map(
-            (layer) =>
-              `<div class="product-pyramid-tier product-pyramid-tier--${layer.tone}">
-                <span class="product-pyramid-label">${layer.label}</span>
-                <div class="product-pyramid-notes">
-                  ${layer.notes
-                    .map(
-                      (note) => `
-                        <span class="product-pyramid-note">
-                          <span>${note}</span>
-                        </span>`
-                    )
-                    .join("")}
-                </div>
-              </div>`
+            (a) => `
+          <div class="bar-row">
+            <span class="bar-label">${a.name}</span>
+            <span class="bar-track"><span class="bar-fill" style="width:${a.strength}%"></span></span>
+          </div>`
           )
           .join("")}
+      </div>`;
+  }
+
+  // ── Performance (surchargeable via product.performance)
+  function getPerformance(product) {
+    if (product.performance) return product.performance;
+    const base = product.intensity === "intense" ? 4 : product.intensity === "modéré" ? 3 : 2;
+    return {
+      longevity: Math.min(5, base + 1),
+      projection: base,
+      sillage: Math.min(5, base + (product.intensity === "intense" ? 1 : 0)),
+    };
+  }
+
+  const METER_HINTS = {
+    1: "Faible",
+    2: "Légère",
+    3: "Modérée",
+    4: "Forte",
+    5: "Très forte",
+  };
+  const LONGEVITY_HINTS = {
+    1: "Courte",
+    2: "Modérée",
+    3: "Bonne",
+    4: "Longue",
+    5: "Très longue",
+  };
+
+  function renderMeterRow(label, value, hints = METER_HINTS, max = 5) {
+    const filled = Math.max(0, Math.min(max, Math.round(value)));
+    const dots = Array.from(
+      { length: max },
+      (_, i) => `<span class="meter-dot${i < filled ? " is-filled" : ""}"></span>`
+    ).join("");
+    return `
+      <div class="meter-row">
+        <span class="meter-label">${label}</span>
+        <span class="meter-dots">${dots}</span>
+        <span class="meter-hint">${hints[filled] || ""}</span>
+      </div>`;
+  }
+
+  function renderPerformance(product) {
+    const perf = getPerformance(product);
+    return `
+      ${renderMeterRow("Longévité", perf.longevity, LONGEVITY_HINTS)}
+      ${renderMeterRow("Projection", perf.projection)}
+      ${renderMeterRow("Sillage", perf.sillage)}`;
+  }
+
+  // ── Saison idéale
+  const SEASONS = [
+    { key: "printemps", label: "Printemps", icon: "ti-flower" },
+    { key: "été", label: "Été", icon: "ti-sun" },
+    { key: "automne", label: "Automne", icon: "ti-leaf" },
+    { key: "hiver", label: "Hiver", icon: "ti-snowflake" },
+  ];
+
+  function renderSeasons(product) {
+    const active = product.seasons || [];
+    return `
+      <p class="info-card-title">Saison idéale</p>
+      <div class="product-seasons">
+        ${SEASONS.map(
+          (s) => `
+          <span class="season-chip${active.includes(s.key) ? " is-active" : ""}">
+            <i class="ti ${s.icon}"></i>${s.label}
+          </span>`
+        ).join("")}
+      </div>`;
+  }
+
+  // ── Moment idéal (surchargeable via product.moments)
+  function getMoments(product) {
+    if (product.moments) return product.moments;
+    const occ = product.occasions || [];
+    const boost = product.intensity === "intense" ? 1 : 0;
+    return {
+      jour: occ.includes("quotidien") ? 4 : 2,
+      soir: Math.min(5, (occ.includes("soirée") || occ.includes("date") ? 4 : 2) + boost),
+      bureau: occ.includes("bureau") ? 4 : 2,
+      sortie: Math.min(5, (occ.includes("soirée") || occ.includes("date") ? 4 : 3) + boost),
+    };
+  }
+
+  function renderMoments(product) {
+    const moments = getMoments(product);
+    return `
+      <p class="info-card-title">Moment idéal</p>
+      <div class="product-moments">
+        ${renderMeterRow("Journée", moments.jour)}
+        ${renderMeterRow("Soirée", moments.soir)}
+        ${renderMeterRow("Bureau", moments.bureau)}
+        ${renderMeterRow("Sortie", moments.sortie)}
+      </div>`;
+  }
+
+  // ── Pour qui (surchargeable via product.genderFit)
+  function getGenderFit(product) {
+    if (product.genderFit) return product.genderFit;
+    if (product.gender === "homme") return { homme: 95, femme: 25, mixte: 55 };
+    if (product.gender === "femme") return { homme: 25, femme: 95, mixte: 55 };
+    return { homme: 75, femme: 75, mixte: 95 };
+  }
+
+  function renderGenderFit(product) {
+    const fit = getGenderFit(product);
+    return `
+      <p class="info-card-title">Pour qui ?</p>
+      <div class="product-genderfit">
+        <div class="bar-row">
+          <span class="bar-label">Homme</span>
+          <span class="bar-track"><span class="bar-fill" style="width:${fit.homme}%"></span></span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Femme</span>
+          <span class="bar-track"><span class="bar-fill" style="width:${fit.femme}%"></span></span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Mixte</span>
+          <span class="bar-track"><span class="bar-fill" style="width:${fit.mixte}%"></span></span>
+        </div>
+      </div>`;
+  }
+
+  // ── Fiche technique (n'affiche que les champs renseignés)
+  function renderProductSpecs(product) {
+    const specs = [
+      { label: "Maison", value: product.house || product.brand },
+      { label: "Parfumeur", value: product.perfumer },
+      { label: "Année", value: product.launchYear },
+      { label: "Famille", value: product.family },
+    ].filter((s) => s.value);
+    if (!specs.length) return "";
+    return `
+      <div class="product-specs">
+        ${specs
+          .map(
+            (s) => `
+          <div class="product-specs-item">
+            <span class="product-specs-label">${s.label}</span>
+            <span class="product-specs-value">${s.value}</span>
+          </div>`
+          )
+          .join("")}
+      </div>`;
+  }
+
+  // ── Ligne de notation : avis Fragrantica si renseigné, sinon note locale
+  function renderRatingLine(product) {
+    const fr = product.fragrantica;
+    if (fr && fr.rating) {
+      const votes = fr.votes
+        ? `<span class="rating-sep">|</span><span class="rating-votes">Basé sur ${fr.votes.toLocaleString("fr-FR")} avis <span class="rating-source">Fragrantica</span></span>`
+        : "";
+      return `<div class="product-rating">${renderStars(fr.rating)}${votes}</div>`;
+    }
+    return `<div class="product-rating">${renderStars(product.rating)}</div>`;
+  }
+
+  // ── Histoire éditoriale (n'affiche rien si non renseignée)
+  function renderStory(product) {
+    if (!product.story) return "";
+    return `<p class="product-story">${product.story}</p>`;
+  }
+
+  // ── Bandeau décant (statique)
+  function renderGiftBar() {
+    return `
+      <div class="product-giftbar">
+        <i class="ti ti-gift"></i>
+        <span>Votre décant sera préparé à la commande dans un flacon en verre premium.</span>
+      </div>`;
+  }
+
+  // ── Bandeau de réassurance (statique)
+  function renderTrustStrip() {
+    const items = [
+      { icon: "ti-flask", title: "Préparé à la commande", sub: "avec soin" },
+      { icon: "ti-certificate", title: "Parfum 100%", sub: "authentique" },
+      { icon: "ti-bottle", title: "Flacon en verre", sub: "premium" },
+      { icon: "ti-lock", title: "Paiement", sub: "sécurisé" },
+      { icon: "ti-truck-delivery", title: "Livraison 24-48h", sub: "en France" },
+    ];
+    const renderItem = (it, hidden) => `
+          <li${hidden ? ' aria-hidden="true"' : ""}>
+            <i class="ti ${it.icon}"></i>
+            <span class="trust-strip-title">${it.title}</span>
+            <span class="trust-strip-sub">${it.sub}</span>
+          </li>`;
+    return `
+      <div class="trust-strip">
+        <ul class="trust-strip-track">
+          ${items.map((it) => renderItem(it, false)).join("")}
+          ${items.map((it) => renderItem(it, true)).join("")}
+        </ul>
       </div>`;
   }
 
@@ -625,77 +827,9 @@
             ? "badge-exclusive"
             : "";
 
-    const formats = [
-      { volume: "2ml", label: "Découverte", price: product.price, hint: "Tester sur peau", badge: null },
-      { volume: "5ml", label: "Routine", price: Math.round(product.price * 2.2), hint: "Format conseillé", badge: "Populaire" },
-      { volume: "10ml", label: "Signature", price: Math.round(product.price * 3.8), hint: "Meilleur prix/ml", badge: "Avantage" },
-    ];
-    const selectedFormat = formats[0];
-    const reviewCount = Math.max(12, Math.round(product.rating * 18));
-    const moodTags = [...product.occasions, ...product.seasons].slice(0, 4);
-    const keyNotes = [
-      ...(product.notesTop || []),
-      ...(product.notesHeart || []),
-      ...(product.notesBase || []),
-    ].slice(0, 3);
-    const feelGroups = [
-      {
-        title: "Meilleur moment de la journée",
-        items: product.occasions.slice(0, 4).map((item, index) => ({
-          label: item,
-          votes: [70, 60, 35, 30][index] || 24,
-          active: index === 0,
-          icon: feelIcon(item),
-        })),
-      },
-      {
-        title: "Meilleure saison pour porter",
-        items: product.seasons.slice(0, 4).map((item, index) => ({
-          label: item,
-          votes: [75, 55, 35, 30][index] || 22,
-          active: index === 0,
-          icon: feelIcon(item),
-        })),
-      },
-      {
-        title: "Tenue",
-        items: ["Faible", "Modérée", "Longue durée", "Éternel"].map((item) => ({
-          label: item,
-          votes: item === "Longue durée" ? 95 : item === "Modérée" ? 45 : 18,
-          active: product.intensity === "intense" ? item === "Longue durée" : item === "Modérée",
-          icon: feelIcon(item),
-        })),
-      },
-      {
-        title: "Projection",
-        items: ["Doux", "Modéré", "Fort", "Énorme"].map((item) => ({
-          label: item,
-          votes: item === "Fort" ? 85 : item === "Modéré" ? 40 : 20,
-          active: product.intensity === "intense" ? item === "Fort" : item === "Modéré",
-          icon: feelIcon(item),
-        })),
-      },
-    ];
-    const promiseItems = [
-      { icon: "ti-shield-check", title: "Authenticité garantie", text: "Parfums authentiques, provenant de sources vérifiées." },
-      { icon: "ti-package", title: "Décants préparés avec soin", text: "Formats reconditionnés proprement pour tester avant le flacon." },
-      { icon: "ti-truck-delivery", title: "Livraison suivie", text: "Expédition suivie dès l'ouverture de la boutique." },
-      { icon: "ti-gift", title: "Conseil personnalisé", text: "Le conseiller Korei aide à choisir selon vos goûts." },
-    ];
-    const formatButtons = formats
-      .map(
-        (format, index) => `
-          <button class="format-btn${index === 0 ? " active" : ""}" type="button" data-format="${format.volume}" data-price="${format.price}" aria-pressed="${index === 0 ? "true" : "false"}">
-            <span class="format-head">
-              <span class="format-vol">${format.volume}</span>
-              ${format.badge ? `<span class="format-badge">${format.badge}</span>` : ""}
-            </span>
-            <span class="format-label">${format.label}</span>
-            <span class="format-hint">${format.hint}</span>
-            <span class="format-price">${format.price}€</span>
-          </button>`
-      )
-      .join("");
+    const price2ml = product.price;
+    const price5ml = Math.round(product.price * 2.2);
+    const price10ml = Math.round(product.price * 3.8);
 
     main.innerHTML = `
       <nav class="breadcrumb">
@@ -708,160 +842,107 @@
         <span>${product.name}</span>
       </nav>
       <div class="product-detail">
-        <div class="product-gallery" aria-label="Galerie produit">
+        <div class="product-visual-col">
           <div class="product-visual media-slot">
             ${product.badge ? `<span class="card-badge ${badgeClass}">${product.badgeLabel}</span>` : ""}
             ${renderProductImageHtml(product, "../", "product-detail__img")}
             ${renderProductPlaceholderHtml(product, "product-detail")}
-            <button class="product-gallery-arrow product-gallery-arrow--prev" type="button" aria-label="Image précédente">
-              <i class="ti ti-chevron-left"></i>
-            </button>
-            <button class="product-gallery-arrow product-gallery-arrow--next" type="button" aria-label="Image suivante">
-              <i class="ti ti-chevron-right"></i>
-            </button>
-          </div>
-          <div class="product-note-strip" aria-label="Notes caractéristiques">
-            ${keyNotes
-              .map(
-                (note) => `
-                  <a href="catalogue.html?note=${encodeURIComponent(note)}" class="product-note-token">
-                    ${noteImageHtml(note)}
-                    <strong>${note}</strong>
-                  </a>`
-              )
-              .join("")}
-          </div>
-          <div class="product-gallery-note">
-            <i class="ti ti-shield-check"></i>
-            <span>Parfums authentiques, reconditionnés en décants par Korei.</span>
           </div>
         </div>
         <div class="product-info">
-          <div class="product-kicker">
-            <a href="brands.html?brand=${product.brandId}">${product.brand}</a>
-            <span>${product.gender}</span>
-          </div>
+          <div class="card-brand">${product.brand}</div>
           <h1 class="product-title">${product.name}</h1>
-          <div class="product-rating-line">
-            <div class="product-rating">${renderStars(product.rating)}</div>
-            <span>${product.rating.toFixed(1)} / 5</span>
-            <span>${reviewCount} avis vérifiés</span>
+          ${renderRatingLine(product)}
+          <div class="product-price-display">
+            <span class="product-price" id="product-price-value">${price2ml}€</span>
           </div>
-          <p class="product-description">${product.description}</p>
+          <div class="product-price-block">
+            <span class="product-price-label">Choisir un format</span>
+            <div class="format-selector">
+              <button class="format-btn active" type="button" data-format="2ml" data-price="${price2ml}">
+                <span class="format-check"><i class="ti ti-check"></i></span>
+                <i class="ti ti-flask format-icon"></i>
+                <span class="format-vol">2 ml</span>
+                <span class="format-desc">Découverte</span>
+                <span class="format-price">${price2ml}€</span>
+              </button>
+              <button class="format-btn" type="button" data-format="5ml" data-price="${price5ml}">
+                <span class="format-check"><i class="ti ti-check"></i></span>
+                <i class="ti ti-flask format-icon"></i>
+                <span class="format-vol">5 ml</span>
+                <span class="format-desc">Quotidien</span>
+                <span class="format-price">${price5ml}€</span>
+              </button>
+              <button class="format-btn" type="button" data-format="10ml" data-price="${price10ml}">
+                <span class="format-check"><i class="ti ti-check"></i></span>
+                <i class="ti ti-flask format-icon"></i>
+                <span class="format-vol">10 ml</span>
+                <span class="format-desc">Collection</span>
+                <span class="format-price">${price10ml}€</span>
+              </button>
+            </div>
+          </div>
+          ${renderGiftBar()}
+          <div class="product-actions">
+            <button class="btn-dark product-cta" id="product-cta" type="button" disabled title="Bientôt disponible">
+              Ajouter au panier · 2ml — ${price2ml}€
+            </button>
+            <button class="btn-outline" type="button" data-open-chatbot>
+              <i class="ti ti-sparkles"></i>Besoin d'un conseil ?
+            </button>
+          </div>
+          ${renderTrustStrip()}
+          <p class="product-notes">${formatNotes(product.notes)}</p>
+          ${renderStory(product) || `<p class="product-description">${product.description}</p>`}
           <div class="product-meta">
             <span class="meta-chip">${product.intensity}</span>
             <span class="meta-chip">${product.family}</span>
-            ${moodTags.map((tag) => `<span class="meta-chip">${tag}</span>`).join("")}
           </div>
-          <div class="product-buy-panel">
-            <div class="product-price-row">
-              <span>À partir de</span>
-              <strong>${selectedFormat.price}€</strong>
-            </div>
-            <div class="product-price-block">
-              <span class="product-price-label">Choisir un format</span>
-              <div class="format-selector">
-                ${formatButtons}
-              </div>
-            </div>
-            <button class="btn-dark product-cta" id="product-cta" type="button" disabled title="Bientôt disponible">
-              Ajouter — ${selectedFormat.volume} · ${selectedFormat.price}€
-            </button>
-            <p class="product-cta-note">Paiement Shopify bientôt disponible. Le catalogue reste consultable en avant-première.</p>
-            <div class="product-trust-list">
-              <span><i class="ti ti-certificate"></i> Authenticité garantie</span>
-              <span><i class="ti ti-package"></i> Décants préparés avec soin</span>
-              <span><i class="ti ti-truck-delivery"></i> Livraison suivie</span>
-            </div>
-          </div>
-          <section class="product-promise-block" aria-label="Promesse Korei">
-            <h2>The <span>Korei</span> Promise</h2>
-            <div class="product-promise-grid">
-              ${promiseItems
-                .map(
-                  (item) => `
-                    <article class="product-promise-card">
-                      <i class="ti ${item.icon}"></i>
-                      <div>
-                        <h3>${item.title}</h3>
-                        <p>${item.text}</p>
-                      </div>
-                    </article>`
-                )
-                .join("")}
-            </div>
-          </section>
-          <section class="product-feel-block" aria-label="Ressenti des utilisateurs">
-            <div class="product-section-title">
-              <h2>Ressenti des utilisateurs</h2>
-              <button type="button" aria-label="Réduire la section"><i class="ti ti-minus"></i></button>
-            </div>
-            ${feelGroups
-              .map(
-                (group) => `
-                  <div class="product-feel-group">
-                    <p>${group.title}</p>
-                    <div class="product-feel-grid">
-                      ${group.items
-                        .map(
-                          (item) => `
-                            <button class="product-feel-card${item.active ? " active" : ""}" type="button">
-                              <span class="product-feel-icon">${item.icon}</span>
-                              <strong>${item.label}</strong>
-                              <span>${item.votes} votes</span>
-                            </button>`
-                        )
-                        .join("")}
-                    </div>
-                  </div>`
-              )
-              .join("")}
-          </section>
-          <div class="product-secondary-actions">
-            <button class="btn-outline" type="button" data-open-chatbot>Demander conseil IA</button>
-            <a class="btn-text" href="catalogue.html">Comparer au catalogue</a>
-          </div>
-          <div class="product-story">
-            <div>
-              <span class="product-story-label">Notes clés</span>
-              <div class="product-key-notes">
-                ${product.notes
-                  .slice(0, 6)
-                  .map(
-                    (note) => `
-                      <a href="catalogue.html?note=${encodeURIComponent(note)}" class="product-key-note">
-                        ${noteImageHtml(note)}
-                        <span>${note}</span>
-                      </a>`
-                  )
-                  .join("")}
-              </div>
-            </div>
-            <div>
-              <span class="product-story-label">Profil</span>
-              <div class="product-profile-list">
-                <span><strong>Intensité</strong>${product.intensity}</span>
-                <span><strong>Famille</strong>${product.family}</span>
-                <span><strong>Genre</strong>${product.gender}</span>
-              </div>
-            </div>
-          </div>
-          ${renderNotesPyramid(product)}
         </div>
-      </div>`;
+      </div>
+
+      <section class="section product-profile-section" style="padding-top: 0">
+        <div class="section-head">
+          <h2 class="section-title">Profil & <em>performance</em></h2>
+        </div>
+        ${renderProductSpecs(product)}
+
+        <div class="profile-block">
+          <h3 class="profile-block-title">Composition</h3>
+          <div class="profile-block-body profile-block-body--composition">
+            <div class="profile-pyramid">
+              <p class="info-card-title">Pyramide olfactive</p>
+              ${renderNotesPyramid(product)}
+            </div>
+            <div class="profile-accords">${renderAccords(product)}</div>
+          </div>
+        </div>
+
+        <div class="profile-block">
+          <h3 class="profile-block-title">Signature</h3>
+          <div class="profile-block-body profile-block-body--signature">
+            ${renderPerformance(product)}
+          </div>
+        </div>
+
+        <div class="profile-block">
+          <h3 class="profile-block-title">Ambiance</h3>
+          <div class="profile-block-body profile-block-body--ambiance">
+            <div>${renderSeasons(product)}</div>
+            <div>${renderMoments(product)}</div>
+            <div>${renderGenderFit(product)}</div>
+          </div>
+        </div>
+      </section>`;
 
     main.querySelectorAll(".format-btn").forEach((btn) => {
       btn.addEventListener("click", function () {
-        main.querySelectorAll(".format-btn").forEach((b) => {
-          b.classList.remove("active");
-          b.setAttribute("aria-pressed", "false");
-        });
+        main.querySelectorAll(".format-btn").forEach((b) => b.classList.remove("active"));
         this.classList.add("active");
-        this.setAttribute("aria-pressed", "true");
         const cta = main.querySelector("#product-cta");
-        if (cta) cta.textContent = `Ajouter — ${this.dataset.format} · ${this.dataset.price}€`;
-        const price = main.querySelector(".product-price-row strong");
-        if (price) price.textContent = `${this.dataset.price}€`;
+        if (cta) cta.textContent = `Ajouter au panier · ${this.dataset.format} — ${this.dataset.price}€`;
+        const priceValue = main.querySelector("#product-price-value");
+        if (priceValue) priceValue.textContent = `${this.dataset.price}€`;
       });
     });
 
@@ -872,6 +953,20 @@
     const relatedGrid = document.getElementById("related-products");
     if (relatedGrid && related.length) {
       renderProducts(relatedGrid, related, { basePath: "../", grid: true });
+    }
+
+    const relatedIds = new Set([product.id, ...related.map((p) => p.id)]);
+    const similar = store
+      .getProductsByFamily(product.family)
+      .filter((p) => !relatedIds.has(p.id))
+      .slice(0, 4);
+    const similarSection = document.getElementById("similar-section");
+    const similarGrid = document.getElementById("similar-products");
+    if (similarSection) {
+      similarSection.style.display = similar.length ? "" : "none";
+      if (similarGrid && similar.length) {
+        renderProducts(similarGrid, similar, { basePath: "../", grid: true });
+      }
     }
 
     site?.initMediaSlots();
