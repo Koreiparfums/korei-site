@@ -1055,8 +1055,10 @@
   };
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", () => {
+      Promise.resolve(global.KoreiShopifyCatalog?.load()).finally(init);
+    });
   } else {
-    init();
+    Promise.resolve(global.KoreiShopifyCatalog?.load()).finally(init);
   }
 })(window);

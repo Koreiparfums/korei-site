@@ -93,8 +93,10 @@
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initCollectionsPage);
+    document.addEventListener("DOMContentLoaded", () => {
+      Promise.resolve(global.KoreiShopifyCatalog?.load()).finally(initCollectionsPage);
+    });
   } else {
-    initCollectionsPage();
+    Promise.resolve(global.KoreiShopifyCatalog?.load()).finally(initCollectionsPage);
   }
 })(window);

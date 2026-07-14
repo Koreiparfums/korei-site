@@ -3,9 +3,14 @@
   functions = "netlify/functions"
 
 [[redirects]]
-  from = "/api/chat"
-  to = "/.netlify/functions/chat"
-  status = 200
+    from = "/api/chat"
+    to = "/.netlify/functions/chat"
+    status = 200
+
+[[redirects]]
+    from = "/api/products"
+    to = "/.netlify/functions/products"
+    status = 200
 
 [[headers]]
   for = "/assets/*"
