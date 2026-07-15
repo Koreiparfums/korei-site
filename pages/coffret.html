@@ -97,113 +97,194 @@
       </div>
     </div>
 
-    <section class="page-hero">
-      <div class="page-hero-eyebrow">Coffrets</div>
-      <h1 class="page-hero-title">Composez votre <em>coffret</em></h1>
-      <p class="page-hero-sub">
-        Un set signature clé en main, ou une sélection 100% personnalisée — à votre rythme, à votre goût.
-      </p>
+    <section class="coffret-hero">
+      <div
+        class="coffret-hero__media"
+        style="background-image: url('../assets/images/hero/hero_page_coffrets.png')"
+      ></div>
+      <div class="coffret-hero__content">
+        <div class="coffret-hero__eyebrow">Coffrets Kōrei</div>
+        <h1 class="coffret-hero__title">
+          Une collection.<br />
+          Une saison.<br />
+          <em>Une émotion.</em>
+        </h1>
+        <div class="coffret-hero__divider" aria-hidden="true"></div>
+        <p class="coffret-hero__sub">
+          Des sets signature composés pour chaque saison — ou une sélection
+          100% personnalisée, à votre image.
+        </p>
+        <div class="coffret-hero__ctas">
+          <a href="#coffrets" class="btn-dark">Découvrir les coffrets</a>
+          <a href="catalogue.html?custom=1" class="coffret-hero__link"
+            >Créer mon coffret sur mesure <span aria-hidden="true">→</span></a
+          >
+        </div>
+      </div>
     </section>
 
-    <section class="packs-section">
-      <div class="packs-hero-grid">
-        <a
-          href="catalogue.html?type=pack"
-          class="pack-hero-card pack-hero-card--single"
-        >
+    <div class="ticker">
+      <div class="ticker-track">
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>100% authentique
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Flacons &amp; décants
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>100+ maisons de niche
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Expédition sous 24h
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Cadeau mystère offert
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Satisfaction 30 jours
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>100% authentique
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Flacons &amp; décants
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>100+ maisons de niche
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Expédition sous 24h
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Cadeau mystère offert
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-dot"></span>Satisfaction 30 jours
+        </div>
+      </div>
+    </div>
+
+    <section class="coffret-collections" id="coffrets">
+      <div class="dose-head">
+        <div class="dose-eyebrow">Nos coffrets</div>
+        <h2 class="dose-title">
+          Quatre univers, <em>une signature</em> à chaque saison.
+        </h2>
+        <span class="dose-title-rule" aria-hidden="true"></span>
+      </div>
+      <div class="coffret-grid">
+        <a href="catalogue.html?season=été" class="coffret-card">
           <div
-            class="pack-hero-card__media media-slot"
-            data-slot="pack-signature"
+            class="coffret-card__media"
+            style="background-image: url('../assets/images/collections/ete.png')"
+          ></div>
+          <span class="coffret-card__badge"
+            ><i class="ti ti-sun" aria-hidden="true"></i> Coffret</span
           >
-            <img
-              class="media-slot__image"
-              src="../assets/images/packs/signature.png"
-              alt="Coffrets Signature — Kōrei"
-              hidden
-            />
-            <div
-              class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
-              data-variant="1"
-            >
-              <div class="placeholder-premium__pattern" aria-hidden="true"></div>
-            </div>
+          <div class="coffret-card__content">
+            <h3 class="coffret-card__name">Été</h3>
+            <span class="coffret-card__cta">Découvrir</span>
           </div>
-          <div class="pack-hero-card__overlay">
-            <span class="pack-hero-card__name">Coffrets Signature</span>
-            <span class="pack-hero-card__cta"
-              >Découvrir <span aria-hidden="true">→</span></span
-            >
+        </a>
+        <a href="catalogue.html?season=hiver" class="coffret-card">
+          <div
+            class="coffret-card__media"
+            style="background-image: url('../assets/images/collections/hiver.png')"
+          ></div>
+          <span class="coffret-card__badge"
+            ><i class="ti ti-snowflake" aria-hidden="true"></i> Coffret</span
+          >
+          <div class="coffret-card__content">
+            <h3 class="coffret-card__name">Hiver</h3>
+            <span class="coffret-card__cta">Découvrir</span>
+          </div>
+        </a>
+        <a href="catalogue.html?family=floral" class="coffret-card">
+          <div
+            class="coffret-card__media"
+            style="background-image: url('../assets/images/collections/floral.png')"
+          ></div>
+          <span class="coffret-card__badge"
+            ><i class="ti ti-flower" aria-hidden="true"></i> Coffret</span
+          >
+          <div class="coffret-card__content">
+            <h3 class="coffret-card__name">Floral</h3>
+            <span class="coffret-card__cta">Découvrir</span>
+          </div>
+        </a>
+        <a href="catalogue.html?family=boisé" class="coffret-card">
+          <div
+            class="coffret-card__media"
+            style="background-image: url('../assets/images/collections/boise.png')"
+          ></div>
+          <span class="coffret-card__badge"
+            ><i class="ti ti-trees" aria-hidden="true"></i> Coffret</span
+          >
+          <div class="coffret-card__content">
+            <h3 class="coffret-card__name">Boisé</h3>
+            <span class="coffret-card__cta">Découvrir</span>
           </div>
         </a>
       </div>
-      <div class="pack-builder-banner">
-        <div class="pack-builder-banner__main">
-          <div class="pack-builder-banner__text">
-            <h3 class="pack-builder-banner__title">
-              Votre coffret,<br /><em>vos règles.</em>
-            </h3>
-            <span class="pack-builder-banner__rule" aria-hidden="true"></span>
-            <p class="pack-builder-banner__stat">
-              <span class="pack-builder-banner__stat-num">500+</span> parfums de
-              niche disponibles
-            </p>
-            <p class="pack-builder-banner__desc">
-              Choisissez un format puis composez votre propre sélection.
-            </p>
-            <a
-              href="catalogue.html?custom=1"
-              class="btn-dark pack-builder-banner__cta"
-              >Créer mon coffret</a
-            >
-            <ul class="pack-builder-banner__trust">
-              <li><i class="ti ti-check" aria-hidden="true"></i> Authentique</li>
-              <li><i class="ti ti-check" aria-hidden="true"></i> Préparé en France</li>
-              <li><i class="ti ti-check" aria-hidden="true"></i> Expédition 24h</li>
-            </ul>
-          </div>
-          <div class="pack-builder-banner__illustration" aria-hidden="true">
-            <div class="pack-vitrine">
-              <div class="pack-vitrine__bottle pack-vitrine__bottle--2ml">
-                <img src="../assets/images/hero/hero-decant-2ml.png" alt="" />
-              </div>
-              <div class="pack-vitrine__bottle pack-vitrine__bottle--5ml">
-                <img src="../assets/images/hero/hero-decant-5ml.png" alt="" />
-              </div>
-              <div class="pack-vitrine__bottle pack-vitrine__bottle--10ml">
-                <img src="../assets/images/hero/hero-decant-10ml.png" alt="" />
-              </div>
-              <div class="pack-vitrine__reflection"></div>
-              <div class="pack-vitrine__ground"></div>
-            </div>
-          </div>
+    </section>
+
+    <section class="coffret-why">
+      <div class="dose-head">
+        <div class="dose-eyebrow">Pourquoi un coffret</div>
+        <h2 class="dose-title">Trois bonnes raisons de craquer.</h2>
+        <span class="dose-title-rule" aria-hidden="true"></span>
+      </div>
+      <div class="coffret-why-grid">
+        <div class="coffret-why-item">
+          <i class="ti ti-compass" aria-hidden="true"></i>
+          <h3>Découverte</h3>
+          <p>Explorez plusieurs maisons de niche en un seul coffret.</p>
         </div>
-        <div class="pack-builder-banner__formats">
-          <a href="catalogue.html?pack=10x2ml&custom=1" class="pack-format-card">
-            <span class="pack-format-card__ml">10 × 2<em>ml</em></span>
-            <span class="pack-format-card__label">Découverte</span>
-            <span class="pack-format-card__desc"
-              >Idéal pour découvrir plusieurs maisons.</span
-            >
-            <span class="pack-format-card__divider" aria-hidden="true"></span>
-          </a>
-          <a href="catalogue.html?pack=5x5ml&custom=1" class="pack-format-card">
-            <span class="pack-format-card__ml">5 × 5<em>ml</em></span>
-            <span class="pack-format-card__label">Équilibré</span>
-            <span class="pack-format-card__desc"
-              >Le bon dosage entre découverte et quotidien.</span
-            >
-            <span class="pack-format-card__divider" aria-hidden="true"></span>
-          </a>
-          <a href="catalogue.html?pack=3x10ml&custom=1" class="pack-format-card">
-            <span class="pack-format-card__ml">3 × 10<em>ml</em></span>
-            <span class="pack-format-card__label">Passionné</span>
-            <span class="pack-format-card__desc"
-              >Pour vos coups de cœur, à savourer durablement.</span
-            >
-            <span class="pack-format-card__divider" aria-hidden="true"></span>
-          </a>
+        <div class="coffret-why-item">
+          <i class="ti ti-gift" aria-hidden="true"></i>
+          <h3>Cadeau idéal</h3>
+          <p>Présenté dans un écrin premium, prêt à offrir.</p>
+        </div>
+        <div class="coffret-why-item">
+          <i class="ti ti-wand" aria-hidden="true"></i>
+          <h3>Sélection experte</h3>
+          <p>Des parfums pensés pour se répondre et aller ensemble.</p>
         </div>
       </div>
+    </section>
+
+    <section class="coffret-formats">
+      <div class="dose-head">
+        <div class="dose-eyebrow">Les formats</div>
+        <h2 class="dose-title">Trois façons de composer votre coffret.</h2>
+        <span class="dose-title-rule" aria-hidden="true"></span>
+      </div>
+      <div class="coffret-formats-frise">
+        <a href="catalogue.html?pack=10x2ml&custom=1" class="coffret-format">
+          <span class="coffret-format__label">Découverte</span>
+          <span class="coffret-format__ml">10 × 2<em>ml</em></span>
+          <span class="coffret-format__desc"
+            >Idéal pour explorer plusieurs maisons.</span
+          >
+        </a>
+        <a href="catalogue.html?pack=5x5ml&custom=1" class="coffret-format">
+          <span class="coffret-format__label">Équilibré</span>
+          <span class="coffret-format__ml">5 × 5<em>ml</em></span>
+          <span class="coffret-format__desc"
+            >Le bon dosage entre découverte et quotidien.</span
+          >
+        </a>
+        <a href="catalogue.html?pack=3x10ml&custom=1" class="coffret-format">
+          <span class="coffret-format__label">Collection</span>
+          <span class="coffret-format__ml">3 × 10<em>ml</em></span>
+          <span class="coffret-format__desc"
+            >Pour vos coups de cœur, à savourer durablement.</span
+          >
+        </a>
+      </div>
+      <a href="catalogue.html?custom=1" class="coffret-formats__cta"
+        >Créer mon coffret sur mesure <span aria-hidden="true">→</span></a
+      >
     </section>
 
     <footer>

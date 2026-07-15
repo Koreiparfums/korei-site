@@ -543,6 +543,152 @@
       </div>`;
   }
 
+  // ── Bandeau de réassurance simplifié (fiche produit)
+  function renderProductTrustRow() {
+    const items = [
+      { icon: "ti-box", title: "Livraison", sub: "offerte" },
+      { icon: "ti-spray", title: "Échantillon", sub: "offert" },
+      { icon: "ti-shield-check", title: "Authenticité", sub: "garantie" },
+    ];
+    return `
+      <div class="product-trust-row">
+        ${items
+          .map(
+            (it) => `
+          <div class="product-trust-item">
+            <i class="ti ${it.icon}" aria-hidden="true"></i>
+            <span>${it.title}<br />${it.sub}</span>
+          </div>`
+          )
+          .join("")}
+      </div>`;
+  }
+
+  // ── Familles olfactives (classification des notes pour les cartes "Notes olfactives")
+  const NOTE_CATEGORIES = [
+    {
+      key: "agrumes",
+      icon: "ti-lemon",
+      label: "Agrumes",
+      keywords: ["bergamote", "citron", "pamplemousse", "mandarine", "orange", "litchi", "ananas", "pomme"],
+      desc: "Une ouverture pétillante et lumineuse de bergamote et d'agrumes.",
+    },
+    {
+      key: "floral",
+      icon: "ti-flower",
+      label: "Floral",
+      keywords: ["rose", "jasmin", "violet", "iris", "pivoine", "fleur"],
+      desc: "Un cœur féminin et élégant autour de fleurs délicatement poudrées.",
+    },
+    {
+      key: "boise",
+      icon: "ti-trees",
+      label: "Boisé",
+      keywords: ["santal", "bois", "cèdre", "cedre", "gaïac", "gaiac", "oak", "vétiver", "vetiver", "oud"],
+      desc: "Des bois précieux qui ancrent la fragrance dans la matière.",
+    },
+    {
+      key: "epice",
+      icon: "ti-flame",
+      label: "Épicé",
+      keywords: ["poivre", "cannelle", "cardamome", "safran", "anis", "nutmeg", "épice", "epice"],
+      desc: "Une pointe épicée qui réchauffe et prolonge le sillage.",
+    },
+    {
+      key: "gourmand",
+      icon: "ti-cookie",
+      label: "Gourmand",
+      keywords: ["vanille", "tonka", "praliné", "praline", "chocolat", "café", "cafe", "miel", "caramel", "coco"],
+      desc: "Une gourmandise chaude et enveloppante, presque comestible.",
+    },
+    {
+      key: "sensuel",
+      icon: "ti-sparkles",
+      label: "Sensuel",
+      keywords: ["musc", "ambre", "ambroxan", "ambrette", "patchouli", "oliban", "encens", "résine", "resine"],
+      desc: "Un fond chaud et sensuel de musc et de résines précieuses.",
+    },
+    {
+      key: "aromatique",
+      icon: "ti-wind",
+      label: "Aromatique",
+      keywords: ["lavande", "anis"],
+      desc: "Une facette aromatique et fraîche, vivifiante en ouverture.",
+    },
+  ];
+  const SIGNATURE_CATEGORY = {
+    key: "signature",
+    icon: "ti-droplet",
+    label: "Signature",
+    desc: "Une note distinctive qui signe le sillage du parfum.",
+  };
+
+  function getNoteFamilies(product) {
+    const notes = [...product.notesHeart, ...product.notesTop, ...product.notesBase];
+    const seen = new Set();
+    const families = [];
+    notes.forEach((note) => {
+      const lower = note.toLowerCase();
+      const category =
+        NOTE_CATEGORIES.find((cat) => cat.keywords.some((kw) => lower.includes(kw))) || SIGNATURE_CATEGORY;
+      if (seen.has(category.key)) return;
+      seen.add(category.key);
+      families.push(category);
+    });
+    return families.slice(0, 3);
+  }
+
+  function renderNoteFamilies(product) {
+    const families = getNoteFamilies(product);
+    if (!families.length) return "";
+    return `
+      <div class="note-family-cards">
+        ${families
+          .map(
+            (f) => `
+          <div class="note-family-card">
+            <i class="ti ${f.icon}" aria-hidden="true"></i>
+            <h4>${f.label}</h4>
+            <p>${f.desc}</p>
+          </div>`
+          )
+          .join("")}
+      </div>`;
+  }
+
+  // ── Onglet "Détails" (histoire, fiche technique, accords, performance, ambiance)
+  function renderDetailsTab(product) {
+    const story = renderStory(product) || `<p class="product-description">${product.description}</p>`;
+    return `
+      ${story}
+      ${renderProductSpecs(product)}
+      <div class="profile-block">
+        <div class="profile-block-body">${renderAccords(product)}</div>
+      </div>
+      <div class="profile-block">
+        <h3 class="profile-block-title">Performance</h3>
+        <div class="profile-block-body profile-block-body--signature">${renderPerformance(product)}</div>
+      </div>
+      <div class="profile-block">
+        <h3 class="profile-block-title">Ambiance</h3>
+        <div class="profile-block-body profile-block-body--ambiance">
+          <div>${renderSeasons(product)}</div>
+          <div>${renderMoments(product)}</div>
+          <div>${renderGenderFit(product)}</div>
+        </div>
+      </div>`;
+  }
+
+  // ── Onglet "Avis" (pas de données avis réelles pour l'instant : état démo)
+  function renderAvisTab(product) {
+    return `
+      <div class="product-avis-empty">
+        ${renderRatingLine(product)}
+        <p>Les avis clients arrivent bientôt sur Kōrei.</p>
+        <button class="btn-dark" type="button" disabled title="Bientôt disponible">Laisser un avis</button>
+      </div>`;
+  }
+
   // ── Init page accueil
   function initHomePage() {
     const store = global.KoreiProductStore;
@@ -820,21 +966,21 @@
             <div class="format-selector">
               <button class="format-btn active" type="button" data-format="2ml" data-price="${price2ml}">
                 <span class="format-check"><i class="ti ti-check"></i></span>
-                <i class="ti ti-flask format-icon"></i>
+                <img src="../assets/images/hero/hero-decant-2ml.png" alt="" class="format-icon-img" />
                 <span class="format-vol">2 ml</span>
                 <span class="format-desc">Découverte</span>
                 <span class="format-price">${price2ml}€</span>
               </button>
               <button class="format-btn" type="button" data-format="5ml" data-price="${price5ml}">
                 <span class="format-check"><i class="ti ti-check"></i></span>
-                <i class="ti ti-flask format-icon"></i>
+                <img src="../assets/images/hero/hero-decant-5ml.png" alt="" class="format-icon-img" />
                 <span class="format-vol">5 ml</span>
                 <span class="format-desc">Quotidien</span>
                 <span class="format-price">${price5ml}€</span>
               </button>
               <button class="format-btn" type="button" data-format="10ml" data-price="${price10ml}">
                 <span class="format-check"><i class="ti ti-check"></i></span>
-                <i class="ti ti-flask format-icon"></i>
+                <img src="../assets/images/hero/hero-decant-10ml.png" alt="" class="format-icon-img" />
                 <span class="format-vol">10 ml</span>
                 <span class="format-desc">Collection</span>
                 <span class="format-price">${price10ml}€</span>
