@@ -1,6 +1,7 @@
 # OS
 .DS_Store
 Thumbs.db
+*:Zone.Identifier
 
 # Editors
 .vscode/
@@ -19,6 +20,9 @@ build/
 # Env
 .env
 .env.local
+
+# Local research references
+research/
 
 # Claude Code
 .claude/

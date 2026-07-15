@@ -78,6 +78,17 @@ Variables :
 Le front envoie le message, l'historique court et `KoreiProductStore.buildCatalogContext()` à la function. La function retourne une réponse JSON et des `productIds`, puis le front génère les liens produits localement.
 La function limite aussi les appels par IP avant d'appeler Groq afin de protéger la clé API.
 
+## Catalogue Shopify
+
+Le catalogue est chargé via `/api/products`, une Netlify Function qui utilise la Storefront API côté serveur. Le front ne reçoit jamais de jeton Shopify et conserve les produits locaux en repli si Shopify est indisponible.
+
+Variables Netlify requises :
+
+- `SHOPIFY_STORE_DOMAIN` — domaine `votre-boutique.myshopify.com`
+- `SHOPIFY_STOREFRONT_PUBLIC_TOKEN` — jeton Storefront API public
+
+Pour enrichir une fiche produit, créer les metafields produit de namespace `korei` : `notes_top`, `notes_heart`, `notes_base`, `family`, `gender`, `intensity`, `seasons`, `occasions` et `badge`. Les valeurs de listes peuvent être configurées comme listes Shopify ou comme texte séparé par des virgules. Les tags `bestseller`, `new`, `family:...`, `gender:...`, `season:...` et `occasion:...` sont aussi pris en charge.
+
 Le serveur local écoute par défaut sur `http://localhost:4173` et ne nécessite pas de compte Vercel. Pour changer le port :
 
 ```bash
@@ -88,3 +99,4 @@ PORT=3000 node dev-server.js
 
 - [Scope MVP & architecture](docs/PROJECT_SCOPE.md)
 - [Roadmap](docs/ROADMAP.md)
+- [Raccordement Shopify](docs/SHOPIFY_SETUP.md)

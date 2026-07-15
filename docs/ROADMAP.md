@@ -59,11 +59,27 @@
 
 ## Phase 3 — E-commerce (4–8 semaines)
 
-- [ ] Choix : Shopify headless vs panier custom
-- [ ] Panier fonctionnel (localStorage MVP ou Shopify Cart API)
-- [ ] Checkout (Shopify Checkout ou Stripe)
-- [ ] Gestion stocks
+- [x] Choix architecture : Shopify comme source de vérité produits / stocks / checkout
+- [x] Créer la boutique Shopify et récupérer le domaine `*.myshopify.com`
+- [x] Activer la Storefront API et générer le Storefront access token
+- [x] Créer 2–3 produits tests dans Shopify
+- [ ] Mapper les champs Korei vers Shopify (variants, collections, tags, metafields)
+- [x] Catalogue dynamique via Shopify Storefront API (avec repli local)
+- [x] Fiche produit dynamique via Shopify Storefront API (avec repli local)
+- [ ] Panier fonctionnel via Shopify Cart API
+- [ ] Checkout via Shopify Checkout
+- [ ] Gestion stocks par variant Shopify
 - [ ] Compte client (Shopify Customer API)
+
+### Prérequis production
+
+- [ ] Netlify : créer le compte / projet de production
+- [x] Netlify : configurer les variables d'environnement (`GROQ_API_KEY`, `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_PUBLIC_TOKEN`)
+- [ ] DNS : choisir et acheter le domaine officiel (`korei.fr`, `koreiparfums.fr` ou autre)
+- [ ] DNS : pointer le domaine principal et `www` vers Netlify
+- [ ] Email pro : créer au minimum `contact@...` et `support@...`
+- [ ] Newsletter : démarrer avec Netlify Forms, puis migrer vers Brevo si campagnes régulières
+- [ ] Analytics : choisir Plausible ou GA4
 
 ---
 
@@ -84,7 +100,7 @@
 |-------|-------------------|
 | MVP live | Site déployé sur Vercel/Netlify, 4 pages fonctionnelles |
 | IA v1 | Chatbot répond avec recommandations catalogue réelles |
-| Shop v1 | Premier achat décant via Shopify |
+| Shop v1 | Catalogue Shopify dynamique + premier achat décant via Shopify Checkout |
 | Growth | 100+ produits, images, SEO indexé |
 
 ---
@@ -94,4 +110,22 @@
 1. **Déployer le MVP** — valeur immédiate, zéro coût
 2. **Images produits** — impact visuel maximal
 3. **Chatbot IA** — différenciation vs concurrents
-4. **Shopify** — quand le flux d'achat est validé avec le client
+4. **Shopify** — source de vérité produits, variants, stock et checkout
+
+---
+
+## Référence UX fiche produit
+
+Le client souhaite une fiche produit proche dans la structure de Scento, notamment pour la lisibilité et la conversion. À adapter à l'identité Korei, sans copier leur contenu ni leur design exact.
+
+Éléments à étudier pour la fiche produit :
+
+- Galerie produit forte : grande image principale + miniatures / visuels formats
+- Informations d'achat visibles sans scroll excessif : marque, nom, genre, note moyenne, badges
+- Sélection de formats claire : 2ml, 5ml, 10ml, flacon, prix par ml, stock, meilleur rapport qualité-prix
+- CTA achat dominant, puis micro-réassurance sous le CTA
+- Bloc promesses : authenticité, satisfaction, livraison, échantillon offert
+- Notes phares et pyramide olfactive
+- Ressenti utilisateur : moment, saison, tenue, projection
+- Recommandations : similaires, complétez votre collection, autres créations de la marque
+- FAQ produit : authenticité, livraison, formats, tenue, notes
