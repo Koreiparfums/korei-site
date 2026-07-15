@@ -4,6 +4,8 @@
 
 Site premium de parfumerie de niche (inspiré de l'ambiance scento.com : luxe, sobriété, grands visuels). MVP front-end statique, déployable gratuitement, évolutif vers chatbot IA et boutique Shopify.
 
+Décision d'architecture validée : conserver le front Korei comme vitrine premium, utiliser Shopify comme source de vérité produits / variants / stocks / checkout, et privilégier Netlify pour l'hébergement production avec fonctions serverless.
+
 ---
 
 ## Scope MVP (inclus)
@@ -111,15 +113,33 @@ Contexte : buildChatContext() + historique conversation
 
 ---
 
-## Future possibilité — Shopify
+## Architecture cible — Shopify
 
 ### Scénario hybride recommandé
 
 | Composant | Solution |
 |-----------|----------|
-| Vitrine / contenu | Site statique actuel (Vercel) |
-| Produits / stock / paiement | Shopify (headless ou embed) |
-| Chatbot | API custom + catalogue Shopify via Storefront API |
+| Vitrine / contenu | Site statique actuel, hébergé en production sur Netlify |
+| Produits / stock / paiement | Shopify Storefront API + Shopify Checkout |
+| Chatbot | Netlify Function + Groq + catalogue Shopify via Storefront API |
+| Formulaires | Netlify Forms au démarrage, Brevo si campagnes marketing régulières |
+| Email professionnel | Google Workspace ou Microsoft 365 |
+| Domaine / DNS | Domaine officiel pointé vers Netlify |
+
+### Prérequis externes
+
+- Boutique Shopify créée
+- Domaine Shopify `*.myshopify.com`
+- Storefront access token avec accès lecture produits / collections
+- 2–3 produits tests complets dans Shopify
+- Domaine officiel choisi et acheté
+- DNS configuré vers Netlify (`@` et `www`)
+- Emails professionnels créés (`contact@...`, `support@...`)
+- Projet Netlify connecté au repository
+- Variables d'environnement configurées dans Netlify :
+- `GROQ_API_KEY`
+- `SHOPIFY_STORE_DOMAIN`
+- `SHOPIFY_STOREFRONT_PUBLIC_TOKEN`
 
 ### Migration produits
 
@@ -127,18 +147,45 @@ Contexte : buildChatContext() + historique conversation
 2. Remplacer `KoreiProducts.PRODUCTS` par fetch Storefront API
 3. Garder `renderProductCard()` — adapter le mapping des champs
 4. Fiches produit : URL Shopify ou pages custom avec `?id=` mappé
+5. Utiliser les variants Shopify pour les formats (2ml, 5ml, 10ml, flacon)
+6. Utiliser les metafields Shopify pour les données olfactives (notes, famille, intensité, saison, occasion)
 
 ### Avantages
 
 - Paiement, TVA, livraison gérés par Shopify
 - Le front premium reste indépendant du checkout
 - Chatbot enrichi avec stock réel
+- Ajout de nouveaux parfums depuis Shopify sans modification du code
+
+### Estimation budget mensuel MVP
+
+| Poste | Estimation |
+|-------|------------|
+| Shopify Basic | ~30–40 €/mois, hors frais de paiement |
+| Netlify | 0–20 $/mois selon plan |
+| Email pro | ~7 €/utilisateur/mois |
+| Domaine | ~10–30 €/an |
+| Brevo | 0 €/mois au démarrage |
+| Groq | 0 € ou faible au démarrage selon usage |
+
+Budget réaliste de départ : environ 40–60 €/mois, hors frais de paiement et hors achat du domaine.
 
 ---
 
 ## Stratégie de déploiement
 
-### Option 1 — Vercel (recommandé)
+### Option 1 — Netlify (recommandé production)
+
+```bash
+netlify deploy --prod --dir=.
+```
+
+- Publish directory : racine du repo
+- Formulaires Netlify pour newsletter et contact
+- Fonctions serverless pour `/api/chat`
+- Variables d'environnement pour Groq et Shopify
+
+### Option 2 — Vercel
 
 ```bash
 # Racine du projet = korei-site
@@ -149,15 +196,6 @@ vercel deploy
 - Build : aucun
 - `vercel.json` optionnel pour redirects
 - Newsletter/contact : prévoir Mailchimp, Brevo ou une serverless function, car Netlify Forms ne collecte pas sur Vercel
-
-### Option 2 — Netlify
-
-```bash
-netlify deploy --prod --dir=.
-```
-
-- Publish directory : racine du repo
-- Formulaires Netlify pour newsletter et contact
 
 ### Option 3 — AWS Amplify
 
@@ -178,7 +216,9 @@ npx serve .
 
 | Variable | Usage |
 |----------|-------|
-| `OPENAI_API_KEY` | Serverless function |
+| `GROQ_API_KEY` | Serverless function chatbot |
+| `GROQ_MODEL` | Modèle chatbot |
+| `SHOPIFY_STORE_DOMAIN` | Domaine boutique Shopify |
 | `SHOPIFY_STOREFRONT_TOKEN` | Catalogue dynamique |
 
 ---
