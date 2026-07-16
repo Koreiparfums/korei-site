@@ -735,7 +735,8 @@
     const store = global.KoreiProductStore;
 
     renderProducts(document.getElementById("bestsellers-grid"), store.getBestsellers(), { basePath: "" });
-    renderProducts(document.getElementById("new-products-grid"), store.getNewProducts(), {
+    // TODO: revenir à store.getNewProducts() une fois une vraie sélection nouveautés définie.
+    renderProducts(document.getElementById("new-products-grid"), store.getBestsellers(), {
       basePath: "",
       grid: true,
     });
