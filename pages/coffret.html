@@ -138,7 +138,7 @@
         </p>
         <div class="coffret-hero__ctas">
           <a href="#coffrets" class="btn-dark">Découvrir les coffrets</a>
-          <a href="catalogue.html?custom=1" class="coffret-hero__link"
+          <a href="#personnaliser" class="coffret-hero__link"
             >Créer mon coffret sur mesure <span aria-hidden="true">→</span></a
           >
         </div>
@@ -250,63 +250,147 @@
       </div>
     </section>
 
-    <section class="coffret-why">
-      <div class="dose-head">
-        <div class="dose-eyebrow">Pourquoi un coffret</div>
-        <h2 class="dose-title">Trois bonnes raisons de craquer.</h2>
-        <span class="dose-title-rule" aria-hidden="true"></span>
-      </div>
-      <div class="coffret-why-grid">
-        <div class="coffret-why-item">
-          <i class="ti ti-compass" aria-hidden="true"></i>
-          <h3>Découverte</h3>
-          <p>Explorez plusieurs maisons de niche en un seul coffret.</p>
+    <section class="cb2" id="personnaliser">
+      <div class="cb2-grid" id="cb2Grid">
+        <div class="cb2-media-col">
+          <div
+            class="cb2-media"
+            style="background-image: url('../assets/images/coffrets/coffret_personnalise.png')"
+          ></div>
+          <ul class="cb2-perks">
+            <li class="cb2-perk">
+              <i class="ti ti-package" aria-hidden="true"></i>Coffrets premium
+            </li>
+            <li class="cb2-perk">
+              <i class="ti ti-gift" aria-hidden="true"></i>Emballage cadeau
+              offert
+            </li>
+            <li class="cb2-perk">
+              <i class="ti ti-map-pin" aria-hidden="true"></i>Préparé en
+              France
+            </li>
+          </ul>
         </div>
-        <div class="coffret-why-item">
-          <i class="ti ti-gift" aria-hidden="true"></i>
-          <h3>Cadeau idéal</h3>
-          <p>Présenté dans un écrin premium, prêt à offrir.</p>
-        </div>
-        <div class="coffret-why-item">
-          <i class="ti ti-wand" aria-hidden="true"></i>
-          <h3>Sélection experte</h3>
-          <p>Des parfums pensés pour se répondre et aller ensemble.</p>
-        </div>
-      </div>
-    </section>
 
-    <section class="coffret-formats">
-      <div class="dose-head">
-        <div class="dose-eyebrow">Les formats</div>
-        <h2 class="dose-title">Trois façons de composer votre coffret.</h2>
-        <span class="dose-title-rule" aria-hidden="true"></span>
+        <div class="cb2-config">
+          <div class="cb2-head">
+            <h2 class="cb2-title">Personnalisez votre coffret</h2>
+            <p class="cb2-sub">
+              Composez votre sélection parmi plus de 500 parfums de niche.
+            </p>
+          </div>
+
+          <div class="cb2-step">
+            <h3 class="cb2-step__title">Choisissez votre format</h3>
+            <div
+              class="cb2-formats"
+              id="cb2Formats"
+              role="radiogroup"
+              aria-label="Format du coffret"
+            >
+              <button
+                type="button"
+                class="cb2-format"
+                data-format="10x2ml"
+                role="radio"
+                aria-checked="false"
+              >
+                <span class="cb2-format__name">Découverte</span>
+                <span class="cb2-format__ml">10 × 2 ml</span>
+                <span class="cb2-format__desc"
+                  >Idéal pour découvrir plusieurs maisons.</span
+                >
+              </button>
+              <button
+                type="button"
+                class="cb2-format is-active"
+                data-format="5x5ml"
+                role="radio"
+                aria-checked="true"
+              >
+                <span class="cb2-format__name">Signature</span>
+                <span class="cb2-format__ml">5 × 5 ml</span>
+                <span class="cb2-format__desc"
+                  >Le meilleur équilibre entre découverte et quotidien.</span
+                >
+              </button>
+              <button
+                type="button"
+                class="cb2-format"
+                data-format="3x10ml"
+                role="radio"
+                aria-checked="false"
+              >
+                <span class="cb2-format__name">Collection</span>
+                <span class="cb2-format__ml">3 × 10 ml</span>
+                <span class="cb2-format__desc"
+                  >Pour profiter durablement de vos coups de cœur.</span
+                >
+              </button>
+            </div>
+          </div>
+
+          <div class="cb2-step">
+            <h3 class="cb2-step__title">Ajoutez vos parfums</h3>
+            <div class="cb2-rows" id="cb2Rows"></div>
+            <button type="button" class="cb2-add-row" id="cb2AddRow">
+              <i class="ti ti-plus" aria-hidden="true"></i> Ajouter un parfum
+            </button>
+            <datalist id="cb2PerfumeList"></datalist>
+          </div>
+
+          <div class="cb2-step">
+            <h3 class="cb2-step__title">Ajoutez un message personnalisé</h3>
+            <textarea
+              class="cb2-message"
+              id="cb2Message"
+              maxlength="150"
+              placeholder="Écrivez votre message…"
+            ></textarea>
+            <div class="cb2-message__foot">
+              <span class="cb2-message__hint"
+                >Votre message sera imprimé dans le coffret.</span
+              >
+              <span class="cb2-message__count"
+                ><span id="cb2MessageCount">0</span> / 150 caractères</span
+              >
+            </div>
+          </div>
+
+          <div class="cb2-action">
+            <div class="cb2-summary">
+              <div class="cb2-summary__head">Coffret Kōrei</div>
+              <ul class="cb2-summary__list" id="cb2SummaryList">
+                <li class="cb2-summary__empty" id="cb2SummaryEmpty">
+                  Aucun parfum sélectionné pour l'instant.
+                </li>
+              </ul>
+              <div class="cb2-summary__bar">
+                <span id="cb2BarFill"></span>
+              </div>
+              <div class="cb2-summary__row">
+                <span id="cb2Count">0 / 5 flacons</span>
+                <span class="cb2-summary__format" id="cb2PreviewFormat"
+                  >Signature</span
+                >
+              </div>
+              <div class="cb2-summary__row cb2-summary__row--price">
+                <span>Prix du coffret</span>
+                <span class="cb2-summary__price" id="cb2PreviewPrice"
+                  >99€</span
+                >
+              </div>
+            </div>
+
+            <button type="button" class="cb2-cta" id="cb2AddToCart" disabled>
+              Ajouter le coffret au panier
+            </button>
+            <p class="cb2-hint" id="cb2Hint">
+              Sélectionnez 5 flacons pour continuer.
+            </p>
+          </div>
+        </div>
       </div>
-      <div class="coffret-formats-frise">
-        <a href="catalogue.html?pack=10x2ml&custom=1" class="coffret-format">
-          <span class="coffret-format__label">Découverte</span>
-          <span class="coffret-format__ml">10 × 2<em>ml</em></span>
-          <span class="coffret-format__desc"
-            >Idéal pour explorer plusieurs maisons.</span
-          >
-        </a>
-        <a href="catalogue.html?pack=5x5ml&custom=1" class="coffret-format">
-          <span class="coffret-format__label">Équilibré</span>
-          <span class="coffret-format__ml">5 × 5<em>ml</em></span>
-          <span class="coffret-format__desc"
-            >Le bon dosage entre découverte et quotidien.</span
-          >
-        </a>
-        <a href="catalogue.html?pack=3x10ml&custom=1" class="coffret-format">
-          <span class="coffret-format__label">Collection</span>
-          <span class="coffret-format__ml">3 × 10<em>ml</em></span>
-          <span class="coffret-format__desc"
-            >Pour vos coups de cœur, à savourer durablement.</span
-          >
-        </a>
-      </div>
-      <a href="catalogue.html?custom=1" class="coffret-formats__cta"
-        >Créer mon coffret sur mesure <span aria-hidden="true">→</span></a
-      >
     </section>
 
     <footer>
@@ -361,6 +445,8 @@
     <script src="../assets/js/products.js"></script>
     <script src="../assets/js/product-store.js"></script>
     <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/coffret-builder.js"></script>
+    <script src="../assets/js/coffret-personalize.js"></script>
     <script src="../assets/js/chatbot.js"></script>
   </body>
 </html>
