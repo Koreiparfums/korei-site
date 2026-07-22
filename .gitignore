@@ -21,6 +21,9 @@ build/
 .env
 .env.local
 
+# Store catalogue admin local (repli hors Netlify Blobs)
+data/
+
 # Local research references
 research/
 

@@ -94,9 +94,9 @@
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
-      Promise.resolve(global.KoreiShopifyCatalog?.load()).finally(initCollectionsPage);
+      Promise.resolve(global.KoreiShopifyCatalog?.load()).then(() => global.KoreiCatalogLoader?.load()).finally(initCollectionsPage);
     });
   } else {
-    Promise.resolve(global.KoreiShopifyCatalog?.load()).finally(initCollectionsPage);
+    Promise.resolve(global.KoreiShopifyCatalog?.load()).then(() => global.KoreiCatalogLoader?.load()).finally(initCollectionsPage);
   }
 })(window);

@@ -195,7 +195,7 @@
             <div class="pdp-actions">
               <div class="pdp-actions__row">
                 <button class="pdp-btn pdp-btn--primary" id="pdp-cta" type="button" disabled title="Bientôt disponible">
-                  Ajouter au panier — <span id="pdp-cta-price">${formats[0].price}€</span>
+                  Bientôt disponible
                 </button>
                 <button class="pdp-btn pdp-btn--ghost" id="pdp-fav" type="button" aria-label="Ajouter aux favoris" aria-pressed="false">
                   <i class="ti ti-heart"></i>
@@ -226,7 +226,6 @@
 
   function initHero(main, product) {
     const formatBtns = Array.from(main.querySelectorAll(".pdp-format"));
-    const ctaPrice = main.querySelector("#pdp-cta-price");
     const coffretBtn = main.querySelector("#pdp-add-coffret");
     const coffretLabel = main.querySelector("#pdp-coffret-label");
     const coffret = global.KoreiCoffret;
@@ -254,7 +253,6 @@
         });
         btn.classList.add("is-active");
         btn.setAttribute("aria-checked", "true");
-        if (ctaPrice) ctaPrice.textContent = `${btn.dataset.price}€`;
         updateCoffretButton();
       });
     });
@@ -419,8 +417,8 @@
   function renderSentiment(product) {
     const occasions = product.occasions || [];
     const seasons = product.seasons || [];
-    const longevityLevel = LONGEVITY_LEVEL[product.intensity] || 3;
-    const projectionLevel = PROJECTION_LEVEL[product.intensity] || 2;
+    const longevityLevel = product.longevity || LONGEVITY_LEVEL[product.intensity] || 3;
+    const projectionLevel = product.sillage || PROJECTION_LEVEL[product.intensity] || 2;
 
     const momentCards = MOMENT_META.map((m) => renderSentimentCard(m, occasions.includes(m.key))).join("");
     const seasonCards = SEASON_META.map((s) => renderSentimentCard(s, seasons.includes(s.key))).join("");
@@ -681,10 +679,10 @@
   if (document.body.dataset.page === "product") {
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", () => {
-        Promise.resolve(global.KoreiShopifyCatalog?.load()).finally(initProductPage);
+        Promise.resolve(global.KoreiShopifyCatalog?.load()).then(() => global.KoreiCatalogLoader?.load()).finally(initProductPage);
       });
     } else {
-      Promise.resolve(global.KoreiShopifyCatalog?.load()).finally(initProductPage);
+      Promise.resolve(global.KoreiShopifyCatalog?.load()).then(() => global.KoreiCatalogLoader?.load()).finally(initProductPage);
     }
   }
 })(window);

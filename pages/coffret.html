@@ -2,7 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="Coffrets Korei — sets signature ou compositions 100% personnalisées de décants de niche, dès 2ml." />
     <meta name="robots" content="index, follow" />
     <title>Coffrets — Korei</title>
@@ -22,7 +22,7 @@
     <meta name="twitter:image" content="https://korei.fr/assets/images/og/og-default.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
     <link rel="stylesheet" href="../assets/css/styles.css" />
   </head>
@@ -112,11 +112,12 @@
     <div class="search-overlay" id="searchOverlay">
       <div class="search-overlay-head">
         <i class="ti ti-search search-overlay-icon"></i>
-        <input type="search" class="search-overlay-input" placeholder="Rechercher un parfum…" aria-label="Rechercher" />
+        <input type="search" class="search-overlay-input" placeholder="Rechercher un parfum, une marque…" aria-label="Rechercher" />
         <button class="search-overlay-close" onclick="toggleSearch()" aria-label="Fermer" type="button">
           <i class="ti ti-x"></i>
         </button>
       </div>
+      <p class="search-overlay-hint">Tendances : Oud Wood · Aventus · Interlude Man</p>
     </div>
 
     <section class="coffret-hero">
@@ -253,31 +254,90 @@
     <section class="cb2" id="personnaliser">
       <div class="cb2-grid" id="cb2Grid">
         <div class="cb2-media-col">
-          <div
-            class="cb2-media"
-            style="background-image: url('../assets/images/coffrets/coffret_personnalise.png')"
-          ></div>
+          <div class="cb2-preview" id="cb2Preview">
+            <div class="cb2-preview__head">
+              <span class="cb2-preview__label">Votre coffret</span>
+              <span class="cb2-preview__format" id="cb2PreviewFormatName">Signature</span>
+            </div>
+
+            <div class="cb2-preview__slots" id="cb2Slots"></div>
+
+            <div class="cb2-preview__progress">
+              <div class="cb2-preview__bar"><span id="cb2BarFill"></span></div>
+              <span class="cb2-preview__count" id="cb2Count">0 / 5 flacons</span>
+            </div>
+
+            <ul class="cb2-preview__list" id="cb2SummaryList">
+              <li class="cb2-summary__empty" id="cb2SummaryEmpty">
+                Sélectionnez vos parfums pour composer votre coffret.
+              </li>
+            </ul>
+
+            <div class="cb2-preview__foot">
+              <span>Prix du coffret</span>
+              <span class="cb2-preview__price" id="cb2PreviewPrice">99€</span>
+            </div>
+          </div>
+
           <ul class="cb2-perks">
             <li class="cb2-perk">
-              <i class="ti ti-package" aria-hidden="true"></i>Coffrets premium
+              <span class="cb2-perk__icon"><i class="ti ti-package" aria-hidden="true"></i></span>
+              <span class="cb2-perk__text">
+                <span class="cb2-perk__title">Coffrets premium</span>
+                <span class="cb2-perk__sub">Finition soignée</span>
+              </span>
             </li>
             <li class="cb2-perk">
-              <i class="ti ti-gift" aria-hidden="true"></i>Emballage cadeau
-              offert
+              <span class="cb2-perk__icon"><i class="ti ti-gift" aria-hidden="true"></i></span>
+              <span class="cb2-perk__text">
+                <span class="cb2-perk__title">Emballage cadeau</span>
+                <span class="cb2-perk__sub">Inclus gratuitement</span>
+              </span>
             </li>
             <li class="cb2-perk">
-              <i class="ti ti-map-pin" aria-hidden="true"></i>Préparé en
-              France
+              <span class="cb2-perk__icon"><i class="ti ti-map-pin" aria-hidden="true"></i></span>
+              <span class="cb2-perk__text">
+                <span class="cb2-perk__title">Préparé en France</span>
+                <span class="cb2-perk__sub">À la commande</span>
+              </span>
             </li>
           </ul>
+
+          <figure class="cb2-mood">
+            <img
+              src="../assets/images/coffrets/coffret_personnalise.png"
+              alt="Coffret Kōrei entrouvert avec des décants sortis, prêt à être composé"
+              loading="lazy"
+            />
+            <figcaption>Votre coffret, prêt à recevoir votre sélection.</figcaption>
+          </figure>
         </div>
 
         <div class="cb2-config">
           <div class="cb2-head">
             <h2 class="cb2-title">Personnalisez votre coffret</h2>
             <p class="cb2-sub">
-              Composez votre sélection parmi plus de 500 parfums de niche.
+              Composez votre sélection parmi nos maisons de niche.
             </p>
+          </div>
+
+          <div class="cb2-timeline" id="cb2Timeline">
+            <div class="cb2-timeline__step" data-step="format">
+              <span class="cb2-timeline__num">1</span>
+              <span class="cb2-timeline__label">Format</span>
+            </div>
+            <div class="cb2-timeline__step" data-step="parfums">
+              <span class="cb2-timeline__num">2</span>
+              <span class="cb2-timeline__label">Vos parfums</span>
+            </div>
+            <div class="cb2-timeline__step" data-step="message">
+              <span class="cb2-timeline__num">3</span>
+              <span class="cb2-timeline__label">Message</span>
+            </div>
+            <div class="cb2-timeline__step" data-step="validation">
+              <span class="cb2-timeline__num">4</span>
+              <span class="cb2-timeline__label">Validation</span>
+            </div>
           </div>
 
           <div class="cb2-step">
@@ -332,58 +392,50 @@
 
           <div class="cb2-step">
             <h3 class="cb2-step__title">Ajoutez vos parfums</h3>
-            <div class="cb2-rows" id="cb2Rows"></div>
-            <button type="button" class="cb2-add-row" id="cb2AddRow">
-              <i class="ti ti-plus" aria-hidden="true"></i> Ajouter un parfum
-            </button>
-            <datalist id="cb2PerfumeList"></datalist>
+
+            <div class="cb2-search" id="cb2Search">
+              <i class="ti ti-search" aria-hidden="true"></i>
+              <input type="text" id="cb2SearchInput" placeholder="Rechercher un parfum…" autocomplete="off" />
+            </div>
+
+            <div class="cb2-filter-chips" id="cb2FilterChips">
+              <button type="button" class="cb2-filter-chip" data-filter="bestseller">🔥 Best-sellers</button>
+              <button type="button" class="cb2-filter-chip" data-filter="new">✨ Nouveautés</button>
+              <button type="button" class="cb2-filter-chip" data-filter="floral">🌸 Floral</button>
+              <button type="button" class="cb2-filter-chip" data-filter="boisé">🌳 Boisé</button>
+              <button type="button" class="cb2-filter-chip" data-filter="fruity">🍋 Fruité</button>
+              <button type="button" class="cb2-filter-chip" data-filter="gourmand">🍦 Gourmand</button>
+            </div>
+
+            <div class="cb2-results" id="cb2Results" hidden></div>
+
+            <div class="cb2-selected" id="cb2Selected"></div>
           </div>
 
           <div class="cb2-step">
             <h3 class="cb2-step__title">Ajoutez un message personnalisé</h3>
-            <textarea
-              class="cb2-message"
-              id="cb2Message"
-              maxlength="150"
-              placeholder="Écrivez votre message…"
-            ></textarea>
-            <div class="cb2-message__foot">
-              <span class="cb2-message__hint"
-                >Votre message sera imprimé dans le coffret.</span
-              >
-              <span class="cb2-message__count"
-                ><span id="cb2MessageCount">0</span> / 150 caractères</span
-              >
+            <div class="cb2-message-card">
+              <textarea
+                class="cb2-message"
+                id="cb2Message"
+                maxlength="150"
+                placeholder="Écrivez votre message…"
+              ></textarea>
+              <div class="cb2-message__foot">
+                <span class="cb2-message__hint"
+                  >Votre message sera imprimé dans le coffret.</span
+                >
+                <span class="cb2-message__count"
+                  ><span id="cb2MessageCount">0</span> / 150 caractères</span
+                >
+              </div>
             </div>
           </div>
 
           <div class="cb2-action">
-            <div class="cb2-summary">
-              <div class="cb2-summary__head">Coffret Kōrei</div>
-              <ul class="cb2-summary__list" id="cb2SummaryList">
-                <li class="cb2-summary__empty" id="cb2SummaryEmpty">
-                  Aucun parfum sélectionné pour l'instant.
-                </li>
-              </ul>
-              <div class="cb2-summary__bar">
-                <span id="cb2BarFill"></span>
-              </div>
-              <div class="cb2-summary__row">
-                <span id="cb2Count">0 / 5 flacons</span>
-                <span class="cb2-summary__format" id="cb2PreviewFormat"
-                  >Signature</span
-                >
-              </div>
-              <div class="cb2-summary__row cb2-summary__row--price">
-                <span>Prix du coffret</span>
-                <span class="cb2-summary__price" id="cb2PreviewPrice"
-                  >99€</span
-                >
-              </div>
-            </div>
-
             <button type="button" class="cb2-cta" id="cb2AddToCart" disabled>
-              Ajouter le coffret au panier
+              <span class="cb2-cta__label">Ajouter le coffret au panier</span>
+              <span class="cb2-cta__price" id="cb2CtaPrice">99€</span>
             </button>
             <p class="cb2-hint" id="cb2Hint">
               Sélectionnez 5 flacons pour continuer.
@@ -398,22 +450,35 @@
         <div>
           <div class="footer-logo">Kōrei</div>
           <div class="footer-tagline">Parfumerie de niche · Paris</div>
+          <div class="footer-socials">
+            <button class="social-btn" aria-label="Instagram" type="button">
+              <i class="ti ti-brand-instagram"></i>
+            </button>
+            <button class="social-btn" aria-label="TikTok" type="button">
+              <i class="ti ti-brand-tiktok"></i>
+            </button>
+          </div>
         </div>
         <div class="footer-col">
           <div class="footer-col-title">Boutique</div>
-          <a href="catalogue.html">Parfums</a>
+          <a href="catalogue.html">Tous les parfums</a>
           <a href="coffret.html">Coffret</a>
           <a href="brands.html">Marques</a>
+          <a href="collections.html">Collections</a>
         </div>
         <div class="footer-col">
-          <div class="footer-col-title">Korei</div>
+          <div class="footer-col-title">Kōrei</div>
           <a href="about.html">À propos</a>
+          <a href="#" data-open-chatbot>Conseiller IA</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Aide</div>
           <a href="contact.html">Contact</a>
           <a href="cgv.html">CGV</a>
         </div>
       </div>
       <div class="footer-bottom">
-        <div class="footer-copy">© 2026 Korei</div>
+        <div class="footer-copy">© 2026 Kōrei — Tous droits réservés</div>
       </div>
     </footer>
 
