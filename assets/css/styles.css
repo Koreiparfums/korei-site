@@ -707,7 +707,7 @@ body[data-page="home"] .hero {
 /* ─── FORMATS (échelle des doses) ─── */
 .dose-section {
   margin: 25.8px var(--px) 51.7px;
-  background: var(--surface);
+  background: var(--bg);
   border: 0.76px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 36.2px;
@@ -1306,64 +1306,66 @@ body[data-page="home"] .hero {
   background: #333;
 }
 
-/* ─── HOME — cartes parfum agrandies de 10% ─── */
+/* ─── HOME — cartes parfum (+10% puis -15% : net -6.5% vs base) ─── */
 body[data-page="home"] .products-grid {
-  grid-template-columns: repeat(auto-fill, minmax(236.23px, 1fr));
+  grid-template-columns: repeat(auto-fill, 246.67px);
+  justify-content: center;
 }
 body[data-page="home"] .product-card {
-  min-width: 200.78px;
+  min-width: 170.66px;
+  width: 246.67px;
 }
 body[data-page="home"] .card-img {
-  height: 231.67px;
+  height: 196.92px;
 }
 body[data-page="home"] .card-img-icon {
-  font-size: 84.95px;
+  font-size: 72.21px;
 }
 body[data-page="home"] .card-badge {
-  top: 10.81px;
-  left: 10.81px;
-  font-size: 7.72px;
-  padding: 3.86px 9.26px;
+  top: 9.19px;
+  left: 9.19px;
+  font-size: 6.56px;
+  padding: 3.28px 7.87px;
 }
 body[data-page="home"] .card-fav {
-  top: 10.81px;
-  right: 10.81px;
-  font-size: 17px;
+  top: 9.19px;
+  right: 9.19px;
+  font-size: 14.45px;
 }
 body[data-page="home"] .card-body {
-  padding: 17px 18.54px 18.54px;
+  padding: 14.45px 15.76px 15.76px;
 }
 body[data-page="home"] .card-brand {
-  font-size: 12.54px;
-  margin-bottom: 9.66px;
+  font-size: 10.66px;
+  margin-bottom: 8.21px;
 }
 body[data-page="home"] .card-name {
-  font-size: 19.31px;
-  margin-bottom: 9.66px;
-  min-height: 46.33px;
+  font-size: 16.41px;
+  margin-bottom: 8.21px;
+  min-height: 39.38px;
 }
 body[data-page="home"] .card-footer {
-  gap: 6.19px;
-  margin-bottom: 4.63px;
+  gap: 5.26px;
+  margin-bottom: 3.94px;
 }
 body[data-page="home"] .card-price {
-  font-size: 15.91px;
+  font-size: 13.52px;
 }
 body[data-page="home"] .card-rating {
-  font-size: 17.83px;
-  gap: 5.8px;
+  font-size: 15.16px;
+  gap: 4.93px;
 }
 body[data-page="home"] .star,
 body[data-page="home"] .star-empty,
 body[data-page="home"] .star-half-wrap,
 body[data-page="home"] .star-half-fill {
-  font-size: 20.27px;
-  letter-spacing: 1.45px;
+  font-size: 17.23px;
+  letter-spacing: 1.23px;
 }
 body[data-page="home"] .card-add {
-  padding: 13.9px;
-  font-size: 13.9px;
-  margin-top: 12.34px;
+  padding: 11.82px;
+  font-size: 11.82px;
+  margin-top: 10.49px;
 }
 
 /* ─── WHY ─── */
@@ -1485,7 +1487,7 @@ body[data-page="home"] .card-add {
 .pack-builder-banner {
   max-width: var(--max-w);
   margin: 20px auto 0;
-  background: var(--surface);
+  background: var(--bg);
   border: 0.8px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 38.4px 44.8px;
@@ -3449,7 +3451,7 @@ body[data-page="coffret"] .coffret-hero {
 /* ─── QUIZ CTA ─── */
 .quiz-cta {
   margin: 0 var(--px) 64px;
-  background: var(--surface);
+  background: var(--bg);
   border: 0.8px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 51.2px 44.8px;

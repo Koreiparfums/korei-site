@@ -332,20 +332,18 @@
 
     renderProducts(document.getElementById("bestsellers-grid"), store.getBestsellers(), { basePath: "" });
     // TODO: revenir à store.getNewProducts() une fois une vraie sélection nouveautés définie.
-    renderProducts(document.getElementById("new-products-grid"), store.getBestsellers(), {
-      basePath: "",
-      grid: true,
-    });
+    renderProducts(document.getElementById("new-products-grid"), store.getBestsellers(), { basePath: "" });
 
-    initFavoritesNav();
+    initProductCarousel("bestsellers-grid");
+    initProductCarousel("new-products-grid");
     initBrandChips();
     initChatbotTriggers();
   }
 
-  // ── Flèches de défilement "Préférés du moment" (carrousel infini, façon .brands-marquee-track)
-  function initFavoritesNav() {
-    const track = document.getElementById("bestsellers-grid");
-    const nav = document.querySelector(".favorites-nav");
+  // ── Flèches de défilement carrousel produits (carrousel infini, façon .brands-marquee-track)
+  function initProductCarousel(trackId) {
+    const track = document.getElementById(trackId);
+    const nav = track?.closest("section")?.querySelector(".favorites-nav");
     if (!track || !nav) return;
 
     const realCards = Array.from(track.children);
