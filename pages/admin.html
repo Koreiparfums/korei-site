@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Admin catalogue — Korei</title>
+    <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <link rel="stylesheet" href="../assets/css/admin.css" />
+  </head>
+  <body>
+    <div id="admin-login" class="admin-login">
+      <form id="login-form" class="admin-login-card">
+        <h1>Korei — Admin</h1>
+        <p>Mot de passe administrateur du catalogue.</p>
+        <input type="password" id="login-token" placeholder="Mot de passe" autocomplete="current-password" required />
+        <button type="submit" class="admin-btn admin-btn--primary">Entrer</button>
+        <p id="login-error" class="admin-form-error"></p>
+      </form>
+    </div>
+
+    <div id="admin-app" hidden>
+      <header class="admin-header">
+        <h1>Korei — Catalogue admin</h1>
+        <button type="button" id="logout-btn" class="admin-btn admin-btn--ghost">Se déconnecter</button>
+      </header>
+
+      <nav class="admin-tabs">
+        <button type="button" class="admin-tab is-active" data-tab="catalogue">Catalogue</button>
+        <button type="button" class="admin-tab" data-tab="import">Importer depuis les CSV</button>
+      </nav>
+
+      <main class="admin-main">
+        <section id="tab-catalogue">
+          <div class="admin-toolbar">
+            <p id="catalogue-count-label">Parfums gérés depuis ce dashboard.</p>
+            <button type="button" id="new-product-btn" class="admin-btn admin-btn--primary">+ Nouveau parfum</button>
+          </div>
+          <div id="catalogue-list" class="admin-list"></div>
+        </section>
+
+        <section id="tab-import" hidden>
+          <div class="admin-toolbar admin-toolbar--filters">
+            <input type="search" id="import-search" placeholder="Rechercher un parfum…" />
+            <select id="import-brand-filter">
+              <option value="">Toutes les marques</option>
+              <option value="dior">Dior</option>
+              <option value="byredo">Byredo</option>
+              <option value="louis-vuitton">Louis Vuitton</option>
+            </select>
+            <select id="import-gender-filter">
+              <option value="">Tous genres</option>
+              <option value="femme">Femme</option>
+              <option value="homme">Homme</option>
+              <option value="unisexe">Unisexe</option>
+            </select>
+            <span id="import-count" class="admin-count"></span>
+          </div>
+          <div id="import-list" class="admin-list"></div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="admin-form-dialog" class="admin-dialog">
+      <form id="admin-form" class="admin-form">
+        <h2 id="form-title">Parfum</h2>
+
+        <div class="admin-form-grid">
+          <label>Marque<input type="text" id="field-brand" required /></label>
+          <label>Nom<input type="text" id="field-name" required /></label>
+          <label>Genre<select id="field-gender"></select></label>
+          <label>Famille<select id="field-family"></select></label>
+          <label>Intensité<select id="field-intensity"></select></label>
+          <label>Badge<select id="field-badge"></select></label>
+          <label>Prix (€)<input type="number" id="field-price" min="0" step="0.5" /></label>
+          <label>Note (/5)<input type="number" id="field-rating" min="0" max="5" step="0.1" /></label>
+          <label>Image (chemin)<input type="text" id="field-image" placeholder="assets/images/products/xxx.jpg" /></label>
+        </div>
+
+        <div class="admin-form-row">
+          <label class="admin-slider-label">
+            Sillage <span id="field-sillage-label"></span>
+            <input type="range" id="field-sillage" min="1" max="4" step="1" />
+          </label>
+          <label class="admin-slider-label">
+            Longévité <span id="field-longevity-label"></span>
+            <input type="range" id="field-longevity" min="1" max="5" step="1" />
+          </label>
+        </div>
+
+        <div class="admin-form-row">
+          <div>
+            <span class="admin-field-label">Notes de tête</span>
+            <div id="field-notes-top" class="admin-tags"></div>
+          </div>
+          <div>
+            <span class="admin-field-label">Notes de cœur</span>
+            <div id="field-notes-heart" class="admin-tags"></div>
+          </div>
+          <div>
+            <span class="admin-field-label">Notes de fond</span>
+            <div id="field-notes-base" class="admin-tags"></div>
+          </div>
+        </div>
+
+        <div class="admin-form-row">
+          <div>
+            <span class="admin-field-label">Occasions</span>
+            <div id="field-occasions" class="admin-chips"></div>
+          </div>
+          <div>
+            <span class="admin-field-label">Saisons</span>
+            <div id="field-seasons" class="admin-chips"></div>
+          </div>
+        </div>
+
+        <label class="admin-field-full">Description<textarea id="field-description" rows="3"></textarea></label>
+
+        <fieldset class="admin-fieldset">
+          <legend>Source Fragrantica (référence)</legend>
+          <div class="admin-form-grid">
+            <label>Concentration<input type="text" id="field-concentration" /></label>
+            <label>Année<input type="number" id="field-release-year" /></label>
+            <label class="admin-field-full">URL Fragrantica<input type="url" id="field-fragrantica-url" /></label>
+          </div>
+        </fieldset>
+
+        <div class="admin-form-row admin-form-row--checks">
+          <label><input type="checkbox" id="field-bestseller" /> Best-seller</label>
+          <label><input type="checkbox" id="field-new" /> Nouveauté</label>
+          <label><input type="checkbox" id="field-published" /> Publié</label>
+        </div>
+
+        <p id="form-error" class="admin-form-error"></p>
+
+        <div class="admin-form-actions">
+          <button type="button" id="form-cancel" class="admin-btn admin-btn--ghost">Annuler</button>
+          <button type="submit" class="admin-btn admin-btn--primary">Enregistrer</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="../assets/js/products.js"></script>
+    <script src="../assets/js/admin.js"></script>
+  </body>
+</html>

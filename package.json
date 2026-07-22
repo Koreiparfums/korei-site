@@ -1,0 +1,12 @@
+{
+  "name": "korei-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Korei — parfumerie de niche (front statique + fonctions serverless)",
+  "scripts": {
+    "dev": "node dev-server.js"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

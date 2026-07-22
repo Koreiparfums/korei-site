@@ -5,26 +5,29 @@
  */
 
 body[data-page="product"] {
-  --pdp-gold: #c79a3b;
-  --pdp-gold-soft: #e7cf94;
-  --pdp-gold-wash: #f6efdd;
-  --pdp-bg: #ffffff;
-  --pdp-panel: #ffffff;
-  --pdp-ink: #111111;
+  /* Couleurs alignées sur le design system partagé (assets/css/styles.css :root)
+     plutôt que redéfinies ici — évite une 5e nuance d'or et une palette de gris parallèle. */
+  --pdp-gold: var(--accent);
+  --pdp-gold-soft: #dfc088;
+  --pdp-gold-wash: var(--accent-light);
+  --pdp-bg: var(--bg);
+  --pdp-panel: var(--bg);
+  --pdp-ink: var(--text);
   --pdp-ink-soft: #6b6b6b;
-  --pdp-line: #ece6de;
-  --pdp-white: #ffffff;
-  --pdp-radius-lg: 24px;
-  --pdp-radius-md: 16px;
-  --pdp-radius-sm: 10px;
+  --pdp-line: var(--border);
+  --pdp-white: var(--bg);
+  /* Rayons alignés sur l'échelle globale (assets/css/styles.css :root). */
+  --pdp-radius-lg: var(--radius-xl);
+  --pdp-radius-md: var(--radius-lg);
+  --pdp-radius-sm: var(--radius-md);
   --pdp-max: 1400px;
-  --pdp-shadow: 0 30px 70px rgba(17, 17, 17, 0.08);
+  --pdp-shadow: var(--shadow-lg);
   --pdp-ease: cubic-bezier(0.22, 1, 0.36, 1);
   background: var(--pdp-bg);
 }
 
 .pdp {
-  font-family: "Inter", "DM Sans", sans-serif;
+  font-family: "DM Sans", sans-serif;
   color: var(--pdp-ink);
   background: var(--pdp-bg);
 }
@@ -368,7 +371,7 @@ body[data-page="product"] {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-family: "Inter", sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.12em;
@@ -408,8 +411,8 @@ body[data-page="product"] {
   border-color: var(--pdp-ink);
 }
 .pdp-btn--ghost.is-active {
-  color: #c0392b;
-  border-color: #c0392b;
+  color: var(--danger);
+  border-color: var(--danger);
 }
 .pdp-btn--outline {
   width: 100%;

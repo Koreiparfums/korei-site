@@ -12,6 +12,16 @@
     to = "/.netlify/functions/products"
     status = 200
 
+[[redirects]]
+    from = "/api/catalog"
+    to = "/.netlify/functions/catalog"
+    status = 200
+
+[[redirects]]
+    from = "/api/admin/catalog"
+    to = "/.netlify/functions/admin-catalog"
+    status = 200
+
 [[headers]]
   for = "/assets/*"
   [headers.values]

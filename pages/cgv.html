@@ -2,7 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="Conditions générales de vente Korei — livraison, retours, décants et flacons authentiques." />
     <title>CGV — Korei</title>
     <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml" />
@@ -21,7 +21,7 @@
     <meta name="twitter:image" content="https://korei.fr/assets/images/og/og-default.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
     <link rel="stylesheet" href="../assets/css/styles.css" />
   </head>
@@ -83,17 +83,18 @@
     <div class="search-overlay" id="searchOverlay">
       <div class="search-overlay-head">
         <i class="ti ti-search search-overlay-icon"></i>
-        <input type="search" class="search-overlay-input" placeholder="Rechercher un parfum…" aria-label="Rechercher" />
+        <input type="search" class="search-overlay-input" placeholder="Rechercher un parfum, une marque…" aria-label="Rechercher" />
         <button class="search-overlay-close" onclick="toggleSearch()" aria-label="Fermer" type="button">
           <i class="ti ti-x"></i>
         </button>
       </div>
+      <p class="search-overlay-hint">Tendances : Oud Wood · Aventus · Interlude Man</p>
     </div>
 
     <section class="page-hero">
       <div class="page-hero-eyebrow">Légal</div>
       <h1 class="page-hero-title">Conditions <em>générales</em></h1>
-      <p class="page-hero-sub">Placeholder — texte juridique définitif à valider avant ouverture boutique.</p>
+      <p class="page-hero-sub">Les conditions applicables à toute commande passée sur Kōrei.</p>
     </section>
 
     <article class="static-content">
@@ -109,8 +110,8 @@
       </p>
       <h2>3. Prix et paiement</h2>
       <p>
-        Les prix sont indiqués en euros TTC. Le paiement en ligne sera disponible à l'ouverture
-        de la boutique. Aucune transaction n'est possible sur cette version du site.
+        Les prix sont indiqués en euros TTC. Le paiement en ligne est traité de façon sécurisée
+        au moment de la validation de la commande.
       </p>
       <h2>4. Livraison</h2>
       <p>
@@ -122,20 +123,76 @@
       </p>
       <h2>6. Données personnelles</h2>
       <p>
-        Les données collectées via le formulaire de contact ou la newsletter seront traitées conformément
-        à la réglementation en vigueur. Politique de confidentialité à publier avant collecte active.
+        Les données collectées via le formulaire de contact ou la newsletter sont traitées
+        conformément à la réglementation en vigueur et ne sont jamais cédées à des tiers.
       </p>
-      <p class="static-note">Document provisoire — mise à jour avant lancement commercial.</p>
     </article>
 
-    <footer class="footer-minimal">
-      <a href="../index.html">Accueil</a>
-      <a href="about.html">À propos</a>
-      <a href="contact.html">Contact</a>
-      <span>© 2026 Korei</span>
+    <footer>
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">Kōrei</div>
+          <div class="footer-tagline">Parfumerie de niche · Paris</div>
+          <div class="footer-socials">
+            <button class="social-btn" aria-label="Instagram" type="button">
+              <i class="ti ti-brand-instagram"></i>
+            </button>
+            <button class="social-btn" aria-label="TikTok" type="button">
+              <i class="ti ti-brand-tiktok"></i>
+            </button>
+          </div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Boutique</div>
+          <a href="catalogue.html">Tous les parfums</a>
+          <a href="coffret.html">Coffret</a>
+          <a href="brands.html">Marques</a>
+          <a href="collections.html">Collections</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Kōrei</div>
+          <a href="about.html">À propos</a>
+          <a href="#" data-open-chatbot>Conseiller IA</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Aide</div>
+          <a href="contact.html">Contact</a>
+          <a href="cgv.html">CGV</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2026 Kōrei — Tous droits réservés</div>
+      </div>
     </footer>
 
     <script src="../assets/js/site.js"></script>
+    <script src="../assets/js/products.js"></script>
+    <script src="../assets/js/product-store.js"></script>
     <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/chatbot.js"></script>
+
+    <div id="chatbot-widget" class="chatbot-widget">
+      <div id="chatbot-panel" class="chatbot-panel" role="dialog" aria-label="Conseiller olfactif Korei">
+        <div class="chatbot-head">
+          <div>
+            <div class="chatbot-head-title">Conseiller Korei</div>
+            <div class="chatbot-head-sub">Assistant olfactif · Démo</div>
+          </div>
+          <button type="button" id="chatbot-close" class="chatbot-close" aria-label="Fermer"><i class="ti ti-x"></i></button>
+        </div>
+        <div id="chatbot-messages" class="chatbot-messages"></div>
+        <div id="chatbot-suggestions" class="chatbot-suggestions"></div>
+        <div class="chatbot-foot">
+          <form id="chatbot-form" class="chatbot-form">
+            <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Décrivez ce que vous cherchez…" autocomplete="off" />
+            <button type="submit" class="chatbot-send" aria-label="Envoyer"><i class="ti ti-send"></i></button>
+          </form>
+        </div>
+        <div class="chatbot-mock-badge">Mode démo — IA à connecter</div>
+      </div>
+      <button type="button" id="chatbot-toggle" class="chatbot-toggle" aria-label="Ouvrir le conseiller olfactif" aria-expanded="false">
+        <i class="ti ti-message-chatbot"></i>
+      </button>
+    </div>
   </body>
 </html>
