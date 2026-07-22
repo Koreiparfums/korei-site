@@ -2,7 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="Catalogue Korei — parfums de niche et décants authentiques. Filtres par marque, genre et famille olfactive." />
     <meta name="robots" content="index, follow" />
     <title>Catalogue — Korei</title>
@@ -22,7 +22,7 @@
     <meta name="twitter:image" content="https://korei.fr/assets/images/og/og-default.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
     <link rel="stylesheet" href="../assets/css/styles.css" />
   </head>
@@ -72,7 +72,7 @@
       <div class="header-right">
         <div class="search" role="search">
           <span class="search-icon"><i class="ti ti-search"></i></span>
-          <input type="search" id="filter-search" placeholder="Rechercher…" aria-label="Rechercher" />
+          <input type="search" id="filter-search" placeholder="Rechercher des marques..." aria-label="Rechercher" />
         </div>
         <div class="header-actions">
           <button class="icon-btn search-mobile-btn" onclick="toggleSearch()" aria-label="Rechercher" type="button">
@@ -112,74 +112,197 @@
     <div class="search-overlay" id="searchOverlay">
       <div class="search-overlay-head">
         <i class="ti ti-search search-overlay-icon"></i>
-        <input type="search" class="search-overlay-input" placeholder="Rechercher un parfum…" aria-label="Rechercher" />
+        <input type="search" class="search-overlay-input" placeholder="Rechercher un parfum, une marque…" aria-label="Rechercher" />
         <button class="search-overlay-close" onclick="toggleSearch()" aria-label="Fermer" type="button">
           <i class="ti ti-x"></i>
         </button>
       </div>
+      <p class="search-overlay-hint">Tendances : Oud Wood · Aventus · Interlude Man</p>
     </div>
 
     <section class="page-hero">
-      <div class="page-hero-eyebrow">Collection</div>
-      <h1 class="page-hero-title">Tous les <em>parfums</em></h1>
-      <p class="page-hero-sub">Décants et flacons des maisons de niche les plus remarquables.</p>
+      <div
+        class="page-hero__media"
+        style="background-image: url('../assets/images/hero/hero_catalogue.png')"
+      ></div>
+      <div class="page-hero__content">
+        <div class="page-hero-eyebrow">Collection</div>
+        <h1 class="page-hero-title">Tous les <em>parfums</em></h1>
+        <p class="page-hero-sub">Décants et flacons des maisons de niche les plus remarquables.</p>
+      </div>
     </section>
 
     <div class="catalogue-layout">
+      <div class="filters-overlay" id="filtersOverlay"></div>
+
       <!-- Sidebar filtres -->
-      <aside class="catalogue-sidebar">
-        <div class="sidebar-head">
-          <span class="sidebar-head-title">Filtres</span>
-          <button type="button" id="clear-filters" class="sidebar-reset">Réinitialiser</button>
-        </div>
-
-        <div class="filter-section open">
-          <button class="filter-section-toggle" type="button" aria-expanded="true">
-            <span>Marques</span>
-            <i class="ti ti-chevron-up filter-chevron"></i>
-          </button>
-          <div class="filter-section-body">
-            <label class="filter-check"><input type="radio" name="brand" value="" checked /><span>Toutes</span></label>
-            <label class="filter-check"><input type="radio" name="brand" value="amouage" /><span>Amouage</span></label>
-            <label class="filter-check"><input type="radio" name="brand" value="tom-ford" /><span>Tom Ford</span></label>
-            <label class="filter-check"><input type="radio" name="brand" value="xerjoff" /><span>Xerjoff</span></label>
-            <label class="filter-check"><input type="radio" name="brand" value="creed" /><span>Creed</span></label>
-            <label class="filter-check"><input type="radio" name="brand" value="kilian" /><span>Kilian</span></label>
-            <label class="filter-check"><input type="radio" name="brand" value="byredo" /><span>Byredo</span></label>
-            <label class="filter-check"><input type="radio" name="brand" value="initio" /><span>Initio</span></label>
-            <label class="filter-check"><input type="radio" name="brand" value="memo-paris" /><span>Memo Paris</span></label>
-            <label class="filter-check"><input type="radio" name="brand" value="parfums-de-marly" /><span>Parfums de Marly</span></label>
-            <label class="filter-check"><input type="radio" name="brand" value="maison-margiela" /><span>Maison Margiela</span></label>
-            <label class="filter-check"><input type="radio" name="brand" value="dior" /><span>Dior</span></label>
+      <aside class="catalogue-sidebar" id="filterSidebar">
+        <div class="filters-panel">
+          <div class="filters-header">
+            <div class="filters-header-top">
+              <span class="filters-title">Filtres</span>
+              <button type="button" id="filters-mobile-close" class="filters-mobile-close" aria-label="Fermer les filtres">
+                <i class="ti ti-x"></i>
+              </button>
+              <button type="button" id="clear-filters" class="filters-reset">Réinitialiser</button>
+            </div>
+            <span class="filters-count-pill">Afficher <strong id="filters-result-count">—</strong></span>
           </div>
-        </div>
 
-        <div class="filter-section open">
-          <button class="filter-section-toggle" type="button" aria-expanded="true">
-            <span>Famille olfactive</span>
-            <i class="ti ti-chevron-up filter-chevron"></i>
-          </button>
-          <div class="filter-section-body">
-            <label class="filter-check"><input type="radio" name="family" value="" checked /><span>Toutes</span></label>
-            <label class="filter-check"><input type="radio" name="family" value="oriental" /><span>Oriental</span></label>
-            <label class="filter-check"><input type="radio" name="family" value="boisé" /><span>Boisé</span></label>
-            <label class="filter-check"><input type="radio" name="family" value="floral" /><span>Floral</span></label>
-            <label class="filter-check"><input type="radio" name="family" value="gourmand" /><span>Gourmand</span></label>
-            <label class="filter-check"><input type="radio" name="family" value="cuir" /><span>Cuir</span></label>
-            <label class="filter-check"><input type="radio" name="family" value="fruity" /><span>Fruité</span></label>
-            <label class="filter-check"><input type="radio" name="family" value="aromatique" /><span>Aromatique</span></label>
+          <div class="filters-scroll">
+            <!-- Marques -->
+            <div class="filter-group open" data-group="brand">
+              <button class="filter-group-head" type="button" aria-expanded="true">
+                <span>Marques</span>
+                <i class="ti ti-chevron-up filter-chevron"></i>
+              </button>
+              <div class="filter-group-body"><div class="filter-group-body-inner">
+                <label class="mini-search">
+                  <i class="ti ti-search"></i>
+                  <input type="text" id="brand-search-input" placeholder="Rechercher une maison…" autocomplete="off" />
+                </label>
+                <div class="chip-row" id="brand-chip-row"></div>
+                <button type="button" class="show-more-link" id="brands-toggle-more">Voir toutes les maisons</button>
+              </div></div>
+            </div>
+
+            <!-- Famille olfactive -->
+            <div class="filter-group open" data-group="family">
+              <button class="filter-group-head" type="button" aria-expanded="true">
+                <span>Famille olfactive</span>
+                <i class="ti ti-chevron-up filter-chevron"></i>
+              </button>
+              <div class="filter-group-body"><div class="filter-group-body-inner">
+                <div class="chip-row" id="family-chip-row"></div>
+              </div></div>
+            </div>
+
+            <!-- Notes principales -->
+            <div class="filter-group open" data-group="note">
+              <button class="filter-group-head" type="button" aria-expanded="true">
+                <span>Notes principales</span>
+                <i class="ti ti-chevron-up filter-chevron"></i>
+              </button>
+              <div class="filter-group-body"><div class="filter-group-body-inner">
+                <div class="chip-row tag-row" id="note-chip-row"></div>
+              </div></div>
+            </div>
+
+            <!-- Genre -->
+            <div class="filter-group open" data-group="gender">
+              <button class="filter-group-head" type="button" aria-expanded="true">
+                <span>Genre</span>
+                <i class="ti ti-chevron-up filter-chevron"></i>
+              </button>
+              <div class="filter-group-body"><div class="filter-group-body-inner">
+                <div class="chip-row" id="gender-chip-row">
+                  <button type="button" class="chip" data-value="homme"><span class="chip-dot"></span>Homme</button>
+                  <button type="button" class="chip" data-value="unisexe"><span class="chip-dot"></span>Unisexe</button>
+                </div>
+              </div></div>
+            </div>
+
+            <!-- Concentration -->
+            <div class="filter-group" data-group="concentration">
+              <button class="filter-group-head" type="button" aria-expanded="false">
+                <span>Concentration</span>
+                <i class="ti ti-chevron-up filter-chevron"></i>
+              </button>
+              <div class="filter-group-body"><div class="filter-group-body-inner">
+                <div class="option-list" id="concentration-options">
+                  <label class="option-card"><input type="radio" name="concentration" value="extrait" /><span class="radio-dot"></span><span class="label">Extrait de parfum</span></label>
+                  <label class="option-card"><input type="radio" name="concentration" value="edp" /><span class="radio-dot"></span><span class="label">Eau de parfum</span></label>
+                  <label class="option-card"><input type="radio" name="concentration" value="edt" /><span class="radio-dot"></span><span class="label">Eau de toilette</span></label>
+                </div>
+              </div></div>
+            </div>
+
+            <!-- Prix -->
+            <div class="filter-group open" data-group="price">
+              <button class="filter-group-head" type="button" aria-expanded="true">
+                <span>Prix</span>
+                <i class="ti ti-chevron-up filter-chevron"></i>
+              </button>
+              <div class="filter-group-body"><div class="filter-group-body-inner">
+                <div class="price-slider" id="priceSlider">
+                  <div class="price-slider-track"><div class="price-slider-range" id="priceRangeFill"></div></div>
+                  <input type="range" id="priceMinRange" />
+                  <input type="range" id="priceMaxRange" />
+                </div>
+                <div class="price-slider-values">
+                  <span id="priceMinLabel">—</span>
+                  <span class="sep">—</span>
+                  <span id="priceMaxLabel">—</span>
+                </div>
+              </div></div>
+            </div>
+
+            <!-- Longévité -->
+            <div class="filter-group" data-group="longevity">
+              <button class="filter-group-head" type="button" aria-expanded="false">
+                <span>Longévité</span>
+                <i class="ti ti-chevron-up filter-chevron"></i>
+              </button>
+              <div class="filter-group-body"><div class="filter-group-body-inner">
+                <div class="gauge-group" id="longevity-gauges">
+                  <div class="gauge-row" data-intensity="léger"><span class="gauge-row-label">Faible</span><span class="gauge-bar"><span class="gauge-bar-fill" style="width:33%"></span></span></div>
+                  <div class="gauge-row" data-intensity="modéré"><span class="gauge-row-label">Bonne</span><span class="gauge-bar"><span class="gauge-bar-fill" style="width:66%"></span></span></div>
+                  <div class="gauge-row" data-intensity="intense"><span class="gauge-row-label">Excellente</span><span class="gauge-bar"><span class="gauge-bar-fill" style="width:100%"></span></span></div>
+                </div>
+              </div></div>
+            </div>
+
+            <!-- Sillage -->
+            <div class="filter-group" data-group="sillage">
+              <button class="filter-group-head" type="button" aria-expanded="false">
+                <span>Sillage</span>
+                <i class="ti ti-chevron-up filter-chevron"></i>
+              </button>
+              <div class="filter-group-body"><div class="filter-group-body-inner">
+                <div class="gauge-group" id="sillage-gauges">
+                  <div class="gauge-row" data-intensity="léger"><span class="gauge-row-label">Léger</span><span class="gauge-bar"><span class="gauge-bar-fill" style="width:33%"></span></span></div>
+                  <div class="gauge-row" data-intensity="modéré"><span class="gauge-row-label">Modéré</span><span class="gauge-bar"><span class="gauge-bar-fill" style="width:66%"></span></span></div>
+                  <div class="gauge-row" data-intensity="intense"><span class="gauge-row-label">Puissant</span><span class="gauge-bar"><span class="gauge-bar-fill" style="width:100%"></span></span></div>
+                </div>
+              </div></div>
+            </div>
+
+            <!-- Occasion -->
+            <div class="filter-group" data-group="occasion">
+              <button class="filter-group-head" type="button" aria-expanded="false">
+                <span>Occasion</span>
+                <i class="ti ti-chevron-up filter-chevron"></i>
+              </button>
+              <div class="filter-group-body"><div class="filter-group-body-inner">
+                <div class="occasion-grid" id="occasion-grid">
+                  <button type="button" class="occasion-item" data-kind="season" data-value="été"><i class="ti ti-sun"></i><span>Été</span></button>
+                  <button type="button" class="occasion-item" data-kind="season" data-value="hiver"><i class="ti ti-snowflake"></i><span>Hiver</span></button>
+                  <button type="button" class="occasion-item" data-kind="occasion" data-value="soirée"><i class="ti ti-moon-stars"></i><span>Soirée</span></button>
+                  <button type="button" class="occasion-item" data-kind="occasion" data-value="bureau"><i class="ti ti-briefcase"></i><span>Bureau</span></button>
+                  <button type="button" class="occasion-item" data-kind="occasion" data-value="date"><i class="ti ti-heart"></i><span>Rendez-vous</span></button>
+                  <button type="button" class="occasion-item" data-kind="occasion" data-value="quotidien"><i class="ti ti-cloud"></i><span>Quotidien</span></button>
+                </div>
+              </div></div>
+            </div>
+
+            <!-- Popularité -->
+            <div class="filter-group" data-group="popularity">
+              <button class="filter-group-head" type="button" aria-expanded="false">
+                <span>Popularité</span>
+                <i class="ti ti-chevron-up filter-chevron"></i>
+              </button>
+              <div class="filter-group-body"><div class="filter-group-body-inner">
+                <label class="pop-check"><input type="checkbox" id="pop-new" /><span class="check-box"></span><span>Nouveautés</span></label>
+                <label class="pop-check"><input type="checkbox" id="pop-bestseller" /><span class="check-box"></span><span>Best Seller</span></label>
+                <label class="pop-check"><input type="checkbox" id="pop-limited" /><span class="check-box"></span><span>Édition limitée</span></label>
+                <label class="pop-check"><input type="checkbox" id="pop-exclusive" /><span class="check-box"></span><span>Exclusivité</span></label>
+              </div></div>
+            </div>
           </div>
-        </div>
 
-        <div class="filter-section open">
-          <button class="filter-section-toggle" type="button" aria-expanded="true">
-            <span>Genre</span>
-            <i class="ti ti-chevron-up filter-chevron"></i>
-          </button>
-          <div class="filter-section-body">
-            <label class="filter-check"><input type="radio" name="gender" value="" checked /><span>Tous</span></label>
-            <label class="filter-check"><input type="radio" name="gender" value="homme" /><span>Homme</span></label>
-            <label class="filter-check"><input type="radio" name="gender" value="unisexe" /><span>Unisexe</span></label>
+          <div class="filters-actions">
+            <button type="button" class="btn-filters-apply" id="filters-apply">Appliquer les filtres</button>
+            <button type="button" class="btn-filters-clear" id="filters-clear">Effacer</button>
           </div>
         </div>
       </aside>
@@ -187,6 +310,10 @@
       <!-- Grille produits -->
       <div class="catalogue-main">
         <div class="catalogue-topbar">
+          <button type="button" class="btn-filters-open" id="filters-open-btn">
+            <i class="ti ti-adjustments-horizontal"></i>
+            Filtres
+          </button>
           <span id="catalogue-count" class="catalogue-count"></span>
           <select id="filter-sort" aria-label="Tri">
             <option value="popular">Populaires</option>
@@ -194,6 +321,11 @@
             <option value="price-asc">Prix croissant</option>
             <option value="price-desc">Prix décroissant</option>
           </select>
+        </div>
+
+        <div class="active-filters-bar" id="activeFiltersBar" hidden>
+          <div class="active-filters-list" id="activeFiltersList"></div>
+          <button type="button" class="active-filters-clear" id="activeFiltersClearAll">Tout effacer</button>
         </div>
 
         <div id="catalogue-empty" class="catalogue-empty" hidden>
@@ -210,21 +342,35 @@
         <div>
           <div class="footer-logo">Kōrei</div>
           <div class="footer-tagline">Parfumerie de niche · Paris</div>
+          <div class="footer-socials">
+            <button class="social-btn" aria-label="Instagram" type="button">
+              <i class="ti ti-brand-instagram"></i>
+            </button>
+            <button class="social-btn" aria-label="TikTok" type="button">
+              <i class="ti ti-brand-tiktok"></i>
+            </button>
+          </div>
         </div>
         <div class="footer-col">
           <div class="footer-col-title">Boutique</div>
-          <a href="catalogue.html">Parfums</a>
+          <a href="catalogue.html">Tous les parfums</a>
+          <a href="coffret.html">Coffret</a>
           <a href="brands.html">Marques</a>
+          <a href="collections.html">Collections</a>
         </div>
         <div class="footer-col">
-          <div class="footer-col-title">Korei</div>
+          <div class="footer-col-title">Kōrei</div>
           <a href="about.html">À propos</a>
+          <a href="#" data-open-chatbot>Conseiller IA</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Aide</div>
           <a href="contact.html">Contact</a>
           <a href="cgv.html">CGV</a>
         </div>
       </div>
       <div class="footer-bottom">
-        <div class="footer-copy">© 2026 Korei</div>
+        <div class="footer-copy">© 2026 Kōrei — Tous droits réservés</div>
       </div>
     </footer>
 
@@ -256,6 +402,7 @@
     <script src="../assets/js/products.js"></script>
     <script src="../assets/js/product-store.js"></script>
     <script src="../assets/js/shopify-catalog.js"></script>
+    <script src="../assets/js/catalog-loader.js"></script>
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/chatbot.js"></script>
   </body>

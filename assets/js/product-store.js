@@ -91,41 +91,56 @@
     return sorted;
   }
 
+  // Accepte une valeur scalaire (usage historique) ou un tableau (multi-sélection chips).
+  function toArray(value) {
+    if (value === undefined || value === null || value === "") return [];
+    return (Array.isArray(value) ? value : [value]).filter((v) => v !== undefined && v !== null && v !== "");
+  }
+
   /**
    * @param {Object} filters
-   * @param {string} [filters.brand] brandId
-   * @param {string} [filters.gender]
-   * @param {string} [filters.family]
+   * @param {string|string[]} [filters.brand] brandId(s)
+   * @param {string|string[]} [filters.gender]
+   * @param {string|string[]} [filters.family]
    * @param {string} [filters.search]
    * @param {string} [filters.sort]
-   * @param {string} [filters.season]
-   * @param {string} [filters.occasion]
-   * @param {string} [filters.intensity]
+   * @param {string|string[]} [filters.season]
+   * @param {string|string[]} [filters.occasion]
+   * @param {string|string[]} [filters.intensity]
    * @param {string} [filters.priceRange]
+   * @param {number} [filters.priceMin]
    * @param {number} [filters.priceMax]
    * @param {boolean} [filters.supplierAvailable]
-   * @param {string} [filters.note]
+   * @param {boolean} [filters.bestseller]
+   * @param {string|string[]} [filters.note]
    */
   function filterProducts(filters = {}) {
     let list = getAllProducts();
 
-    if (filters.brand) list = list.filter((p) => p.brandId === filters.brand);
-    if (filters.gender) list = list.filter((p) => p.gender === filters.gender);
-    if (filters.family) list = list.filter((p) => p.family === filters.family);
-    if (filters.intensity) list = list.filter((p) => p.intensity === filters.intensity);
+    const brands = toArray(filters.brand);
+    if (brands.length) list = list.filter((p) => brands.includes(p.brandId));
+    const genders = toArray(filters.gender);
+    if (genders.length) list = list.filter((p) => genders.includes(p.gender));
+    const families = toArray(filters.family);
+    if (families.length) list = list.filter((p) => families.includes(p.family));
+    const intensities = toArray(filters.intensity);
+    if (intensities.length) list = list.filter((p) => intensities.includes(p.intensity));
     if (filters.priceRange) list = list.filter((p) => p.priceRange === filters.priceRange);
+    if (filters.priceMin != null) list = list.filter((p) => p.price >= filters.priceMin);
     if (filters.priceMax) list = list.filter((p) => p.price <= filters.priceMax);
     if (filters.supplierAvailable === true) list = list.filter((p) => p.supplierAvailable);
-    if (filters.season) list = list.filter((p) => p.seasons.includes(filters.season));
-    if (filters.occasion) list = list.filter((p) => p.occasions.includes(filters.occasion));
+    const seasons = toArray(filters.season);
+    if (seasons.length) list = list.filter((p) => p.seasons.some((s) => seasons.includes(s)));
+    const occasions = toArray(filters.occasion);
+    if (occasions.length) list = list.filter((p) => p.occasions.some((o) => occasions.includes(o)));
     if (filters.isNew) list = list.filter((p) => p.new);
-    if (filters.note) {
-      const n = normalizeQuery(filters.note);
-      list = list.filter((p) =>
-        [...p.notesTop, ...p.notesHeart, ...p.notesBase].some((note) =>
-          normalizeQuery(note).includes(n)
-        )
-      );
+    if (filters.bestseller) list = list.filter((p) => p.bestseller);
+    const notes = toArray(filters.note).map(normalizeQuery);
+    if (notes.length) {
+      list = list.filter((p) => {
+        const productNotes = [...p.notesTop, ...p.notesHeart, ...p.notesBase].map(normalizeQuery);
+        return notes.some((n) => productNotes.some((pn) => pn.includes(n)));
+      });
     }
     if (filters.search) {
       const ids = new Set(searchProducts(filters.search).map((p) => p.id));

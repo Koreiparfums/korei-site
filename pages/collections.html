@@ -2,7 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="Toutes les collections Korei — par occasion, intensité, saison, famille olfactive et genre." />
     <meta name="robots" content="index, follow" />
     <title>Collections — Korei</title>
@@ -22,7 +22,7 @@
     <meta name="twitter:image" content="https://korei.fr/assets/images/og/og-default.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
     <link rel="stylesheet" href="../assets/css/styles.css" />
   </head>
@@ -112,11 +112,12 @@
     <div class="search-overlay" id="searchOverlay">
       <div class="search-overlay-head">
         <i class="ti ti-search search-overlay-icon"></i>
-        <input type="search" class="search-overlay-input" placeholder="Rechercher un parfum…" aria-label="Rechercher" />
+        <input type="search" class="search-overlay-input" placeholder="Rechercher un parfum, une marque…" aria-label="Rechercher" />
         <button class="search-overlay-close" onclick="toggleSearch()" aria-label="Fermer" type="button">
           <i class="ti ti-x"></i>
         </button>
       </div>
+      <p class="search-overlay-hint">Tendances : Oud Wood · Aventus · Interlude Man</p>
     </div>
 
     <section class="collections-head">
@@ -133,8 +134,39 @@
     <div id="collections-grid" class="collections-grid"></div>
 
     <footer>
-      <div class="footer-bottom" style="padding: 36px var(--px); background: var(--text); color: rgba(255,255,255,0.25)">
-        <div class="footer-copy">© 2026 Korei</div>
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">Kōrei</div>
+          <div class="footer-tagline">Parfumerie de niche · Paris</div>
+          <div class="footer-socials">
+            <button class="social-btn" aria-label="Instagram" type="button">
+              <i class="ti ti-brand-instagram"></i>
+            </button>
+            <button class="social-btn" aria-label="TikTok" type="button">
+              <i class="ti ti-brand-tiktok"></i>
+            </button>
+          </div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Boutique</div>
+          <a href="catalogue.html">Tous les parfums</a>
+          <a href="coffret.html">Coffret</a>
+          <a href="brands.html">Marques</a>
+          <a href="collections.html">Collections</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Kōrei</div>
+          <a href="about.html">À propos</a>
+          <a href="#" data-open-chatbot>Conseiller IA</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Aide</div>
+          <a href="contact.html">Contact</a>
+          <a href="cgv.html">CGV</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2026 Kōrei — Tous droits réservés</div>
       </div>
     </footer>
 
@@ -166,6 +198,7 @@
     <script src="../assets/js/products.js"></script>
     <script src="../assets/js/product-store.js"></script>
     <script src="../assets/js/shopify-catalog.js"></script>
+    <script src="../assets/js/catalog-loader.js"></script>
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/chatbot.js"></script>
     <script src="../assets/js/collections.js"></script>

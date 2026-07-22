@@ -5,12 +5,15 @@ const { URL } = require("url");
 
 const chatHandler = require("./api/chat");
 const productsHandler = require("./api/products");
+const catalogHandler = require("./api/catalog");
+const adminCatalogHandler = require("./api/admin-catalog");
 
 const ROOT = __dirname;
 const PORT = Number(process.env.PORT || 4173);
 
 const MIME_TYPES = {
   ".css": "text/css; charset=utf-8",
+  ".csv": "text/csv; charset=utf-8",
   ".gif": "image/gif",
   ".html": "text/html; charset=utf-8",
   ".jpg": "image/jpeg",
@@ -83,6 +86,29 @@ async function routeApi(req, res) {
     };
 
     return productsHandler(req, res);
+  }
+
+  if (req.url.startsWith("/api/admin/catalog")) {
+    const startedAt = Date.now();
+    const originalEnd = res.end;
+    res.end = function logApiResponse(...args) {
+      console.log(`${req.method} ${req.url} -> ${res.statusCode} ${Date.now() - startedAt}ms`);
+      return originalEnd.apply(this, args);
+    };
+
+    req.body = await readRequestBody(req);
+    return adminCatalogHandler(req, res);
+  }
+
+  if (req.url.startsWith("/api/catalog")) {
+    const startedAt = Date.now();
+    const originalEnd = res.end;
+    res.end = function logApiResponse(...args) {
+      console.log(`${req.method} ${req.url} -> ${res.statusCode} ${Date.now() - startedAt}ms`);
+      return originalEnd.apply(this, args);
+    };
+
+    return catalogHandler(req, res);
   }
 
   return send(res, 404, JSON.stringify({ error: "not_found" }), "application/json; charset=utf-8");
