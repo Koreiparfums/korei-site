@@ -784,15 +784,35 @@
       </div>
     </section>
 
-    <section class="section" style="padding-top: 0">
-      <div class="dose-head">
-        <div class="dose-eyebrow">Fraîchement arrivé</div>
-        <h2 class="dose-title">Les nouveautés <em>du moment</em></h2>
-        <a href="pages/catalogue.html" class="btn-white collections-head-link"
-          >Tout voir →</a
-        >
+    <section class="favorites-section" style="padding-top: 0">
+      <div class="favorites-head">
+        <div class="favorites-heading">
+          <div class="favorites-eyebrow">Fraîchement arrivé</div>
+          <h2 class="favorites-title">Les nouveautés <em>du moment</em></h2>
+        </div>
+        <div class="favorites-controls">
+          <a href="pages/catalogue.html" class="btn-white">Tout voir →</a>
+          <div class="favorites-nav">
+            <button
+              class="favorites-nav-btn"
+              type="button"
+              aria-label="Précédent"
+              data-scroll-dir="-1"
+            >
+              <i class="ti ti-chevron-left"></i>
+            </button>
+            <button
+              class="favorites-nav-btn"
+              type="button"
+              aria-label="Suivant"
+              data-scroll-dir="1"
+            >
+              <i class="ti ti-chevron-right"></i>
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="products-grid" id="new-products-grid"></div>
+      <div class="products-scroll" id="new-products-grid"></div>
     </section>
 
     <section class="quiz-cta">
