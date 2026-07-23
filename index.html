@@ -93,7 +93,7 @@
         <nav class="nav">
           <a href="index.html" class="active">Accueil</a>
           <a href="pages/catalogue.html">Parfums</a>
-          <a href="pages/coffret.html">Coffret</a>
+          <a href="pages/coffrets.html">Coffrets</a>
           <a href="pages/brands.html">Marques</a>
           <a href="pages/collections.html">Collections</a>
         </nav>
@@ -365,7 +365,7 @@
               Choisissez un format puis composez votre propre sélection.
             </p>
             <a
-              href="pages/catalogue.html?custom=1"
+              href="pages/coffret.html#personnaliser"
               class="btn-dark pack-builder-banner__cta"
               >Créer mon coffret</a
             >
@@ -443,183 +443,233 @@
           >Tout voir →</a
         >
       </div>
-      <div class="home-collections-grid">
-        <a href="pages/catalogue.html?season=été" class="home-collection-card">
-          <div
-            class="home-collection-card__media media-slot"
-            data-slot="collection-ete"
+      <div class="home-collections-editorial">
+        <div class="home-collections-editorial__top">
+          <a
+            href="pages/catalogue.html?season=été"
+            class="home-collection-card home-collection-card--feature"
           >
-            <img
-              class="media-slot__image"
-              src="assets/images/collections/ete.png"
-              alt="Collection Été — Kōrei"
-              hidden
-            />
             <div
-              class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
-              data-variant="0"
+              class="home-collection-card__media media-slot"
+              data-slot="collection-ete"
             >
+              <img
+                class="media-slot__image"
+                src="assets/images/collections/ete.png"
+                alt="Collection Été — Kōrei"
+                hidden
+              />
               <div
-                class="placeholder-premium__pattern"
-                aria-hidden="true"
-              ></div>
-              <div class="placeholder-premium__content">
-                <i
-                  class="ti ti-sun placeholder-premium__icon"
+                class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
+                data-variant="0"
+              >
+                <div
+                  class="placeholder-premium__pattern"
                   aria-hidden="true"
-                ></i>
+                ></div>
+                <div class="placeholder-premium__content">
+                  <i
+                    class="ti ti-sun placeholder-premium__icon"
+                    aria-hidden="true"
+                  ></i>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="home-collection-card__overlay">
-            <span class="home-collection-card__name">Été</span>
-            <span class="home-collection-card__cta"
-              >Découvrir <span aria-hidden="true">→</span></span
-            >
-          </div>
-        </a>
-        <a
-          href="pages/catalogue.html?season=hiver"
-          class="home-collection-card"
-        >
-          <div
-            class="home-collection-card__media media-slot"
-            data-slot="collection-hiver"
-          >
-            <img
-              class="media-slot__image"
-              src="assets/images/collections/hiver.png"
-              alt="Collection Hiver — Kōrei"
-              hidden
-            />
-            <div
-              class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
-              data-variant="1"
+            <div class="home-collection-card__overlay">
+              <span class="home-collection-card__name">Été</span>
+              <span class="home-collection-card__cta"
+                >Découvrir <span aria-hidden="true">→</span></span
+              >
+            </div>
+          </a>
+          <div class="home-collections-editorial__stack">
+            <a
+              href="pages/catalogue.html?family=floral"
+              class="home-collection-card"
             >
               <div
-                class="placeholder-premium__pattern"
-                aria-hidden="true"
-              ></div>
-              <div class="placeholder-premium__content">
-                <i
-                  class="ti ti-snowflake placeholder-premium__icon"
-                  aria-hidden="true"
-                ></i>
+                class="home-collection-card__media media-slot"
+                data-slot="collection-floral"
+              >
+                <img
+                  class="media-slot__image"
+                  src="assets/images/collections/floral.png"
+                  alt="Collection Floral — Kōrei"
+                  hidden
+                />
+                <div
+                  class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
+                  data-variant="2"
+                >
+                  <div
+                    class="placeholder-premium__pattern"
+                    aria-hidden="true"
+                  ></div>
+                  <div class="placeholder-premium__content">
+                    <i
+                      class="ti ti-sparkles placeholder-premium__icon"
+                      aria-hidden="true"
+                    ></i>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="home-collection-card__overlay">
-            <span class="home-collection-card__name">Hiver</span>
-            <span class="home-collection-card__cta"
-              >Découvrir <span aria-hidden="true">→</span></span
-            >
-          </div>
-        </a>
-        <a
-          href="pages/catalogue.html?family=floral"
-          class="home-collection-card"
-        >
-          <div
-            class="home-collection-card__media media-slot"
-            data-slot="collection-floral"
-          >
-            <img
-              class="media-slot__image"
-              src="assets/images/collections/floral.png"
-              alt="Collection Floral — Kōrei"
-              hidden
-            />
-            <div
-              class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
-              data-variant="2"
+              <div class="home-collection-card__overlay">
+                <span class="home-collection-card__name">Floral</span>
+                <span class="home-collection-card__cta"
+                  >Découvrir <span aria-hidden="true">→</span></span
+                >
+              </div>
+            </a>
+            <a
+              href="pages/catalogue.html?family=boisé"
+              class="home-collection-card"
             >
               <div
-                class="placeholder-premium__pattern"
-                aria-hidden="true"
-              ></div>
-              <div class="placeholder-premium__content">
-                <i
-                  class="ti ti-sparkles placeholder-premium__icon"
+                class="home-collection-card__media media-slot"
+                data-slot="collection-boise"
+              >
+                <img
+                  class="media-slot__image"
+                  src="assets/images/collections/boise.png"
+                  alt="Collection Boisé — Kōrei"
+                  hidden
+                />
+                <div
+                  class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
+                  data-variant="3"
+                >
+                  <div
+                    class="placeholder-premium__pattern"
+                    aria-hidden="true"
+                  ></div>
+                  <div class="placeholder-premium__content">
+                    <i
+                      class="ti ti-trees placeholder-premium__icon"
+                      aria-hidden="true"
+                    ></i>
+                  </div>
+                </div>
+              </div>
+              <div class="home-collection-card__overlay">
+                <span class="home-collection-card__name">Boisé</span>
+                <span class="home-collection-card__cta"
+                  >Découvrir <span aria-hidden="true">→</span></span
+                >
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="home-collections-editorial__bottom">
+          <a
+            href="pages/catalogue.html?season=hiver"
+            class="home-collection-card"
+          >
+            <div
+              class="home-collection-card__media media-slot"
+              data-slot="collection-hiver"
+            >
+              <img
+                class="media-slot__image"
+                src="assets/images/collections/hiver.png"
+                alt="Collection Hiver — Kōrei"
+                hidden
+              />
+              <div
+                class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
+                data-variant="1"
+              >
+                <div
+                  class="placeholder-premium__pattern"
                   aria-hidden="true"
-                ></i>
+                ></div>
+                <div class="placeholder-premium__content">
+                  <i
+                    class="ti ti-snowflake placeholder-premium__icon"
+                    aria-hidden="true"
+                  ></i>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="home-collection-card__overlay">
-            <span class="home-collection-card__name">Floral</span>
-            <span class="home-collection-card__cta"
-              >Découvrir <span aria-hidden="true">→</span></span
+            <div class="home-collection-card__overlay">
+              <span class="home-collection-card__name">Hiver</span>
+              <span class="home-collection-card__cta"
+                >Découvrir <span aria-hidden="true">→</span></span
+              >
+            </div>
+          </a>
+          <a
+            href="pages/catalogue.html?family=gourmand"
+            class="home-collection-card"
+          >
+            <div
+              class="home-collection-card__media media-slot"
+              data-slot="collection-gourmand"
             >
-          </div>
-        </a>
+              <img
+                class="media-slot__image"
+                src="assets/images/collections/gourmand.png"
+                alt="Collection Gourmand — Kōrei"
+                hidden
+              />
+              <div
+                class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
+                data-variant="4"
+              >
+                <div
+                  class="placeholder-premium__pattern"
+                  aria-hidden="true"
+                ></div>
+                <div class="placeholder-premium__content">
+                  <i
+                    class="ti ti-cookie placeholder-premium__icon"
+                    aria-hidden="true"
+                  ></i>
+                </div>
+              </div>
+            </div>
+            <div class="home-collection-card__overlay">
+              <span class="home-collection-card__name">Gourmand</span>
+              <span class="home-collection-card__cta"
+                >Découvrir <span aria-hidden="true">→</span></span
+              >
+            </div>
+          </a>
+          <a href="pages/catalogue.html?note=oud" class="home-collection-card">
+            <div
+              class="home-collection-card__media media-slot"
+              data-slot="collection-oud"
+            >
+              <img
+                class="media-slot__image"
+                src="assets/images/collections/oud.png"
+                alt="Collection Oud — Kōrei"
+                hidden
+              />
+              <div
+                class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
+                data-variant="5"
+              >
+                <div
+                  class="placeholder-premium__pattern"
+                  aria-hidden="true"
+                ></div>
+                <div class="placeholder-premium__content">
+                  <i
+                    class="ti ti-flame placeholder-premium__icon"
+                    aria-hidden="true"
+                  ></i>
+                </div>
+              </div>
+            </div>
+            <div class="home-collection-card__overlay">
+              <span class="home-collection-card__name">Oud</span>
+              <span class="home-collection-card__cta"
+                >Découvrir <span aria-hidden="true">→</span></span
+              >
+            </div>
+          </a>
+        </div>
       </div>
-    </section>
-
-    <section class="dose-section">
-      <div class="dose-head">
-        <div class="dose-eyebrow">Nos formats</div>
-        <h2 class="dose-title">
-          Chaque parfum mérite <em>son propre voyage</em>
-        </h2>
-      </div>
-      <div class="dose-scale">
-        <a href="pages/catalogue.html?format=2ml" class="dose-stop">
-          <div class="dose-node-wrap">
-            <img
-              src="assets/images/hero/hero-decant-2ml.png"
-              alt=""
-              aria-hidden="true"
-              class="dose-node dose-node--sm"
-            />
-          </div>
-          <div class="dose-info">
-            <div class="dose-ml">2<span>ml</span></div>
-            <div class="dose-uses">≈ 25 pulvérisations</div>
-            <div class="dose-label">Découvrir</div>
-            <p class="dose-caption">Premier essai</p>
-            <span class="dose-arrow">→</span>
-          </div>
-        </a>
-        <a href="pages/catalogue.html?format=5ml" class="dose-stop">
-          <div class="dose-node-wrap">
-            <img
-              src="assets/images/hero/hero-decant-5ml.png"
-              alt=""
-              aria-hidden="true"
-              class="dose-node dose-node--md"
-            />
-          </div>
-          <div class="dose-info">
-            <div class="dose-ml">5<span>ml</span></div>
-            <div class="dose-uses">≈ 70 pulvérisations</div>
-            <div class="dose-label">Tomber amoureux</div>
-            <p class="dose-caption">Plusieurs jours</p>
-            <span class="dose-arrow">→</span>
-          </div>
-        </a>
-        <a href="pages/catalogue.html?format=10ml" class="dose-stop">
-          <div class="dose-node-wrap">
-            <img
-              src="assets/images/hero/hero-decant-10ml.png"
-              alt=""
-              aria-hidden="true"
-              class="dose-node dose-node--lg"
-            />
-          </div>
-          <div class="dose-info">
-            <div class="dose-ml">10<span>ml</span></div>
-            <div class="dose-uses">≈ 140 pulvérisations</div>
-            <div class="dose-label">Ne plus le quitter</div>
-            <p class="dose-caption">Toujours avec vous</p>
-            <span class="dose-arrow">→</span>
-          </div>
-        </a>
-      </div>
-      <a
-        href="pages/catalogue.html?type=pack&custom=1"
-        class="btn-dark dose-section__cta"
-        >Découvrir les formats</a
-      >
     </section>
 
     <section class="brands-section">

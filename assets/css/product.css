@@ -20,7 +20,7 @@ body[data-page="product"] {
   --pdp-radius-lg: var(--radius-xl);
   --pdp-radius-md: var(--radius-lg);
   --pdp-radius-sm: var(--radius-md);
-  --pdp-max: 1400px;
+  --pdp-max: var(--max-w);
   --pdp-shadow: var(--shadow-lg);
   --pdp-ease: cubic-bezier(0.22, 1, 0.36, 1);
   background: var(--pdp-bg);
@@ -77,7 +77,7 @@ body[data-page="product"] {
   gap: 10px;
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.24em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--pdp-gold);
   margin-bottom: 14px;
@@ -92,7 +92,7 @@ body[data-page="product"] {
   display: none;
 }
 .pdp-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-weight: 400;
   font-size: clamp(32px, 3.6vw, 48px);
   line-height: 1.2;
@@ -182,7 +182,7 @@ body[data-page="product"] {
     transform 0.25s var(--pdp-ease);
 }
 .pdp-thumb:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--lift-hover));
 }
 .pdp-thumb.is-active {
   border-color: var(--pdp-gold);
@@ -234,7 +234,7 @@ body[data-page="product"] {
   border-radius: 100px;
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -259,13 +259,13 @@ body[data-page="product"] {
 .pdp-brand {
   font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: var(--pdp-ink-soft);
   margin-bottom: 12px;
 }
 .pdp-name {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-weight: 400;
   font-size: clamp(38px, 4vw, 56px);
   line-height: 1.08;
@@ -286,7 +286,7 @@ body[data-page="product"] {
   color: var(--pdp-line);
 }
 .pdp-price-lead {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 28px;
   color: var(--pdp-ink);
   margin-bottom: 28px;
@@ -300,7 +300,7 @@ body[data-page="product"] {
   display: block;
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: var(--pdp-ink-soft);
   margin-bottom: 14px;
@@ -328,7 +328,7 @@ body[data-page="product"] {
     transform 0.2s var(--pdp-ease);
 }
 .pdp-format:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--lift-hover));
   border-color: var(--pdp-gold-soft);
 }
 .pdp-format.is-active {
@@ -337,7 +337,7 @@ body[data-page="product"] {
   color: var(--pdp-white);
 }
 .pdp-format__vol {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 20px;
 }
 .pdp-format__price {
@@ -374,10 +374,10 @@ body[data-page="product"] {
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   padding: 18px 32px;
-  border-radius: var(--pdp-radius-md);
+  border-radius: var(--radius-pill);
   border: 1px solid transparent;
   cursor: pointer;
   transition:
@@ -392,7 +392,7 @@ body[data-page="product"] {
 }
 .pdp-btn--primary:hover:not(:disabled) {
   background: var(--pdp-gold);
-  transform: translateY(-2px);
+  transform: translateY(var(--lift-hover));
 }
 .pdp-btn--primary:disabled {
   opacity: 0.5;
@@ -481,6 +481,42 @@ body[data-page="product"] {
   white-space: nowrap;
 }
 
+/* ══════════════════ ACCORDÉON (Notes phares, Ressenti) ══════════════════ */
+.pdp-accordion-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+.pdp-accordion-chevron {
+  flex: 0 0 auto;
+  font-size: 18px;
+  color: var(--pdp-ink-soft);
+  transition: transform 0.25s ease;
+}
+.pdp-accordion.open .pdp-accordion-chevron {
+  transform: rotate(180deg);
+}
+.pdp-accordion-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+.pdp-accordion.open .pdp-accordion-body {
+  grid-template-rows: 1fr;
+}
+.pdp-accordion-body-inner {
+  overflow: hidden;
+}
+
 /* ══════════════════ SECTION 3 — NOTES PHARES ══════════════════ */
 .pdp-notes-featured {
   max-width: var(--pdp-max);
@@ -489,30 +525,13 @@ body[data-page="product"] {
   border-top: 1px solid var(--pdp-line);
 }
 .pdp-notes-featured__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
   margin-bottom: 32px;
 }
 .pdp-notes-featured__head h2 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-weight: 500;
   font-size: 28px;
   color: var(--pdp-ink);
-}
-.pdp-notes-featured__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--pdp-ink-soft);
-  text-decoration: none;
-  white-space: nowrap;
-  transition: color 0.2s;
-}
-.pdp-notes-featured__link:hover {
-  color: var(--pdp-gold);
 }
 .pdp-notes-tier {
   padding-bottom: 32px;
@@ -567,7 +586,7 @@ body[data-page="product"] {
   margin-bottom: 32px;
 }
 .pdp-sentiment__head h2 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-weight: 500;
   font-size: 28px;
   color: var(--pdp-ink);
@@ -613,7 +632,7 @@ body[data-page="product"] {
     transform 0.2s var(--pdp-ease);
 }
 .pdp-sentiment-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--lift-hover));
 }
 .pdp-sentiment-card.is-winner {
   background: var(--pdp-gold-wash);
@@ -644,7 +663,7 @@ body[data-page="product"] {
   align-items: center;
 }
 .pdp-story__text {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: clamp(19px, 1.7vw, 23px);
   line-height: 1.75;
   color: var(--pdp-ink);
@@ -680,7 +699,7 @@ body[data-page="product"] {
   margin-bottom: 14px;
 }
 .pdp-family__name {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: clamp(30px, 3vw, 40px);
   margin-bottom: 20px;
 }
@@ -696,7 +715,7 @@ body[data-page="product"] {
 }
 .pdp-carousel-section .pdp-container {
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
   justify-content: space-between;
   margin-bottom: 32px;
 }
@@ -723,19 +742,19 @@ body[data-page="product"] {
 }
 .pdp-carousel-track {
   display: flex;
-  gap: 24px;
+  gap: 16px;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  padding: 0 var(--px) 8px;
   scrollbar-width: none;
+  padding-top: 16px;
+  padding-bottom: 6.4px;
+  padding-left: var(--px);
+  padding-right: var(--px);
 }
 .pdp-carousel-track::-webkit-scrollbar {
   display: none;
 }
 .pdp-carousel-track .product-card {
-  flex: 0 0 clamp(200px, 22vw, 264px);
-  scroll-snap-align: start;
+  flex: 0 0 clamp(154px, 16.9vw, 203px);
 }
 
 /* ══════════════════ SECTION 9 — AVIS CLIENTS ══════════════════ */
@@ -752,7 +771,7 @@ body[data-page="product"] {
   border-radius: var(--pdp-radius-lg);
 }
 .pdp-reviews__score {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 56px;
   line-height: 1;
   color: var(--pdp-ink);
@@ -811,7 +830,7 @@ body[data-page="product"] {
   display: inline-block;
 }
 .pdp-guarantee h3 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-weight: 500;
   font-size: 18px;
   margin-bottom: 8px;
@@ -828,7 +847,7 @@ body[data-page="product"] {
   padding: 120px 20px;
 }
 .pdp-not-found h1 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 32px;
   margin-bottom: 14px;
 }
