@@ -29,6 +29,7 @@ body {
   --border: #ece3d3;
   --border-dark: #ccc8c0;
   --text: #1a1a18;
+  --text-hover: color-mix(in srgb, var(--text) 85%, black);
   --text-muted: #6f6a63;
   --text-light: #b0ada8;
   --accent: #cc9a36;
@@ -40,17 +41,30 @@ body {
   --new-border: #b6dfc6;
   --new-text: #1a6640;
   --danger: #c0392b;
+  /* Échelle de tracking — 4 paliers, tout le reste doit s'y référer */
+  --tracking-tight: 0.04em;
+  --tracking-label: 0.1em;
+  --tracking-loud: 0.16em;
+  --tracking-eyebrow: 0.2em;
+  /* Teintes placeholder — familles olfactives sans équivalent dans la palette de base */
+  --family-floral-1: #f8f2f4;
+  --family-floral-2: #ece6ea;
   --radius-sm: 4.8px;
   --radius-md: 8px;
   --radius-lg: 16px;
   --radius-xl: 22px;
   --radius-pill: 80px;
-  /* Une seule famille d'ombres — 5 rôles distincts, jamais de valeur ad hoc ailleurs. */
+  /* Une seule famille d'ombres — 8 rôles distincts, jamais de valeur ad hoc ailleurs. */
   --shadow-sm: 0 10px 35px rgba(26, 26, 24, 0.04);
   --shadow-md: 0 16px 40px rgba(26, 26, 24, 0.08);
   --shadow-lg: 0 24px 60px rgba(26, 26, 24, 0.1);
   --shadow-panel: 0 12.8px 38.4px rgba(26, 26, 24, 0.12);
   --shadow-float: 0 6.4px 25.6px rgba(26, 26, 24, 0.18);
+  --shadow-hairline: 0 0.8px 0 rgba(26, 26, 24, 0.03);
+  --shadow-tight: 0 1px 3px rgba(26, 26, 24, 0.15);
+  --shadow-glow: 0 0 24px color-mix(in srgb, var(--accent) 35%, transparent);
+  /* Un seul lift au survol — cartes et boutons, partout. */
+  --lift-hover: -2px;
   --max-w: 1120px;
   --px: 51.2px;
 }
@@ -60,7 +74,7 @@ body {
   background: var(--text);
   color: rgba(255, 255, 255, 0.8);
   font-size: 9.6px;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   overflow: hidden;
 }
@@ -147,7 +161,7 @@ body {
   font-family: "Cormorant Garamond", serif;
   font-size: 33.92px;
   font-weight: 300;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.12em; /* wordmark — tracking propre à la marque, hors échelle */
   text-decoration: none;
   line-height: 1;
   color: var(--text);
@@ -163,7 +177,7 @@ body {
 .nav a {
   font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--text);
   text-decoration: none;
@@ -195,7 +209,7 @@ body {
   min-width: 328.44px;
   border: 0.8px solid var(--border);
   gap: 8.57px;
-  box-shadow: 0 0.8px 0 rgba(0, 0, 0, 0.02);
+  box-shadow: var(--shadow-hairline);
 }
 .search-icon {
   width: 27.13px;
@@ -206,7 +220,7 @@ body {
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
-  box-shadow: 0 0.8px 0 rgba(0, 0, 0, 0.03);
+  box-shadow: var(--shadow-hairline);
   flex: 0 0 27.13px;
 }
 .search-icon i {
@@ -264,7 +278,7 @@ body {
   font-family: "DM Sans", sans-serif;
   font-size: 9.6px;
   font-weight: 500;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   padding: 11.2px 22.4px;
   border: none;
@@ -276,8 +290,8 @@ body {
   white-space: nowrap;
 }
 .btn-dark:hover {
-  background: #333;
-  transform: translateY(-0.8px);
+  background: var(--text-hover);
+  transform: translateY(var(--lift-hover));
 }
 .btn-white {
   background: var(--text);
@@ -285,7 +299,7 @@ body {
   font-family: "DM Sans", sans-serif;
   font-size: 9.6px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   padding: 11.2px 22.4px;
   border: none;
@@ -297,8 +311,8 @@ body {
   white-space: nowrap;
 }
 .btn-white:hover {
-  background: #333;
-  transform: translateY(-0.8px);
+  background: var(--text-hover);
+  transform: translateY(var(--lift-hover));
 }
 .btn-outline {
   background: transparent;
@@ -306,7 +320,7 @@ body {
   font-family: "DM Sans", sans-serif;
   font-size: 9.6px;
   font-weight: 400;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   padding: 11.2px 22.4px;
   border: 1.2px solid var(--border-dark);
@@ -318,7 +332,7 @@ body {
 }
 .btn-outline:hover {
   border-color: var(--text);
-  transform: translateY(-0.8px);
+  transform: translateY(var(--lift-hover));
 }
 a.btn-dark,
 a.btn-outline,
@@ -372,7 +386,7 @@ a.brand-chip {
   color: var(--text);
   text-decoration: none;
   border-bottom: 0.8px solid var(--border);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-tight);
 }
 .mobile-drawer a:hover {
   color: var(--accent);
@@ -386,7 +400,7 @@ a.brand-chip {
   padding: 12.8px;
   font-size: 11.2px;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   cursor: pointer;
   width: 100%;
@@ -404,6 +418,7 @@ a.brand-chip {
   z-index: 300;
   background: var(--bg);
   flex-direction: column;
+  align-items: center;
   padding: 22.4px 19.2px;
 }
 .search-overlay.open {
@@ -412,13 +427,24 @@ a.brand-chip {
 .search-overlay-head {
   display: flex;
   align-items: center;
-  gap: 11.2px;
-  border-bottom: 1.2px solid var(--text);
-  padding-bottom: 8px;
+  gap: 11.43px;
+  width: 100%;
+  max-width: 640px;
   margin-bottom: 16px;
+  background: var(--surface);
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 9.14px 14.28px;
 }
 .search-overlay-icon {
-  font-size: 16px;
+  width: 36.17px;
+  height: 36.17px;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15.23px;
   color: var(--text-muted);
   flex-shrink: 0;
 }
@@ -426,8 +452,8 @@ a.brand-chip {
   flex: 1;
   border: none;
   padding: 4.8px 0;
-  font-family: "Cormorant Garamond", serif;
-  font-size: 19.2px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 14.28px;
   font-weight: 400;
   color: var(--text);
   background: transparent;
@@ -444,10 +470,14 @@ a.brand-chip {
   cursor: pointer;
   padding: 3.2px;
   flex-shrink: 0;
+  transition: color 0.2s;
+}
+.search-overlay-close:hover {
+  color: var(--accent);
 }
 .search-overlay-hint {
   font-size: 8.8px;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--tracking-label);
   color: var(--text-light);
   text-transform: uppercase;
 }
@@ -487,10 +517,10 @@ body[data-page="home"] .hero {
   top: 42%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: var(--ghost-fs);
   font-weight: 300;
-  letter-spacing: 0.2em;
+  letter-spacing: var(--tracking-eyebrow);
   color: var(--text);
   opacity: 0.045;
   white-space: nowrap;
@@ -515,7 +545,7 @@ body[data-page="home"] .hero {
   font-family: "DM Sans", sans-serif;
   font-size: 9.6px;
   font-weight: 400;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: var(--accent);
 }
@@ -526,7 +556,7 @@ body[data-page="home"] .hero {
   background: var(--accent);
 }
 .hero-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 49px;
   font-weight: 300;
   line-height: 1.32;
@@ -552,7 +582,6 @@ body[data-page="home"] .hero {
 .hero-ctas .btn-outline:hover {
   background: var(--surface);
   border-color: var(--text);
-  transform: translateY(-2px);
 }
 
 /* ─── HERO DECANTS (3 flacons individuels) ─── */
@@ -653,7 +682,7 @@ body[data-page="home"] .hero {
   box-shadow: var(--shadow-lg);
 }
 .hero-trust-card__title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 18.4px;
   font-weight: 500;
   color: var(--text);
@@ -692,7 +721,7 @@ body[data-page="home"] .hero {
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--text);
   text-decoration: none;
@@ -720,13 +749,13 @@ body[data-page="home"] .hero {
 }
 .dose-eyebrow {
   font-size: 9.6px;
-  letter-spacing: 0.22em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 7.8px;
 }
 .dose-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 32px;
   font-weight: 400;
   line-height: 1.25;
@@ -807,12 +836,12 @@ body[data-page="home"] .hero {
   font-family: "DM Sans", sans-serif;
   font-size: 28.4px;
   font-weight: 300;
-  letter-spacing: 0.02em;
+  letter-spacing: var(--tracking-tight);
   color: var(--text);
   line-height: 1;
 }
 .dose-ml span {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-style: italic;
   font-size: 11.6px;
   font-weight: 400;
@@ -822,7 +851,7 @@ body[data-page="home"] .hero {
 .dose-uses {
   margin-top: 3.9px;
   font-size: 9.6px;
-  letter-spacing: 0.02em;
+  letter-spacing: var(--tracking-tight);
   color: var(--text-light);
 }
 .dose-label {
@@ -830,7 +859,7 @@ body[data-page="home"] .hero {
   font-family: "DM Sans", sans-serif;
   font-size: 11.2px;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--text-muted);
   transition: color 0.2s;
@@ -840,7 +869,7 @@ body[data-page="home"] .hero {
 }
 .dose-caption {
   margin: 9px 0 0;
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-style: italic;
   font-size: 12.8px;
   color: var(--text-light);
@@ -888,7 +917,7 @@ body[data-page="home"] .hero {
   align-items: center;
   gap: 12.14px;
   font-size: 11.13px;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--tracking-loud);
   color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
   padding: 0 36.43px;
@@ -927,7 +956,7 @@ body[data-page="home"] .hero {
   margin-bottom: 28.8px;
 }
 .section-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 32px;
   font-weight: 400;
   line-height: 1.25;
@@ -939,7 +968,7 @@ body[data-page="home"] .hero {
 }
 .section-link {
   font-size: 9.6px;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--tracking-label);
   color: var(--accent);
   text-transform: uppercase;
   text-decoration: none;
@@ -974,13 +1003,13 @@ body[data-page="home"] .hero {
 }
 .favorites-eyebrow {
   font-size: 9.6px;
-  letter-spacing: 0.22em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 9.6px;
 }
 .favorites-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 32px;
   font-weight: 400;
   line-height: 1.25;
@@ -1062,7 +1091,7 @@ body[data-page="home"] .hero {
 }
 .product-card:hover {
   border-color: var(--border-dark);
-  transform: translateY(-2.4px);
+  transform: translateY(var(--lift-hover));
 }
 .card-img {
   height: 210.61px;
@@ -1103,7 +1132,7 @@ body[data-page="home"] .hero {
   top: 9.83px;
   left: 9.83px;
   font-size: 7.02px;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   padding: 3.51px 8.42px;
   border-radius: var(--radius-pill);
@@ -1152,7 +1181,7 @@ body[data-page="home"] .hero {
 .card-brand {
   font-family: "DM Sans", sans-serif;
   font-size: 11.4px;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--tracking-loud);
   color: var(--text-muted);
   text-transform: uppercase;
   margin-bottom: 8.78px;
@@ -1207,7 +1236,7 @@ body[data-page="home"] .hero {
   background: var(--bg);
   border: 0.8px solid var(--border);
   color: var(--accent);
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 18px;
   font-style: italic;
 }
@@ -1303,7 +1332,7 @@ body[data-page="home"] .hero {
   transition: background 0.2s;
 }
 .card-add:hover {
-  background: #333;
+  background: var(--text-hover);
 }
 
 /* ─── HOME — cartes parfum (+10% puis -15% : net -6.5% vs base) ─── */
@@ -1446,17 +1475,17 @@ body[data-page="home"] .card-add {
 }
 .pack-hero-card:hover .pack-hero-card__name,
 .pack-hero-card:hover .pack-hero-card__cta {
-  transform: translateY(-4px);
+  transform: translateY(var(--lift-hover));
 }
 .pack-hero-card__name {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 25.6px;
   font-weight: 400;
   color: #fff;
 }
 .pack-hero-card__cta {
   font-size: 9.6px;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.85);
   display: flex;
@@ -1510,7 +1539,7 @@ body[data-page="home"] .card-add {
   max-width: 440px;
 }
 .pack-builder-banner__title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 32px;
   font-weight: 400;
   line-height: 1.25;
@@ -1529,11 +1558,11 @@ body[data-page="home"] .card-add {
 }
 .pack-builder-banner__stat {
   font-size: 12.8px;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-tight);
   color: var(--text-muted);
 }
 .pack-builder-banner__stat-num {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-style: italic;
   font-size: 17.6px;
   color: var(--accent);
@@ -1661,10 +1690,10 @@ body[data-page="home"] .card-add {
 .pack-format-card:hover {
   border-color: var(--accent);
   background: var(--surface);
-  transform: translateY(-4px);
+  transform: translateY(var(--lift-hover));
 }
 .pack-format-card__ml {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 25.6px;
   color: var(--text);
 }
@@ -1676,7 +1705,7 @@ body[data-page="home"] .card-add {
 }
 .pack-format-card__label {
   font-size: 9.6px;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: var(--accent);
 }
@@ -1760,13 +1789,13 @@ body[data-page="coffret"] .coffret-hero {
 }
 .coffret-hero__eyebrow {
   font-size: 9.6px;
-  letter-spacing: 0.24em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 12.8px;
 }
 .coffret-hero__title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-weight: 400;
   font-size: clamp(32px, 5vw, 56px);
   line-height: 1.18;
@@ -1799,7 +1828,7 @@ body[data-page="coffret"] .coffret-hero {
 }
 .coffret-hero__link {
   font-size: 10.4px;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-tight);
   color: var(--text);
   text-decoration: none;
   border-bottom: 0.8px solid var(--border-dark);
@@ -1866,7 +1895,7 @@ body[data-page="coffret"] .coffret-hero {
   gap: 4.8px;
   color: rgba(255, 255, 255, 0.85);
   font-size: 8.8px;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
 }
 .coffret-card__content {
@@ -1883,10 +1912,10 @@ body[data-page="coffret"] .coffret-hero {
   transition: transform 0.3s ease;
 }
 .coffret-card:hover .coffret-card__content {
-  transform: translateY(-4px);
+  transform: translateY(var(--lift-hover));
 }
 .coffret-card__name {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-weight: 400;
   font-size: 22.4px;
   color: #fff;
@@ -1895,7 +1924,7 @@ body[data-page="coffret"] .coffret-hero {
   font-family: "DM Sans", sans-serif;
   font-size: 8.8px;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--text);
   background: rgba(255, 255, 255, 0.92);
@@ -1946,14 +1975,14 @@ body[data-page="coffret"] .coffret-hero {
   margin-bottom: 24px;
 }
 .cb2-preview__label {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 22px;
   color: var(--cb2-black);
 }
 .cb2-preview__format {
   font-size: 9.2px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--cb2-gold);
   background: var(--accent-light);
@@ -2007,7 +2036,7 @@ body[data-page="coffret"] .coffret-hero {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-style: italic;
   font-size: 18px;
   color: var(--cb2-gold);
@@ -2052,7 +2081,7 @@ body[data-page="coffret"] .coffret-hero {
 .cb2-preview__count {
   font-size: 10.4px;
   color: var(--text-muted);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-tight);
 }
 .cb2-preview__list {
   list-style: none;
@@ -2081,7 +2110,7 @@ body[data-page="coffret"] .coffret-hero {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-style: italic;
   font-size: 12px;
   color: var(--cb2-gold);
@@ -2116,12 +2145,12 @@ body[data-page="coffret"] .coffret-hero {
   padding-top: 16px;
   border-top: 0.8px solid var(--cb2-border);
   font-size: 10.4px;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-tight);
   text-transform: uppercase;
   color: var(--text-muted);
 }
 .cb2-preview__price {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 26px;
   text-transform: none;
   letter-spacing: normal;
@@ -2211,7 +2240,7 @@ body[data-page="coffret"] .coffret-hero {
 }
 .cb2-mood figcaption {
   padding: 14px 18px;
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-style: italic;
   font-size: 13px;
   color: var(--cb2-black);
@@ -2224,7 +2253,7 @@ body[data-page="coffret"] .coffret-hero {
   gap: 48px;
 }
 .cb2-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-weight: 400;
   font-size: 36px;
   color: var(--cb2-black);
@@ -2270,7 +2299,7 @@ body[data-page="coffret"] .coffret-hero {
 }
 .cb2-timeline__label {
   font-size: 9.6px;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-tight);
   text-transform: uppercase;
   color: var(--text-muted);
   white-space: nowrap;
@@ -2301,7 +2330,7 @@ body[data-page="coffret"] .coffret-hero {
 .cb2-step__title {
   font-size: 10.8px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: var(--cb2-black);
   margin-bottom: 20px;
@@ -2358,7 +2387,7 @@ body[data-page="coffret"] .coffret-hero {
 }
 .cb2-filter-chip:hover {
   border-color: var(--cb2-gold);
-  transform: translateY(-1px);
+  transform: translateY(var(--lift-hover));
 }
 .cb2-filter-chip.is-active {
   background: var(--cb2-black);
@@ -2426,7 +2455,7 @@ body[data-page="coffret"] .coffret-hero {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-style: italic;
   font-size: 14px;
   color: var(--cb2-gold);
@@ -2445,7 +2474,7 @@ body[data-page="coffret"] .coffret-hero {
 }
 .cb2-result__brand {
   font-size: 9.2px;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--cb2-gold);
   margin: 2px 0;
@@ -2476,7 +2505,7 @@ body[data-page="coffret"] .coffret-hero {
   font-family: "DM Sans", sans-serif;
   font-size: 9.8px;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-tight);
   text-transform: uppercase;
   padding: 8px 16px;
   border: 0.8px solid var(--cb2-black);
@@ -2542,7 +2571,7 @@ body[data-page="coffret"] .coffret-hero {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-style: italic;
   font-size: 15px;
   color: var(--cb2-gold);
@@ -2561,7 +2590,7 @@ body[data-page="coffret"] .coffret-hero {
 }
 .cb2-card__brand {
   font-size: 9.2px;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--cb2-gold);
   margin: 2px 0;
@@ -2685,18 +2714,18 @@ body[data-page="coffret"] .coffret-hero {
   transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
 }
 .cb2-format:hover {
-  transform: translateY(-3px);
+  transform: translateY(var(--lift-hover));
   border-color: var(--cb2-gold);
 }
 .cb2-format__name {
   font-size: 9.6px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--cb2-gold);
 }
 .cb2-format__ml {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 24px;
   color: var(--cb2-black);
 }
@@ -2731,7 +2760,7 @@ body[data-page="coffret"] .coffret-hero {
   width: 100%;
   min-height: 96px;
   resize: none;
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 15px;
   font-style: italic;
   color: var(--cb2-black);
@@ -2772,7 +2801,7 @@ body[data-page="coffret"] .coffret-hero {
   font-family: "DM Sans", sans-serif;
   font-size: 10.8px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--cb2-bg);
   background: var(--cb2-black);
@@ -2782,15 +2811,15 @@ body[data-page="coffret"] .coffret-hero {
   transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
 }
 .cb2-cta__price {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 16px;
   letter-spacing: normal;
   text-transform: none;
 }
 .cb2-cta:hover {
   background: linear-gradient(135deg, var(--cb2-black) 0%, #3a2f1c 100%);
-  box-shadow: 0 0 24px rgba(200, 155, 60, 0.35);
-  transform: translateY(-1px);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(var(--lift-hover));
 }
 .cb2-cta.is-ready {
   animation: cb2CtaReady 0.4s ease;
@@ -2845,10 +2874,10 @@ body[data-page="coffret"] .coffret-hero {
   padding: 32px 0;
 }
 .collections-head-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 38.4px;
   font-weight: 400;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--tracking-tight);
   text-transform: uppercase;
   color: var(--text);
   margin: 0 0 12.8px;
@@ -2866,9 +2895,24 @@ body[data-page="coffret"] .coffret-hero {
 .collections-section .dose-head {
   margin-bottom: 28.8px;
 }
-.home-collections-grid {
-  max-width: 953.7px;
+.home-collections-editorial {
+  max-width: var(--max-w);
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18.5px;
+}
+.home-collections-editorial__top {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 18.5px;
+}
+.home-collections-editorial__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18.5px;
+}
+.home-collections-editorial__bottom {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 18.5px;
@@ -2876,11 +2920,18 @@ body[data-page="coffret"] .coffret-hero {
 .home-collection-card {
   position: relative;
   display: block;
-  aspect-ratio: 2/3;
+  aspect-ratio: 4/3;
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 0.8px solid var(--border);
   text-decoration: none;
+}
+.home-collections-editorial__top .home-collection-card--feature {
+  aspect-ratio: auto;
+  height: 100%;
+}
+.home-collections-editorial__stack .home-collection-card {
+  aspect-ratio: 16/10;
 }
 .home-collection-card .home-collection-card__media {
   position: absolute;
@@ -2914,14 +2965,14 @@ body[data-page="coffret"] .coffret-hero {
   );
 }
 .home-collection-card__name {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 24.28px;
   font-weight: 400;
   color: #fff;
 }
 .home-collection-card__cta {
   font-size: 7.51px;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.85);
   display: flex;
@@ -2947,7 +2998,7 @@ body[data-page="coffret"] .coffret-hero {
   margin: 8px auto 0;
 }
 .brands-outro-lead {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 22.4px;
   font-weight: 400;
   color: var(--text);
@@ -3109,7 +3160,7 @@ body[data-page="coffret"] .coffret-hero {
   transform: translateY(-8px);
 }
 .collection-card-name {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 22.4px;
   font-weight: 500;
   margin: 0 0 4.8px;
@@ -3117,7 +3168,7 @@ body[data-page="coffret"] .coffret-hero {
 .collection-card-tagline {
   font-family: "DM Sans", sans-serif;
   font-size: 10.4px;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-tight);
   opacity: 0.8;
   margin: 0;
 }
@@ -3133,7 +3184,7 @@ body[data-page="coffret"] .coffret-hero {
   font-family: "DM Sans", sans-serif;
   font-size: 10.4px;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   opacity: 0;
   transform: translateY(4px);
@@ -3152,7 +3203,7 @@ body[data-page="coffret"] .coffret-hero {
   z-index: 1;
   font-family: "DM Sans", sans-serif;
   font-size: 8.8px;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   padding: 4.8px 10.4px;
   border-radius: var(--radius-pill);
@@ -3181,7 +3232,7 @@ body[data-page="coffret"] .coffret-hero {
 }
 .sub-eyebrow {
   font-size: 8.8px;
-  letter-spacing: 0.2em;
+  letter-spacing: var(--tracking-eyebrow);
   color: var(--accent);
   text-transform: uppercase;
   margin-bottom: 11.2px;
@@ -3299,7 +3350,7 @@ body[data-page="coffret"] .coffret-hero {
 }
 .ugc-tag {
   font-size: 8.8px;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   color: var(--text-muted);
   text-transform: uppercase;
 }
@@ -3374,7 +3425,7 @@ body[data-page="coffret"] .coffret-hero {
 .testimonial-badge {
   margin-left: auto;
   font-size: 8px;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   background: var(--new-bg);
   color: var(--new-text);
@@ -3464,13 +3515,13 @@ body[data-page="coffret"] .coffret-hero {
 }
 .quiz-eyebrow {
   font-size: 9.6px;
-  letter-spacing: 0.2em;
+  letter-spacing: var(--tracking-eyebrow);
   color: var(--accent);
   text-transform: uppercase;
   margin-bottom: 12.8px;
 }
 .quiz-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 32px;
   font-weight: 400;
   color: var(--text);
@@ -3500,7 +3551,7 @@ body[data-page="coffret"] .coffret-hero {
   font-family: "DM Sans", sans-serif;
   font-weight: 500;
   font-size: 9.6px;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--badge-text);
   cursor: pointer;
@@ -3523,13 +3574,13 @@ body[data-page="coffret"] .coffret-hero {
 }
 .newsletter-eyebrow {
   font-size: 9.6px;
-  letter-spacing: 0.2em;
+  letter-spacing: var(--tracking-eyebrow);
   color: var(--accent);
   text-transform: uppercase;
   margin-bottom: 11.2px;
 }
 .newsletter-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 32px;
   font-weight: 400;
   color: var(--text);
@@ -3581,7 +3632,7 @@ body[data-page="coffret"] .coffret-hero {
 .newsletter-legal {
   font-size: 9.6px;
   color: var(--text-light);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-tight);
 }
 .newsletter-legal.is-success {
   color: var(--accent);
@@ -3602,14 +3653,14 @@ footer {
   font-family: "Cormorant Garamond", serif;
   font-size: 24px;
   font-weight: 300;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.12em; /* wordmark — tracking propre à la marque, hors échelle */
   color: #fff;
   margin-bottom: 8px;
 }
 .footer-tagline {
   font-size: 10.4px;
   color: rgba(255, 255, 255, 0.4);
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   margin-bottom: 22.4px;
 }
 .footer-socials {
@@ -3636,7 +3687,7 @@ footer {
 }
 .footer-col-title {
   font-size: 8.8px;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--tracking-loud);
   color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
   margin-bottom: 14.4px;
@@ -3675,14 +3726,14 @@ footer {
   border-radius: var(--radius-sm);
   padding: 4.8px 11.2px;
   font-size: 8.8px;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-tight);
   color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
 }
 .footer-copy {
   font-size: 9.6px;
   color: rgba(255, 255, 255, 0.25);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-tight);
 }
 
 /* ─── RESPONSIVE ─── */
@@ -3823,9 +3874,23 @@ footer {
   .dose-arrow {
     display: none;
   }
-  .home-collections-grid {
+  .home-collections-editorial {
+    gap: 9.25px;
+  }
+  .home-collections-editorial__top,
+  .home-collections-editorial__bottom {
     grid-template-columns: 1fr;
     gap: 9.25px;
+  }
+  .home-collections-editorial__stack {
+    gap: 9.25px;
+  }
+  .home-collections-editorial__top .home-collection-card--feature {
+    aspect-ratio: 16/9;
+    height: auto;
+  }
+  .home-collections-editorial__stack .home-collection-card {
+    aspect-ratio: 16/9;
   }
   .pack-hero-card {
     aspect-ratio: 8/5;
@@ -4072,7 +4137,7 @@ footer {
 }
 .page-hero-eyebrow {
   font-size: 9.6px;
-  letter-spacing: 0.2em;
+  letter-spacing: var(--tracking-eyebrow);
   color: var(--accent);
   text-transform: uppercase;
   margin-bottom: 9.6px;
@@ -4197,7 +4262,7 @@ body[data-page="catalogue"] .page-hero {
   font-family: "DM Sans", sans-serif;
   font-size: 10.4px;
   font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--text);
 }
@@ -4273,7 +4338,7 @@ body[data-page="catalogue"] .page-hero {
   font-family: "DM Sans", sans-serif;
   font-size: 9.6px;
   font-weight: 500;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: var(--text);
 }
@@ -4525,7 +4590,7 @@ body[data-page="catalogue"] .page-hero {
   border: 2px solid var(--accent);
   cursor: pointer;
   pointer-events: auto;
-  box-shadow: 0 1px 3px rgba(26, 26, 24, 0.15);
+  box-shadow: var(--shadow-tight);
   transition: transform 0.18s ease;
 }
 .price-slider input[type="range"]::-webkit-slider-thumb:hover {
@@ -4722,7 +4787,7 @@ body[data-page="catalogue"] .page-hero {
   border-radius: var(--radius-pill);
   font-family: "DM Sans", sans-serif;
   font-size: 10.4px;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   cursor: pointer;
   transition:
@@ -4736,7 +4801,7 @@ body[data-page="catalogue"] .page-hero {
   border: none;
 }
 .btn-filters-apply:hover {
-  background: #000;
+  background: var(--text-hover);
 }
 .btn-filters-clear {
   background: #fff;
@@ -4883,7 +4948,7 @@ body[data-page="catalogue"] .page-hero {
   font-size: 10.4px;
   color: var(--accent);
   cursor: pointer;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-tight);
   text-decoration: underline;
   text-underline-offset: 2.4px;
 }
@@ -4915,10 +4980,10 @@ body[data-page="catalogue"] .page-hero {
   padding: 32px 0;
 }
 .brands-head-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 38.4px;
   font-weight: 400;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--tracking-tight);
   text-transform: uppercase;
   color: var(--text);
   margin: 0 0 12.8px;
@@ -4933,7 +4998,7 @@ body[data-page="catalogue"] .page-hero {
   font-family: "DM Sans", sans-serif;
   font-size: 9.6px;
   font-weight: 500;
-  letter-spacing: 0.2em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--accent);
 }
@@ -4984,7 +5049,7 @@ body[data-page="catalogue"] .page-hero {
 }
 .brands-popular-label {
   font-size: 9.6px;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: var(--text-light);
 }
@@ -5108,13 +5173,13 @@ body[data-page="catalogue"] .page-hero {
   font-family: "DM Sans", sans-serif;
   font-size: 19.2px;
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--tracking-tight);
   color: var(--text);
   text-transform: uppercase;
 }
 .brand-card-country {
   font-size: 8.8px;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: var(--text-light);
 }
@@ -5130,7 +5195,7 @@ body[data-page="catalogue"] .page-hero {
   font-family: "DM Sans", sans-serif;
   font-size: 10.4px;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--text);
 }
@@ -5173,7 +5238,7 @@ body[data-page="catalogue"] .page-hero {
     background 0.2s;
 }
 .chatbot-toggle:hover {
-  background: #333;
+  background: var(--text-hover);
   transform: scale(1.05);
 }
 .chatbot-toggle.open {
@@ -5222,7 +5287,7 @@ body[data-page="catalogue"] .page-hero {
 .chatbot-head-sub {
   font-size: 8.8px;
   color: var(--text-muted);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 .chatbot-close {
@@ -5366,7 +5431,7 @@ body[data-page="catalogue"] .page-hero {
 }
 .chatbot-mock-badge {
   font-size: 8px;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--text-light);
   text-align: center;
@@ -5409,7 +5474,7 @@ body[data-page="catalogue"] .page-hero {
     background 0.2s;
 }
 .coffret-toggle:hover {
-  background: #333;
+  background: var(--text-hover);
   transform: scale(1.05);
 }
 .coffret-toggle__count {
@@ -5498,7 +5563,7 @@ body[data-page="catalogue"] .page-hero {
   align-items: baseline;
   justify-content: space-between;
   font-size: 10.4px;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-tight);
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 8px;
@@ -5758,7 +5823,7 @@ body[data-page="catalogue"] .page-hero {
 }
 .placeholder-premium__eyebrow {
   font-size: 8.8px;
-  letter-spacing: 0.22em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--accent);
 }
@@ -5771,7 +5836,7 @@ body[data-page="catalogue"] .page-hero {
 }
 .placeholder-premium__sub {
   font-size: 9.6px;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--text-muted);
   max-width: 176px;
@@ -5785,7 +5850,7 @@ body[data-page="catalogue"] .page-hero {
 }
 .placeholder-premium__brand {
   font-size: 8.8px;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: var(--text-muted);
 }
@@ -5811,7 +5876,7 @@ body[data-page="catalogue"] .page-hero {
       rgba(26, 26, 24, 0.08) 0%,
       transparent 48%
     ),
-    linear-gradient(160deg, #f8f7f5 0%, #ece8e0 100%);
+    linear-gradient(160deg, var(--surface) 0%, var(--surface-2) 100%);
 }
 .placeholder-premium--product .placeholder-premium__name {
   font-size: 13.6px;
@@ -5825,46 +5890,46 @@ body[data-page="catalogue"] .page-hero {
 .placeholder-premium--detail .placeholder-premium__brand {
   font-size: 9.6px;
 }
-/* Teinte par famille olfactive */
+/* Teinte par famille olfactive — dérivée des tokens déclarés, jamais de hex ad hoc */
 .placeholder-premium--product[data-family="oriental"]
+  .placeholder-premium__pattern,
+.placeholder-premium--product[data-family="gourmand"]
   .placeholder-premium__pattern {
-  background: linear-gradient(145deg, #f5ede6 0%, #ece0d4 100%);
+  background: linear-gradient(145deg, var(--accent-light) 0%, var(--surface-2) 100%);
 }
 .placeholder-premium--product[data-family="boisé"]
+  .placeholder-premium__pattern,
+.placeholder-premium--product[data-family="fruity"]
+  .placeholder-premium__pattern,
+.placeholder-premium--product[data-family="aromatique"]
   .placeholder-premium__pattern {
-  background: linear-gradient(145deg, #eef0ea 0%, #e2e6dc 100%);
+  background: linear-gradient(145deg, var(--new-bg) 0%, var(--surface-2) 100%);
 }
 .placeholder-premium--product[data-family="floral"]
   .placeholder-premium__pattern {
-  background: linear-gradient(145deg, #f8f2f4 0%, #ece6ea 100%);
-}
-.placeholder-premium--product[data-family="gourmand"]
-  .placeholder-premium__pattern {
-  background: linear-gradient(145deg, #f5f0ea 0%, #e8dfd0 100%);
+  background: linear-gradient(145deg, var(--family-floral-1) 0%, var(--family-floral-2) 100%);
 }
 .placeholder-premium--product[data-family="cuir"]
   .placeholder-premium__pattern {
-  background: linear-gradient(145deg, #eceae6 0%, #ddd8d0 100%);
-}
-.placeholder-premium--product[data-family="fruity"]
-  .placeholder-premium__pattern {
-  background: linear-gradient(145deg, #f2f6ee 0%, #e4ebdc 100%);
-}
-.placeholder-premium--product[data-family="aromatique"]
-  .placeholder-premium__pattern {
-  background: linear-gradient(145deg, #eef3f0 0%, #dfe8e2 100%);
+  background: linear-gradient(145deg, var(--surface) 0%, var(--border-dark) 100%);
 }
 .placeholder-premium--lifestyle[data-variant="0"]
+  .placeholder-premium__pattern,
+.placeholder-premium--lifestyle[data-variant="3"]
   .placeholder-premium__pattern {
-  background: linear-gradient(150deg, #f5ede6 0%, #e8dfd4 100%);
+  background: linear-gradient(150deg, var(--surface) 0%, var(--surface-2) 100%);
 }
 .placeholder-premium--lifestyle[data-variant="1"]
+  .placeholder-premium__pattern,
+.placeholder-premium--lifestyle[data-variant="4"]
   .placeholder-premium__pattern {
-  background: linear-gradient(150deg, #eef0ea 0%, #e0e4da 100%);
+  background: linear-gradient(150deg, var(--accent-light) 0%, var(--surface) 100%);
 }
 .placeholder-premium--lifestyle[data-variant="2"]
+  .placeholder-premium__pattern,
+.placeholder-premium--lifestyle[data-variant="5"]
   .placeholder-premium__pattern {
-  background: linear-gradient(150deg, #eceae6 0%, #ddd8d2 100%);
+  background: linear-gradient(150deg, var(--surface-2) 0%, var(--border) 100%);
 }
 
 /* lifestyle slots kept for future photo integration */
@@ -5903,7 +5968,7 @@ body[data-page="catalogue"] .page-hero {
   color: var(--text-muted);
 }
 .static-content h2 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-weight: 500;
   font-size: 25.6px;
   color: var(--text);
@@ -5967,7 +6032,7 @@ body[data-page="catalogue"] .page-hero {
 .contact-form label span {
   display: block;
   font-size: 9.6px;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 4.8px;
@@ -6000,12 +6065,12 @@ body[data-page="catalogue"] .page-hero {
 }
 .error-page-code {
   font-size: 11.2px;
-  letter-spacing: 0.2em;
+  letter-spacing: var(--tracking-eyebrow);
   color: var(--accent);
   margin-bottom: 12.8px;
 }
 .error-page-title {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "DM Sans", sans-serif;
   font-weight: 500;
   font-size: 44.8px;
   line-height: 1.1;

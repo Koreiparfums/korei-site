@@ -348,24 +348,26 @@
     ].filter((t) => t.notes.length);
     if (!tiers.length) return "";
     return `
-      <section class="pdp-notes-featured pdp-reveal">
-        <div class="pdp-notes-featured__head">
+      <section class="pdp-notes-featured pdp-reveal pdp-accordion" id="pdp-notes-featured">
+        <button type="button" class="pdp-notes-featured__head pdp-accordion-head" aria-expanded="false">
           <h2>Notes phares</h2>
-          <a href="#pdp-notes-featured" class="pdp-notes-featured__link">Voir notes principales <span aria-hidden="true">—</span></a>
-        </div>
-        ${tiers
-          .map(
-            (t) => `
-          <div class="pdp-notes-tier">
-            <div class="pdp-notes-tier__label">
-              ${t.label} <i class="ti ti-info-circle" title="Notes perçues en ${t.label.split(" ").pop()}"></i>
-            </div>
-            <div class="pdp-notes-tier__row">
-              ${t.notes.map(renderNoteCard).join("")}
-            </div>
-          </div>`
-          )
-          .join("")}
+          <i class="ti ti-chevron-down pdp-accordion-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="pdp-accordion-body"><div class="pdp-accordion-body-inner">
+          ${tiers
+            .map(
+              (t) => `
+            <div class="pdp-notes-tier">
+              <div class="pdp-notes-tier__label">
+                ${t.label} <i class="ti ti-info-circle" title="Notes perçues en ${t.label.split(" ").pop()}"></i>
+              </div>
+              <div class="pdp-notes-tier__row">
+                ${t.notes.map(renderNoteCard).join("")}
+              </div>
+            </div>`
+            )
+            .join("")}
+        </div></div>
       </section>`;
   }
 
@@ -426,12 +428,17 @@
     const projectionCards = PROJECTION_META.map((p) => renderSentimentCard(p, p.level === projectionLevel)).join("");
 
     return `
-      <section class="pdp-sentiment pdp-reveal">
-        <div class="pdp-sentiment__head"><h2>Ressenti</h2></div>
-        ${renderSentimentRow("Meilleur moment de la journée", momentCards)}
-        ${renderSentimentRow("Meilleure saison pour porter", seasonCards)}
-        ${renderSentimentRow("Longévité", longevityCards)}
-        ${renderSentimentRow("Projection", projectionCards)}
+      <section class="pdp-sentiment pdp-reveal pdp-accordion">
+        <button type="button" class="pdp-sentiment__head pdp-accordion-head" aria-expanded="false">
+          <h2>Ressenti</h2>
+          <i class="ti ti-chevron-down pdp-accordion-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="pdp-accordion-body"><div class="pdp-accordion-body-inner">
+          ${renderSentimentRow("Meilleur moment de la journée", momentCards)}
+          ${renderSentimentRow("Meilleure saison pour porter", seasonCards)}
+          ${renderSentimentRow("Longévité", longevityCards)}
+          ${renderSentimentRow("Projection", projectionCards)}
+        </div></div>
       </section>`;
   }
 
@@ -456,6 +463,10 @@
   function initCarousel(section) {
     const track = section.querySelector(".pdp-carousel-track");
     if (!track) return;
+    if (ui.initProductCarousel) {
+      ui.initProductCarousel(track.id, { navSelector: ".pdp-carousel-nav", btnSelector: "button" });
+      return;
+    }
     section.querySelectorAll(".pdp-carousel-nav button").forEach((btn) => {
       btn.addEventListener("click", () => {
         const dir = Number(btn.dataset.scrollDir);
@@ -590,6 +601,16 @@
     setTimeout(() => targets.forEach(reveal), 4000);
   }
 
+  function initAccordions(main) {
+    main.querySelectorAll(".pdp-accordion-head").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const section = btn.closest(".pdp-accordion");
+        const nowOpen = section.classList.toggle("open");
+        btn.setAttribute("aria-expanded", String(nowOpen));
+      });
+    });
+  }
+
   // ── Init général
   function initProductPage() {
     const params = new URLSearchParams(window.location.search);
@@ -644,6 +665,7 @@
     initGallery(main, galleryImages(product, "../"));
     initHero(main, product);
     initReveal(main);
+    initAccordions(main);
 
     const similar = store
       .getProductsByFamily(product.family)

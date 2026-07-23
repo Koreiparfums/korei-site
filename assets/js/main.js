@@ -341,9 +341,10 @@
   }
 
   // ── Flèches de défilement carrousel produits (carrousel infini, façon .brands-marquee-track)
-  function initProductCarousel(trackId) {
+  function initProductCarousel(trackId, options = {}) {
+    const { navSelector = ".favorites-nav", btnSelector = ".favorites-nav-btn" } = options;
     const track = document.getElementById(trackId);
-    const nav = track?.closest("section")?.querySelector(".favorites-nav");
+    const nav = track?.closest("section")?.querySelector(navSelector);
     if (!track || !nav) return;
 
     const realCards = Array.from(track.children);
@@ -387,7 +388,7 @@
 
     track.scrollLeft = homeStart;
 
-    nav.querySelectorAll(".favorites-nav-btn").forEach((btn) => {
+    nav.querySelectorAll(btnSelector).forEach((btn) => {
       btn.addEventListener("click", () => {
         const dir = Number(btn.dataset.scrollDir);
         track.scrollBy({ left: dir * (track.clientWidth * 0.8), behavior: "smooth" });
@@ -966,6 +967,7 @@
     initBrandChips,
     initHomePage,
     initCataloguePage,
+    initProductCarousel,
   };
 
   if (document.readyState === "loading") {
