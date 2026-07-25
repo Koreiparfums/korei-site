@@ -674,12 +674,12 @@ body[data-page="home"] .hero {
   transform: translateY(-50%);
   width: 230px;
   padding: 26px 22px;
-  background: rgba(255, 255, 255, 0.42);
-  border: 1px solid rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--radius-lg);
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
-  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  box-shadow: 0 8px 24px rgba(26, 26, 24, 0.05);
 }
 .hero-trust-card__title {
   font-family: "DM Sans", sans-serif;
@@ -1146,9 +1146,9 @@ body[data-page="home"] .hero {
   border: 0.8px solid var(--badge-border);
 }
 .badge-new {
-  background: var(--new-bg);
-  color: var(--new-text);
-  border: 0.8px solid var(--new-border);
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
 }
 .badge-exclusive {
   background: var(--text);
@@ -1731,17 +1731,6 @@ body[data-page="home"] .card-add {
   background: var(--accent);
   opacity: 0.35;
 }
-.pack-format-card__divider::after {
-  content: "";
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 4.8px;
-  height: 4.8px;
-  border-radius: 50%;
-  background: var(--accent);
-}
 
 /* ─── COFFRET (page) ─── */
 .coffret-hero {
@@ -1926,18 +1915,15 @@ body[data-page="coffret"] .coffret-hero {
   font-weight: 500;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.92);
-  padding: 7.2px 14.4px;
-  border-radius: var(--radius-pill);
+  color: rgba(255, 255, 255, 0.85);
   display: inline-flex;
   align-items: center;
   gap: 4.8px;
-  transition: gap 0.2s, background 0.2s;
+  transition: gap 0.2s, color 0.2s;
 }
 .coffret-card:hover .coffret-card__cta {
   gap: 7.2px;
-  background: #fff;
+  color: var(--accent);
 }
 
 /* ─── COFFRET BUILDER v2 (personnalisation, luxe) ───
@@ -1949,22 +1935,26 @@ body[data-page="coffret"] .coffret-hero {
   --cb2-black: var(--text);
   --cb2-border: var(--border);
   background: var(--bg);
-  padding: 96px var(--px) 112px;
+  padding: 72px var(--px) 88px;
 }
 .cb2-grid {
   max-width: var(--max-w);
   margin: 0 auto;
   display: grid;
   grid-template-columns: 45% 1fr;
-  gap: 64px;
+  gap: 40px;
   align-items: start;
+}
+.cb2-media-col {
+  position: sticky;
+  top: 96px;
 }
 /* ─── Aperçu vivant du coffret ─── */
 .cb2-preview {
   background: var(--bg);
   border: 0.8px solid var(--cb2-border);
   border-radius: var(--radius-lg);
-  padding: 32px;
+  padding: 36px;
   box-shadow: var(--shadow-sm);
 }
 .cb2-preview__head {
@@ -1972,11 +1962,11 @@ body[data-page="coffret"] .coffret-hero {
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 }
 .cb2-preview__label {
   font-family: "DM Sans", sans-serif;
-  font-size: 22px;
+  font-size: 21px;
   color: var(--cb2-black);
 }
 .cb2-preview__format {
@@ -1993,12 +1983,12 @@ body[data-page="coffret"] .coffret-hero {
 .cb2-preview__slots {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 26px;
 }
 .cb2-slot {
-  width: 52px;
-  height: 52px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -2061,14 +2051,14 @@ body[data-page="coffret"] .coffret-hero {
   }
 }
 .cb2-preview__progress {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 .cb2-preview__bar {
-  height: 4px;
+  height: 5px;
   background: var(--cb2-border);
   border-radius: var(--radius-pill);
   overflow: hidden;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .cb2-preview__bar span {
   display: block;
@@ -2087,21 +2077,21 @@ body[data-page="coffret"] .coffret-hero {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-  max-height: 216px;
+  gap: 12px;
+  margin-bottom: 24px;
+  max-height: 260px;
   overflow-y: auto;
 }
 .cb2-preview__list li {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 11.2px;
+  gap: 12px;
+  font-size: 12.4px;
   color: var(--cb2-black);
 }
 .cb2-list-thumb {
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
@@ -2142,7 +2132,7 @@ body[data-page="coffret"] .coffret-hero {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 16px;
+  padding-top: 22px;
   border-top: 0.8px solid var(--cb2-border);
   font-size: 10.4px;
   letter-spacing: var(--tracking-tight);
@@ -2151,7 +2141,7 @@ body[data-page="coffret"] .coffret-hero {
 }
 .cb2-preview__price {
   font-family: "DM Sans", sans-serif;
-  font-size: 26px;
+  font-size: 28px;
   text-transform: none;
   letter-spacing: normal;
   color: var(--cb2-black);
@@ -2250,19 +2240,19 @@ body[data-page="coffret"] .coffret-hero {
 .cb2-config {
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  gap: 26px;
 }
 .cb2-title {
   font-family: "DM Sans", sans-serif;
   font-weight: 400;
-  font-size: 36px;
+  font-size: 25px;
   color: var(--cb2-black);
-  margin-bottom: 12px;
+  margin-bottom: 7px;
 }
 .cb2-sub {
-  font-size: 12.8px;
+  font-size: 14px;
   color: rgba(31, 31, 31, 0.55);
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .cb2-timeline {
@@ -2328,12 +2318,12 @@ body[data-page="coffret"] .coffret-hero {
 }
 
 .cb2-step__title {
-  font-size: 10.8px;
+  font-size: 12.2px;
   font-weight: 600;
   letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: var(--cb2-black);
-  margin-bottom: 20px;
+  margin-bottom: 17px;
 }
 
 /* ─── Recherche + filtres rapides ─── */
@@ -2341,18 +2331,18 @@ body[data-page="coffret"] .coffret-hero {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 18px;
+  padding: 10px 17px;
   border: 0.8px solid var(--cb2-border);
   border-radius: var(--radius-pill);
   background: var(--cb2-bg);
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   transition: border-color 0.25s ease;
 }
 .cb2-search:focus-within {
   border-color: var(--cb2-gold);
 }
 .cb2-search i {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text-muted);
 }
 .cb2-search input {
@@ -2361,7 +2351,7 @@ body[data-page="coffret"] .coffret-hero {
   background: none;
   outline: none;
   font-family: "DM Sans", sans-serif;
-  font-size: 11.6px;
+  font-size: 13px;
   color: var(--cb2-black);
 }
 .cb2-search input::placeholder {
@@ -2371,12 +2361,15 @@ body[data-page="coffret"] .coffret-hero {
 .cb2-filter-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 20px;
+  gap: 7px;
+  margin-bottom: 12px;
 }
 .cb2-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-family: "DM Sans", sans-serif;
-  font-size: 10.4px;
+  font-size: 11.5px;
   padding: 7px 14px;
   border: 0.8px solid var(--cb2-border);
   border-radius: var(--radius-pill);
@@ -2384,6 +2377,11 @@ body[data-page="coffret"] .coffret-hero {
   color: var(--cb2-black);
   cursor: pointer;
   transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+.cb2-filter-chip i {
+  font-size: 13px;
+  color: var(--cb2-gold);
+  transition: color 0.2s ease;
 }
 .cb2-filter-chip:hover {
   border-color: var(--cb2-gold);
@@ -2394,50 +2392,56 @@ body[data-page="coffret"] .coffret-hero {
   border-color: var(--cb2-black);
   color: var(--cb2-bg);
 }
+.cb2-filter-chip.is-active i {
+  color: var(--cb2-gold);
+}
 
-/* ─── Résultats de recherche ─── */
+/* ─── Résultats de recherche — grille horizontale de cartes ─── */
 .cb2-results {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-bottom: 20px;
-  border: 0.8px solid var(--cb2-border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  max-height: 320px;
-  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+  gap: 12px;
+  margin-bottom: 17px;
 }
 .cb2-results[hidden] {
   display: none;
 }
 .cb2-results__empty {
+  grid-column: 1 / -1;
   padding: 20px;
   font-size: 11.2px;
   color: var(--text-muted);
   font-style: italic;
   text-align: center;
+  border: 0.8px dashed var(--cb2-border);
+  border-radius: var(--radius-md);
 }
 .cb2-result {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  text-align: center;
+  gap: 4px;
+  padding: 14px 10px 12px;
   background: var(--cb2-bg);
-  border-bottom: 0.8px solid var(--cb2-border);
-  transition: background 0.2s ease;
-}
-.cb2-result:last-child {
-  border-bottom: none;
+  border: 0.8px solid var(--cb2-border);
+  border-radius: var(--radius-md);
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
 .cb2-result:hover {
-  background: var(--surface);
+  border-color: var(--cb2-gold);
+  transform: translateY(var(--lift-hover));
+}
+.cb2-result__media {
+  position: relative;
+  margin-bottom: 5px;
 }
 .cb2-result__thumb {
-  width: 40px;
-  height: 40px;
+  display: block;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   overflow: hidden;
-  flex-shrink: 0;
   position: relative;
   border: 0.8px solid var(--cb2-border);
   background: var(--surface);
@@ -2457,7 +2461,7 @@ body[data-page="coffret"] .coffret-hero {
   justify-content: center;
   font-family: "DM Sans", sans-serif;
   font-style: italic;
-  font-size: 14px;
+  font-size: 22px;
   color: var(--cb2-gold);
   background: var(--accent-light);
 }
@@ -2465,22 +2469,21 @@ body[data-page="coffret"] .coffret-hero {
   display: none;
 }
 .cb2-result__info {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
 }
 .cb2-result__name {
-  font-size: 11.6px;
+  font-size: 14px;
   color: var(--cb2-black);
 }
 .cb2-result__brand {
-  font-size: 9.2px;
+  font-size: 11px;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--cb2-gold);
   margin: 2px 0;
 }
 .cb2-result__notes {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2488,6 +2491,8 @@ body[data-page="coffret"] .coffret-hero {
 }
 .cb2-result__rating {
   margin-top: 3px;
+  display: flex;
+  justify-content: center;
 }
 .cb2-result__rating .star,
 .cb2-result__rating .star-empty,
@@ -2501,23 +2506,26 @@ body[data-page="coffret"] .coffret-hero {
   margin-left: 2px;
 }
 .cb2-result__add {
-  flex-shrink: 0;
-  font-family: "DM Sans", sans-serif;
-  font-size: 9.8px;
-  font-weight: 600;
-  letter-spacing: var(--tracking-tight);
-  text-transform: uppercase;
-  padding: 8px 16px;
-  border: 0.8px solid var(--cb2-black);
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--cb2-black);
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 29px;
+  height: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid var(--cb2-bg);
+  background: var(--cb2-gold);
+  color: #fff;
+  font-size: 15px;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease, transform 0.15s ease;
 }
 .cb2-result__add:hover:not(:disabled) {
   background: var(--cb2-black);
-  color: var(--cb2-bg);
+  transform: scale(1.08);
 }
 .cb2-result__add:disabled {
   opacity: 0.35;
@@ -2699,26 +2707,27 @@ body[data-page="coffret"] .coffret-hero {
 .cb2-formats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 12px;
 }
 .cb2-format {
-  text-align: left;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 24px 20px;
+  align-items: center;
+  gap: 4px;
+  padding: 18px 10px;
   background: var(--cb2-bg);
-  border: 0.8px solid var(--cb2-border);
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--cb2-border);
+  border-radius: var(--radius-lg);
   cursor: pointer;
   transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
 }
 .cb2-format:hover {
   transform: translateY(var(--lift-hover));
-  border-color: var(--cb2-gold);
+  border-color: #dfc088;
 }
 .cb2-format__name {
-  font-size: 9.6px;
+  font-size: 10.5px;
   font-weight: 600;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
@@ -2726,17 +2735,17 @@ body[data-page="coffret"] .coffret-hero {
 }
 .cb2-format__ml {
   font-family: "DM Sans", sans-serif;
-  font-size: 24px;
+  font-size: 19px;
   color: var(--cb2-black);
 }
 .cb2-format__desc {
-  font-size: 10.8px;
-  line-height: 1.5;
+  font-size: 11.8px;
+  line-height: 1.4;
   color: rgba(31, 31, 31, 0.55);
 }
 .cb2-format.is-active {
   background: var(--cb2-black);
-  border-color: var(--cb2-black);
+  border-color: var(--cb2-gold);
 }
 .cb2-format.is-active .cb2-format__name {
   color: var(--cb2-gold);
@@ -2758,15 +2767,15 @@ body[data-page="coffret"] .coffret-hero {
 .cb2-message {
   display: block;
   width: 100%;
-  min-height: 96px;
+  min-height: 70px;
   resize: none;
   font-family: "DM Sans", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   font-style: italic;
   color: var(--cb2-black);
   background: transparent;
   border: none;
-  padding: 20px 20px 8px;
+  padding: 14px 16px 6px;
 }
 .cb2-message::placeholder {
   color: rgba(31, 31, 31, 0.35);
@@ -2778,10 +2787,10 @@ body[data-page="coffret"] .coffret-hero {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px 16px;
+  padding: 0 16px 12px;
   gap: 12px;
-  margin-top: 8px;
-  font-size: 9.8px;
+  margin-top: 6px;
+  font-size: 9.2px;
   color: rgba(31, 31, 31, 0.45);
 }
 
@@ -2797,9 +2806,9 @@ body[data-page="coffret"] .coffret-hero {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 18px 24px;
+  padding: 17px 24px;
   font-family: "DM Sans", sans-serif;
-  font-size: 10.8px;
+  font-size: 12.2px;
   font-weight: 600;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
@@ -2812,7 +2821,7 @@ body[data-page="coffret"] .coffret-hero {
 }
 .cb2-cta__price {
   font-family: "DM Sans", sans-serif;
-  font-size: 16px;
+  font-size: 19px;
   letter-spacing: normal;
   text-transform: none;
 }
@@ -3186,15 +3195,13 @@ body[data-page="coffret"] .coffret-hero {
   font-weight: 500;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  opacity: 0;
-  transform: translateY(4px);
   transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
+    gap 0.2s ease,
+    color 0.2s ease;
 }
 .collection-card:hover .collection-card-cta {
-  opacity: 1;
-  transform: translateY(0);
+  gap: 9.6px;
+  color: var(--accent);
 }
 .collection-card-count {
   position: absolute;
@@ -3208,14 +3215,8 @@ body[data-page="coffret"] .coffret-hero {
   padding: 4.8px 10.4px;
   border-radius: var(--radius-pill);
   backdrop-filter: blur(8px);
-}
-.collection-card--photo .collection-card-count {
   color: #fff;
-  background: rgba(0, 0, 0, 0.25);
-}
-.collection-card--fallback .collection-card-count {
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(26, 26, 24, 0.35);
 }
 
 /* ─── ABONNEMENT ─── */
@@ -5075,12 +5076,34 @@ body[data-page="catalogue"] .page-hero {
 /* ─── BRANDS — FILTRES ─── */
 .brands-filters {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 9.6px;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
   max-width: 800px;
   margin: 0 auto;
   padding: 0 var(--px) 38.4px;
+}
+.brands-filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.brands-filter-group__label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 9.6px;
+  font-weight: 600;
+  letter-spacing: var(--tracking-loud);
+  text-transform: uppercase;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+.brands-filter-group__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9.6px;
+  justify-content: center;
 }
 .brands-filter-pill {
   font-family: "DM Sans", sans-serif;
@@ -5157,8 +5180,9 @@ body[data-page="catalogue"] .page-hero {
 }
 .brand-card-logo-wrap .media-slot__image {
   width: auto;
-  max-width: 80%;
-  height: 100%;
+  max-width: 72%;
+  height: auto;
+  max-height: 68%;
   object-fit: contain;
   transition: transform 0.3s ease;
 }
@@ -5171,7 +5195,7 @@ body[data-page="catalogue"] .page-hero {
   align-items: center;
   justify-content: center;
   font-family: "DM Sans", sans-serif;
-  font-size: 19.2px;
+  font-size: 30px;
   font-weight: 500;
   letter-spacing: var(--tracking-tight);
   color: var(--text);

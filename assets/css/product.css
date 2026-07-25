@@ -436,13 +436,13 @@ body[data-page="product"] {
 
 .pdp-trust {
   overflow: hidden;
-  padding-top: 28px;
+  padding-top: 36px;
   border-top: 1px solid var(--pdp-line);
 }
 .pdp-trust__track {
   display: flex;
   width: max-content;
-  gap: 40px;
+  gap: 52px;
   animation: pdpTrustMarquee 16s linear infinite;
 }
 .pdp-trust__track:hover {
@@ -466,16 +466,16 @@ body[data-page="product"] {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
-  width: 96px;
+  width: 112px;
 }
 .pdp-trust__item i {
-  font-size: 22px;
+  font-size: 28px;
   color: var(--pdp-gold);
 }
 .pdp-trust__item span {
-  font-size: 10.5px;
+  font-size: 12px;
   line-height: 1.4;
   color: var(--pdp-ink-soft);
   white-space: nowrap;

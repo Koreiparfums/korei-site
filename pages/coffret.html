@@ -206,7 +206,9 @@
           >
           <div class="coffret-card__content">
             <h3 class="coffret-card__name">Été</h3>
-            <span class="coffret-card__cta">Découvrir</span>
+            <span class="coffret-card__cta"
+              >Découvrir <span aria-hidden="true">→</span></span
+            >
           </div>
         </a>
         <a href="catalogue.html?season=hiver" class="coffret-card">
@@ -219,7 +221,9 @@
           >
           <div class="coffret-card__content">
             <h3 class="coffret-card__name">Hiver</h3>
-            <span class="coffret-card__cta">Découvrir</span>
+            <span class="coffret-card__cta"
+              >Découvrir <span aria-hidden="true">→</span></span
+            >
           </div>
         </a>
         <a href="catalogue.html?family=floral" class="coffret-card">
@@ -232,7 +236,9 @@
           >
           <div class="coffret-card__content">
             <h3 class="coffret-card__name">Floral</h3>
-            <span class="coffret-card__cta">Découvrir</span>
+            <span class="coffret-card__cta"
+              >Découvrir <span aria-hidden="true">→</span></span
+            >
           </div>
         </a>
         <a href="catalogue.html?family=gourmand" class="coffret-card">
@@ -245,7 +251,9 @@
           >
           <div class="coffret-card__content">
             <h3 class="coffret-card__name">Gourmand</h3>
-            <span class="coffret-card__cta">Découvrir</span>
+            <span class="coffret-card__cta"
+              >Découvrir <span aria-hidden="true">→</span></span
+            >
           </div>
         </a>
       </div>
@@ -278,15 +286,6 @@
               <span class="cb2-preview__price" id="cb2PreviewPrice">99€</span>
             </div>
           </div>
-
-          <figure class="cb2-mood">
-            <img
-              src="../assets/images/coffrets/coffret_personnalise.png"
-              alt="Coffret Kōrei entrouvert avec des décants sortis, prêt à être composé"
-              loading="lazy"
-            />
-            <figcaption>Votre coffret, prêt à recevoir votre sélection.</figcaption>
-          </figure>
         </div>
 
         <div class="cb2-config">
@@ -306,12 +305,8 @@
               <span class="cb2-timeline__num">2</span>
               <span class="cb2-timeline__label">Vos parfums</span>
             </div>
-            <div class="cb2-timeline__step" data-step="message">
-              <span class="cb2-timeline__num">3</span>
-              <span class="cb2-timeline__label">Message</span>
-            </div>
             <div class="cb2-timeline__step" data-step="validation">
-              <span class="cb2-timeline__num">4</span>
+              <span class="cb2-timeline__num">3</span>
               <span class="cb2-timeline__label">Validation</span>
             </div>
           </div>
@@ -375,37 +370,17 @@
             </div>
 
             <div class="cb2-filter-chips" id="cb2FilterChips">
-              <button type="button" class="cb2-filter-chip" data-filter="bestseller">🔥 Best-sellers</button>
-              <button type="button" class="cb2-filter-chip" data-filter="new">✨ Nouveautés</button>
-              <button type="button" class="cb2-filter-chip" data-filter="floral">🌸 Floral</button>
-              <button type="button" class="cb2-filter-chip" data-filter="boisé">🌳 Boisé</button>
-              <button type="button" class="cb2-filter-chip" data-filter="fruity">🍋 Fruité</button>
-              <button type="button" class="cb2-filter-chip" data-filter="gourmand">🍦 Gourmand</button>
+              <button type="button" class="cb2-filter-chip" data-filter="bestseller"><i class="ti ti-flame" aria-hidden="true"></i> Best-sellers</button>
+              <button type="button" class="cb2-filter-chip" data-filter="new"><i class="ti ti-sparkles" aria-hidden="true"></i> Nouveautés</button>
+              <button type="button" class="cb2-filter-chip" data-filter="floral"><i class="ti ti-flower" aria-hidden="true"></i> Floral</button>
+              <button type="button" class="cb2-filter-chip" data-filter="boisé"><i class="ti ti-trees" aria-hidden="true"></i> Boisé</button>
+              <button type="button" class="cb2-filter-chip" data-filter="fruity"><i class="ti ti-apple" aria-hidden="true"></i> Fruité</button>
+              <button type="button" class="cb2-filter-chip" data-filter="gourmand"><i class="ti ti-cookie" aria-hidden="true"></i> Gourmand</button>
             </div>
 
             <div class="cb2-results" id="cb2Results" hidden></div>
 
             <div class="cb2-selected" id="cb2Selected"></div>
-          </div>
-
-          <div class="cb2-step">
-            <h3 class="cb2-step__title">Ajoutez un message personnalisé</h3>
-            <div class="cb2-message-card">
-              <textarea
-                class="cb2-message"
-                id="cb2Message"
-                maxlength="150"
-                placeholder="Écrivez votre message…"
-              ></textarea>
-              <div class="cb2-message__foot">
-                <span class="cb2-message__hint"
-                  >Votre message sera imprimé dans le coffret.</span
-                >
-                <span class="cb2-message__count"
-                  ><span id="cb2MessageCount">0</span> / 150 caractères</span
-                >
-              </div>
-            </div>
           </div>
 
           <div class="cb2-action">

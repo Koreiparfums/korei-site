@@ -149,14 +149,18 @@
         .map(
           (p) => `
         <div class="cb2-result" data-product-id="${p.id}">
-          <span class="cb2-result__thumb">${thumbHtml(p)}</span>
+          <div class="cb2-result__media">
+            <span class="cb2-result__thumb">${thumbHtml(p)}</span>
+            <button type="button" class="cb2-result__add" data-add-id="${p.id}" ${full ? "disabled" : ""} aria-label="Ajouter ${p.name}">
+              <i class="ti ti-plus" aria-hidden="true"></i>
+            </button>
+          </div>
           <div class="cb2-result__info">
             <div class="cb2-result__name">${p.name}</div>
             <div class="cb2-result__brand">${p.brand}</div>
             <div class="cb2-result__notes">${notesOf(p)}</div>
             ${p.rating ? `<div class="cb2-result__rating">${renderStars(p.rating)}</div>` : ""}
           </div>
-          <button type="button" class="cb2-result__add" data-add-id="${p.id}" ${full ? "disabled" : ""}>Ajouter</button>
         </div>`
         )
         .join("");
@@ -229,7 +233,6 @@
       const state = {
         format: "done",
         parfums: t < cap ? "current" : "done",
-        message: t === cap ? (coffret.message ? "done" : "current") : "pending",
         validation: t === cap ? "current" : "pending",
       };
       timelineSteps.forEach((step, i) => {
