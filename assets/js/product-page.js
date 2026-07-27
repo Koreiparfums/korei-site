@@ -72,7 +72,7 @@
     if (Array.isArray(product.images) && product.images.length) {
       return product.images.map((p) => (site?.withBase ? site.withBase(p, basePath) : `${basePath}${p}`));
     }
-    return Array(5).fill(src);
+    return Array(4).fill(src);
   }
 
   function renderBadges(product) {
@@ -83,20 +83,9 @@
     return badges.join("");
   }
 
-  function uniqueNotes(product) {
-    const seen = new Set();
-    return [...(product.notesTop || []), ...(product.notesHeart || []), ...(product.notesBase || [])].filter((note) => {
-      const key = note.toLowerCase();
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-  }
-
   function renderGallery(product, basePath) {
     const images = galleryImages(product, basePath);
     const alt = `${product.brand} ${product.name}`;
-    const notes = uniqueNotes(product);
     return `
       <div class="pdp-gallery">
         <div class="pdp-gallery__thumbs">
@@ -114,21 +103,6 @@
             <div class="pdp-badges">${renderBadges(product)}</div>
             <img class="pdp-gallery__main-img" id="pdp-main-img" src="${images[0] || ""}" alt="${alt}" onerror="this.style.opacity=0" />
           </div>
-          ${
-            notes.length
-              ? `
-          <div class="pdp-gallery__notes">
-            ${notes
-              .map(
-                (note) => `
-              <span class="pdp-gallery__note" title="${note}">
-                ${ui.noteImageHtml ? ui.noteImageHtml(note, basePath) : ""}
-              </span>`
-              )
-              .join("")}
-          </div>`
-              : ""
-          }
         </div>
       </div>`;
   }
@@ -174,18 +148,51 @@
       </div>`;
   }
 
+  // ── Pyramide olfactive (sous la galerie, colonne gauche)
+  function renderPyramid(product) {
+    const tiers = [
+      { label: "Notes de tête", notes: product.notesTop },
+      { label: "Notes de cœur", notes: product.notesHeart },
+      { label: "Notes de fond", notes: product.notesBase },
+    ].filter((t) => t.notes.length);
+    if (!tiers.length) return "";
+    return `
+      <div class="pdp-pyramid pdp-reveal">
+        <span class="pdp-pyramid__title">Pyramide olfactive</span>
+        ${tiers
+          .map(
+            (t) => `
+          <div class="pdp-pyramid-tier">
+            <div class="pdp-pyramid-tier__label">${t.label}</div>
+            <div class="pdp-pyramid-tier__row">
+              ${t.notes.map(renderNoteCard).join("")}
+            </div>
+          </div>`
+          )
+          .join("")}
+        <button type="button" class="pdp-btn pdp-btn--outline pdp-pyramid__cta" id="pdp-ingredients-toggle" aria-expanded="false">
+          <i class="ti ti-star"></i> Voir pour les ingrédients
+        </button>
+        <p class="pdp-pyramid__ingredients" id="pdp-ingredients-text" hidden>
+          La liste complète des ingrédients (INCI) figure sur l'étiquette du flacon et vous est fournie avec votre commande.
+        </p>
+      </div>`;
+  }
+
   // ── Section 1 : Hero
   function renderHero(product, basePath) {
     const formats = getFormats(product);
     return `
       <section class="pdp-hero">
         <div class="pdp-hero__grid">
-          ${renderGallery(product, basePath)}
+          <div class="pdp-gallery-col">
+            ${renderGallery(product, basePath)}
+            ${renderPyramid(product)}
+          </div>
           <div class="pdp-info pdp-reveal">
-            <div class="pdp-brand">${product.brand}</div>
             <h1 class="pdp-name">${product.name}</h1>
+            <div class="pdp-brand">${product.brand}</div>
             <div class="pdp-rating-line">${ui.renderStars ? ui.renderStars(product.rating) : ""}</div>
-            <p class="pdp-price-lead">À partir de <strong>${formats[0].price}€</strong></p>
 
             <span class="pdp-label">Choisir un format</span>
             ${renderFormats(formats)}
@@ -208,16 +215,9 @@
             </div>
 
             <div class="pdp-trust">
-              <div class="pdp-trust__track">
-                <div class="pdp-trust__item"><i class="ti ti-certificate"></i><span>Authentique</span></div>
-                <div class="pdp-trust__item"><i class="ti ti-truck-delivery"></i><span>Livraison 24-48h</span></div>
-                <div class="pdp-trust__item"><i class="ti ti-flask"></i><span>Préparé à la commande</span></div>
-                <div class="pdp-trust__item"><i class="ti ti-bottle"></i><span>Flacon premium</span></div>
-                <div class="pdp-trust__item"><i class="ti ti-certificate"></i><span>Authentique</span></div>
-                <div class="pdp-trust__item"><i class="ti ti-truck-delivery"></i><span>Livraison 24-48h</span></div>
-                <div class="pdp-trust__item"><i class="ti ti-flask"></i><span>Préparé à la commande</span></div>
-                <div class="pdp-trust__item"><i class="ti ti-bottle"></i><span>Flacon premium</span></div>
-              </div>
+              <div class="pdp-trust__item"><i class="ti ti-truck-delivery"></i><span>Livraison 24-48h</span></div>
+              <div class="pdp-trust__item"><i class="ti ti-flask"></i><span>Préparé à la commande</span></div>
+              <div class="pdp-trust__item"><i class="ti ti-bottle"></i><span>Flacon premium</span></div>
             </div>
           </div>
         </div>
@@ -284,6 +284,14 @@
       const icon = favBtn.querySelector("i");
       if (icon) icon.className = isActive ? "ti ti-heart-filled" : "ti ti-heart";
     });
+
+    const ingredientsToggle = main.querySelector("#pdp-ingredients-toggle");
+    const ingredientsText = main.querySelector("#pdp-ingredients-text");
+    ingredientsToggle?.addEventListener("click", () => {
+      const nowOpen = ingredientsText.hidden;
+      ingredientsText.hidden = !nowOpen;
+      ingredientsToggle.setAttribute("aria-expanded", String(nowOpen));
+    });
   }
 
   // ── Section 2 : Histoire
@@ -338,37 +346,6 @@
         ${ui.noteImageHtml ? ui.noteImageHtml(note, "../") : ""}
         <span>${note}</span>
       </div>`;
-  }
-
-  function renderNotesFeatured(product) {
-    const tiers = [
-      { label: "Notes de tête", notes: product.notesTop },
-      { label: "Notes de cœur", notes: product.notesHeart },
-      { label: "Notes de fond", notes: product.notesBase },
-    ].filter((t) => t.notes.length);
-    if (!tiers.length) return "";
-    return `
-      <section class="pdp-notes-featured pdp-reveal pdp-accordion" id="pdp-notes-featured">
-        <button type="button" class="pdp-notes-featured__head pdp-accordion-head" aria-expanded="false">
-          <h2>Notes phares</h2>
-          <i class="ti ti-chevron-down pdp-accordion-chevron" aria-hidden="true"></i>
-        </button>
-        <div class="pdp-accordion-body"><div class="pdp-accordion-body-inner">
-          ${tiers
-            .map(
-              (t) => `
-            <div class="pdp-notes-tier">
-              <div class="pdp-notes-tier__label">
-                ${t.label} <i class="ti ti-info-circle" title="Notes perçues en ${t.label.split(" ").pop()}"></i>
-              </div>
-              <div class="pdp-notes-tier__row">
-                ${t.notes.map(renderNoteCard).join("")}
-              </div>
-            </div>`
-            )
-            .join("")}
-        </div></div>
-      </section>`;
   }
 
   // ── Section 5 : Ressenti (façon Fragrantica — cartes avec l'option dominante mise en avant)
@@ -651,7 +628,6 @@
         <span>${product.name}</span>
       </nav>
       ${renderHero(product, "../")}
-      ${renderNotesFeatured(product)}
       ${renderSentiment(product)}
       ${renderCarouselSection("pdp-similar", "Sélection", "Parfums similaires")}
       ${renderCarouselSection("pdp-suggested", "Découverte", "Vous pourriez aimer")}

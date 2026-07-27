@@ -86,8 +86,14 @@
         }</button>`;
       filtersEl.innerHTML = `
         <button type="button" class="brands-filter-pill active" data-type="reset">Tous</button>
-        ${countries.map(countryChip).join("")}
-        ${families.map(familyChip).join("")}
+        <div class="brands-filter-group">
+          <span class="brands-filter-group__label">Pays</span>
+          <div class="brands-filter-group__pills">${countries.map(countryChip).join("")}</div>
+        </div>
+        <div class="brands-filter-group">
+          <span class="brands-filter-group__label">Famille</span>
+          <div class="brands-filter-group__pills">${families.map(familyChip).join("")}</div>
+        </div>
       `;
       filtersEl.querySelectorAll(".brands-filter-pill").forEach((btn) => {
         btn.addEventListener("click", () => {
