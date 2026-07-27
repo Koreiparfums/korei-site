@@ -36,12 +36,13 @@ textarea {
   --border-dark: #ccc8c0;
   --text: #1a1a18;
   --text-hover: color-mix(in srgb, var(--text) 85%, black);
+  --text-warm: #3a2f1c;
   --text-muted: #6f6a63;
   --text-light: #b0ada8;
   --accent: #cc9a36;
   --accent-light: #f4ecda;
   --accent-soft: #dfc088;
-  --badge-bg: #faf7f2;
+  --badge-bg: var(--surface);
   --badge-border: #dfc99a;
   --badge-text: #8a6825;
   --new-bg: #edf7f1;
@@ -2633,7 +2634,7 @@ body[data-page="coffret"] .coffret-hero {
   text-transform: none;
 }
 .cb2-cta:hover {
-  background: linear-gradient(135deg, var(--cb2-black) 0%, #3a2f1c 100%);
+  background: linear-gradient(135deg, var(--cb2-black) 0%, var(--text-warm) 100%);
   box-shadow: var(--shadow-glow);
   transform: translateY(var(--lift-hover));
 }
@@ -4024,7 +4025,7 @@ body[data-page="catalogue"] .page-hero {
   display: flex;
   flex-direction: column;
   background: var(--bg);
-  border: 1px solid #ece6de;
+  border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   max-height: calc(100vh - 96px);
   overflow: hidden;
@@ -4245,7 +4246,7 @@ body[data-page="catalogue"] .page-hero {
 .tag-row .chip.active {
   background: var(--accent-light);
   border-color: var(--accent);
-  color: #7a5c1e;
+  color: var(--badge-text);
 }
 .tag-row .chip.active .chip-dot {
   background: var(--accent);
