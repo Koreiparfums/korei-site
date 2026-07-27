@@ -207,15 +207,15 @@
     const pct = Math.round((score % 1) * 100);
     const hasPartial = pct > 0;
     const empty = 5 - full - (hasPartial ? 1 : 0);
-    const partial = hasPartial
-      ? `<span class="star-half-wrap"><span class="star-half-fill" style="width:${pct}%">★</span><span class="star-half-bg">★</span></span>`
-      : "";
-    return (
-      `<span class="star">${"★".repeat(full)}</span>` +
-      partial +
-      `<span class="star-empty">${"★".repeat(empty)}</span>` +
-      ` <span>${score}</span>`
-    );
+    const items = [];
+    for (let i = 0; i < full; i++) items.push(`<span class="star">★</span>`);
+    if (hasPartial) {
+      items.push(
+        `<span class="star-half-wrap"><span class="star-half-fill" style="width:${pct}%">★</span><span class="star-half-bg">★</span></span>`
+      );
+    }
+    for (let i = 0; i < empty; i++) items.push(`<span class="star-empty">★</span>`);
+    return `<span class="star-row">${items.join("")}</span> <span>${score}</span>`;
   }
 
   // ── Carte produit

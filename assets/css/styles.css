@@ -1319,27 +1319,30 @@ body[data-page="home"] .hero {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5.27px;
+  gap: 7.2px;
   font-family: "DM Sans", sans-serif;
   font-size: var(--text-18);
   font-weight: 500;
   color: var(--text);
 }
+.star-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 2.4px;
+}
 .star {
   color: var(--accent);
-  font-size: var(--text-20);
-  letter-spacing: var(--tracking-star);
+  font-size: var(--text-22);
 }
 .star-empty {
   color: var(--accent);
-  opacity: 0.22;
-  font-size: var(--text-20);
-  letter-spacing: var(--tracking-star);
+  opacity: 0.4;
+  font-size: var(--text-22);
 }
 .star-half-wrap {
   position: relative;
   display: inline-block;
-  font-size: var(--text-20);
+  font-size: var(--text-22);
 }
 .star-half-fill {
   position: absolute;
@@ -1351,7 +1354,7 @@ body[data-page="home"] .hero {
 }
 .star-half-bg {
   color: var(--accent);
-  opacity: 0.22;
+  opacity: 0.4;
 }
 
 /* ─── CARD QUICK-ADD ─── */
@@ -1419,17 +1422,6 @@ body[data-page="home"] .card-footer {
 }
 body[data-page="home"] .card-price {
   font-size: var(--text-15);
-}
-body[data-page="home"] .card-rating {
-  font-size: var(--text-17);
-  gap: 4.93px;
-}
-body[data-page="home"] .star,
-body[data-page="home"] .star-empty,
-body[data-page="home"] .star-half-wrap,
-body[data-page="home"] .star-half-fill {
-  font-size: var(--text-19);
-  letter-spacing: var(--tracking-star);
 }
 body[data-page="home"] .card-add {
   padding: 11.82px;
@@ -2305,8 +2297,7 @@ body[data-page="coffret"] .coffret-hero {
 .cb2-result__rating .star,
 .cb2-result__rating .star-empty,
 .cb2-result__rating .star-half-wrap {
-  font-size: var(--text-11);
-  letter-spacing: var(--tracking-star);
+  font-size: var(--text-14);
 }
 .cb2-result__rating span:last-child {
   font-size: var(--text-10);
@@ -2739,7 +2730,7 @@ body[data-page="coffret"] .coffret-hero {
 .home-collection-card {
   position: relative;
   display: block;
-  aspect-ratio: 4/2.7;
+  aspect-ratio: 4/2.565;
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 0.8px solid var(--border);
@@ -2750,7 +2741,7 @@ body[data-page="coffret"] .coffret-hero {
   height: 100%;
 }
 .home-collections-editorial__stack .home-collection-card {
-  aspect-ratio: 16/9;
+  aspect-ratio: 16/8.55;
 }
 .home-collection-card .home-collection-card__media {
   position: absolute;
@@ -3847,14 +3838,16 @@ footer {
     min-width: 0;
   }
   .card-rating {
-    font-size: var(--text-10);
-    gap: 2.8px;
+    font-size: var(--text-13);
+    gap: 4px;
   }
   .card-rating .star,
   .card-rating .star-empty,
   .star-half-wrap {
-    font-size: var(--text-11);
-    letter-spacing: 0;
+    font-size: var(--text-18);
+  }
+  .card-rating .star-row {
+    gap: 2px;
   }
   .media-slot--card {
     height: 154.46px;
