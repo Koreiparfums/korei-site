@@ -42,7 +42,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap"
       rel="stylesheet"
     />
     <link
@@ -93,7 +93,7 @@
         <nav class="nav">
           <a href="index.html" class="active">Accueil</a>
           <a href="pages/catalogue.html">Parfums</a>
-          <a href="pages/coffrets.html">Coffrets</a>
+          <a href="pages/coffret.html">Coffrets</a>
           <a href="pages/brands.html">Marques</a>
           <a href="pages/collections.html">Collections</a>
         </nav>
@@ -151,7 +151,7 @@
         </div>
         <a href="index.html">Accueil</a>
         <a href="pages/catalogue.html">Tous les parfums</a>
-        <a href="pages/coffret.html">Coffret</a>
+        <a href="pages/coffret.html">Coffrets</a>
         <a href="pages/brands.html">Marques</a>
         <a href="pages/collections.html">Collections</a>
         <a href="#" data-open-chatbot>Conseiller IA</a>
@@ -311,19 +311,14 @@
     <section class="packs-section">
       <div class="dose-head">
         <div class="dose-eyebrow">Coffrets découverte</div>
-        <h2 class="dose-title">Nos <em>coffrets</em></h2>
+        <h2 class="dose-title">Trouvez le <em>coffret</em> parfait</h2>
+        <p class="dose-subtitle">Deux façons de découvrir Kōrei.</p>
         <span class="dose-title-rule" aria-hidden="true"></span>
-        <a href="pages/coffret.html" class="btn-white collections-head-link"
-          >Tout voir →</a
-        >
       </div>
-      <div class="packs-hero-grid">
-        <a
-          href="pages/catalogue.html?type=pack"
-          class="pack-hero-card pack-hero-card--single"
-        >
+      <div class="pack-choice-grid">
+        <div class="pack-choice-card">
           <div
-            class="pack-hero-card__media media-slot"
+            class="pack-choice-card__media media-slot"
             data-slot="pack-signature"
           >
             <img
@@ -342,95 +337,68 @@
               ></div>
             </div>
           </div>
-          <div class="pack-hero-card__overlay">
-            <span class="pack-hero-card__name">Coffrets Signature</span>
-            <span class="pack-hero-card__cta"
-              >Découvrir <span aria-hidden="true">→</span></span
-            >
-          </div>
-        </a>
-      </div>
-      <div class="pack-builder-banner">
-        <div class="pack-builder-banner__main">
-          <div class="pack-builder-banner__text">
-            <h3 class="pack-builder-banner__title">
-              Votre coffret,<br /><em>vos règles.</em>
-            </h3>
-            <span class="pack-builder-banner__rule" aria-hidden="true"></span>
-            <p class="pack-builder-banner__stat">
-              <span class="pack-builder-banner__stat-num">500+</span> parfums de
-              niche disponibles
+          <div class="pack-choice-card__body">
+            <span class="pack-choice-card__eyebrow">Sélections signature</span>
+            <h3 class="pack-choice-card__title">Coffrets Signature</h3>
+            <p class="pack-choice-card__desc">
+              Des collections déjà composées, imaginées par nos experts.
             </p>
-            <p class="pack-builder-banner__desc">
-              Choisissez un format puis composez votre propre sélection.
-            </p>
-            <a
-              href="pages/coffret.html#personnaliser"
-              class="btn-dark pack-builder-banner__cta"
-              >Créer mon coffret</a
-            >
-            <ul class="pack-builder-banner__trust">
-              <li>
-                <i class="ti ti-check" aria-hidden="true"></i> Authentique
-              </li>
-              <li>
-                <i class="ti ti-check" aria-hidden="true"></i> Préparé en France
-              </li>
-              <li>
-                <i class="ti ti-check" aria-hidden="true"></i> Expédition 24h
-              </li>
+            <ul class="pack-choice-card__list">
+              <li><i class="ti ti-check" aria-hidden="true"></i> Été</li>
+              <li><i class="ti ti-check" aria-hidden="true"></i> Hiver</li>
+              <li><i class="ti ti-check" aria-hidden="true"></i> Floral</li>
+              <li><i class="ti ti-check" aria-hidden="true"></i> Boisé</li>
+              <li><i class="ti ti-check" aria-hidden="true"></i> Gourmand</li>
+              <li><i class="ti ti-check" aria-hidden="true"></i> Oud</li>
             </ul>
-          </div>
-          <div class="pack-builder-banner__illustration" aria-hidden="true">
-            <div class="pack-vitrine">
-              <div class="pack-vitrine__bottle pack-vitrine__bottle--2ml">
-                <img src="assets/images/hero/hero-decant-2ml.png" alt="" />
-              </div>
-              <div class="pack-vitrine__bottle pack-vitrine__bottle--5ml">
-                <img src="assets/images/hero/hero-decant-5ml.png" alt="" />
-              </div>
-              <div class="pack-vitrine__bottle pack-vitrine__bottle--10ml">
-                <img src="assets/images/hero/hero-decant-10ml.png" alt="" />
-              </div>
-              <div class="pack-vitrine__reflection"></div>
-              <div class="pack-vitrine__ground"></div>
-            </div>
+            <a
+              href="pages/catalogue.html?type=pack"
+              class="btn-dark pack-choice-card__cta"
+              >Découvrir <span aria-hidden="true">→</span></a
+            >
           </div>
         </div>
-        <div class="pack-builder-banner__formats">
-          <a
-            href="pages/catalogue.html?pack=10x2ml&custom=1"
-            class="pack-format-card"
+        <div class="pack-choice-card">
+          <div
+            class="pack-choice-card__media media-slot"
+            data-slot="pack-personnalise"
           >
-            <span class="pack-format-card__ml">10 × 2<em>ml</em></span>
-            <span class="pack-format-card__label">Découverte</span>
-            <span class="pack-format-card__desc"
-              >Idéal pour découvrir plusieurs maisons.</span
+            <img
+              class="media-slot__image"
+              src="assets/images/hero/hero_page_coffrets.png"
+              alt="Coffret personnalisé Kōrei — décants à composer"
+              hidden
+            />
+            <div
+              class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
+              data-variant="2"
             >
-            <span class="pack-format-card__divider" aria-hidden="true"></span>
-          </a>
-          <a
-            href="pages/catalogue.html?pack=5x5ml&custom=1"
-            class="pack-format-card"
-          >
-            <span class="pack-format-card__ml">5 × 5<em>ml</em></span>
-            <span class="pack-format-card__label">Équilibré</span>
-            <span class="pack-format-card__desc"
-              >Le bon dosage entre découverte et quotidien.</span
+              <div
+                class="placeholder-premium__pattern"
+                aria-hidden="true"
+              ></div>
+            </div>
+          </div>
+          <div class="pack-choice-card__body">
+            <span class="pack-choice-card__eyebrow"
+              >Création personnalisée</span
             >
-            <span class="pack-format-card__divider" aria-hidden="true"></span>
-          </a>
-          <a
-            href="pages/catalogue.html?pack=3x10ml&custom=1"
-            class="pack-format-card"
-          >
-            <span class="pack-format-card__ml">3 × 10<em>ml</em></span>
-            <span class="pack-format-card__label">Passionné</span>
-            <span class="pack-format-card__desc"
-              >Pour vos coups de cœur, à savourer durablement.</span
+            <h3 class="pack-choice-card__title">Composez votre coffret</h3>
+            <p class="pack-choice-card__desc">
+              Choisissez parmi plus de 500 parfums de niche et créez un coffret
+              qui vous ressemble.
+            </p>
+            <ul class="pack-choice-card__list">
+              <li><i class="ti ti-check" aria-hidden="true"></i> 10 × 2 ml</li>
+              <li><i class="ti ti-check" aria-hidden="true"></i> 5 × 5 ml</li>
+              <li><i class="ti ti-check" aria-hidden="true"></i> 3 × 10 ml</li>
+            </ul>
+            <a
+              href="pages/coffret.html#personnaliser"
+              class="btn-dark pack-choice-card__cta"
+              >Créer mon coffret</a
             >
-            <span class="pack-format-card__divider" aria-hidden="true"></span>
-          </a>
+          </div>
         </div>
       </div>
     </section>
@@ -1022,7 +990,7 @@
         <div class="footer-col">
           <div class="footer-col-title">Boutique</div>
           <a href="pages/catalogue.html">Tous les parfums</a>
-          <a href="pages/coffret.html">Coffret</a>
+          <a href="pages/coffret.html">Coffrets</a>
           <a href="pages/brands.html">Marques</a>
           <a href="pages/collections.html">Collections</a>
         </div>
