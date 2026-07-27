@@ -208,17 +208,9 @@
                   <i class="ti ti-heart"></i>
                 </button>
               </div>
-              <button class="pdp-btn pdp-btn--outline" id="pdp-add-coffret" type="button">
-                <i class="ti ti-package"></i>
-                <span id="pdp-coffret-label">Ajouter à mon coffret</span>
-              </button>
             </div>
 
-            <div class="pdp-trust">
-              <div class="pdp-trust__item"><i class="ti ti-truck-delivery"></i><span>Livraison 24-48h</span></div>
-              <div class="pdp-trust__item"><i class="ti ti-flask"></i><span>Préparé à la commande</span></div>
-              <div class="pdp-trust__item"><i class="ti ti-bottle"></i><span>Flacon premium</span></div>
-            </div>
+            ${renderCoffretPromo(product)}
           </div>
         </div>
       </section>`;
@@ -226,24 +218,6 @@
 
   function initHero(main, product) {
     const formatBtns = Array.from(main.querySelectorAll(".pdp-format"));
-    const coffretBtn = main.querySelector("#pdp-add-coffret");
-    const coffretLabel = main.querySelector("#pdp-coffret-label");
-    const coffret = global.KoreiCoffret;
-
-    const updateCoffretButton = () => {
-      if (!coffretBtn) return;
-      const vol = main.querySelector(".pdp-format.is-active")?.dataset.vol;
-      if (!coffret || !coffret.isEligibleFormat(vol)) {
-        coffretBtn.disabled = true;
-        coffretBtn.classList.remove("is-active");
-        if (coffretLabel) coffretLabel.textContent = "Coffrets : décants uniquement";
-        return;
-      }
-      coffretBtn.disabled = false;
-      const already = coffret.hasItem(product.id, vol);
-      coffretBtn.classList.toggle("is-active", already);
-      if (coffretLabel) coffretLabel.textContent = already ? "Déjà dans mon coffret — retirer" : "Ajouter à mon coffret";
-    };
 
     formatBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -253,29 +227,8 @@
         });
         btn.classList.add("is-active");
         btn.setAttribute("aria-checked", "true");
-        updateCoffretButton();
       });
     });
-
-    coffretBtn?.addEventListener("click", () => {
-      const activeBtn = main.querySelector(".pdp-format.is-active");
-      const vol = activeBtn?.dataset.vol;
-      if (!coffret || !coffret.isEligibleFormat(vol)) return;
-      if (coffret.hasItem(product.id, vol)) {
-        coffret.removeItem(product.id, vol);
-      } else {
-        coffret.addItem({
-          productId: product.id,
-          name: product.name,
-          brand: product.brand,
-          format: vol,
-          price: Number(activeBtn.dataset.price),
-        });
-      }
-      updateCoffretButton();
-    });
-
-    updateCoffretButton();
 
     const favBtn = main.querySelector("#pdp-fav");
     favBtn?.addEventListener("click", () => {
@@ -292,6 +245,91 @@
       ingredientsText.hidden = !nowOpen;
       ingredientsToggle.setAttribute("aria-expanded", String(nowOpen));
     });
+  }
+
+  // ── Ce parfum dans un coffret (intégré à la colonne info du hero)
+  const COFFRET_TIERS = [
+    { format: "2ml", label: "Découverte", capacity: 10, price: 69 },
+    { format: "5ml", label: "Équilibré", capacity: 5, price: 99 },
+    { format: "10ml", label: "Collection", capacity: 3, price: 149 },
+  ];
+
+  function renderCoffretPromo(product) {
+    if (!global.KoreiCoffret) return "";
+    const formats = getFormats(product);
+    const priceByFormat = Object.fromEntries(formats.map((f) => [f.vol.replace(/\s+/g, "").toLowerCase(), f.price]));
+    return `
+      <div class="pdp-coffret-promo pdp-reveal">
+        <span class="pdp-label">Ce parfum en coffret</span>
+        <div class="pdp-coffret-promo__list">
+          ${COFFRET_TIERS.map(
+            (t) => `
+            <div class="pdp-coffret-tier${t.format === "5ml" ? " is-recommended" : ""}" data-tier-format="${t.format}">
+              ${t.format === "5ml" ? `<span class="pdp-coffret-tier__badge">Le plus choisi</span>` : ""}
+              <div class="pdp-coffret-tier__info">
+                <span class="pdp-coffret-tier__vol">${t.capacity} × ${t.format} <span class="pdp-coffret-tier__label">${t.label}</span></span>
+                <span class="pdp-coffret-tier__progress" data-tier-progress>—</span>
+              </div>
+              <span class="pdp-coffret-tier__price">${t.price}€</span>
+              <button type="button" class="pdp-btn pdp-btn--outline pdp-coffret-tier__cta" data-tier-cta data-tier-item-price="${priceByFormat[t.format] || ""}">
+                Ajouter
+              </button>
+            </div>`
+          ).join("")}
+        </div>
+        <button type="button" class="pdp-btn pdp-btn--outline pdp-coffret-promo__view" id="pdp-coffret-view">
+          <i class="ti ti-package"></i> Voir mon coffret en cours
+        </button>
+      </div>`;
+  }
+
+  function initCoffretPromo(main, product) {
+    const section = main.querySelector(".pdp-coffret-promo");
+    if (!section) return;
+    const coffret = global.KoreiCoffret;
+    if (!coffret) return;
+
+    const refresh = () => {
+      section.querySelectorAll("[data-tier-format]").forEach((tierEl) => {
+        const format = tierEl.dataset.tierFormat;
+        const { count, slots } = coffret.getProgress(format);
+        const progressEl = tierEl.querySelector("[data-tier-progress]");
+        if (progressEl) progressEl.textContent = `${count}/${slots} sélectionnés`;
+
+        const cta = tierEl.querySelector("[data-tier-cta]");
+        if (!cta) return;
+        const already = coffret.hasItem(product.id, format);
+        cta.classList.toggle("is-active", already);
+        cta.textContent = already ? "Déjà ajouté — retirer" : "Ajouter ce parfum";
+      });
+    };
+
+    section.querySelectorAll("[data-tier-cta]").forEach((cta) => {
+      cta.addEventListener("click", () => {
+        const tierEl = cta.closest("[data-tier-format]");
+        const format = tierEl.dataset.tierFormat;
+        if (coffret.hasItem(product.id, format)) {
+          coffret.removeItem(product.id, format);
+        } else {
+          coffret.addItem({
+            productId: product.id,
+            name: product.name,
+            brand: product.brand,
+            format,
+            price: Number(cta.dataset.tierItemPrice) || 0,
+          });
+        }
+        refresh();
+      });
+    });
+
+    main.querySelector("#pdp-coffret-view")?.addEventListener("click", (event) => {
+      event.stopPropagation();
+      document.getElementById("coffret-toggle")?.click();
+    });
+
+    coffret.onChange(refresh);
+    refresh();
   }
 
   // ── Section 2 : Histoire
@@ -640,6 +678,7 @@
 
     initGallery(main, galleryImages(product, "../"));
     initHero(main, product);
+    initCoffretPromo(main, product);
     initReveal(main);
     initAccordions(main);
 
