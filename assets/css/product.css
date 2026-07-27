@@ -273,11 +273,20 @@ body[data-page="product"] {
   font-size: var(--text-15);
   color: var(--pdp-ink-soft);
 }
-.pdp-rating-line .star {
+.pdp-rating-line .star,
+.pdp-rating-line .star-half-fill,
+.pdp-rating-line .star-half-bg {
   color: var(--pdp-gold);
 }
-.pdp-rating-line .star-empty {
-  color: var(--pdp-line);
+.pdp-rating-line .star,
+.pdp-rating-line .star-empty,
+.pdp-rating-line .star-half-wrap {
+  font-size: var(--text-22);
+}
+.pdp-rating-line .star-empty,
+.pdp-rating-line .star-half-bg {
+  color: var(--pdp-gold);
+  opacity: 0.4;
 }
 .pdp-label {
   display: block;
@@ -415,30 +424,6 @@ body[data-page="product"] {
 .pdp-btn--outline:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-.pdp-trust {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  padding-top: 32px;
-  border-top: 1px solid var(--pdp-line);
-}
-.pdp-trust__item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 10px;
-}
-.pdp-trust__item i {
-  font-size: 28px;
-  color: var(--pdp-gold);
-}
-.pdp-trust__item span {
-  font-size: var(--text-12);
-  line-height: 1.4;
-  color: var(--pdp-ink-soft);
 }
 
 /* ══════════════════ ACCORDÉON (Notes phares, Ressenti) ══════════════════ */
@@ -617,6 +602,100 @@ body[data-page="product"] {
 .pdp-sentiment-card__label {
   font-size: var(--text-14);
   color: var(--pdp-ink);
+}
+
+/* ══════════════════ CE PARFUM DANS UN COFFRET (colonne info du hero) ══════════════════ */
+.pdp-coffret-promo {
+  width: 100%;
+  margin-top: 8px;
+  padding-top: 24px;
+  border-top: 1px solid var(--pdp-line);
+}
+.pdp-coffret-promo__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 14px 0;
+}
+.pdp-coffret-tier {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--pdp-line);
+  border-radius: var(--pdp-radius-md);
+  transition: border-color 0.25s var(--pdp-ease);
+}
+.pdp-coffret-tier.is-recommended {
+  border-color: var(--pdp-gold);
+}
+.pdp-coffret-tier__badge {
+  position: absolute;
+  top: -9px;
+  left: 16px;
+  padding: 3px 10px;
+  background: var(--pdp-gold);
+  color: var(--pdp-white);
+  font-size: var(--text-9);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  border-radius: var(--radius-pill);
+}
+.pdp-coffret-tier__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.pdp-coffret-tier__vol {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: "DM Sans", sans-serif;
+  font-size: var(--text-14);
+  color: var(--pdp-ink);
+}
+.pdp-coffret-tier__label {
+  font-size: var(--text-9);
+  letter-spacing: var(--tracking-loud);
+  text-transform: uppercase;
+  color: var(--pdp-gold);
+}
+.pdp-coffret-tier__progress {
+  font-size: var(--text-11);
+  color: var(--pdp-ink-soft);
+}
+.pdp-coffret-tier__price {
+  font-family: "DM Sans", sans-serif;
+  font-size: var(--text-15);
+  color: var(--pdp-ink);
+  flex-shrink: 0;
+}
+.pdp-coffret-tier__cta {
+  width: auto;
+  flex-shrink: 0;
+  padding: 8px 14px;
+}
+.pdp-coffret-tier__cta.is-active {
+  background: transparent;
+  color: var(--pdp-gold);
+  border-color: var(--pdp-gold);
+}
+.pdp-coffret-promo__view {
+  width: 100%;
+}
+@media (max-width: 480px) {
+  .pdp-coffret-tier {
+    flex-wrap: wrap;
+  }
+  .pdp-coffret-tier__cta {
+    width: 100%;
+    order: 3;
+  }
 }
 
 /* ══════════════════ SECTION 2 — HISTOIRE ══════════════════ */
