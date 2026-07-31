@@ -66,8 +66,8 @@
 - [ ] Mapper les champs Korei vers Shopify (variants, collections, tags, metafields)
 - [x] Catalogue dynamique via Shopify Storefront API (avec repli local)
 - [x] Fiche produit dynamique via Shopify Storefront API (avec repli local)
-- [ ] Panier fonctionnel via Shopify Cart API
-- [ ] Checkout via Shopify Checkout
+- [x] Panier fonctionnel via Shopify Cart API — panier hybride : `localStorage` reste l'état local, `/api/cart` synchronise les lignes qui ont une vraie variante Shopify (voir `docs/SHOPIFY_SETUP.md`)
+- [x] Checkout via Shopify Checkout — "Passer la commande" redirige vers le `checkoutUrl` Shopify dès qu'un panier réel existe
 - [ ] Gestion stocks par variant Shopify
 - [ ] Compte client (Shopify Customer API)
 
