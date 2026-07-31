@@ -18,6 +18,11 @@
     status = 200
 
 [[redirects]]
+    from = "/api/cart"
+    to = "/.netlify/functions/cart"
+    status = 200
+
+[[redirects]]
     from = "/api/admin/catalog"
     to = "/.netlify/functions/admin-catalog"
     status = 200

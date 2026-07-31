@@ -267,6 +267,26 @@
     }));
   }
 
+  // ── Décants : correspondance format (2ml/5ml/10ml) → variante Shopify réelle.
+  // Convention (docs/SHOPIFY_SETUP.md) : chaque produit décant a une option de
+  // variante dont la valeur vaut exactement "2 ml" / "5 ml" / "10 ml". Renvoie
+  // null si le produit n'a pas (encore) de variantes Shopify pour ce format —
+  // le panier reste alors en mode local uniquement pour cet article.
+  const FORMAT_OPTION_VALUES = { "2ml": "2 ml", "5ml": "5 ml", "10ml": "10 ml" };
+
+  function getVariantForFormat(product, format) {
+    const target = FORMAT_OPTION_VALUES[format];
+    if (!target || !product?.variants?.length) return null;
+
+    return (
+      product.variants.find((variant) =>
+        (variant.selectedOptions || []).some(
+          (option) => String(option.value || "").trim().toLowerCase() === target,
+        ),
+      ) || null
+    );
+  }
+
   global.KoreiProductStore = {
     getAllProducts,
     getProductById,
@@ -281,5 +301,6 @@
     recommendProducts,
     scoreProductForQuery,
     buildCatalogContext,
+    getVariantForFormat,
   };
 })(window);

@@ -1,4 +1,5 @@
-const SHOPIFY_API_VERSION = "2026-07";
+const { shopifyGraphQL } = require("./lib/shopify");
+
 const MAX_PRODUCTS = 100;
 
 const METAFIELD_IDENTIFIERS = [
@@ -154,74 +155,24 @@ function mapProduct(product) {
   };
 }
 
-function shopDomain() {
-  const configuredDomain = String(process.env.SHOPIFY_STORE_DOMAIN || "").trim();
-  if (!configuredDomain) return "";
-
-  try {
-    const url = new URL(
-      configuredDomain.startsWith("http")
-        ? configuredDomain
-        : `https://${configuredDomain}`,
-    );
-    return url.hostname;
-  } catch (error) {
-    return "";
-  }
-}
-
 async function handler(req, res) {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
     return sendJson(res, 405, { error: "method_not_allowed" });
   }
 
-  const domain = shopDomain();
-  const token = process.env.SHOPIFY_STOREFRONT_PUBLIC_TOKEN;
-  if (!domain || !token) {
-    return sendJson(res, 503, {
-      error: "shopify_not_configured",
-      message: "Shopify storefront credentials are not configured.",
-    });
+  const result = await shopifyGraphQL(PRODUCTS_QUERY, { first: MAX_PRODUCTS, metafields: METAFIELD_IDENTIFIERS });
+  if (!result.ok) {
+    return sendJson(res, result.status, { error: result.error, message: result.message });
   }
 
-  try {
-    const shopifyResponse = await fetch(
-      `https://${domain}/api/${SHOPIFY_API_VERSION}/graphql.json`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Shopify-Storefront-Access-Token": token,
-        },
-        body: JSON.stringify({
-          query: PRODUCTS_QUERY,
-          variables: { first: MAX_PRODUCTS, metafields: METAFIELD_IDENTIFIERS },
-        }),
-      },
-    );
-    const payload = await shopifyResponse.json().catch(() => ({}));
-
-    if (!shopifyResponse.ok || payload.errors?.length) {
-      return sendJson(res, 502, {
-        error: "shopify_request_failed",
-        message: payload.errors?.[0]?.message || "Shopify storefront request failed.",
-      });
-    }
-
-    const products = (payload.data?.products?.nodes || []).map(mapProduct);
-    return sendJson(
-      res,
-      200,
-      { products, source: "shopify", updatedAt: new Date().toISOString() },
-      "public, max-age=60, s-maxage=300",
-    );
-  } catch (error) {
-    return sendJson(res, 502, {
-      error: "shopify_unavailable",
-      message: "Shopify storefront is unavailable.",
-    });
-  }
+  const products = (result.data?.products?.nodes || []).map(mapProduct);
+  return sendJson(
+    res,
+    200,
+    { products, source: "shopify", updatedAt: new Date().toISOString() },
+    "public, max-age=60, s-maxage=300",
+  );
 }
 
 module.exports = handler;
