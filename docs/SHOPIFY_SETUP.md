@@ -40,3 +40,17 @@ Les tags `bestseller`, `new`, `family:...`, `gender:...`, `season:...` et `occas
 ## Vérification
 
 Après tout changement de variable Netlify, redéployer `develop`, puis ouvrir `https://develop--tranquil-kitten-97123e.netlify.app/api/products`. La réponse doit contenir `"source":"shopify"` et la liste des produits, sans jamais exposer le jeton.
+
+## Panier & checkout — variantes par format
+
+Le panier (`pages/panier.html`) appelle `/api/cart`, une Netlify Function qui pilote le Storefront Cart API (`cartCreate`, `cartLinesAdd`, `cartLinesUpdate`, `cartLinesRemove`) avec les mêmes variables `SHOPIFY_STORE_DOMAIN` / `SHOPIFY_STOREFRONT_PUBLIC_TOKEN` que `/api/products`.
+
+Pour qu'une ligne de panier soit rattachée à une vraie variante Shopify (et obtienne donc un `checkoutUrl` de paiement réel), chaque produit décant doit avoir une **option de variante** (le nom de l'option n'a pas d'importance, ex. `Format` ou `Contenance`) dont les valeurs valent **exactement** :
+
+- `2 ml`
+- `5 ml`
+- `10 ml`
+
+Le front (`KoreiProductStore.getVariantForFormat(product, format)`, dans `assets/js/product-store.js`) fait la correspondance en comparant la valeur de l'option (normalisée : espaces retirés, casse ignorée) à ces libellés. Si un produit n'a pas encore de variante correspondante — ou si Shopify n'est pas configuré — l'article reste géré uniquement dans le panier local (`localStorage`) : il s'affiche et se compte normalement, mais ne peut pas passer commande ; le bouton "Passer la commande" reste alors désactivé.
+
+Dès qu'au moins une ligne du panier a une vraie variante, un panier Shopify est créé en arrière-plan et le bouton "Passer la commande" s'active pour rediriger vers le Checkout Shopify (paiement, taxes et stock gérés entièrement par Shopify).

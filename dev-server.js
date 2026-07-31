@@ -7,6 +7,7 @@ const chatHandler = require("./api/chat");
 const productsHandler = require("./api/products");
 const catalogHandler = require("./api/catalog");
 const adminCatalogHandler = require("./api/admin-catalog");
+const cartHandler = require("./api/cart");
 
 const ROOT = __dirname;
 const PORT = Number(process.env.PORT || 4173);
@@ -109,6 +110,18 @@ async function routeApi(req, res) {
     };
 
     return catalogHandler(req, res);
+  }
+
+  if (req.url.startsWith("/api/cart")) {
+    const startedAt = Date.now();
+    const originalEnd = res.end;
+    res.end = function logApiResponse(...args) {
+      console.log(`${req.method} ${req.url} -> ${res.statusCode} ${Date.now() - startedAt}ms`);
+      return originalEnd.apply(this, args);
+    };
+
+    req.body = await readRequestBody(req);
+    return cartHandler(req, res);
   }
 
   return send(res, 404, JSON.stringify({ error: "not_found" }), "application/json; charset=utf-8");

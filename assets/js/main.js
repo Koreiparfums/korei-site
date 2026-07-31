@@ -286,14 +286,7 @@
   }
 
   function initProductCardInteractions(container) {
-    container.querySelectorAll(".card-fav").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const icon = btn.querySelector("i");
-        if (icon) icon.style.color = icon.style.color === "rgb(232, 64, 64)" ? "" : "#e84040";
-      });
-    });
+    global.KoreiFavorites?.initHeartButtons(container);
 
     container.querySelectorAll(".card-add").forEach((btn) => {
       btn.addEventListener("click", (e) => {

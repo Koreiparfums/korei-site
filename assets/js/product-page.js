@@ -197,14 +197,12 @@
             <span class="pdp-label">Choisir un format</span>
             ${renderFormats(formats)}
 
-            <p class="pdp-desc">${product.description}</p>
-
             <div class="pdp-actions">
               <div class="pdp-actions__row">
                 <button class="pdp-btn pdp-btn--primary" id="pdp-cta" type="button" disabled title="Bientôt disponible">
                   Bientôt disponible
                 </button>
-                <button class="pdp-btn pdp-btn--ghost" id="pdp-fav" type="button" aria-label="Ajouter aux favoris" aria-pressed="false">
+                <button class="pdp-btn pdp-btn--ghost" id="pdp-fav" type="button" aria-label="Ajouter aux favoris" aria-pressed="false" data-fav-btn data-product-id="${product.id}">
                   <i class="ti ti-heart"></i>
                 </button>
               </div>
@@ -230,13 +228,7 @@
       });
     });
 
-    const favBtn = main.querySelector("#pdp-fav");
-    favBtn?.addEventListener("click", () => {
-      const isActive = favBtn.classList.toggle("is-active");
-      favBtn.setAttribute("aria-pressed", String(isActive));
-      const icon = favBtn.querySelector("i");
-      if (icon) icon.className = isActive ? "ti ti-heart-filled" : "ti ti-heart";
-    });
+    global.KoreiFavorites?.initHeartButtons(main);
 
     const ingredientsToggle = main.querySelector("#pdp-ingredients-toggle");
     const ingredientsText = main.querySelector("#pdp-ingredients-text");
@@ -311,12 +303,14 @@
         if (coffret.hasItem(product.id, format)) {
           coffret.removeItem(product.id, format);
         } else {
+          const variant = store?.getVariantForFormat(product, format);
           coffret.addItem({
             productId: product.id,
             name: product.name,
             brand: product.brand,
             format,
-            price: Number(cta.dataset.tierItemPrice) || 0,
+            price: variant ? Number(variant.price) : Number(cta.dataset.tierItemPrice) || 0,
+            variantId: variant?.id,
           });
         }
         refresh();
