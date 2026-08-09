@@ -18,7 +18,8 @@
   function renderProductImageHtml(product, basePath = "", className = "card-img-photo") {
     const src = productImageSrc(product, basePath);
     if (!src) return "";
-    const alt = `${product.brand} ${product.name}`;
+    const esc = site?.escapeHtml || ((v) => v);
+    const alt = `${esc(product.brand)} ${esc(product.name)}`;
     return `<img class="${className} media-slot__image" src="${src}" alt="${alt}" hidden />`;
   }
 
@@ -39,10 +40,11 @@
 
   function noteImageHtml(note, basePath = "") {
     const slug = noteSlug(note);
+    const esc = site?.escapeHtml || ((v) => v);
     return `
       <span class="note-image">
-        <img src="${basePath}assets/images/notes/${slug}.jpg" alt="" loading="lazy" onerror="this.remove()" />
-        <span>${note.slice(0, 1)}</span>
+        <img src="${basePath}assets/images/notes/${slug}.jpg" alt="" loading="lazy" data-onerror="remove" />
+        <span>${esc(note.slice(0, 1))}</span>
       </span>`;
   }
 
@@ -202,24 +204,28 @@
   }
 
   // ── Étoiles
+  const STAR_PATH =
+    "M12 3l2.17 6.01 6.39.21-5.04 3.92 1.77 6.14L12 15.7l-5.29 3.58 1.77-6.14-5.04-3.92 6.39-.21L12 3z";
+  const STAR_SVG = `<svg class="star-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="${STAR_PATH}" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
   function renderStars(score) {
     const full = Math.floor(score);
     const pct = Math.round((score % 1) * 100);
     const hasPartial = pct > 0;
     const empty = 5 - full - (hasPartial ? 1 : 0);
     const items = [];
-    for (let i = 0; i < full; i++) items.push(`<span class="star">★</span>`);
+    for (let i = 0; i < full; i++) items.push(`<span class="star">${STAR_SVG}</span>`);
     if (hasPartial) {
       items.push(
-        `<span class="star-half-wrap"><span class="star-half-fill" style="width:${pct}%">★</span><span class="star-half-bg">★</span></span>`
+        `<span class="star-half-wrap"><span class="star-half-fill" style="width:${pct}%">${STAR_SVG}</span><span class="star-half-bg">${STAR_SVG}</span></span>`
       );
     }
-    for (let i = 0; i < empty; i++) items.push(`<span class="star-empty">★</span>`);
-    return `<span class="star-row">${items.join("")}</span> <span>${score}</span>`;
+    for (let i = 0; i < empty; i++) items.push(`<span class="star-empty">${STAR_SVG}</span>`);
+    return `<span class="star-row">${items.join("")}</span>`;
   }
 
   // ── Carte produit
   function renderProductCard(product, options = {}) {
+    const esc = site?.escapeHtml || ((v) => v);
     const basePath = options.basePath || "";
     const productUrl = `${basePath}pages/product.html?id=${product.id}`;
     const price = formatPrice ? formatPrice(product.price) : `À partir de ${product.price}€`;
@@ -240,7 +246,7 @@
 
     const badgeHtml =
       product.badge && product.badgeLabel
-        ? `<span class="card-badge ${badgeClass}">${product.badgeLabel}</span>`
+        ? `<span class="card-badge ${badgeClass}">${esc(product.badgeLabel)}</span>`
         : "";
 
     const minWidth = options.grid ? "style=\"min-width: 0\"" : "";
@@ -257,15 +263,15 @@
           ${renderProductPlaceholderHtml(product, "product")}
         </div>
         <div class="card-body">
-          <div class="card-brand">${product.brand}</div>
-          <div class="card-name">${product.name}</div>
+          <div class="card-brand">${esc(product.brand)}</div>
+          <h3 class="card-name">${esc(product.name)}</h3>
           <div class="card-note-strip" aria-label="Notes principales">
             ${keyNotes
               .map(
                 (note) => `
-                  <span class="card-note" title="${note}">
+                  <span class="card-note" title="${esc(note)}">
                     ${noteImageHtml(note, basePath)}
-                    <span>${note}</span>
+                    <span>${esc(note)}</span>
                   </span>`
               )
               .join("")}
@@ -930,8 +936,34 @@
     });
   }
 
+  // ── Délégation des actions déclarées en data-attributes (CSP : pas d'onclick inline)
+  function initInlineActionDelegation() {
+    document.addEventListener("click", (event) => {
+      const menuBtn = event.target.closest("[data-toggle-menu]");
+      if (menuBtn) {
+        toggleMenu();
+        return;
+      }
+      const searchBtn = event.target.closest("[data-toggle-search]");
+      if (searchBtn) {
+        toggleSearch();
+        return;
+      }
+      const faqBtn = event.target.closest("[data-toggle-faq]");
+      if (faqBtn) {
+        toggleFaq(faqBtn);
+        return;
+      }
+      const clearFiltersBtn = event.target.closest("[data-clear-filters-trigger]");
+      if (clearFiltersBtn) {
+        document.getElementById("clear-filters")?.click();
+      }
+    });
+  }
+
   // ── Bootstrap
   function init() {
+    initInlineActionDelegation();
     initNavigationAccessibility();
     initSearchOverlay();
     initChatbotTriggers();

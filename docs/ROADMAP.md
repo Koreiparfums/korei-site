@@ -53,7 +53,7 @@
 - [x] Historique conversation (sessionStorage)
 - [x] Liens produits cliquables dans les réponses
 - [x] Rate limiting API — MVP en mémoire
-- [ ] Monitoring coûts API
+- [x] Monitoring coûts API — usage (requêtes/tokens/coût estimé) enregistré via `api/lib/usage-store.js` (Netlify Blobs, repli fichier local), visible dans le dashboard admin via `/api/chat-usage`
 
 ---
 
@@ -68,7 +68,7 @@
 - [x] Fiche produit dynamique via Shopify Storefront API (avec repli local)
 - [x] Panier fonctionnel via Shopify Cart API — panier hybride : `localStorage` reste l'état local, `/api/cart` synchronise les lignes qui ont une vraie variante Shopify (voir `docs/SHOPIFY_SETUP.md`)
 - [x] Checkout via Shopify Checkout — "Passer la commande" redirige vers le `checkoutUrl` Shopify dès qu'un panier réel existe
-- [ ] Gestion stocks par variant Shopify
+- [x] Gestion stocks par variant Shopify — `isVariantAvailable()` grise le format en rupture (carte favoris, tiers coffret fiche produit, sélecteur panier) ; un rejet Shopify (`cart_user_error`) annule l'ajout local et prévient l'utilisateur au lieu de désynchroniser silencieusement le panier
 - [ ] Compte client (Shopify Customer API)
 
 ### Prérequis production
@@ -90,7 +90,6 @@
 - [ ] Blog / contenu SEO (familles olfactives, guides)
 - [ ] Analytics (Plausible ou GA4)
 - [ ] A/B tests CTA et chatbot
-- [ ] Programme Korei+ (subscription)
 
 ---
 

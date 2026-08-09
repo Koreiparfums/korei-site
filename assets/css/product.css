@@ -135,15 +135,25 @@ body[data-page="product"] {
 .pdp-hero__grid {
   display: grid;
   grid-template-columns: 1.25fr 1fr;
-  gap: 80px;
+  column-gap: 80px;
+  row-gap: 16px;
   align-items: start;
 }
-
-/* Galerie */
 .pdp-gallery-col {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
+  grid-column: 1;
+  grid-row: 1;
+}
+.pdp-info {
+  grid-column: 2;
+  grid-row: 1;
+}
+.pdp-pyramid {
+  grid-column: 1;
+  grid-row: 2;
+}
+.pdp-coffret-promo {
+  grid-column: 2;
+  grid-row: 2;
 }
 .pdp-gallery {
   display: grid;
@@ -248,7 +258,6 @@ body[data-page="product"] {
 /* Colonne info */
 .pdp-info {
   min-width: 0;
-  padding-top: 8px;
 }
 .pdp-brand {
   font-size: var(--text-15);
@@ -263,6 +272,7 @@ body[data-page="product"] {
   font-weight: 400;
   font-size: clamp(26px, 2.4vw, 34px);
   line-height: 1.15;
+  margin-top: -6px;
   margin-bottom: 14px;
 }
 .pdp-rating-line {
@@ -350,6 +360,12 @@ body[data-page="product"] {
 .pdp-actions__row {
   display: flex;
   gap: 12px;
+}
+.pdp-desc {
+  font-size: var(--text-15);
+  line-height: 1.65;
+  color: var(--pdp-ink-soft);
+  max-width: 46ch;
 }
 .pdp-btn {
   display: inline-flex;
@@ -471,10 +487,6 @@ body[data-page="product"] {
 }
 
 /* ══════════════════ PYRAMIDE OLFACTIVE (sous la galerie) ══════════════════ */
-.pdp-pyramid {
-  border-top: 1px solid var(--pdp-line);
-  padding-top: 32px;
-}
 .pdp-pyramid__title {
   display: block;
   font-size: var(--text-15);
@@ -491,7 +503,7 @@ body[data-page="product"] {
   grid-template-columns: 120px 1fr;
   align-items: center;
   gap: 20px;
-  padding: 22px 0;
+  padding: 14px 0;
   border-bottom: 1px solid var(--pdp-line);
 }
 .pdp-pyramid-tier:last-of-type {
@@ -507,6 +519,7 @@ body[data-page="product"] {
 .pdp-pyramid-tier__row {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 20px;
 }
 .pdp-pyramid__cta {
@@ -523,13 +536,13 @@ body[data-page="product"] {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
 }
 .pdp-note-card .note-image {
-  width: 52px;
-  height: 52px;
-  font-size: 22px;
+  width: 40px;
+  height: 40px;
+  font-size: 17px;
 }
 .pdp-note-card > span:last-child {
   font-size: var(--text-13);
@@ -615,7 +628,6 @@ body[data-page="product"] {
 /* ══════════════════ CE PARFUM DANS UN COFFRET (colonne info du hero) ══════════════════ */
 .pdp-coffret-promo {
   width: 100%;
-  margin-top: 8px;
 }
 .pdp-coffret-promo__list {
   display: flex;
@@ -683,6 +695,7 @@ body[data-page="product"] {
 }
 .pdp-coffret-tier__cta {
   width: auto;
+  min-width: 168px;
   flex-shrink: 0;
   padding: 8px 14px;
 }
@@ -693,6 +706,30 @@ body[data-page="product"] {
 }
 .pdp-coffret-promo__view {
   width: 100%;
+}
+.pdp-coffret-trust {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 32px;
+}
+.pdp-coffret-trust__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.pdp-coffret-trust__item i {
+  font-size: 20px;
+  color: var(--pdp-gold);
+}
+.pdp-coffret-trust__item h4 {
+  font-family: "DM Sans", sans-serif;
+  font-size: var(--text-12);
+  font-weight: 600;
+  color: var(--pdp-ink);
 }
 @media (max-width: 480px) {
   .pdp-coffret-tier {
@@ -832,8 +869,15 @@ body[data-page="product"] {
 }
 .pdp-reviews__stars {
   margin: 12px 0;
-  font-size: var(--text-20);
   color: var(--pdp-gold);
+}
+.pdp-reviews__stars .star,
+.pdp-reviews__stars .star-empty,
+.pdp-reviews__stars .star-half-wrap {
+  font-size: 32px;
+}
+.pdp-reviews__stars .star-row {
+  gap: 4px;
 }
 .pdp-reviews__count {
   font-size: var(--text-15);
@@ -922,6 +966,13 @@ body[data-page="product"] {
   .pdp-hero__grid {
     grid-template-columns: 1fr;
     gap: 40px;
+  }
+  .pdp-gallery-col,
+  .pdp-info,
+  .pdp-pyramid,
+  .pdp-coffret-promo {
+    grid-column: 1;
+    grid-row: auto;
   }
   .pdp-gallery__main {
     max-width: 560px;

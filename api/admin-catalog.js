@@ -46,6 +46,23 @@ function clampNumber(value, min, max, fallback) {
   return Math.min(max, Math.max(min, num));
 }
 
+// Le front échappe déjà tout à l'affichage, mais on refuse aussi les balises
+// à l'entrée : défense en profondeur si un champ venait à être rendu ailleurs
+// sans passer par escapeHtml().
+function stripTags(value, maxLength = 2000) {
+  return String(value ?? "")
+    .replace(/<[^>]*>/g, "")
+    .trim()
+    .slice(0, maxLength);
+}
+
+function sanitizeUrl(value) {
+  const url = String(value ?? "").trim();
+  if (!url) return "";
+  if (/^javascript:/i.test(url)) return "";
+  return url.slice(0, 2000);
+}
+
 function getQueryId(req) {
   const url = new URL(req.url, "http://localhost");
   return url.searchParams.get("id");
@@ -60,11 +77,11 @@ async function readJsonBody(req) {
 }
 
 function normalizeProduct(input, existing) {
-  const brand = String(input.brand || existing?.brand || "").trim();
-  const name = String(input.name || existing?.name || "").trim();
-  const notesTop = toStringArray(input.notesTop ?? existing?.notesTop);
-  const notesHeart = toStringArray(input.notesHeart ?? existing?.notesHeart);
-  const notesBase = toStringArray(input.notesBase ?? existing?.notesBase);
+  const brand = stripTags(input.brand || existing?.brand || "", 200);
+  const name = stripTags(input.name || existing?.name || "", 200);
+  const notesTop = toStringArray(input.notesTop ?? existing?.notesTop).map((v) => stripTags(v, 80));
+  const notesHeart = toStringArray(input.notesHeart ?? existing?.notesHeart).map((v) => stripTags(v, 80));
+  const notesBase = toStringArray(input.notesBase ?? existing?.notesBase).map((v) => stripTags(v, 80));
   const price = clampNumber(input.price ?? existing?.price, 0, 100000, 0);
 
   return {
@@ -75,26 +92,26 @@ function normalizeProduct(input, existing) {
     notesTop,
     notesHeart,
     notesBase,
-    family: input.family ?? existing?.family ?? "",
-    gender: input.gender ?? existing?.gender ?? "unisexe",
-    intensity: input.intensity ?? existing?.intensity ?? "modéré",
+    family: stripTags(input.family ?? existing?.family ?? "", 60),
+    gender: stripTags(input.gender ?? existing?.gender ?? "unisexe", 30),
+    intensity: stripTags(input.intensity ?? existing?.intensity ?? "modéré", 30),
     sillage: input.sillage != null ? clampNumber(input.sillage, 1, 4, undefined) : existing?.sillage,
     longevity: input.longevity != null ? clampNumber(input.longevity, 1, 5, undefined) : existing?.longevity,
-    occasions: toStringArray(input.occasions ?? existing?.occasions),
-    seasons: toStringArray(input.seasons ?? existing?.seasons),
+    occasions: toStringArray(input.occasions ?? existing?.occasions).map((v) => stripTags(v, 60)),
+    seasons: toStringArray(input.seasons ?? existing?.seasons).map((v) => stripTags(v, 60)),
     price,
     priceRange: input.priceRange || existing?.priceRange || (price <= 10 ? "budget" : price <= 14 ? "mid" : "premium"),
     rating: clampNumber(input.rating ?? existing?.rating, 0, 5, 0),
     badge: input.badge ?? existing?.badge ?? null,
-    badgeLabel: input.badgeLabel ?? existing?.badgeLabel ?? null,
+    badgeLabel: input.badgeLabel ? stripTags(input.badgeLabel, 60) : existing?.badgeLabel ?? null,
     bestseller: Boolean(input.bestseller ?? existing?.bestseller ?? false),
     new: Boolean(input.new ?? existing?.new ?? false),
     type: input.type || existing?.type || "decant",
-    image: input.image ?? existing?.image ?? "",
-    description: input.description ?? existing?.description ?? "",
-    concentration: input.concentration ?? existing?.concentration ?? "",
+    image: sanitizeUrl(input.image ?? existing?.image ?? ""),
+    description: stripTags(input.description ?? existing?.description ?? "", 4000),
+    concentration: stripTags(input.concentration ?? existing?.concentration ?? "", 60),
     releaseYear: input.releaseYear ?? existing?.releaseYear ?? null,
-    fragranticaUrl: input.fragranticaUrl ?? existing?.fragranticaUrl ?? "",
+    fragranticaUrl: sanitizeUrl(input.fragranticaUrl ?? existing?.fragranticaUrl ?? ""),
     fragranticaRating: input.fragranticaRating ?? existing?.fragranticaRating ?? null,
     published: input.published != null ? Boolean(input.published) : existing?.published ?? true,
   };

@@ -54,3 +54,7 @@ Pour qu'une ligne de panier soit rattachée à une vraie variante Shopify (et ob
 Le front (`KoreiProductStore.getVariantForFormat(product, format)`, dans `assets/js/product-store.js`) fait la correspondance en comparant la valeur de l'option (normalisée : espaces retirés, casse ignorée) à ces libellés. Si un produit n'a pas encore de variante correspondante — ou si Shopify n'est pas configuré — l'article reste géré uniquement dans le panier local (`localStorage`) : il s'affiche et se compte normalement, mais ne peut pas passer commande ; le bouton "Passer la commande" reste alors désactivé.
 
 Dès qu'au moins une ligne du panier a une vraie variante, un panier Shopify est créé en arrière-plan et le bouton "Passer la commande" s'active pour rediriger vers le Checkout Shopify (paiement, taxes et stock gérés entièrement par Shopify).
+
+### Stock par variant
+
+Le champ `availableForSale` de chaque variante (déjà renvoyé par `/api/products`) pilote `KoreiProductStore.isVariantAvailable(product, format)` : un format sans variante Shopify résolue est considéré disponible par défaut (comportement local inchangé) ; un format résolu avec `availableForSale: false` est grisé (carte favoris, tiers coffret de la fiche produit, sélecteur de format dans le panier) et ne peut pas être ajouté. Si Shopify rejette quand même un ajout/changement de quantité au moment réel de l'appel (stock épuisé entre-temps), le panier local est corrigé automatiquement et un message s'affiche — l'état local ne reste jamais en avance sur le vrai stock Shopify.

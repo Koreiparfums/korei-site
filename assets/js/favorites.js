@@ -8,6 +8,7 @@
 (function (global) {
   const STORAGE_KEY = "korei-favorites";
   const basePath = location.pathname.includes("/pages/") ? "../" : "";
+  const esc = (v) => (global.KoreiSite?.escapeHtml || ((x) => x))(v);
 
   // ── Stockage : tableau de { id, addedAt }. Migre silencieusement l'ancien
   // format (tableau de simples id) vers le nouveau, sans perdre les favoris
@@ -172,13 +173,14 @@
     const src = ui.productImageSrc ? ui.productImageSrc(product, "../") : null;
     const notes = keyNotesOf(product).join(" · ");
     const inCoffret = isInAnyCoffret(product.id);
-    const optionsHtml = DECANT_FORMATS.map(
-      (f) => `<option value="${f.format}" data-price="${formatPriceFor(product, f.format)}">${f.label}</option>`
-    ).join("");
+    const optionsHtml = DECANT_FORMATS.map((f) => {
+      const available = global.KoreiProductStore?.isVariantAvailable(product, f.format) !== false;
+      return `<option value="${f.format}" data-price="${formatPriceFor(product, f.format)}"${available ? "" : " disabled"}>${f.label}${available ? "" : " — rupture"}</option>`;
+    }).join("");
 
     return `
       <div class="fav-card" data-product-id="${product.id}">
-        <button type="button" class="fav-card__heart is-active" data-fav-btn aria-label="Retirer ${product.name} des favoris">
+        <button type="button" class="fav-card__heart is-active" data-fav-btn aria-label="Retirer ${esc(product.name)} des favoris">
           <i class="ti ti-heart"></i>
         </button>
         ${inCoffret ? `<span class="fav-card__tag"><i class="ti ti-package"></i> Dans mon coffret</span>` : ""}
@@ -187,14 +189,14 @@
         </a>
         <div class="fav-card__body">
           <a href="../pages/product.html?id=${product.id}" class="fav-card__link">
-            <span class="fav-card__brand">${product.brand}</span>
-            <span class="fav-card__name">${product.name}</span>
+            <span class="fav-card__brand">${esc(product.brand)}</span>
+            <span class="fav-card__name">${esc(product.name)}</span>
           </a>
-          ${notes ? `<span class="fav-card__notes">${notes}</span>` : ""}
+          ${notes ? `<span class="fav-card__notes">${esc(notes)}</span>` : ""}
           <div class="fav-card__shop">
             <select class="fav-card__select" data-fav-select aria-label="Format">${optionsHtml}</select>
             <span class="fav-card__price" data-fav-price>${formatPriceFor(product, "2ml")}€</span>
-            <button type="button" class="fav-card__add" data-fav-add aria-label="Ajouter ${product.name} au coffret">
+            <button type="button" class="fav-card__add" data-fav-add aria-label="Ajouter ${esc(product.name)} au coffret">
               <i class="ti ti-package"></i>
             </button>
           </div>
@@ -228,8 +230,17 @@
         const productId = card.dataset.productId;
         const coffret = global.KoreiCoffret;
         const already = coffret && coffret.hasItem(productId, select.value);
+        const available = global.KoreiProductStore?.isVariantAvailable(getProduct(productId), select.value) !== false;
+
         addBtn.classList.toggle("is-active", !!already);
-        addBtn.innerHTML = already ? `<i class="ti ti-check"></i>` : `<i class="ti ti-package"></i>`;
+        addBtn.classList.toggle("is-soldout", !available);
+        addBtn.disabled = !available;
+        addBtn.title = available ? "" : "Rupture de stock";
+        addBtn.innerHTML = !available
+          ? `<i class="ti ti-ban"></i>`
+          : already
+            ? `<i class="ti ti-check"></i>`
+            : `<i class="ti ti-package"></i>`;
       };
 
       select.addEventListener("change", () => {
@@ -243,6 +254,7 @@
         if (!coffret || !coffret.isEligibleFormat(select.value)) return;
         const productId = card.dataset.productId;
         const product = getProduct(productId);
+        if (global.KoreiProductStore?.isVariantAvailable(product, select.value) === false) return;
         const opt = select.options[select.selectedIndex];
         if (coffret.hasItem(productId, select.value)) {
           coffret.removeItem(productId, select.value);

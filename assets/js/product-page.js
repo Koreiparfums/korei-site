@@ -8,6 +8,7 @@
   const site = global.KoreiSite;
   const store = global.KoreiProductStore;
   const ui = global.KoreiUI || {};
+  const esc = site?.escapeHtml || ((v) => v);
 
   function capitalize(str) {
     return str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
@@ -85,7 +86,7 @@
 
   function renderGallery(product, basePath) {
     const images = galleryImages(product, basePath);
-    const alt = `${product.brand} ${product.name}`;
+    const alt = `${esc(product.brand)} ${esc(product.name)}`;
     return `
       <div class="pdp-gallery">
         <div class="pdp-gallery__thumbs">
@@ -101,7 +102,7 @@
         <div class="pdp-gallery__mainstack">
           <div class="pdp-gallery__main">
             <div class="pdp-badges">${renderBadges(product)}</div>
-            <img class="pdp-gallery__main-img" id="pdp-main-img" src="${images[0] || ""}" alt="${alt}" onerror="this.style.opacity=0" />
+            <img class="pdp-gallery__main-img" id="pdp-main-img" src="${images[0] || ""}" alt="${alt}" data-onerror="fade" />
           </div>
         </div>
       </div>`;
@@ -187,11 +188,10 @@
         <div class="pdp-hero__grid">
           <div class="pdp-gallery-col">
             ${renderGallery(product, basePath)}
-            ${renderPyramid(product)}
           </div>
           <div class="pdp-info pdp-reveal">
-            <h1 class="pdp-name">${product.name}</h1>
-            <div class="pdp-brand">${product.brand}</div>
+            <h1 class="pdp-name">${esc(product.name)}</h1>
+            <div class="pdp-brand">${esc(product.brand)}</div>
             <div class="pdp-rating-line">${ui.renderStars ? ui.renderStars(product.rating) : ""}</div>
 
             <span class="pdp-label">Choisir un format</span>
@@ -208,8 +208,10 @@
               </div>
             </div>
 
-            ${renderCoffretPromo(product)}
+            ${product.description ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
           </div>
+          ${renderPyramid(product)}
+          ${renderCoffretPromo(product)}
         </div>
       </section>`;
   }
@@ -246,6 +248,26 @@
     { format: "10ml", label: "Collection", capacity: 3, price: 149 },
   ];
 
+  const GUARANTEE_ITEMS = [
+    { icon: "ti-certificate", title: "Authentique", desc: "100% des flacons proviennent de distributeurs officiels." },
+    { icon: "ti-lock", title: "Paiement sécurisé", desc: "Transactions chiffrées, aucune donnée bancaire conservée." },
+    { icon: "ti-truck-delivery", title: "Expédition rapide", desc: "Préparation et envoi sous 24 à 48h partout en France." },
+    { icon: "ti-headset", title: "Support dédié", desc: "Une question ? Notre équipe vous répond sous 48h." },
+  ];
+
+  function renderCoffretTrust() {
+    return `
+      <div class="pdp-coffret-trust">
+        ${GUARANTEE_ITEMS.map(
+          (it) => `
+          <div class="pdp-coffret-trust__item">
+            <i class="ti ${it.icon}" aria-hidden="true"></i>
+            <h4>${it.title}</h4>
+          </div>`
+        ).join("")}
+      </div>`;
+  }
+
   function renderCoffretPromo(product) {
     if (!global.KoreiCoffret) return "";
     const formats = getFormats(product);
@@ -272,6 +294,7 @@
         <button type="button" class="pdp-btn pdp-btn--outline pdp-coffret-promo__view" id="pdp-coffret-view">
           <i class="ti ti-package"></i> Voir mon coffret en cours
         </button>
+        ${renderCoffretTrust()}
       </div>`;
   }
 
@@ -291,8 +314,11 @@
         const cta = tierEl.querySelector("[data-tier-cta]");
         if (!cta) return;
         const already = coffret.hasItem(product.id, format);
+        const available = store?.isVariantAvailable(product, format) !== false;
         cta.classList.toggle("is-active", already);
-        cta.textContent = already ? "Déjà ajouté — retirer" : "Ajouter ce parfum";
+        cta.classList.toggle("is-soldout", !available);
+        cta.disabled = !available;
+        cta.textContent = !available ? "Rupture de stock" : already ? "Déjà ajouté — retirer" : "Ajouter ce parfum";
       });
     };
 
@@ -300,6 +326,7 @@
       cta.addEventListener("click", () => {
         const tierEl = cta.closest("[data-tier-format]");
         const format = tierEl.dataset.tierFormat;
+        if (store?.isVariantAvailable(product, format) === false) return;
         if (coffret.hasItem(product.id, format)) {
           coffret.removeItem(product.id, format);
         } else {
@@ -335,7 +362,7 @@
             <div class="pdp-eyebrow">L'histoire</div>
             <p>
               Chez Kōrei, chaque flacon est choisi avec la même exigence : celle de maisons de
-              parfumerie de niche qui refusent le compromis. <em>${product.name}</em> a rejoint
+              parfumerie de niche qui refusent le compromis. <em>${esc(product.name)}</em> a rejoint
               notre sélection pour sa signature ${familyInfo(product).label.toLowerCase()} —
               une composition que nous avons voulu rendre accessible dès quelques millilitres,
               sans jamais transiger sur l'authenticité.
@@ -374,9 +401,9 @@
   // ── Section 3 : Notes phares (façon Fragrantica — photo + libellé par note)
   function renderNoteCard(note) {
     return `
-      <div class="pdp-note-card" title="${note}">
+      <div class="pdp-note-card" title="${esc(note)}">
         ${ui.noteImageHtml ? ui.noteImageHtml(note, "../") : ""}
-        <span>${note}</span>
+        <span>${esc(note)}</span>
       </div>`;
   }
 
@@ -437,17 +464,16 @@
     const projectionCards = PROJECTION_META.map((p) => renderSentimentCard(p, p.level === projectionLevel)).join("");
 
     return `
-      <section class="pdp-sentiment pdp-reveal pdp-accordion">
-        <button type="button" class="pdp-sentiment__head pdp-accordion-head" aria-expanded="false">
+      <section class="pdp-sentiment pdp-reveal">
+        <div class="pdp-sentiment__head">
           <h2>Ressenti</h2>
-          <i class="ti ti-chevron-down pdp-accordion-chevron" aria-hidden="true"></i>
-        </button>
-        <div class="pdp-accordion-body"><div class="pdp-accordion-body-inner">
+        </div>
+        <div class="pdp-sentiment__body">
           ${renderSentimentRow("Meilleur moment de la journée", momentCards)}
           ${renderSentimentRow("Meilleure saison pour porter", seasonCards)}
           ${renderSentimentRow("Longévité", longevityCards)}
           ${renderSentimentRow("Projection", projectionCards)}
-        </div></div>
+        </div>
       </section>`;
   }
 
@@ -490,6 +516,8 @@
     const rating = fr?.rating || product.rating;
     const countLine = fr?.votes
       ? `Basé sur ${fr.votes.toLocaleString("fr-FR")} avis Fragrantica`
+      : fr?.rating
+      ? "Note Fragrantica — nombre d'avis non communiqué"
       : "Note Kōrei — avis clients à venir";
     return `
       <section class="pdp-reviews">
@@ -499,7 +527,7 @@
         </div>
         <div class="pdp-reviews__panel pdp-reveal">
           <div class="pdp-reviews__score">${rating}</div>
-          <div class="pdp-reviews__stars">${ui.renderStars ? ui.renderStars(rating).replace(` <span>${rating}</span>`, "") : ""}</div>
+          <div class="pdp-reviews__stars">${ui.renderStars ? ui.renderStars(rating) : ""}</div>
           <p class="pdp-reviews__count">${countLine}</p>
           <p class="pdp-reviews__empty">
             Les avis vérifiés Kōrei arrivent bientôt sur cette fiche. Soyez la première personne
@@ -520,7 +548,7 @@
         a: "Un décant est un petit flacon (2ml, 5ml ou 10ml) rempli directement depuis le flacon original. C'est le meilleur moyen de découvrir un parfum avant d'investir dans un flacon complet.",
       },
       {
-        q: `${product.name} est-il 100% authentique ?`,
+        q: `${esc(product.name)} est-il 100% authentique ?`,
         a: "Oui, sans exception. Tous nos parfums proviennent directement des distributeurs officiels ou de maisons agréées — jamais de copies ni de contrefaçons.",
       },
       {
@@ -561,17 +589,10 @@
 
   // ── Section 11 : Garanties
   function renderGuarantees() {
-    const items = [
-      { icon: "ti-certificate", title: "Authentique", desc: "100% des flacons proviennent de distributeurs officiels." },
-      { icon: "ti-lock", title: "Paiement sécurisé", desc: "Transactions chiffrées, aucune donnée bancaire conservée." },
-      { icon: "ti-truck-delivery", title: "Expédition rapide", desc: "Préparation et envoi sous 24 à 48h partout en France." },
-      { icon: "ti-headset", title: "Support dédié", desc: "Une question ? Notre équipe vous répond sous 48h." },
-    ];
     return `
       <section class="pdp-guarantees">
         <div class="pdp-guarantees__grid">
-          ${items
-            .map(
+          ${GUARANTEE_ITEMS.map(
               (it) => `
             <div class="pdp-guarantee pdp-reveal">
               <i class="ti ${it.icon}" aria-hidden="true"></i>
@@ -610,16 +631,6 @@
     setTimeout(() => targets.forEach(reveal), 4000);
   }
 
-  function initAccordions(main) {
-    main.querySelectorAll(".pdp-accordion-head").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const section = btn.closest(".pdp-accordion");
-        const nowOpen = section.classList.toggle("open");
-        btn.setAttribute("aria-expanded", String(nowOpen));
-      });
-    });
-  }
-
   // ── Init général
   function initProductPage() {
     const params = new URLSearchParams(window.location.search);
@@ -655,9 +666,9 @@
         <span>/</span>
         <a href="catalogue.html">Parfums</a>
         <span>/</span>
-        <a href="brands.html?brand=${product.brandId}">${product.brand}</a>
+        <a href="brands.html?brand=${encodeURIComponent(product.brandId)}">${esc(product.brand)}</a>
         <span>/</span>
-        <span>${product.name}</span>
+        <span>${esc(product.name)}</span>
       </nav>
       ${renderHero(product, "../")}
       ${renderSentiment(product)}
@@ -674,7 +685,6 @@
     initHero(main, product);
     initCoffretPromo(main, product);
     initReveal(main);
-    initAccordions(main);
 
     const similar = store
       .getProductsByFamily(product.family)

@@ -287,6 +287,15 @@
     );
   }
 
+  // Pas de variante Shopify résolue (non configuré, ou convention pas encore
+  // en place côté Shopify) → on ne sait rien du stock, donc "disponible" par
+  // défaut (comportement actuel inchangé). Variante résolue avec
+  // `availableForSale === false` → en rupture.
+  function isVariantAvailable(product, format) {
+    const variant = getVariantForFormat(product, format);
+    return !variant || variant.availableForSale !== false;
+  }
+
   global.KoreiProductStore = {
     getAllProducts,
     getProductById,
@@ -302,5 +311,6 @@
     scoreProductForQuery,
     buildCatalogContext,
     getVariantForFormat,
+    isVariantAvailable,
   };
 })(window);

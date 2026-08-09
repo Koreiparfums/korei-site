@@ -41,6 +41,15 @@
     { title: "Le rituel", subtitle: "Essayer avant d'investir" },
   ];
 
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   function absoluteUrl(path) {
     if (!path) return SITE.url;
     if (path.startsWith("http")) return path;
@@ -172,8 +181,8 @@
           <div class="placeholder-premium__pattern" aria-hidden="true"></div>
           <div class="placeholder-premium__content">
             <i class="ti ti-photo placeholder-premium__icon" aria-hidden="true"></i>
-            <span class="placeholder-premium__title">${data.title || "Korei"}</span>
-            <span class="placeholder-premium__sub">${data.subtitle || ""}</span>
+            <span class="placeholder-premium__title">${escapeHtml(data.title || "Korei")}</span>
+            <span class="placeholder-premium__sub">${escapeHtml(data.subtitle || "")}</span>
           </div>
         </div>`;
     }
@@ -181,12 +190,12 @@
     if (type === "product" || type === "product-detail") {
       const sizeClass = type === "product-detail" ? "placeholder-premium--detail" : "";
       return `
-        <div class="media-slot__placeholder placeholder-premium placeholder-premium--product ${sizeClass}" data-family="${family}">
+        <div class="media-slot__placeholder placeholder-premium placeholder-premium--product ${sizeClass}" data-family="${escapeHtml(family)}">
           <div class="placeholder-premium__pattern" aria-hidden="true"></div>
           <div class="placeholder-premium__content">
             <i class="ti ti-bottle placeholder-premium__icon" aria-hidden="true"></i>
-            <span class="placeholder-premium__brand">${data.brand || ""}</span>
-            <span class="placeholder-premium__name">${data.name || ""}</span>
+            <span class="placeholder-premium__brand">${escapeHtml(data.brand || "")}</span>
+            <span class="placeholder-premium__name">${escapeHtml(data.name || "")}</span>
           </div>
         </div>`;
     }
@@ -248,6 +257,23 @@
     initMediaSlots();
   }
 
+  // Délégation des erreurs de chargement image (CSP : pas d'onerror inline).
+  // Les erreurs <img> ne remontent pas (bubbling), on écoute donc en phase de capture.
+  function initImageErrorFallback() {
+    document.addEventListener(
+      "error",
+      (event) => {
+        const el = event.target;
+        if (!el || el.tagName !== "IMG") return;
+        const mode = el.dataset.onerror;
+        if (mode === "remove") el.remove();
+        else if (mode === "fade") el.style.opacity = 0;
+      },
+      true
+    );
+  }
+  initImageErrorFallback();
+
   function initHeaderScroll() {
     const header = document.querySelector(".header");
     if (!header) return;
@@ -261,10 +287,53 @@
     window.addEventListener("scroll", update, { passive: true });
   }
 
+  const COOKIE_CONSENT_KEY = "korei-cookie-consent";
+
+  function scriptBasePath() {
+    const script = document.querySelector('script[src$="assets/js/site.js"]');
+    return script ? script.getAttribute("src").replace(/assets\/js\/site\.js$/, "") : "";
+  }
+
+  function initCookieBanner() {
+    let consent;
+    try {
+      consent = localStorage.getItem(COOKIE_CONSENT_KEY);
+    } catch (error) {
+      return;
+    }
+    if (consent) return;
+
+    const base = scriptBasePath();
+    const banner = document.createElement("div");
+    banner.className = "cookie-banner";
+    banner.setAttribute("role", "region");
+    banner.setAttribute("aria-label", "Consentement cookies");
+    banner.innerHTML = `
+      <p class="cookie-banner__text">
+        Nous utilisons des cookies pour assurer le bon fonctionnement du site et mesurer sa fréquentation.
+        <a href="${base}pages/mentions-legales.html">En savoir plus</a>
+      </p>
+      <button type="button" class="cookie-banner__btn">J'accepte</button>
+    `;
+    document.body.appendChild(banner);
+    document.body.classList.add("has-cookie-banner");
+
+    banner.querySelector(".cookie-banner__btn").addEventListener("click", () => {
+      try {
+        localStorage.setItem(COOKIE_CONSENT_KEY, "1");
+      } catch (error) {
+        // stockage indisponible — le bandeau réapparaîtra à la prochaine visite
+      }
+      banner.remove();
+      document.body.classList.remove("has-cookie-banner");
+    });
+  }
+
   global.KoreiSite = {
     SITE,
     IMAGES,
     LIFESTYLE_SLOTS,
+    escapeHtml,
     absoluteUrl,
     withBase,
     setPageMeta,
@@ -276,6 +345,7 @@
     initMediaSlots,
     initLifestyleSlots,
     initHeaderScroll,
+    initCookieBanner,
   };
 
   if (document.readyState === "loading") {
@@ -284,11 +354,13 @@
       initMediaSlots();
       initLifestyleSlots();
       initHeaderScroll();
+      initCookieBanner();
     });
   } else {
     initStructuredData();
     initMediaSlots();
     initLifestyleSlots();
     initHeaderScroll();
+    initCookieBanner();
   }
 })(window);

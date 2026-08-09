@@ -29,6 +29,16 @@
         <button type="button" id="logout-btn" class="admin-btn admin-btn--ghost">Se déconnecter</button>
       </header>
 
+      <section id="usage-panel" class="admin-usage" hidden>
+        <h2>Utilisation IA <span id="usage-badge" class="admin-usage-badge" hidden>Budget dépassé</span></h2>
+        <div class="admin-usage-stats">
+          <div><span id="usage-month-cost">—</span><small>Coût estimé ce mois-ci</small></div>
+          <div><span id="usage-total-requests">—</span><small>Requêtes au total</small></div>
+          <div><span id="usage-total-tokens">—</span><small>Tokens au total</small></div>
+        </div>
+        <p class="admin-usage-note">Estimation approximative, basée sur des prix par défaut — à vérifier sur la console Groq.</p>
+      </section>
+
       <nav class="admin-tabs">
         <button type="button" class="admin-tab is-active" data-tab="catalogue">Catalogue</button>
         <button type="button" class="admin-tab" data-tab="import">Importer depuis les CSV</button>
@@ -48,9 +58,6 @@
             <input type="search" id="import-search" placeholder="Rechercher un parfum…" />
             <select id="import-brand-filter">
               <option value="">Toutes les marques</option>
-              <option value="dior">Dior</option>
-              <option value="byredo">Byredo</option>
-              <option value="louis-vuitton">Louis Vuitton</option>
             </select>
             <select id="import-gender-filter">
               <option value="">Tous genres</option>

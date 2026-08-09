@@ -1,6 +1,12 @@
+const usageStore = require("./lib/usage-store");
+
 const GROQ_CHAT_COMPLETIONS_URL =
   "https://api.groq.com/openai/v1/chat/completions";
 const DEFAULT_MODEL = "llama-3.3-70b-versatile";
+// Prix approximatifs ($/1M tokens) — à vérifier sur console.groq.com/settings/billing,
+// juste un ordre de grandeur pour le monitoring, pas une garantie de facturation exacte.
+const DEFAULT_PRICE_INPUT_PER_1M = 0.59;
+const DEFAULT_PRICE_OUTPUT_PER_1M = 0.79;
 const MAX_HISTORY_MESSAGES = 8;
 const MAX_CATALOG_PRODUCTS = 40;
 const RATE_LIMIT_WINDOW_MS = Number(
@@ -133,6 +139,24 @@ function parseGroqReply(content) {
   }
 }
 
+// Monitoring coûts (best-effort) : ne doit jamais faire échouer la réponse au visiteur.
+async function recordGroqUsage(groqData) {
+  try {
+    const usage = groqData?.usage || groqData?.x_groq?.usage;
+    if (!usage) return;
+
+    const promptTokens = Number(usage.prompt_tokens) || 0;
+    const completionTokens = Number(usage.completion_tokens) || 0;
+    const priceInput = Number(process.env.GROQ_PRICE_INPUT_PER_1M) || DEFAULT_PRICE_INPUT_PER_1M;
+    const priceOutput = Number(process.env.GROQ_PRICE_OUTPUT_PER_1M) || DEFAULT_PRICE_OUTPUT_PER_1M;
+    const costUsd = (promptTokens / 1_000_000) * priceInput + (completionTokens / 1_000_000) * priceOutput;
+
+    await usageStore.recordUsage({ promptTokens, completionTokens, costUsd });
+  } catch (error) {
+    // best-effort uniquement : une panne de stockage d'usage ne doit jamais impacter le chat.
+  }
+}
+
 function buildSystemPrompt(catalog) {
   return [
     "Tu es le conseiller olfactif de Korei, une parfumerie de niche spécialisée dans les décants et flacons authentiques.",
@@ -229,6 +253,7 @@ module.exports = async function handler(req, res) {
 
     const content = groqData?.choices?.[0]?.message?.content;
     const aiReply = parseGroqReply(content);
+    await recordGroqUsage(groqData);
 
     return sendJson(res, 200, {
       reply:

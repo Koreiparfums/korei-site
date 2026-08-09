@@ -57,7 +57,7 @@
 
     <header class="header">
       <div class="header-left">
-        <button class="hamburger" onclick="toggleMenu()" aria-label="Menu" type="button">
+        <button class="hamburger" data-toggle-menu aria-label="Menu" type="button">
           <i class="ti ti-menu-2"></i>
         </button>
         <nav class="nav">
@@ -75,7 +75,7 @@
           <input type="search" placeholder="Rechercher des marques..." aria-label="Rechercher" />
         </div>
         <div class="header-actions">
-          <button class="icon-btn search-mobile-btn" onclick="toggleSearch()" aria-label="Rechercher" type="button">
+          <button class="icon-btn search-mobile-btn" data-toggle-search aria-label="Rechercher" type="button">
             <i class="ti ti-search"></i>
           </button>
           <button class="icon-btn" aria-label="Favoris" type="button">
@@ -92,11 +92,11 @@
     </header>
 
     <div class="mobile-menu" id="mobileMenu">
-      <div class="mobile-overlay" onclick="toggleMenu()"></div>
+      <div class="mobile-overlay" data-toggle-menu></div>
       <div class="mobile-drawer">
         <div class="mobile-drawer-head">
           <span class="logo">Kōrei</span>
-          <button onclick="toggleMenu()" type="button" style="background:none;border:none;font-size:26px;cursor:pointer;color:#888">
+          <button data-toggle-menu type="button" class="mobile-drawer-close">
             <i class="ti ti-x"></i>
           </button>
         </div>
@@ -113,13 +113,14 @@
       <div class="search-overlay-head">
         <i class="ti ti-search search-overlay-icon"></i>
         <input type="search" class="search-overlay-input" placeholder="Rechercher un parfum, une marque…" aria-label="Rechercher" />
-        <button class="search-overlay-close" onclick="toggleSearch()" aria-label="Fermer" type="button">
+        <button class="search-overlay-close" data-toggle-search aria-label="Fermer" type="button">
           <i class="ti ti-x"></i>
         </button>
       </div>
       <p class="search-overlay-hint">Tendances : Oud Wood · Aventus · Interlude Man</p>
     </div>
 
+    <main>
     <section class="brands-head">
       <div class="brands-head-rule" aria-hidden="true"></div>
       <div class="brands-head-inner">
@@ -154,6 +155,7 @@
     <p id="brands-empty" class="brands-empty" hidden>
       Aucune marque ne correspond à votre recherche.
     </p>
+    </main>
 
     <footer>
       <div class="footer-top">
@@ -185,6 +187,7 @@
           <div class="footer-col-title">Aide</div>
           <a href="contact.html">Contact</a>
           <a href="cgv.html">CGV</a>
+          <a href="mentions-legales.html">Mentions légales</a>
         </div>
       </div>
       <div class="footer-bottom">

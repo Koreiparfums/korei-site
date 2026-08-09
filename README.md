@@ -56,7 +56,7 @@ Voir `docs/PROJECT_SCOPE.md` pour le détail.
 
 - HTML / CSS / JavaScript vanilla
 - Tabler Icons (CDN)
-- Google Fonts : Playfair Display + DM Sans
+- Google Fonts : Cormorant Garamond + DM Sans
 
 ## Chatbot IA Groq
 
@@ -77,6 +77,15 @@ Variables :
 
 Le front envoie le message, l'historique court et `KoreiProductStore.buildCatalogContext()` à la function. La function retourne une réponse JSON et des `productIds`, puis le front génère les liens produits localement.
 La function limite aussi les appels par IP avant d'appeler Groq afin de protéger la clé API.
+
+### Monitoring coûts
+
+Chaque réponse Groq réussie enregistre son usage (requêtes, tokens, coût estimé) via `api/lib/usage-store.js` — Netlify Blobs en production, `data/chat-usage.json` en local. Consultable via `GET /api/chat-usage` (protégé par `x-admin-token`, même jeton que `/api/admin/catalog`) et affiché dans le dashboard admin (`pages/admin.html`).
+
+Variables (toutes optionnelles) :
+
+- `CHAT_BUDGET_USD_MONTHLY` — seuil d'alerte visuelle dans le dashboard, défaut `20`
+- `GROQ_PRICE_INPUT_PER_1M` / `GROQ_PRICE_OUTPUT_PER_1M` — prix par million de tokens utilisés pour l'estimation, défaut `0.59` / `0.79`. Ce sont des **estimations** à vérifier sur `console.groq.com/settings/billing` — pas une facturation exacte.
 
 ## Catalogue Shopify
 
