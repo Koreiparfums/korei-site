@@ -94,6 +94,62 @@ h2 {
   border-bottom-color: var(--accent);
 }
 
+/* ── Utilisation IA */
+.admin-usage {
+  margin: 20px 32px 0;
+  padding: 20px 24px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.admin-usage[hidden] {
+  display: none;
+}
+.admin-usage h2 {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.admin-usage-badge {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--bg);
+  background: var(--danger);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.admin-usage-badge[hidden] {
+  display: none;
+}
+.admin-usage-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-top: 14px;
+}
+.admin-usage-stats span {
+  display: block;
+  font-family: "DM Sans", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+.admin-usage-stats small {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.admin-usage-note {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
 .admin-main {
   padding: 24px 32px 64px;
   max-width: 960px;
@@ -356,6 +412,10 @@ h2 {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--bg);
+  transition: border-color 0.2s;
+}
+.admin-tags:focus-within {
+  border-color: var(--accent);
 }
 
 .admin-tag {
@@ -414,5 +474,9 @@ h2 {
   .admin-main {
     padding-left: 16px;
     padding-right: 16px;
+  }
+  .admin-usage {
+    margin-left: 16px;
+    margin-right: 16px;
   }
 }

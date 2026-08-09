@@ -36,7 +36,7 @@ Décision d'architecture validée : conserver le front Korei comme vitrine premi
 
 - Header sticky, menu mobile, overlay recherche
 - Design responsive (mobile-first)
-- Icônes Tabler + Google Fonts (Playfair Display, DM Sans)
+- Icônes Tabler + Google Fonts (Cormorant Garamond, DM Sans)
 
 ---
 
@@ -54,7 +54,6 @@ Décision d'architecture validée : conserver le front Korei comme vitrine premi
 | Panier fonctionnel | Bouton désactivé « bientôt » |
 | Images produits réelles | Placeholders — assets à fournir |
 | SEO avancé | Sitemap, schema.org — phase 2 |
-| Programme Korei+ | Contenu marketing seulement |
 
 ---
 

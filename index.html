@@ -8,7 +8,7 @@
     />
     <meta
       name="description"
-      content="Korei — Parfumerie de niche. Flacons entiers et décants authentiques des plus grandes maisons. Essayez avant d'investir, dès 7€."
+      content="Korei   fc— Parfumerie de niche. Flacons entiers et décants authentiques des plus grandes maisons. Essayez avant d'investir, dès 7€."
     />
     <meta name="robots" content="index, follow" />
     <title>Korei — Parfumerie de Niche</title>
@@ -84,7 +84,7 @@
       <div class="header-left">
         <button
           class="hamburger"
-          onclick="toggleMenu()"
+          data-toggle-menu
           aria-label="Menu"
           type="button"
         >
@@ -111,7 +111,7 @@
         <div class="header-actions">
           <button
             class="icon-btn search-mobile-btn"
-            onclick="toggleSearch()"
+            data-toggle-search
             aria-label="Rechercher"
             type="button"
           >
@@ -131,20 +131,14 @@
     </header>
 
     <div class="mobile-menu" id="mobileMenu">
-      <div class="mobile-overlay" onclick="toggleMenu()"></div>
+      <div class="mobile-overlay" data-toggle-menu></div>
       <div class="mobile-drawer">
         <div class="mobile-drawer-head">
           <span class="logo">Kōrei</span>
           <button
-            onclick="toggleMenu()"
+            data-toggle-menu
             type="button"
-            style="
-              background: none;
-              border: none;
-              font-size: 26px;
-              cursor: pointer;
-              color: #888;
-            "
+            class="mobile-drawer-close"
           >
             <i class="ti ti-x"></i>
           </button>
@@ -169,7 +163,7 @@
         />
         <button
           class="search-overlay-close"
-          onclick="toggleSearch()"
+          data-toggle-search
           aria-label="Fermer"
           type="button"
         >
@@ -181,6 +175,7 @@
       </p>
     </div>
 
+    <main>
     <section class="hero">
       <div class="hero-ghost" aria-hidden="true">KŌREI</div>
       <div class="hero-content">
@@ -889,7 +884,7 @@
       </div>
       <div class="faq-list">
         <div class="faq-item">
-          <button class="faq-question" onclick="toggleFaq(this)" type="button">
+          <button class="faq-question" data-toggle-faq type="button">
             <span>C'est quoi un décant ?</span>
             <i class="ti ti-plus faq-icon"></i>
           </button>
@@ -900,7 +895,7 @@
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-question" onclick="toggleFaq(this)" type="button">
+          <button class="faq-question" data-toggle-faq type="button">
             <span>Les parfums sont-ils 100% authentiques ?</span>
             <i class="ti ti-plus faq-icon"></i>
           </button>
@@ -910,7 +905,7 @@
           </div>
         </div>
         <div class="faq-item">
-          <button class="faq-question" onclick="toggleFaq(this)" type="button">
+          <button class="faq-question" data-toggle-faq type="button">
             <span>Comment fonctionne le conseiller IA ?</span>
             <i class="ti ti-plus faq-icon"></i>
           </button>
@@ -972,6 +967,7 @@
         </p>
       </div>
     </section>
+    </main>
 
     <footer>
       <div class="footer-top">
@@ -1003,6 +999,7 @@
           <div class="footer-col-title">Aide</div>
           <a href="pages/contact.html">Contact</a>
           <a href="pages/cgv.html">CGV</a>
+          <a href="pages/mentions-legales.html">Mentions légales</a>
         </div>
       </div>
       <div class="footer-bottom">

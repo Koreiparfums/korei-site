@@ -7,6 +7,7 @@
  */
 (function (global) {
   const STORAGE_KEY = "korei-coffret";
+  const esc = (v) => (global.KoreiSite?.escapeHtml || ((x) => x))(v);
   const SLOT_COUNTS = { "2ml": 10, "5ml": 5, "10ml": 3 };
   const PACK_LABELS = { "2ml": "Découverte", "5ml": "Équilibré", "10ml": "Collection" };
   const FREE_SHIPPING_THRESHOLD = 60;
@@ -86,7 +87,7 @@
     items[idx] = updated;
     save(items);
     notify();
-    syncRemoteQty(updated, qty);
+    syncRemoteQty(updated, qty, current.qty || 1);
   }
 
   function incrementQty(productId, format) {
@@ -151,12 +152,28 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, ...payload }),
       });
-      if (!response.ok) return null;
-      const data = await response.json();
-      return data.cart || null;
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) return { cart: null, error: data.error, message: data.message };
+      return { cart: data.cart || null, error: null };
     } catch {
-      return null;
+      return { cart: null, error: "network_error" };
     }
+  }
+
+  // Petite notif transitoire pour les rejets Shopify (ex. stock insuffisant)
+  // qu'on ne peut pas se permettre de laisser silencieux comme les erreurs réseau.
+  function showStockNotice(message) {
+    let el = document.getElementById("korei-stock-toast");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "korei-stock-toast";
+      el.className = "korei-toast";
+      document.body.appendChild(el);
+    }
+    el.textContent = message;
+    el.classList.add("is-visible");
+    clearTimeout(showStockNotice._timer);
+    showStockNotice._timer = setTimeout(() => el.classList.remove("is-visible"), 4000);
   }
 
   function patchItem(productId, format, patch) {
@@ -174,22 +191,35 @@
   async function syncRemoteAdd(item) {
     if (!item.variantId) return;
     const cached = loadShopifyCart();
-    const cart = cached?.id
+    const result = cached?.id
       ? await cartRequest("add", { cartId: cached.id, variantId: item.variantId, quantity: item.qty || 1 })
       : await cartRequest("create", { variantId: item.variantId, quantity: item.qty || 1 });
-    if (!cart) return;
-    saveShopifyCart(cart);
-    const line = findRemoteLine(cart, item.variantId);
+
+    if (result.error === "cart_user_error") {
+      removeItem(item.productId, item.format);
+      showStockNotice(result.message || "Stock insuffisant pour ce format — article retiré du panier.");
+      return;
+    }
+    if (!result.cart) return;
+    saveShopifyCart(result.cart);
+    const line = findRemoteLine(result.cart, item.variantId);
     if (line) patchItem(item.productId, item.format, { shopifyLineId: line.id });
     notify();
   }
 
-  async function syncRemoteQty(item, qty) {
+  async function syncRemoteQty(item, qty, previousQty) {
     const cached = loadShopifyCart();
     if (!item.shopifyLineId || !cached?.id) return;
-    const cart = await cartRequest("update", { cartId: cached.id, lineId: item.shopifyLineId, quantity: qty });
-    if (cart) {
-      saveShopifyCart(cart);
+    const result = await cartRequest("update", { cartId: cached.id, lineId: item.shopifyLineId, quantity: qty });
+
+    if (result.error === "cart_user_error") {
+      if (previousQty > 0) patchItem(item.productId, item.format, { qty: previousQty });
+      showStockNotice(result.message || "Stock insuffisant pour cette quantité — ajustée.");
+      notify();
+      return;
+    }
+    if (result.cart) {
+      saveShopifyCart(result.cart);
       notify();
     }
   }
@@ -197,9 +227,9 @@
   async function syncRemoteRemove(item) {
     const cached = loadShopifyCart();
     if (!item.shopifyLineId || !cached?.id) return;
-    const cart = await cartRequest("remove", { cartId: cached.id, lineId: item.shopifyLineId });
-    if (cart) {
-      saveShopifyCart(cart);
+    const result = await cartRequest("remove", { cartId: cached.id, lineId: item.shopifyLineId });
+    if (result.cart) {
+      saveShopifyCart(result.cart);
       notify();
     }
   }
@@ -241,8 +271,8 @@
                 .map(
                   (it) => `
                 <li>
-                  <span>${it.brand} — ${it.name}${it.qty > 1 ? ` ×${it.qty}` : ""}</span>
-                  <button type="button" data-remove="${it.productId}|${it.format}" aria-label="Retirer ${it.name} du coffret">
+                  <span>${esc(it.brand)} — ${esc(it.name)}${it.qty > 1 ? ` ×${it.qty}` : ""}</span>
+                  <button type="button" data-remove="${it.productId}|${it.format}" aria-label="Retirer ${esc(it.name)} du coffret">
                     <i class="ti ti-x"></i>
                   </button>
                 </li>`
@@ -340,35 +370,41 @@
   // ── Page dédiée pages/panier.html
   function renderPanierItem(item) {
     const ui = global.KoreiUI || {};
+    const store = global.KoreiProductStore;
     const product = getProduct(item.productId);
     const src = product && ui.productImageSrc ? ui.productImageSrc(product, "../") : null;
     const qty = item.qty || 1;
     const lineTotal = (Number(item.price) || 0) * qty;
+    const available = product ? store?.isVariantAvailable(product, item.format) !== false : true;
     const optionsHtml = Object.keys(SLOT_COUNTS)
-      .map((f) => `<option value="${f}"${f === item.format ? " selected" : ""}>${f.replace("ml", " ml")}</option>`)
+      .map((f) => {
+        const optAvailable = product ? store?.isVariantAvailable(product, f) !== false : true;
+        return `<option value="${f}"${f === item.format ? " selected" : ""}${optAvailable ? "" : " disabled"}>${f.replace("ml", " ml")}${optAvailable ? "" : " — rupture"}</option>`;
+      })
       .join("");
 
     return `
-      <li class="panier-item" data-product-id="${item.productId}" data-format="${item.format}">
+      <li class="panier-item${available ? "" : " is-soldout"}" data-product-id="${item.productId}" data-format="${item.format}">
         <a href="../pages/product.html?id=${item.productId}" class="panier-item__media">
           ${src ? `<img src="${src}" alt="" loading="lazy" />` : ""}
         </a>
         <div class="panier-item__body">
           <a href="../pages/product.html?id=${item.productId}" class="panier-item__link">
-            <span class="panier-item__brand">${item.brand}</span>
-            <span class="panier-item__name">${item.name}</span>
+            <span class="panier-item__brand">${esc(item.brand)}</span>
+            <span class="panier-item__name">${esc(item.name)}</span>
           </a>
           <select class="panier-item__select" data-format-select data-product-id="${item.productId}" data-current-format="${item.format}" aria-label="Format">
             ${optionsHtml}
           </select>
+          ${available ? "" : `<span class="panier-item__stock">Rupture de stock</span>`}
         </div>
         <div class="panier-item__qty">
           <button type="button" data-qty-decr="${item.productId}|${item.format}" aria-label="Diminuer la quantité">−</button>
           <span>${qty}</span>
-          <button type="button" data-qty-incr="${item.productId}|${item.format}" aria-label="Augmenter la quantité">+</button>
+          <button type="button" data-qty-incr="${item.productId}|${item.format}" aria-label="Augmenter la quantité"${available ? "" : " disabled"}>+</button>
         </div>
         <span class="panier-item__price">${lineTotal}€</span>
-        <button type="button" class="panier-item__remove" data-remove="${item.productId}|${item.format}" aria-label="Retirer ${item.name} du panier">
+        <button type="button" class="panier-item__remove" data-remove="${item.productId}|${item.format}" aria-label="Retirer ${esc(item.name)} du panier">
           <i class="ti ti-x"></i>
         </button>
       </li>`;
