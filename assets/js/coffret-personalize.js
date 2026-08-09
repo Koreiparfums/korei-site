@@ -22,6 +22,63 @@
     filter: null, // "bestseller" | "new" | famille du produit
   };
 
+  // Persiste le brouillon (format/sélection/message) pour qu'il survive à un
+  // rechargement ou une navigation — avant, tout se perdait au refresh.
+  const DRAFT_STORAGE_KEY = "korei-coffret-personalise";
+
+  function saveDraft() {
+    try {
+      localStorage.setItem(
+        DRAFT_STORAGE_KEY,
+        JSON.stringify({
+          format: coffret.format,
+          items: coffret.items,
+          message: coffret.message,
+        })
+      );
+    } catch (error) {
+      // stockage indisponible (navigation privée, quota…) — on continue sans persister
+    }
+  }
+
+  function loadDraft(validProductIds) {
+    let raw;
+    try {
+      raw = localStorage.getItem(DRAFT_STORAGE_KEY);
+    } catch (error) {
+      return;
+    }
+    if (!raw) return;
+    let draft;
+    try {
+      draft = JSON.parse(raw);
+    } catch (error) {
+      return;
+    }
+    if (!draft || typeof draft !== "object") return;
+
+    if (draft.format && FORMATS[draft.format]) {
+      coffret.format = draft.format;
+      coffret.price = FORMATS[draft.format].price;
+    }
+    if (Array.isArray(draft.items)) {
+      const capacity = FORMATS[coffret.format].capacity;
+      let used = 0;
+      coffret.items = [];
+      for (const it of draft.items) {
+        if (!it || !validProductIds.has(it.productId)) continue;
+        const quantity = Math.max(1, Number(it.quantity) || 1);
+        if (used >= capacity) break;
+        const clamped = Math.min(quantity, capacity - used);
+        coffret.items.push({ productId: it.productId, quantity: clamped });
+        used += clamped;
+      }
+    }
+    if (typeof draft.message === "string") {
+      coffret.message = draft.message.slice(0, 240);
+    }
+  }
+
   let lastPrice = coffret.price;
   let previousCardIds = new Set();
 
@@ -49,7 +106,7 @@
     }
     function thumbHtml(p) {
       const src = p.image ? withBase(p.image, basePath) : "";
-      const img = src ? `<img src="${src}" alt="" onerror="this.remove()" />` : "";
+      const img = src ? `<img src="${src}" alt="" data-onerror="remove" />` : "";
       return `${img}<span>${initialOf(p)}</span>`;
     }
 
@@ -72,6 +129,18 @@
     const messageInput = document.getElementById("cb2Message");
     const messageCount = document.getElementById("cb2MessageCount");
     const timelineSteps = document.querySelectorAll("#cb2Timeline .cb2-timeline__step");
+
+    // Restaure un brouillon éventuel avant le premier rendu, puis remet en
+    // phase les contrôles qui ne sont pas recalculés par render() (boutons
+    // de format, champ message) avec l'état restauré.
+    loadDraft(new Set(productById.keys()));
+    formatBtns.forEach((b) => {
+      const active = b.dataset.format === coffret.format;
+      b.classList.toggle("is-active", active);
+      b.setAttribute("aria-checked", String(active));
+    });
+    if (messageInput) messageInput.value = coffret.message;
+    if (messageCount) messageCount.textContent = String(coffret.message.length);
 
     function capacity() {
       return FORMATS[coffret.format].capacity;
@@ -292,6 +361,7 @@
       if (!complete) hint.textContent = `Sélectionnez ${cap - t} flacon${cap - t > 1 ? "s" : ""} de plus pour continuer.`;
 
       updateTimeline();
+      saveDraft();
     }
 
     // ── Évènements
@@ -361,6 +431,7 @@
         coffret.message = messageInput.value;
         messageCount.textContent = String(messageInput.value.length);
         updateTimeline();
+        saveDraft();
       });
     }
 

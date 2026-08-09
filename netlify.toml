@@ -8,6 +8,11 @@
     status = 200
 
 [[redirects]]
+    from = "/api/chat-usage"
+    to = "/.netlify/functions/chat-usage"
+    status = 200
+
+[[redirects]]
     from = "/api/products"
     to = "/.netlify/functions/products"
     status = 200
@@ -27,6 +32,12 @@
     to = "/.netlify/functions/admin-catalog"
     status = 200
 
+[[redirects]]
+    from = "/sitemap.xml"
+    to = "/.netlify/functions/sitemap"
+    status = 200
+    force = true
+
 [[headers]]
   for = "/assets/*"
   [headers.values]
@@ -38,3 +49,6 @@
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"

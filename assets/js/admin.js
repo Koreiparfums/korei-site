@@ -1,16 +1,12 @@
 /**
  * Korei — Dashboard admin catalogue.
- * Parcourt les CSV Fragrantica (produits/*.csv), permet la curation manuelle
+ * Parcourt l'export Fragrantica consolidé (korei_fragrantica_export.csv), permet la curation manuelle
  * (ajout / édition / suppression, sillage & longévité définis à la main) et
  * pilote /api/admin/catalog (protégé par ADMIN_TOKEN).
  */
 (function () {
   const TOKEN_KEY = "korei-admin-token";
-  const CSV_BRANDS = [
-    { id: "dior", label: "Dior", file: "../produits/dior.csv" },
-    { id: "byredo", label: "Byredo", file: "../produits/byredo.csv" },
-    { id: "louis-vuitton", label: "Louis Vuitton", file: "../produits/louis-vuitton.csv" },
-  ];
+  const CSV_SOURCE = "../korei_fragrantica_export.csv";
 
   const FAMILY_OPTIONS = [
     { value: "oriental", label: "Oriental" },
@@ -66,7 +62,8 @@
     token: sessionStorage.getItem(TOKEN_KEY) || "",
     tab: "catalogue",
     catalogProducts: [],
-    csvCache: {},
+    csvRows: null,
+    csvBrands: [],
     editing: null, // { mode: 'create' | 'edit' | 'from-csv', product }
   };
 
@@ -137,14 +134,35 @@
       .map((r) => Object.fromEntries(header.map((key, idx) => [key, (r[idx] || "").trim()])));
   }
 
-  async function loadCsvBrand(brandId) {
-    if (state.csvCache[brandId]) return state.csvCache[brandId];
-    const meta = CSV_BRANDS.find((b) => b.id === brandId);
-    const response = await fetch(meta.file);
+  function brandSlug(brand) {
+    return (brand || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(new RegExp("[" + String.fromCharCode(0x0300) + "-" + String.fromCharCode(0x036f) + "]", "g"), "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
+  async function loadAllCsvRows() {
+    if (state.csvRows) return state.csvRows;
+    const response = await fetch(CSV_SOURCE);
     const text = await response.text();
-    const rows = parseCsv(text);
-    state.csvCache[brandId] = rows;
+    const rows = parseCsv(text).filter((r) => r.brand && r.name);
+    state.csvRows = rows;
+
+    const brands = new Map();
+    rows.forEach((r) => {
+      const id = brandSlug(r.brand);
+      if (!brands.has(id)) brands.set(id, r.brand);
+    });
+    state.csvBrands = Array.from(brands, ([id, label]) => ({ id, label })).sort((a, b) => a.label.localeCompare(b.label));
+
     return rows;
+  }
+
+  async function loadCsvBrand(brandId) {
+    const rows = await loadAllCsvRows();
+    return rows.filter((r) => brandSlug(r.brand) === brandId);
   }
 
   // ── API
@@ -172,6 +190,24 @@
     renderTab();
   }
 
+  // ── Utilisation IA (best-effort : une panne ici ne doit pas gêner l'admin catalogue)
+  async function refreshUsage() {
+    const panel = el("#usage-panel");
+    try {
+      const data = await apiFetch("/api/chat-usage");
+      const usage = data.usage || {};
+      const totalTokens = (usage.totalPromptTokens || 0) + (usage.totalCompletionTokens || 0);
+
+      el("#usage-month-cost").textContent = `${(Number(data.monthCostUsd) || 0).toFixed(2)} $`;
+      el("#usage-total-requests").textContent = String(usage.totalRequests || 0);
+      el("#usage-total-tokens").textContent = String(totalTokens);
+      el("#usage-badge").hidden = !data.overBudget;
+      panel.hidden = false;
+    } catch (error) {
+      panel.hidden = true;
+    }
+  }
+
   // ── Auth
   function showLogin(message) {
     el("#admin-login").hidden = false;
@@ -192,6 +228,7 @@
       sessionStorage.setItem(TOKEN_KEY, token);
       el("#admin-login").hidden = true;
       el("#admin-app").hidden = false;
+      refreshUsage();
     } catch (error) {
       state.token = "";
       showLogin("Mot de passe incorrect.");
@@ -245,25 +282,30 @@
       .join("");
   }
 
+  function populateBrandFilter() {
+    const select = el("#import-brand-filter");
+    if (select.dataset.populated) return;
+    select.insertAdjacentHTML("beforeend", state.csvBrands.map((b) => `<option value="${b.id}">${b.label}</option>`).join(""));
+    select.dataset.populated = "true";
+  }
+
   function renderImportTab() {
     const list = el("#import-list");
-    const brandFilter = el("#import-brand-filter").value;
-    const genderFilter = el("#import-gender-filter").value;
-    const search = el("#import-search").value.trim().toLowerCase();
 
     const importedKeys = new Set(state.catalogProducts.map((p) => normalizeKey(p.brand, p.name)));
     const localProducts = (window.KoreiProducts && window.KoreiProducts.PRODUCTS) || [];
     localProducts.forEach((p) => importedKeys.add(normalizeKey(p.brand, p.name)));
 
-    const brandsToShow = brandFilter ? [brandFilter] : CSV_BRANDS.map((b) => b.id);
+    loadAllCsvRows().then((allRows) => {
+      populateBrandFilter();
 
-    Promise.all(brandsToShow.map((id) => loadCsvBrand(id).then((rows) => ({ id, rows })))).then((results) => {
-      let rows = [];
-      results.forEach(({ id, rows: brandRows }) => {
-        const brandLabel = CSV_BRANDS.find((b) => b.id === id).label;
-        brandRows.forEach((row) => rows.push({ ...row, __brandId: id, __brandLabel: brandLabel }));
-      });
+      const brandFilter = el("#import-brand-filter").value;
+      const genderFilter = el("#import-gender-filter").value;
+      const search = el("#import-search").value.trim().toLowerCase();
 
+      let rows = allRows.map((row) => ({ ...row, __brandId: brandSlug(row.brand), __brandLabel: row.brand }));
+
+      if (brandFilter) rows = rows.filter((r) => r.__brandId === brandFilter);
       if (genderFilter) rows = rows.filter((r) => (r.gender || "").toLowerCase() === genderFilter);
       if (search) rows = rows.filter((r) => r.name.toLowerCase().includes(search));
 
@@ -537,7 +579,7 @@
       const name = decodeURIComponent(row.dataset.name);
       const rows = await loadCsvBrand(brandId);
       const csvRow = rows.find((r) => r.name === name);
-      const brandLabel = CSV_BRANDS.find((b) => b.id === brandId).label;
+      const brandLabel = state.csvBrands.find((b) => b.id === brandId).label;
       openForm({ ...blankDraft(), ...draftFromCsvRow(csvRow, brandLabel, brandId) }, "create");
     });
 
