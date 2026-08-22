@@ -2856,92 +2856,39 @@ body[data-page="coffret"] .coffret-hero {
 .brands-section {
   padding: 64px var(--px);
 }
-.brands-outro {
-  text-align: center;
-  max-width: 448px;
-  margin: 8px auto 0;
+.brands-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12.8px;
+  max-width: var(--max-w);
+  margin: 0 auto;
 }
-.brands-outro-lead {
-  font-family: "DM Sans", sans-serif;
-  font-size: var(--text-22);
-  font-weight: 400;
-  color: var(--text);
-  margin-bottom: 0;
-}
-.brands-outro-lead em,
-.brands-outro-sub em {
-  font-style: normal;
-  color: var(--accent);
-}
-.brands-outro-divider {
+.brand-card {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12.8px;
-  max-width: 240px;
-  margin: 12.8px auto;
-  color: var(--accent);
-  font-size: var(--text-12);
+  height: 88px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
-.brands-outro-divider::before,
-.brands-outro-divider::after {
-  content: "";
-  flex: 1;
-  height: 0.8px;
-  background: var(--accent);
-  opacity: 0.4;
+.brand-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
-.brands-outro-sub {
-  font-size: var(--text-14);
-  color: var(--text-muted);
-  line-height: 1.6;
-  margin-bottom: 24px;
-}
-.brands-marquee {
-  background: transparent;
-  overflow: hidden;
-  padding: 32px 0;
-  margin: 0 calc(-1 * var(--px));
-}
-.brands-marquee-track {
-  display: flex;
-  align-items: baseline;
-  gap: 40px;
-  width: max-content;
-  animation: brandsMarquee 30s linear infinite;
-}
-.brands-marquee-track:hover {
-  animation-play-state: paused;
-}
-@keyframes brandsMarquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-.brand-mark {
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-  opacity: 0.8;
-  transition: opacity 0.2s;
-}
-.brand-mark:hover {
-  opacity: 1;
-}
-.brand-sep {
-  align-self: center;
-  font-size: var(--text-15);
-  color: var(--accent);
-  opacity: 0.6;
-  line-height: 1;
-}
-.brand-mark img {
-  height: 32px;
+.brand-card img {
+  max-height: 32px;
+  max-width: 100%;
   width: auto;
   object-fit: contain;
+}
+.brands-cta {
+  text-align: center;
+  margin-top: 32px;
 }
 
 /* ─── COLLECTIONS ─── */
@@ -3629,6 +3576,9 @@ footer {
   .collections-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+  .brands-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
   .favorites-head {
     grid-template-columns: 1fr;
     justify-items: center;
@@ -3847,6 +3797,9 @@ footer {
   }
 }
 @media (max-width: 580px) {
+  .brands-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
   .banner {
     font-size: var(--text-9);
     gap: 8px;
