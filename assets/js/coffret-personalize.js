@@ -7,20 +7,55 @@
  * n'est codé en dur : la liste vient de KoreiProducts.PRODUCTS.
  */
 (function () {
+  // KOR-C1 — plus de prix fixe. Chaque format renvoie vers sa clé décant, et
+  // le prix du coffret est la somme des parfums choisis, chacun à -10 %.
   const FORMATS = {
-    "10x2ml": { label: "Découverte", price: 69, capacity: 10 },
-    "5x5ml": { label: "Signature", price: 99, capacity: 5 },
-    "3x10ml": { label: "Collection", price: 149, capacity: 3 },
+    "10x2ml": { label: "Découverte", capacity: 10, key: "2ml" },
+    "5x5ml": { label: "Signature", capacity: 5, key: "5ml" },
+    "3x10ml": { label: "Collection", capacity: 3, key: "10ml" },
   };
+  const DISCOUNT = 0.1;
 
   const coffret = {
     format: "5x5ml",
     items: [], // { productId, quantity }
     message: "",
-    price: FORMATS["5x5ml"].price,
+    price: 0,
     search: "",
     filter: null, // "bestseller" | "new" | famille du produit
   };
+
+  function formatKey() {
+    return FORMATS[coffret.format].key;
+  }
+
+  function unitPrice(productId) {
+    const store = window.KoreiProductStore;
+    const product = store?.getProductById?.(productId) || store?.getAllProducts?.().find((p) => p.id === productId);
+    return product ? store.getFormatPrice(product, formatKey()) : 0;
+  }
+
+  function money(value) {
+    const rounded = Math.round(value * 100) / 100;
+    return Number.isInteger(rounded) ? `${rounded}€` : `${rounded.toFixed(2).replace(".", ",")}€`;
+  }
+
+  /**
+   * KOR-C1 — le prix se recalcule à chaque parfum ajouté ou retiré.
+   * La remise n'est acquise que si le coffret est complet.
+   */
+  function recomputePrice() {
+    const total = coffret.items.reduce(
+      (sum, it) => sum + unitPrice(it.productId) * (it.quantity || 1),
+      0,
+    );
+    const count = coffret.items.reduce((sum, it) => sum + (it.quantity || 1), 0);
+    const complete = count === FORMATS[coffret.format].capacity;
+    coffret.gross = total;
+    coffret.saved = complete ? total * DISCOUNT : 0;
+    coffret.price = total - coffret.saved;
+    return coffret.price;
+  }
 
   // Persiste le brouillon (format/sélection/message) pour qu'il survive à un
   // rechargement ou une navigation — avant, tout se perdait au refresh.
@@ -59,7 +94,7 @@
 
     if (draft.format && FORMATS[draft.format]) {
       coffret.format = draft.format;
-      coffret.price = FORMATS[draft.format].price;
+      recomputePrice();
     }
     if (Array.isArray(draft.items)) {
       const capacity = FORMATS[coffret.format].capacity;
@@ -173,7 +208,7 @@
 
     function setFormat(id) {
       coffret.format = id;
-      coffret.price = FORMATS[id].price;
+      recomputePrice();
       coffret.items = [];
       formatBtns.forEach((b) => {
         const active = b.dataset.format === id;
@@ -192,13 +227,22 @@
     }
     function searchCandidates() {
       const q = normalize(coffret.search).trim();
-      return products
+      const matched = products
         .filter((p) => matchesFilter(p))
-        .filter((p) => !q || normalize(`${p.brand} ${p.name}`).includes(q))
-        .slice(0, 8);
+        .filter((p) => !q || normalize(`${p.brand} ${p.name}`).includes(q));
+
+      if (q || coffret.filter) return matched.slice(0, 8);
+
+      // Rien de saisi : on met les best-sellers en avant, puis le reste.
+      const ranked = matched
+        .slice()
+        .sort((a, b) => Number(Boolean(b.bestseller)) - Number(Boolean(a.bestseller)));
+      return ranked.slice(0, 8);
     }
+    // Les suggestions sont visibles dès l'arrivée : sans elles, la zone
+    // « Ajoutez vos parfums » restait vide tant qu'on ne tapait rien.
     function resultsShouldShow() {
-      return coffret.search.trim().length > 0 || !!coffret.filter;
+      return true;
     }
     function renderResults() {
       if (!resultsEl) return;
@@ -339,9 +383,10 @@
       barFill.style.width = `${Math.min(100, (t / cap) * 100)}%`;
       countEl.textContent = `${t} / ${cap} flacons`;
 
-      // format + prix (avec une pulsation quand le prix change réellement, ex. changement de format)
+      // format + prix (avec une pulsation quand le prix change réellement)
+      recomputePrice();
       formatNameEl.textContent = FORMATS[coffret.format].label;
-      const priceText = `${coffret.price}€`;
+      const priceText = money(coffret.price);
       priceEl.textContent = priceText;
       if (ctaPriceEl) ctaPriceEl.textContent = priceText;
       if (coffret.price !== lastPrice) {
@@ -357,8 +402,20 @@
       addBtn.disabled = !complete;
       addBtn.classList.toggle("is-ready", complete);
       if (ctaLabel) ctaLabel.textContent = complete ? "✓ Coffret prêt — Ajouter au panier" : "Ajouter le coffret au panier";
-      hint.hidden = complete;
-      if (!complete) hint.textContent = `Sélectionnez ${cap - t} flacon${cap - t > 1 ? "s" : ""} de plus pour continuer.`;
+
+      // KOR-C2 — ce qu'il reste à faire pour gagner la remise, en clair.
+      const missing = cap - t;
+      hint.hidden = false;
+      if (complete) {
+        hint.classList.add("is-won");
+        hint.textContent = `−10 % appliqué · vous économisez ${money(coffret.saved)} · livraison offerte`;
+      } else if (t === 0) {
+        hint.classList.remove("is-won");
+        hint.textContent = `Choisissez ${cap} parfums pour −10 % sur chaque flacon et la livraison offerte`;
+      } else {
+        hint.classList.remove("is-won");
+        hint.textContent = `Plus que ${missing} parfum${missing > 1 ? "s" : ""} pour −10 % et la livraison offerte`;
+      }
 
       updateTimeline();
       saveDraft();
@@ -387,10 +444,7 @@
     });
 
     document.addEventListener("click", (e) => {
-      const withinSearchArea = e.target.closest("#cb2Search, #cb2FilterChips, #cb2Results");
-      if (!withinSearchArea && !coffret.filter) {
-        if (resultsEl) resultsEl.hidden = true;
-      }
+      // La liste de suggestions reste visible : rien à masquer au clic extérieur.
     });
 
     if (resultsEl) {
@@ -439,26 +493,51 @@
       addBtn.addEventListener("click", () => {
         if (addBtn.disabled) return;
 
-        // Le widget panier flottant partagé (coffret-builder.js) dédoublonne
-        // par produit+format et ne sait pas représenter une quantité — on ne
-        // s'y connecte donc pas ici pour ne pas afficher un total faux.
-        // Point d'intégration propre pour un futur backend / panier réel :
-        document.dispatchEvent(
-          new CustomEvent("korei:coffret-added", {
-            detail: {
-              format: coffret.format,
-              items: coffret.items.map(({ productId, quantity }) => ({ productId, quantity })),
-              message: coffret.message,
-              price: coffret.price,
-            },
-          })
-        );
+        // KOR-C6 — le coffret rejoint réellement le panier partagé.
+        const cart = window.KoreiCoffret;
+        const store = window.KoreiProductStore;
+        if (!cart || !store) return;
+
+        const key = formatKey();
+        let added = 0;
+        coffret.items.forEach(({ productId, quantity }) => {
+          const product = store.getProductById?.(productId) || store.getAllProducts?.().find((p) => p.id === productId);
+          if (!product) return;
+          const variant = store.getVariantForFormat(product, key);
+          if (cart.hasItem(productId, key)) {
+            cart.setQty(productId, key, quantity || 1);
+            added += 1;
+            return;
+          }
+          const ok = cart.addItem({
+            productId,
+            name: product.name,
+            brand: product.brand,
+            format: key,
+            price: store.getFormatPrice(product, key),
+            qty: quantity || 1,
+            variantId: variant?.id,
+          });
+          if (ok) added += 1;
+        });
+
+        if (!added) {
+          cart.notice?.("Impossible d'ajouter ce coffret. Réessayez.");
+          return;
+        }
+
+        // Le brouillon a rempli son rôle : on repart d'un coffret vide.
+        coffret.items = [];
+        coffret.message = "";
+        saveDraft();
 
         const originalLabel = ctaLabel ? ctaLabel.textContent : "";
-        if (ctaLabel) ctaLabel.textContent = "Ajouté à votre coffret";
+        if (ctaLabel) ctaLabel.textContent = "Coffret ajouté au panier";
+        cart.notice?.(`Coffret ${FORMATS[coffret.format].label} ajouté · −10 % et livraison offerte`);
+        render();
         setTimeout(() => {
           if (ctaLabel) ctaLabel.textContent = originalLabel;
-        }, 1800);
+        }, 2200);
       });
     }
 
