@@ -208,7 +208,7 @@
     return `
       <div class="fav-card fav-card--cta">
         <div class="fav-card--cta__media">
-          <img src="../assets/images/packs/signature.png" alt="" loading="lazy" />
+          <img src="../assets/images/packs/signature.webp" alt="" loading="lazy" />
         </div>
         <div class="fav-card--cta__body">
           <span class="fav-card--cta__icon" aria-hidden="true"><i class="ti ti-sparkles"></i></span>

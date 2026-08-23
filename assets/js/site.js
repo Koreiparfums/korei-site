@@ -3,10 +3,10 @@
  *
  * IMAGES À REMPLACER (JPG ou WebP recommandé) :
  * ─────────────────────────────────────────────
- * Hero      → assets/images/hero/hero-main.jpg        (800×1000 min, ratio 4:5)
- * Lifestyle → assets/images/lifestyle/lifestyle-1.jpg … lifestyle-3.jpg (800×1000)
- * Produits  → assets/images/products/{id}.jpg         (800×1000, ex: oud-wood.jpg)
- * Social    → assets/images/og/og-default.jpg         (1200×630, optionnel)
+ * Hero      → assets/images/hero/hero-main.webp        (800×1000 min, ratio 4:5)
+ * Lifestyle → assets/images/lifestyle/lifestyle-1.webp … lifestyle-3.webp (800×1000)
+ * Produits  → assets/images/products/{id}.webp         (800×1000, ex: oud-wood.webp)
+ * Social    → assets/images/og/og-default.webp         (1200×630, optionnel)
  *
  * Mettre à jour SITE_URL avant la mise en production.
  */
@@ -24,14 +24,14 @@
   const IMAGES = {
     favicon: "assets/images/favicon.svg",
     ogDefault: "assets/images/og/og-default.svg",
-    hero: "assets/images/hero/hero-main.jpg",
+    hero: "assets/images/hero/hero-main.webp",
     productPlaceholder: "assets/images/products/placeholder.svg",
     lifestyle: [
-      "assets/images/lifestyle/lifestyle-1.jpg",
-      "assets/images/lifestyle/lifestyle-2.jpg",
-      "assets/images/lifestyle/lifestyle-3.jpg",
+      "assets/images/lifestyle/lifestyle-1.webp",
+      "assets/images/lifestyle/lifestyle-2.webp",
+      "assets/images/lifestyle/lifestyle-3.webp",
     ],
-    product: (id) => `assets/images/products/${id}.jpg`,
+    product: (id) => `assets/images/products/${id}.webp`,
   };
 
   /** Labels affichés tant que les photos lifestyle ne sont pas ajoutées */

@@ -131,7 +131,7 @@
             isHighlight ? " brand-card--highlight" : ""
           }" data-brand-id="${brand.id}">
               <div class="brand-card-logo-wrap media-slot">
-                <img class="media-slot__image" src="../assets/images/brands/${brand.id}.png" alt="${brand.name}" hidden />
+                <img class="media-slot__image" src="../assets/images/brands/${brand.id}.webp" alt="${brand.name}" hidden />
                 <div class="media-slot__placeholder brand-card-logo-fallback">${brand.name}</div>
               </div>
               <div class="brand-card-country">${brand.country}</div>

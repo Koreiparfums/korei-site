@@ -6,25 +6,25 @@
     {
       name: "Parfums d'été",
       tagline: "Frais · Agrumes · Mer",
-      image: "../assets/images/collections/ete.png",
+      image: "../assets/images/collections/ete.webp",
       params: { season: "été" },
     },
     {
       name: "Parfums d'hiver",
       tagline: "Ambré · Épicé · Enveloppant",
-      image: "../assets/images/collections/hiver.png",
+      image: "../assets/images/collections/hiver.webp",
       params: { season: "hiver" },
     },
     {
       name: "Collection florale",
       tagline: "Rose · Jasmin · Pivoine",
-      image: "../assets/images/collections/floral.png",
+      image: "../assets/images/collections/floral.webp",
       params: { family: "floral" },
     },
     {
       name: "Collection boisée",
       tagline: "Santal · Cèdre · Vétiver",
-      image: "../assets/images/collections/boise.png",
+      image: "../assets/images/collections/boise.webp",
       params: { family: "boisé" },
     },
     {

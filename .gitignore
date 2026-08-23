@@ -29,3 +29,8 @@ research/
 
 # Claude Code
 .claude/
+
+# Travail prestataire (propositions, scripts PDF, temporaires)
+output/
+scripts/generate_*.py
+tmp/

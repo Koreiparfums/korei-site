@@ -4,7 +4,7 @@
  * Couche d'accès : KoreiProductStore (product-store.js)
  * Ne pas filtrer/rechercher ici — utiliser le store.
  *
- * Images (optionnel) : assets/images/products/{id}.jpg
+ * Images (optionnel) : assets/images/products/{id}.webp
  * Shopify futur : renseigner shopifyHandle (défaut = id)
  */
 (function (global) {
@@ -55,7 +55,7 @@
       bestseller: true,
       new: false,
       type: "decant",
-      image: "assets/images/products/interlude-man.png",
+      image: "assets/images/products/interlude-man.webp",
       description:
         "Un oud fumé et résineux, profond et charismatique. Interlude Man est une signature audacieuse pour les amateurs de parfums orientaux intenses.",
     }),
@@ -103,7 +103,7 @@
       bestseller: true,
       new: false,
       type: "decant",
-      image: "assets/images/products/oud-wood.png",
+      image: "assets/images/products/oud-wood.webp",
       description:
         "L'oud revisité en version accessible : bois de santal, cardamome et bois de oud fumé. L'icône moderne du niche.",
     }),
@@ -128,7 +128,7 @@
       bestseller: true,
       new: false,
       type: "decant",
-      image: "assets/images/products/aventus.png",
+      image: "assets/images/products/aventus.webp",
       description:
         "Ananas juteux, bouleau fumé et musc — le parfum viral qui a redéfini le niche masculin.",
     }),
@@ -327,7 +327,7 @@
       bestseller: true,
       new: false,
       type: "decant",
-      image: "assets/images/products/rose-centifolia.png",
+      image: "assets/images/products/rose-centifolia.webp",
       description:
         "Un bouquet de rose centifolia fraîchement cueillie, sublimé par le litchi et un fond musqué délicat. La signature florale de la maison Guerlain.",
     }),
@@ -351,7 +351,7 @@
       bestseller: true,
       new: false,
       type: "decant",
-      image: "assets/images/products/lettre-de-pushkar.png",
+      image: "assets/images/products/lettre-de-pushkar.webp",
       description:
         "Un carnet de voyage olfactif vers l'Inde : safran, rose et encens enveloppés de bois de santal. Une signature niche rare et envoûtante.",
     }),

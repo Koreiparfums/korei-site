@@ -549,7 +549,7 @@ a.brand-chip {
 .hero {
   position: relative;
   background:
-    url("../images/hero/hero-fond.png") center bottom / cover no-repeat,
+    url("../images/hero/hero-fond.webp") center bottom / cover no-repeat,
     var(--bg);
   min-height: 86vh;
   display: grid;

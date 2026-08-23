@@ -2,7 +2,7 @@
  * Korei — main.js
  * UI partagée : navigation, produits, FAQ, favoris
  *
- * Images produits : déposer assets/images/products/{product.id}.jpg
+ * Images produits : déposer assets/images/products/{product.id}.webp
  * ou définir product.image dans products.js pour un chemin custom.
  */
 (function (global) {
@@ -43,7 +43,7 @@
     const esc = site?.escapeHtml || ((v) => v);
     return `
       <span class="note-image">
-        <img src="${basePath}assets/images/notes/${slug}.jpg" alt="" loading="lazy" data-onerror="remove" />
+        <img src="${basePath}assets/images/notes/${slug}.webp" alt="" loading="lazy" data-onerror="remove" />
         <span>${esc(note.slice(0, 1))}</span>
       </span>`;
   }
