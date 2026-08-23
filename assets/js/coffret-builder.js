@@ -576,6 +576,7 @@
     getProgress,
     getCheckoutUrl,
     onChange,
+    notice: showStockNotice,
   };
 
   function init() {

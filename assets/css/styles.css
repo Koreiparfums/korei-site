@@ -552,6 +552,7 @@ a.brand-chip {
     url("../images/hero/hero-fond.webp") center bottom / cover no-repeat,
     var(--bg);
   min-height: 86vh;
+  min-height: 86dvh;
   display: grid;
   grid-template-columns: 0.85fr 1.3fr;
   align-items: center;
@@ -1589,6 +1590,7 @@ body[data-page="home"] .card-add {
 .coffret-hero {
   position: relative;
   min-height: 86vh;
+  min-height: 86dvh;
   display: flex;
   align-items: center;
   padding: 0 var(--px);
@@ -3987,6 +3989,7 @@ footer {
 body[data-page="catalogue"] .page-hero {
   position: relative;
   min-height: 55vh;
+  min-height: 55dvh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -4028,6 +4031,7 @@ body[data-page="catalogue"] .page-hero {
 @media (max-width: 860px) {
   body[data-page="catalogue"] .page-hero {
     min-height: 44vh;
+    min-height: 44dvh;
     padding-top: 32px;
     padding-bottom: 32px;
   }
@@ -4069,6 +4073,7 @@ body[data-page="catalogue"] .page-hero {
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   max-height: calc(100vh - 96px);
+  max-height: calc(100dvh - 96px);
   overflow: hidden;
 }
 .filters-header {
@@ -5110,6 +5115,7 @@ body[data-page="catalogue"] .page-hero {
   max-width: calc(100vw - 38.4px);
   height: 416px;
   max-height: calc(100vh - 96px);
+  max-height: calc(100dvh - 96px);
   background: var(--surface);
   border: 0.8px solid var(--border);
   border-radius: var(--radius-lg);
@@ -5363,6 +5369,7 @@ body[data-page="catalogue"] .page-hero {
   width: 320px;
   max-width: calc(100vw - 38.4px);
   max-height: calc(100vh - 96px);
+  max-height: calc(100dvh - 96px);
   background: var(--surface);
   border: 0.8px solid var(--border);
   border-radius: var(--radius-lg);
@@ -6946,6 +6953,7 @@ body[data-page="favoris"] .favoris-hero {
 /* ─── 404 ─── */
 .error-page {
   min-height: 80vh;
+  min-height: 80dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7065,5 +7073,93 @@ body.has-cookie-banner .chatbot-widget {
 @media (max-width: 768px) {
   body.has-cookie-banner .chatbot-widget {
     bottom: calc(12.8px + 68px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ─── BARRE D'ONGLETS MOBILE (KOR-A1) ─── */
+.tabbar {
+  display: none;
+}
+.tabbar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3.2px;
+  flex: 1;
+  padding: 8px 4px;
+  text-decoration: none;
+  color: var(--text-muted);
+  transition: color 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.tabbar__item.is-active {
+  color: var(--accent);
+}
+.tabbar__icon {
+  position: relative;
+  display: block;
+  font-size: 20.8px;
+  line-height: 1;
+}
+.tabbar__label {
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-tight);
+}
+.tabbar__badge {
+  position: absolute;
+  top: -4.8px;
+  right: -8px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: #fff;
+  font-size: var(--text-9);
+  font-weight: 500;
+  line-height: 16px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.tabbar__item:focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: -3.2px;
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 860px) {
+  .tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 600;
+    display: flex;
+    align-items: stretch;
+    background: var(--bg);
+    border-top: 0.8px solid var(--border);
+    box-shadow: var(--shadow-float);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  /* KOR-A2 : plus aucun bouton flottant ne recouvre les boutons d'achat */
+  .coffret-widget {
+    display: none;
+  }
+  .chatbot-widget {
+    bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+  }
+  /* Le bandeau cookies se pose au-dessus de la barre, jamais dessous */
+  .cookie-banner {
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 14.4px;
+  }
+  /* Le bouton conseiller se cale au-dessus de tout le bas de page. */
+  .chatbot-widget,
+  body.has-cookie-banner .chatbot-widget {
+    bottom: calc(var(--bottom-chrome, 56px) + 12.8px + env(safe-area-inset-bottom, 0px));
+  }
+  body.has-tabbar {
+    padding-bottom: calc(var(--tabbar-h, 56px) + env(safe-area-inset-bottom, 0px));
   }
 }

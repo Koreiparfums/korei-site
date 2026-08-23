@@ -1044,3 +1044,105 @@ body[data-page="product"] {
     flex-wrap: wrap;
   }
 }
+
+/* ─── SÉLECTEUR DE FORMATS — prix au ml, meilleur rapport (KOR-B3) ─── */
+.pdp-format {
+  position: relative;
+}
+.pdp-format__unit {
+  display: block;
+  font-size: var(--text-11);
+  color: var(--pdp-muted, var(--text-muted));
+  margin-top: 1.6px;
+  font-variant-numeric: tabular-nums;
+}
+.pdp-format__flag {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: var(--accent);
+  color: #fff;
+  font-size: var(--text-9);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  padding: 2.4px 8px;
+  border-radius: var(--radius-pill);
+  line-height: 1.2;
+}
+.pdp-format.is-best {
+  border-color: var(--accent);
+}
+.pdp-format.is-unavailable {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+.pdp-format.is-unavailable .pdp-format__price {
+  text-decoration: none;
+}
+
+/* ─── BARRE D'ACHAT COLLANTE (KOR-A3) ─── */
+.pdp-sticky {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 550;
+  display: flex;
+  align-items: center;
+  gap: 12.8px;
+  padding: 11.2px var(--px);
+  padding-bottom: calc(11.2px + env(safe-area-inset-bottom, 0px));
+  background: var(--bg);
+  border-top: 0.8px solid var(--border);
+  box-shadow: var(--shadow-float);
+  transform: translateY(110%);
+  transition: transform 0.24s var(--pdp-ease, ease);
+  pointer-events: none;
+}
+.pdp-sticky.is-visible {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.pdp-sticky__info {
+  flex: 1;
+  min-width: 0;
+}
+.pdp-sticky__name {
+  display: block;
+  font-size: var(--text-14);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pdp-sticky__vol {
+  display: block;
+  font-size: var(--text-12);
+  color: var(--text-muted);
+}
+.pdp-sticky__cta {
+  flex-shrink: 0;
+  min-width: 190px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pdp-sticky {
+    transition: none;
+  }
+}
+@media (max-width: 860px) {
+  /* Au-dessus de la barre d'onglets et du bandeau cookies, jamais dessous.
+     --bottom-chrome est mesuré par tabbar.js, jamais deviné. */
+  .pdp-sticky {
+    bottom: calc(var(--bottom-chrome, 56px) + 8px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 11.2px;
+  }
+  .pdp-sticky__info {
+    display: none;
+  }
+  .pdp-sticky__cta {
+    width: 100%;
+    min-width: 0;
+  }
+}

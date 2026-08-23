@@ -329,12 +329,21 @@
   function initHomePage() {
     const store = global.KoreiProductStore;
 
-    renderProducts(document.getElementById("bestsellers-grid"), store.getBestsellers(), { basePath: "" });
-    // TODO: revenir à store.getNewProducts() une fois une vraie sélection nouveautés définie.
-    renderProducts(document.getElementById("new-products-grid"), store.getBestsellers(), { basePath: "" });
-
+    const bestsellers = store.getBestsellers();
+    renderProducts(document.getElementById("bestsellers-grid"), bestsellers, { basePath: "" });
     initProductCarousel("bestsellers-grid");
-    initProductCarousel("new-products-grid");
+
+    // Nouveautés : jamais les mêmes produits que les best-sellers. Sous 4 résultats,
+    // la section entière disparaît plutôt que d'afficher une rangée bancale.
+    const bestsellerIds = new Set(bestsellers.map((p) => p.id));
+    const news = store.getNewProducts().filter((p) => !bestsellerIds.has(p.id));
+    const newsSection = document.getElementById("new-products-grid")?.closest("section");
+    if (news.length >= 4) {
+      renderProducts(document.getElementById("new-products-grid"), news, { basePath: "" });
+      initProductCarousel("new-products-grid");
+    } else if (newsSection) {
+      newsSection.hidden = true;
+    }
     initBrandChips();
     initChatbotTriggers();
   }

@@ -121,30 +121,72 @@
   }
 
   // ── Formats & prix
+  // KOR-B2/B3 — le prix vient de la variante Shopify dès qu'elle existe.
+  // Les multiplicateurs ne servent plus que de repli pour le catalogue de
+  // démonstration local, qui n'a aucune variante. Un produit réellement
+  // rattaché à Shopify n'affiche jamais un prix calculé : le format sans
+  // variante est marqué indisponible.
+  const FORMAT_ML = { "2ml": 2, "5ml": 5, "10ml": 10 };
+  const DEMO_MULTIPLIERS = { "2ml": 1, "5ml": 2.2, "10ml": 3.8 };
+
   function getFormats(product) {
-    const price2 = product.price;
-    const price5 = Math.round(product.price * 2.2);
-    const price10 = Math.round(product.price * 3.8);
-    const priceFlacon = product.flaconPrice || Math.round(product.price * 9.5);
-    return [
-      { vol: "2 ml", price: price2 },
-      { vol: "5 ml", price: price5 },
-      { vol: "10 ml", price: price10 },
-      { vol: "Flacon", price: priceFlacon },
-    ];
+    const store = global.KoreiProductStore;
+    const hasShopify = Boolean(product?.variants?.length);
+
+    const formats = Object.keys(FORMAT_ML).map((key) => {
+      const ml = FORMAT_ML[key];
+      const variant = store?.getVariantForFormat(product, key) || null;
+      const price = variant ? Number(variant.price) : Math.round(product.price * DEMO_MULTIPLIERS[key]);
+      const available = hasShopify
+        ? Boolean(variant) && variant.availableForSale !== false
+        : true;
+      return {
+        key,
+        ml,
+        vol: `${ml} ml`,
+        price,
+        pricePerMl: price / ml,
+        variantId: variant?.id || null,
+        real: Boolean(variant),
+        available,
+      };
+    });
+
+    // « Meilleur rapport » : le format disponible au plus bas prix au ml.
+    const candidates = formats.filter((f) => f.available && f.price > 0);
+    const best = candidates.reduce((acc, f) => (!acc || f.pricePerMl < acc.pricePerMl ? f : acc), null);
+    if (best && candidates.length > 1) best.best = true;
+
+    return formats;
+  }
+
+  function firstSelectable(formats) {
+    return formats.find((f) => f.available) || formats[0];
+  }
+
+  function formatPriceLabel(value) {
+    const rounded = Math.round(value * 100) / 100;
+    return Number.isInteger(rounded) ? `${rounded}` : rounded.toFixed(2).replace(".", ",");
   }
 
   function renderFormats(formats) {
+    const selected = firstSelectable(formats);
     return `
       <div class="pdp-formats" role="radiogroup" aria-label="Format">
         ${formats
-          .map(
-            (f, i) => `
-          <button class="pdp-format${i === 0 ? " is-active" : ""}" type="button" role="radio" aria-checked="${i === 0}" data-price="${f.price}" data-vol="${f.vol.replace(/\s+/g, "").toLowerCase()}">
+          .map((f) => {
+            const isActive = f === selected;
+            return `
+          <button class="pdp-format${isActive ? " is-active" : ""}${f.best ? " is-best" : ""}${f.available ? "" : " is-unavailable"}"
+                  type="button" role="radio" aria-checked="${isActive}"
+                  ${f.available ? "" : "disabled"}
+                  data-price="${f.price}" data-vol="${f.key}" data-available="${f.available}">
+            ${f.best ? '<span class="pdp-format__flag">Meilleur rapport</span>' : ""}
             <span class="pdp-format__vol">${f.vol}</span>
-            <span class="pdp-format__price">${f.price}€</span>
-          </button>`
-          )
+            <span class="pdp-format__price">${f.available ? `${formatPriceLabel(f.price)}€` : "—"}</span>
+            <span class="pdp-format__unit">${f.available ? `${formatPriceLabel(f.pricePerMl)}€ / ml` : "Indisponible"}</span>
+          </button>`;
+          })
           .join("")}
       </div>`;
   }
@@ -183,6 +225,7 @@
   // ── Section 1 : Hero
   function renderHero(product, basePath) {
     const formats = getFormats(product);
+    const selected = firstSelectable(formats);
     return `
       <section class="pdp-hero">
         <div class="pdp-hero__grid">
@@ -199,8 +242,8 @@
 
             <div class="pdp-actions">
               <div class="pdp-actions__row">
-                <button class="pdp-btn pdp-btn--primary" id="pdp-cta" type="button" disabled title="Bientôt disponible">
-                  Bientôt disponible
+                <button class="pdp-btn pdp-btn--primary" id="pdp-cta" type="button"${selected.available ? "" : " disabled"}>
+                  ${selected.available ? `Ajouter au panier — ${formatPriceLabel(selected.price)}€` : "Format indisponible"}
                 </button>
                 <button class="pdp-btn pdp-btn--ghost" id="pdp-fav" type="button" aria-label="Ajouter aux favoris" aria-pressed="false" data-fav-btn data-product-id="${product.id}">
                   <i class="ti ti-heart"></i>
@@ -216,19 +259,109 @@
       </section>`;
   }
 
+  // KOR-A3 — barre d'achat collante, visible dès que le bouton principal sort
+  // de l'écran. Elle reflète toujours le format sélectionné.
+  function renderStickyBar(product) {
+    if (document.getElementById("pdp-sticky")) return;
+    const bar = document.createElement("div");
+    bar.className = "pdp-sticky";
+    bar.id = "pdp-sticky";
+    bar.innerHTML = `
+      <div class="pdp-sticky__info">
+        <span class="pdp-sticky__name">${esc(product.name)}</span>
+        <span class="pdp-sticky__vol" id="pdp-sticky-vol"></span>
+      </div>
+      <button class="pdp-btn pdp-btn--primary pdp-sticky__cta" id="pdp-sticky-cta" type="button"></button>`;
+    document.body.appendChild(bar);
+    return bar;
+  }
+
   function initHero(main, product) {
     const formatBtns = Array.from(main.querySelectorAll(".pdp-format"));
+    const formats = getFormats(product);
+    const byKey = new Map(formats.map((f) => [f.key, f]));
+    const cta = main.querySelector("#pdp-cta");
+    const stickyBar = renderStickyBar(product);
+    const stickyCta = document.getElementById("pdp-sticky-cta");
+    const stickyVol = document.getElementById("pdp-sticky-vol");
+    const coffret = global.KoreiCoffret;
+
+    let current = byKey.get(main.querySelector(".pdp-format.is-active")?.dataset.vol) || firstSelectable(formats);
+
+    function label() {
+      if (!current) return "Format indisponible";
+      if (!current.available) return "Format indisponible";
+      if (coffret?.hasItem(product.id, current.key)) return "Déjà dans le panier";
+      return `Ajouter au panier — ${formatPriceLabel(current.price)}€`;
+    }
+
+    function syncButtons() {
+      const text = label();
+      const disabled = !current?.available || coffret?.hasItem(product.id, current.key);
+      [cta, stickyCta].forEach((btn) => {
+        if (!btn) return;
+        btn.textContent = text;
+        btn.disabled = Boolean(disabled);
+      });
+      if (stickyVol) stickyVol.textContent = current?.available ? current.vol : "";
+    }
 
     formatBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
+        if (btn.dataset.available === "false") return;
         formatBtns.forEach((b) => {
           b.classList.remove("is-active");
           b.setAttribute("aria-checked", "false");
         });
         btn.classList.add("is-active");
         btn.setAttribute("aria-checked", "true");
+        current = byKey.get(btn.dataset.vol) || current;
+        syncButtons();
       });
     });
+
+    // KOR-B1 — l'ajout crée une vraie ligne, avec la variante Shopify quand elle existe.
+    function addToCart() {
+      if (!current?.available || coffret?.hasItem(product.id, current.key)) return;
+      const added = coffret?.addItem({
+        productId: product.id,
+        name: product.name,
+        brand: product.brand,
+        format: current.key,
+        price: current.price,
+        variantId: current.variantId || undefined,
+      });
+      if (added) {
+        coffret?.notice?.(`${product.name} · ${current.vol} ajouté au panier`);
+        syncButtons();
+      }
+    }
+
+    cta?.addEventListener("click", addToCart);
+    stickyCta?.addEventListener("click", addToCart);
+    coffret?.onChange(syncButtons);
+    syncButtons();
+
+    // La barre n'apparaît que lorsque le bouton principal n'est plus visible.
+    // Calcul au scroll plutôt qu'IntersectionObserver : celui-ci ne se
+    // déclenche pas quand l'onglet est en arrière-plan.
+    if (stickyBar && cta) {
+      let ticking = false;
+      const update = () => {
+        ticking = false;
+        const rect = cta.getBoundingClientRect();
+        const passed = rect.bottom < 0 || rect.top > global.innerHeight;
+        stickyBar.classList.toggle("is-visible", passed);
+      };
+      const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        global.requestAnimationFrame(update);
+      };
+      global.addEventListener("scroll", onScroll, { passive: true });
+      global.addEventListener("resize", onScroll);
+      update();
+    }
 
     global.KoreiFavorites?.initHeartButtons(main);
 
@@ -575,7 +708,7 @@
             .map(
               (it) => `
             <div class="faq-item">
-              <button class="faq-question" onclick="toggleFaq(this)" type="button">
+              <button class="faq-question" data-toggle-faq type="button">
                 <span>${it.q}</span>
                 <i class="ti ti-plus faq-icon"></i>
               </button>
