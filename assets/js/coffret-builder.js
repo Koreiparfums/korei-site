@@ -418,6 +418,50 @@
   }
 
   // ── Page dédiée pages/panier.html
+  /**
+   * KOR-C8 — le panier montre les coffrets comme des ensembles.
+   * Un groupe par format ayant au moins un flacon, avec son en-tête : nom du
+   * coffret, avancement, total remisé et économie. Les flacons hors coffret
+   * complet restent visibles dans le même groupe, mais sans remise annoncée.
+   */
+  function renderPanierGroups(items) {
+    const state = getCartState(items);
+    return state.groups
+      .filter((group) => group.count > 0)
+      .map((group) => {
+        const groupItems = items.filter((it) => it.format === group.format);
+        const complete = group.boxes > 0;
+        const net = group.gross - group.discount;
+        const title = group.boxes > 1
+          ? `${group.boxes} coffrets ${group.label}`
+          : complete
+            ? `Coffret ${group.label}`
+            : `Coffret ${group.label} en cours`;
+        return `
+          <li class="panier-group${complete ? " is-complete" : ""}">
+            <div class="panier-group__head">
+              <div class="panier-group__id">
+                <span class="panier-group__name">${title}</span>
+                <span class="panier-group__meta">${group.count}/${group.slots} · ${group.format.replace("ml", " ml")}</span>
+              </div>
+              <div class="panier-group__money">
+                <span class="panier-group__total">${money(net)}</span>
+                ${group.discount > 0 ? `<span class="panier-group__saved">−10 % · ${money(group.discount)} économisés</span>` : ""}
+              </div>
+            </div>
+            ${
+              complete
+                ? ""
+                : `<p class="panier-group__next">Plus que ${group.missing} parfum${group.missing > 1 ? "s" : ""} pour ${state.freeShipping ? "−10 % sur ces flacons" : "−10 % et la livraison offerte"}</p>`
+            }
+            <ul class="panier-group__items">
+              ${groupItems.map(renderPanierItem).join("")}
+            </ul>
+          </li>`;
+      })
+      .join("");
+  }
+
   function renderPanierItem(item) {
     const ui = global.KoreiUI || {};
     const store = global.KoreiProductStore;
@@ -453,7 +497,7 @@
           <span>${qty}</span>
           <button type="button" data-qty-incr="${item.productId}|${item.format}" aria-label="Augmenter la quantité"${available ? "" : " disabled"}>+</button>
         </div>
-        <span class="panier-item__price">${lineTotal}€</span>
+        <span class="panier-item__price">${money(lineTotal)}</span>
         <button type="button" class="panier-item__remove" data-remove="${item.productId}|${item.format}" aria-label="Retirer ${esc(item.name)} du panier">
           <i class="ti ti-x"></i>
         </button>
@@ -563,7 +607,8 @@
       } else if (next) {
         hintEl.hidden = false;
         hintEl.classList.toggle("is-won", false);
-        hintEl.textContent = `Plus que ${next.missing} parfum${next.missing > 1 ? "s" : ""} en ${next.format.replace("ml", " ml")} pour −10 % et la livraison offerte`;
+        const gain = state.freeShipping ? "−10 % sur ces flacons" : "−10 % et la livraison offerte";
+        hintEl.textContent = `Plus que ${next.missing} parfum${next.missing > 1 ? "s" : ""} en ${next.format.replace("ml", " ml")} pour ${gain}`;
       } else {
         hintEl.hidden = true;
       }
@@ -592,7 +637,7 @@
       if (layout) layout.hidden = false;
       if (empty) empty.hidden = true;
       if (stats) stats.hidden = false;
-      container.innerHTML = items.map(renderPanierItem).join("");
+      container.innerHTML = renderPanierGroups(items);
 
       container.querySelectorAll("[data-remove]").forEach((btn) => {
         btn.addEventListener("click", () => {
