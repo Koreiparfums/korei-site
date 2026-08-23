@@ -296,8 +296,27 @@
     return !variant || variant.availableForSale !== false;
   }
 
+  /**
+   * Prix d'un format, source unique pour toute l'application.
+   *
+   * Le prix vient de la variante Shopify dès qu'elle existe : c'est le seul
+   * prix qui engage. Les coefficients ci-dessous ne servent que de repli pour
+   * le catalogue de démonstration local, qui n'a aucune variante. Ils ne
+   * doivent jamais être recopiés ailleurs.
+   */
+  const DEMO_MULTIPLIERS = { "2ml": 1, "5ml": 2.2, "10ml": 3.8 };
+
+  function getFormatPrice(product, format) {
+    const variant = getVariantForFormat(product, format);
+    if (variant) return Number(variant.price);
+    const multiplier = DEMO_MULTIPLIERS[format];
+    if (!multiplier || !product?.price) return 0;
+    return Math.round(product.price * multiplier);
+  }
+
   global.KoreiProductStore = {
     getAllProducts,
+    getFormatPrice,
     getProductById,
     getProductsByBrand,
     getProductsByFamily,

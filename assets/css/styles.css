@@ -7163,3 +7163,59 @@ body.has-cookie-banner .chatbot-widget {
     padding-bottom: calc(var(--tabbar-h, 56px) + env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* ─── Remise coffret dans le panier (KOR-C1/C2) ─── */
+.panier-summary__row--discount {
+  color: var(--accent);
+  font-weight: 500;
+}
+.panier-summary__hint.is-won {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ─── Récap coffret dans le widget (KOR-C2) ─── */
+.coffret-summary {
+  padding: 12.8px 16px;
+  border-bottom: 0.8px solid var(--border);
+  background: var(--surface);
+}
+.coffret-summary.is-won {
+  background: var(--accent-light);
+}
+.coffret-summary__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12.8px;
+  font-size: var(--text-14);
+}
+.coffret-summary__row strong {
+  font-size: var(--text-17);
+  font-variant-numeric: tabular-nums;
+}
+.coffret-summary__saved {
+  margin-top: 4.8px;
+  font-size: var(--text-12);
+  font-weight: 500;
+  color: var(--accent);
+}
+.coffret-summary__next {
+  margin: 8px 0 0;
+  font-size: var(--text-12);
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+.coffret-summary__next strong {
+  color: var(--text);
+  font-weight: 500;
+}
+.coffret-group.is-complete .coffret-group__bar > span {
+  background: var(--accent);
+}
+.coffret-panel__foot .btn-dark {
+  display: block;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+}

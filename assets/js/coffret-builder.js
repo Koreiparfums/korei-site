@@ -9,8 +9,13 @@
   const STORAGE_KEY = "korei-coffret";
   const esc = (v) => (global.KoreiSite?.escapeHtml || ((x) => x))(v);
   const SLOT_COUNTS = { "2ml": 10, "5ml": 5, "10ml": 3 };
-  const PACK_LABELS = { "2ml": "Découverte", "5ml": "Équilibré", "10ml": "Collection" };
-  const FREE_SHIPPING_THRESHOLD = 60;
+  // Libellés alignés sur les trois coffrets réels : 10x2ml, 5x5ml, 3x10ml.
+  const PACK_LABELS = { "2ml": "Découverte", "5ml": "Signature", "10ml": "Collection" };
+  // KOR-C1 — un coffret complet donne -10 % sur chaque flacon qu'il contient.
+  // KOR-C6 — et la livraison offerte. La règle est le coffret, pas un montant :
+  // un seuil en euros rendrait le message d'incitation faux (« plus que 1
+  // parfum pour la livraison offerte » alors qu'elle le serait déjà).
+  const COFFRET_DISCOUNT = 0.1;
   const basePath = location.pathname.includes("/pages/") ? "../" : "";
 
   function load() {
@@ -50,16 +55,48 @@
     return load().some((it) => it.productId === productId && it.format === format);
   }
 
+  // Nombre de flacons déjà présents pour un format, toutes lignes confondues.
+  function countFor(format, items) {
+    return (items || load())
+      .filter((it) => it.format === format)
+      .reduce((sum, it) => sum + (it.qty || 1), 0);
+  }
+
+  // KOR-C5 — un coffret ne dépasse jamais sa capacité. Au-delà, on ouvre un
+  // second coffret : la capacité effective est donc un multiple du quota.
+  function capacityFor(format, items) {
+    const slots = SLOT_COUNTS[format] || 0;
+    if (!slots) return 0;
+    const current = countFor(format, items);
+    return (Math.floor(current / slots) + 1) * slots;
+  }
+
   function addItem(item) {
     if (!isEligibleFormat(item.format)) return false;
     const items = load();
     if (items.some((it) => it.productId === item.productId && it.format === item.format)) return false;
-    const stored = { ...item, qty: item.qty || 1, addedAt: Date.now() };
+
+    const slots = SLOT_COUNTS[item.format];
+    const current = countFor(item.format, items);
+    const qty = item.qty || 1;
+    if (current + qty > capacityFor(item.format, items)) {
+      showStockNotice(`Coffret ${PACK_LABELS[item.format]} complet (${slots} flacons). Retirez-en un pour changer.`);
+      return false;
+    }
+
+    const stored = { ...item, qty, addedAt: Date.now() };
     items.push(stored);
     save(items);
     notify();
     syncRemoteAdd(stored);
+    announceCoffret(item.format, current + qty, slots);
     return true;
+  }
+
+  // KOR-C3 — le coffret se forme tout seul quand le compte est atteint.
+  function announceCoffret(format, total, slots) {
+    if (!slots || total % slots !== 0) return;
+    showStockNotice(`Coffret ${PACK_LABELS[format]} complet. −10 % sur chaque flacon et livraison offerte.`);
   }
 
   function removeItem(productId, format) {
@@ -108,11 +145,9 @@
     return { count, slots };
   }
 
-  // ── Prix par décant (même formule que la fiche produit / favoris)
+  // ── Prix par décant : source unique, voir product-store.js
   function formatPriceFor(product, format) {
-    if (format === "5ml") return Math.round(product.price * 2.2);
-    if (format === "10ml") return Math.round(product.price * 3.8);
-    return product.price;
+    return global.KoreiProductStore?.getFormatPrice(product, format) ?? 0;
   }
 
   // ── Panier Shopify (optionnel) : ne suit que les lignes ayant une vraie
@@ -252,18 +287,33 @@
       return;
     }
 
-    body.innerHTML = Object.keys(SLOT_COUNTS)
+    const state = getCartState(items);
+    const nextStep = getNextStep(state);
+
+    body.innerHTML = `
+      <div class="coffret-summary${state.discount > 0 ? " is-won" : ""}">
+        <div class="coffret-summary__row">
+          <span>${state.qty} flacon${state.qty > 1 ? "s" : ""}</span>
+          <strong>${money(state.total)}</strong>
+        </div>
+        ${state.discount > 0 ? `<div class="coffret-summary__saved">−10 % appliqué · vous économisez ${money(state.discount)}</div>` : ""}
+        ${state.freeShipping ? `<div class="coffret-summary__saved">Livraison offerte</div>` : ""}
+        ${nextStep ? `<p class="coffret-summary__next">Plus que <strong>${nextStep.missing} parfum${nextStep.missing > 1 ? "s" : ""}</strong> en ${nextStep.format.replace("ml", " ml")} pour −10 % et la livraison offerte</p>` : ""}
+      </div>` +
+      Object.keys(SLOT_COUNTS)
       .map((format) => {
         const groupItems = items.filter((it) => it.format === format);
         if (!groupItems.length) return "";
         const slots = SLOT_COUNTS[format];
         const totalQty = groupItems.reduce((sum, it) => sum + (it.qty || 1), 0);
-        const pct = Math.min(100, (totalQty / slots) * 100);
+        const inBox = totalQty % slots === 0 ? slots : totalQty % slots;
+        const pct = Math.min(100, (inBox / slots) * 100);
+        const complete = totalQty >= slots;
         return `
-          <div class="coffret-group">
+          <div class="coffret-group${complete ? " is-complete" : ""}">
             <div class="coffret-group__head">
               <span>${PACK_LABELS[format]} · ${format.replace("ml", " ml")}</span>
-              <span>${totalQty}/${slots}</span>
+              <span>${totalQty > slots ? `${Math.floor(totalQty / slots)} coffret${Math.floor(totalQty / slots) > 1 ? "s" : ""} + ${totalQty % slots}` : `${totalQty}/${slots}`}</span>
             </div>
             <span class="coffret-group__bar"><span style="width:${pct}%"></span></span>
             <ul class="coffret-items">
@@ -310,7 +360,7 @@
         </div>
         <div class="coffret-panel__body" id="coffret-body"></div>
         <div class="coffret-panel__foot">
-          <button class="btn-dark" type="button" disabled title="Bientôt disponible">Finaliser mon coffret</button>
+          <a class="btn-dark" href="${basePath}pages/panier.html">Voir mon panier</a>
         </div>
       </div>`;
     document.body.appendChild(el);
@@ -410,25 +460,112 @@
       </li>`;
   }
 
+  function money(value) {
+    const rounded = Math.round(value * 100) / 100;
+    return Number.isInteger(rounded) ? `${rounded}€` : `${rounded.toFixed(2).replace(".", ",")}€`;
+  }
+
+  /**
+   * KOR-C1/C2/C3 — état commercial du panier.
+   *
+   * Un coffret est un lot complet de flacons d'un même format : 10x2ml, 5x5ml
+   * ou 3x10ml. Les flacons qui composent un coffret complet sont remisés de
+   * 10 % chacun ; ceux du lot en cours restent au prix plein tant que le
+   * coffret n'est pas rempli. Le total se recalcule à chaque changement.
+   */
+  function getCartState(items) {
+    const list = items || load();
+    const groups = Object.keys(SLOT_COUNTS).map((format) => {
+      const slots = SLOT_COUNTS[format];
+      const groupItems = list.filter((it) => it.format === format);
+      const count = groupItems.reduce((sum, it) => sum + (it.qty || 1), 0);
+      const gross = groupItems.reduce((sum, it) => sum + (Number(it.price) || 0) * (it.qty || 1), 0);
+      const boxes = Math.floor(count / slots);
+      const inBoxes = boxes * slots;
+      const missing = count === 0 ? slots : (slots - (count % slots)) % slots;
+
+      // Les flacons remisés sont ceux des coffrets complets. On applique la
+      // remise au prorata du nombre de flacons concernés, dans l'ordre d'ajout.
+      let remaining = inBoxes;
+      let discount = 0;
+      for (const it of groupItems) {
+        if (remaining <= 0) break;
+        const qty = Math.min(it.qty || 1, remaining);
+        discount += (Number(it.price) || 0) * qty * COFFRET_DISCOUNT;
+        remaining -= qty;
+      }
+
+      return { format, slots, count, gross, boxes, inBoxes, missing, discount, label: PACK_LABELS[format] };
+    });
+
+    const gross = groups.reduce((sum, g) => sum + g.gross, 0);
+    const discount = groups.reduce((sum, g) => sum + g.discount, 0);
+    const boxes = groups.reduce((sum, g) => sum + g.boxes, 0);
+    const qty = groups.reduce((sum, g) => sum + g.count, 0);
+
+    return {
+      groups,
+      qty,
+      gross,
+      discount,
+      total: gross - discount,
+      boxes,
+      // KOR-C6 : la livraison est offerte dès qu'un coffret est complet.
+      freeShipping: boxes > 0,
+    };
+  }
+
+  /**
+   * KOR-C2 — le message d'incitation. Il vise le format le plus proche
+   * d'un coffret complet, celui pour lequel l'effort demandé est le plus petit.
+   */
+  function getNextStep(state) {
+    const started = state.groups.filter((g) => g.count > 0 && g.missing > 0);
+    if (!started.length) return null;
+    return started.reduce((best, g) => (!best || g.missing < best.missing ? g : best), null);
+  }
+
   function updatePanierSummary(items) {
+    const state = getCartState(items);
     const countEl = document.getElementById("panier-stat-count");
     const subtotalEl = document.getElementById("panier-subtotal-value");
     const totalEl = document.getElementById("panier-total-value");
     const shipEl = document.getElementById("panier-ship-value");
     const hintEl = document.getElementById("panier-ship-hint");
-    const totalQty = items.reduce((sum, it) => sum + (it.qty || 1), 0);
-    const total = items.reduce((sum, it) => sum + (Number(it.price) || 0) * (it.qty || 1), 0);
+    const discountRow = document.getElementById("panier-discount-row");
+    const discountEl = document.getElementById("panier-discount-value");
 
-    if (countEl) countEl.textContent = `${totalQty} article${totalQty > 1 ? "s" : ""} dans votre sélection`;
-    if (subtotalEl) subtotalEl.textContent = `${total}€`;
-    if (totalEl) totalEl.textContent = `${total}€`;
+    if (countEl) {
+      countEl.textContent = `${state.qty} article${state.qty > 1 ? "s" : ""} dans votre sélection`;
+    }
+    if (subtotalEl) subtotalEl.textContent = money(state.gross);
+    if (totalEl) totalEl.textContent = money(state.total);
+
+    if (discountRow) {
+      discountRow.hidden = state.discount <= 0;
+      const boxLabel = state.boxes > 1 ? `${state.boxes} coffrets` : "Coffret complet";
+      const label = discountRow.querySelector("[data-discount-label]");
+      if (label) label.textContent = `${boxLabel} · −10 %`;
+      if (discountEl) discountEl.textContent = `−${money(state.discount)}`;
+    }
+
     if (shipEl) {
-      const remaining = FREE_SHIPPING_THRESHOLD - total;
-      shipEl.textContent = remaining > 0 ? "Payante" : "Offerte";
-      shipEl.classList.toggle("is-free", remaining <= 0);
-      if (hintEl) {
-        hintEl.hidden = remaining <= 0;
-        if (remaining > 0) hintEl.textContent = `Plus que ${remaining}€ pour la livraison offerte`;
+      shipEl.textContent = state.freeShipping ? "Offerte" : "Payante";
+      shipEl.classList.toggle("is-free", state.freeShipping);
+    }
+
+    if (hintEl) {
+      const next = getNextStep(state);
+      if (state.freeShipping && !next) {
+        hintEl.hidden = false;
+        hintEl.classList.add("is-won");
+        hintEl.textContent = "−10 % appliqué · Livraison offerte";
+      } else if (next) {
+        hintEl.hidden = false;
+        hintEl.classList.toggle("is-won", false);
+        hintEl.textContent = `Plus que ${next.missing} parfum${next.missing > 1 ? "s" : ""} en ${next.format.replace("ml", " ml")} pour −10 % et la livraison offerte`;
+      } else {
+        hintEl.hidden = true;
       }
     }
   }
@@ -497,7 +634,7 @@
               name: item.name,
               brand: item.brand,
               format: newFormat,
-              price: variant ? Number(variant.price) : formatPriceFor(product, newFormat),
+              price: formatPriceFor(product, newFormat),
               qty: item.qty || 1,
               variantId: variant?.id,
             });
@@ -577,6 +714,11 @@
     getCheckoutUrl,
     onChange,
     notice: showStockNotice,
+    getCartState,
+    getNextStep,
+    countFor,
+    capacityFor,
+    COFFRET_DISCOUNT,
   };
 
   function init() {

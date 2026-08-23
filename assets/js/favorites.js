@@ -137,10 +137,9 @@
     { format: "5ml", label: "5 ml" },
     { format: "10ml", label: "10 ml" },
   ];
+  // Prix par décant : source unique, voir product-store.js
   function formatPriceFor(product, format) {
-    if (format === "5ml") return Math.round(product.price * 2.2);
-    if (format === "10ml") return Math.round(product.price * 3.8);
-    return product.price;
+    return global.KoreiProductStore?.getFormatPrice(product, format) ?? 0;
   }
 
   function getProduct(id) {

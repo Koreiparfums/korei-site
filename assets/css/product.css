@@ -1146,3 +1146,52 @@ body[data-page="product"] {
     min-width: 0;
   }
 }
+
+/* ─── Bloc coffret : promesse et progression (KOR-C1/C2/C7) ─── */
+.pdp-coffret-promo__pitch {
+  margin: 6.4px 0 16px;
+  font-size: var(--text-14);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+.pdp-coffret-promo__pitch strong {
+  color: var(--accent);
+  font-weight: 500;
+}
+.pdp-coffret-tier__price em {
+  display: block;
+  font-style: normal;
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.pdp-coffret-tier__price {
+  color: var(--accent);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.pdp-coffret-tier.is-soldout {
+  opacity: 0.5;
+}
+.pdp-coffret-promo__note {
+  margin: 12.8px 0 0;
+  padding: 9.6px 12.8px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  font-size: var(--text-13);
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+.pdp-coffret-promo__note.is-won {
+  background: var(--accent-light);
+  color: var(--text-warm);
+  font-weight: 500;
+}
+a.pdp-coffret-promo__view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+}

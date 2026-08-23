@@ -127,7 +127,6 @@
   // rattaché à Shopify n'affiche jamais un prix calculé : le format sans
   // variante est marqué indisponible.
   const FORMAT_ML = { "2ml": 2, "5ml": 5, "10ml": 10 };
-  const DEMO_MULTIPLIERS = { "2ml": 1, "5ml": 2.2, "10ml": 3.8 };
 
   function getFormats(product) {
     const store = global.KoreiProductStore;
@@ -136,7 +135,7 @@
     const formats = Object.keys(FORMAT_ML).map((key) => {
       const ml = FORMAT_ML[key];
       const variant = store?.getVariantForFormat(product, key) || null;
-      const price = variant ? Number(variant.price) : Math.round(product.price * DEMO_MULTIPLIERS[key]);
+      const price = store?.getFormatPrice(product, key) ?? 0;
       const available = hasShopify
         ? Boolean(variant) && variant.availableForSale !== false
         : true;
@@ -375,10 +374,13 @@
   }
 
   // ── Ce parfum dans un coffret (intégré à la colonne info du hero)
+  // KOR-C1 — plus de prix fixe. Le coffret coûte la somme des flacons choisis,
+  // chacun remisé de 10 % une fois le coffret complet. Le prix affiché ici est
+  // donc une estimation basée sur CE parfum, annoncée comme telle.
   const COFFRET_TIERS = [
-    { format: "2ml", label: "Découverte", capacity: 10, price: 69 },
-    { format: "5ml", label: "Équilibré", capacity: 5, price: 99 },
-    { format: "10ml", label: "Collection", capacity: 3, price: 149 },
+    { format: "2ml", label: "Découverte", capacity: 10 },
+    { format: "5ml", label: "Signature", capacity: 5 },
+    { format: "10ml", label: "Collection", capacity: 3 },
   ];
 
   const GUARANTEE_ITEMS = [
@@ -404,31 +406,57 @@
   function renderCoffretPromo(product) {
     if (!global.KoreiCoffret) return "";
     const formats = getFormats(product);
-    const priceByFormat = Object.fromEntries(formats.map((f) => [f.vol.replace(/\s+/g, "").toLowerCase(), f.price]));
+    const byKey = Object.fromEntries(formats.map((f) => [f.key, f]));
+
     return `
       <div class="pdp-coffret-promo pdp-reveal">
         <span class="pdp-label">Ce parfum en coffret</span>
+        <p class="pdp-coffret-promo__pitch">
+          Composez un coffret complet et gagnez <strong>−10 % sur chaque flacon</strong>,
+          livraison offerte.
+        </p>
         <div class="pdp-coffret-promo__list">
-          ${COFFRET_TIERS.map(
-            (t) => `
-            <div class="pdp-coffret-tier${t.format === "5ml" ? " is-recommended" : ""}" data-tier-format="${t.format}">
+          ${COFFRET_TIERS.map((t) => {
+            const f = byKey[t.format];
+            const unit = f?.price || 0;
+            const full = unit * t.capacity;
+            const saved = full * 0.1;
+            return `
+            <div class="pdp-coffret-tier${t.format === "5ml" ? " is-recommended" : ""}${f?.available ? "" : " is-soldout"}" data-tier-format="${t.format}">
               ${t.format === "5ml" ? `<span class="pdp-coffret-tier__badge">Le plus choisi</span>` : ""}
               <div class="pdp-coffret-tier__info">
-                <span class="pdp-coffret-tier__vol">${t.capacity} × ${t.format} <span class="pdp-coffret-tier__label">${t.label}</span></span>
+                <span class="pdp-coffret-tier__vol">${t.capacity} × ${t.format.replace("ml", " ml")} <span class="pdp-coffret-tier__label">${t.label}</span></span>
                 <span class="pdp-coffret-tier__progress" data-tier-progress>—</span>
               </div>
-              <span class="pdp-coffret-tier__price">${t.price}€</span>
-              <button type="button" class="pdp-btn pdp-btn--outline pdp-coffret-tier__cta" data-tier-cta data-tier-item-price="${priceByFormat[t.format] || ""}">
+              <span class="pdp-coffret-tier__price">
+                ${f?.available ? `<em>Économie</em> ${formatPriceLabel(saved)}€` : "—"}
+              </span>
+              <button type="button" class="pdp-btn pdp-btn--outline pdp-coffret-tier__cta" data-tier-cta>
                 Ajouter
               </button>
-            </div>`
-          ).join("")}
+            </div>`;
+          }).join("")}
         </div>
-        <button type="button" class="pdp-btn pdp-btn--outline pdp-coffret-promo__view" id="pdp-coffret-view">
-          <i class="ti ti-package"></i> Voir mon coffret en cours
-        </button>
+        <p class="pdp-coffret-promo__note" data-coffret-next hidden></p>
+        <a class="pdp-btn pdp-btn--outline pdp-coffret-promo__view" href="panier.html">
+          <i class="ti ti-package"></i> Voir mon panier
+        </a>
         ${renderCoffretTrust()}
       </div>`;
+  }
+
+  /**
+   * Libellé de progression d'un format. Au-delà du quota, on compte les
+   * coffrets complets et le lot en cours, jamais « 4/3 ».
+   */
+  function progressLabel(count, slots) {
+    if (!slots) return "—";
+    if (count === 0) return `0/${slots} sélectionné`;
+    const boxes = Math.floor(count / slots);
+    const rest = count % slots;
+    if (boxes === 0) return `${rest}/${slots} sélectionnés`;
+    const boxLabel = `${boxes} coffret${boxes > 1 ? "s" : ""}`;
+    return rest === 0 ? `${boxLabel} · complet` : `${boxLabel} + ${rest}/${slots}`;
   }
 
   function initCoffretPromo(main, product) {
@@ -437,12 +465,31 @@
     const coffret = global.KoreiCoffret;
     if (!coffret) return;
 
+    const noteEl = section.querySelector("[data-coffret-next]");
+
     const refresh = () => {
+      // KOR-C2 — message d'incitation, calculé sur l'état réel du panier.
+      if (noteEl) {
+        const state = coffret.getCartState?.();
+        const next = state ? coffret.getNextStep?.(state) : null;
+        if (state && state.discount > 0 && !next) {
+          noteEl.hidden = false;
+          noteEl.classList.add("is-won");
+          noteEl.textContent = `−10 % appliqué · Livraison offerte · vous économisez ${formatPriceLabel(state.discount)}€`;
+        } else if (next) {
+          noteEl.hidden = false;
+          noteEl.classList.remove("is-won");
+          noteEl.textContent = `Plus que ${next.missing} parfum${next.missing > 1 ? "s" : ""} en ${next.format.replace("ml", " ml")} pour −10 % et la livraison offerte`;
+        } else {
+          noteEl.hidden = true;
+        }
+      }
+
       section.querySelectorAll("[data-tier-format]").forEach((tierEl) => {
         const format = tierEl.dataset.tierFormat;
         const { count, slots } = coffret.getProgress(format);
         const progressEl = tierEl.querySelector("[data-tier-progress]");
-        if (progressEl) progressEl.textContent = `${count}/${slots} sélectionnés`;
+        if (progressEl) progressEl.textContent = progressLabel(count, slots);
 
         const cta = tierEl.querySelector("[data-tier-cta]");
         if (!cta) return;
@@ -463,14 +510,14 @@
         if (coffret.hasItem(product.id, format)) {
           coffret.removeItem(product.id, format);
         } else {
-          const variant = store?.getVariantForFormat(product, format);
+          const f = getFormats(product).find((x) => x.key === format);
           coffret.addItem({
             productId: product.id,
             name: product.name,
             brand: product.brand,
             format,
-            price: variant ? Number(variant.price) : Number(cta.dataset.tierItemPrice) || 0,
-            variantId: variant?.id,
+            price: f ? f.price : 0,
+            variantId: f?.variantId || undefined,
           });
         }
         refresh();
