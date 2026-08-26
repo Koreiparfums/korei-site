@@ -134,7 +134,6 @@
                 <img class="media-slot__image" src="../assets/images/brands/${brand.id}.png" alt="${brand.name}" hidden />
                 <div class="media-slot__placeholder brand-card-logo-fallback">${brand.name}</div>
               </div>
-              <div class="brand-card-country">${brand.country}</div>
               <div class="brand-card-count">${count} parfum${count > 1 ? "s" : ""} disponible${count > 1 ? "s" : ""}</div>
               <span class="brand-card-link">Découvrir <i class="ti ti-arrow-right"></i></span>
             </a>`;

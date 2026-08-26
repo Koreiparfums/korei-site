@@ -30,19 +30,25 @@
     {
       name: "Notes d'agrumes",
       tagline: "Bergamote · Citron · Fraîcheur",
-      icon: "ti-droplet",
+      image: "../assets/images/collections/agrume.png",
       params: { note: "bergamote" },
     },
     {
-      name: "Collection gourmande",
-      tagline: "Vanille · Caramel · Cacao",
-      icon: "ti-cookie",
-      params: { family: "gourmand" },
+      name: "Parfums d'automne",
+      tagline: "Boisé · Épicé · Feuilles mortes",
+      image: "../assets/images/collections/automne.png",
+      params: { season: "automne" },
+    },
+    {
+      name: "Parfums de printemps",
+      tagline: "Fleuri · Vert · Léger",
+      image: "../assets/images/collections/printemps.png",
+      params: { season: "printemps" },
     },
     {
       name: "Pour le soir",
       tagline: "Intense · Envoûtant · Sensuel",
-      icon: "ti-moon-stars",
+      image: "../assets/images/collections/soir.png",
       params: { occasion: "soirée" },
     },
     {
