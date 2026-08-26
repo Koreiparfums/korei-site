@@ -2863,7 +2863,7 @@ body[data-page="coffret"] .coffret-hero {
   max-width: var(--max-w);
   margin: 0 auto;
 }
-.brand-card {
+.brand-logo-card {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2876,11 +2876,11 @@ body[data-page="coffret"] .coffret-hero {
     border-color 0.2s,
     box-shadow 0.2s;
 }
-.brand-card:hover {
+.brand-logo-card:hover {
   border-color: var(--accent);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
-.brand-card img {
+.brand-logo-card img {
   max-height: 32px;
   max-width: 100%;
   width: auto;
@@ -5001,12 +5001,6 @@ body[data-page="catalogue"] .page-hero {
   letter-spacing: var(--tracking-tight);
   color: var(--text);
   text-transform: uppercase;
-}
-.brand-card-country {
-  font-size: var(--text-9);
-  letter-spacing: var(--tracking-loud);
-  text-transform: uppercase;
-  color: var(--text-light);
 }
 .brand-card-count {
   font-size: var(--text-12);
