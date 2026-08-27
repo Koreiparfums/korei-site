@@ -24,7 +24,10 @@
     // attribut reserve la place avant le chargement (aucun saut de page).
     const small = src.replace(/\.webp$/, "-sm.webp");
     const srcset = src.endsWith(".webp") ? ` srcset="${small} 400w, ${src} 750w" sizes="(max-width: 640px) 45vw, 220px"` : "";
-    return `<img class="${className} media-slot__image" src="${src}"${srcset} alt="${alt}" width="750" height="1000" loading="lazy" decoding="async" hidden />`;
+    // Pas d'attribut `hidden` ici : une image a la fois masquee et differee
+    // n'est jamais telechargee par le navigateur, donc jamais affichee. Le
+    // fondu est gere en CSS par la classe media-slot--loaded.
+    return `<img class="${className} media-slot__image" src="${src}"${srcset} alt="${alt}" width="750" height="1000" loading="lazy" decoding="async" />`;
   }
 
   function renderProductGlowHtml(product, basePath = "") {

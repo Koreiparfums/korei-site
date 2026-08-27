@@ -902,73 +902,174 @@
 
   // ── Section 3 : Notes phares (façon Fragrantica — photo + libellé par note)
 
-  // ── Section 5 : Ressenti (façon Fragrantica — cartes avec l'option dominante mise en avant)
-  const MOMENT_META = [
-    { key: "soirée", label: "Soirée", icon: "ti-moon-stars" },
-    { key: "quotidien", label: "Journée", icon: "ti-sun" },
-    { key: "date", label: "Sortie nocturne", icon: "ti-glass-cocktail" },
-    { key: "bureau", label: "Bureau", icon: "ti-building" },
-  ];
+  // ── KOR-B9 : section Ressenti d'apres la maquette du 24 aout
+  //
+  // Trois cartes : Longevite, Projection, Saisons. Chacune porte une icone,
+  // une jauge doree, une note, une phrase et deux etiquettes courtes.
+  //
+  // ATTENTION, choix important : la longevite et la projection ne sont pas
+  // dans le catalogue. L'ancienne version les deduisait du champ « intensite »
+  // (leger / modere / intense), ce qui revenait a afficher une note inventee.
+  // Une carte sans donnee reelle ne s'affiche pas. Elle reapparaitra seule le
+  // jour ou le scraping Fragrantica remplira product.longevity et
+  // product.projection (KOR-F9), sans autre modification.
   const SEASON_META = [
-    { key: "automne", label: "Automne", icon: "ti-leaf" },
-    { key: "hiver", label: "Hiver", icon: "ti-snowflake" },
     { key: "printemps", label: "Printemps", icon: "ti-flower" },
     { key: "été", label: "Été", icon: "ti-sun" },
+    { key: "automne", label: "Automne", icon: "ti-leaf" },
+    { key: "hiver", label: "Hiver", icon: "ti-snowflake" },
   ];
-  const LONGEVITY_META = [
-    { level: 1, label: "Très faible", icon: "ti-battery" },
-    { level: 2, label: "Faible", icon: "ti-battery-1" },
-    { level: 3, label: "Modérée", icon: "ti-battery-2" },
-    { level: 4, label: "Longue durée", icon: "ti-battery-4" },
-    { level: 5, label: "Éternelle", icon: "ti-battery-charging" },
-  ];
-  const PROJECTION_META = [
-    { level: 1, label: "Doux", icon: "ti-wifi-0" },
-    { level: 2, label: "Modéré", icon: "ti-wifi-1" },
-    { level: 3, label: "Fort", icon: "ti-wifi-2" },
-    { level: 4, label: "Énorme", icon: "ti-wifi" },
-  ];
-  const LONGEVITY_LEVEL = { léger: 2, modéré: 3, intense: 5 };
-  const PROJECTION_LEVEL = { léger: 1, modéré: 3, intense: 4 };
 
-  function renderSentimentCard(item, isWinner) {
+  // Les etiquettes decoulent du score : elles decrivent la note affichee,
+  // elles ne racontent rien de plus qu'elle.
+  function longevityCopy(score) {
+    if (score >= 8) return { text: "Excellente tenue : le parfum reste présent toute la journée.", tags: ["Tenue longue durée", "Plus de 8 heures"] };
+    if (score >= 6) return { text: "Bonne tenue : le parfum traverse une journée de travail.", tags: ["Bonne tenue", "6 à 8 heures"] };
+    if (score >= 4) return { text: "Tenue modérée : une retouche en milieu de journée est utile.", tags: ["Tenue modérée", "4 à 6 heures"] };
+    return { text: "Tenue courte : le parfum s'estompe en quelques heures.", tags: ["Tenue courte", "Moins de 4 heures"] };
+  }
+
+  function projectionCopy(score) {
+    if (score >= 8) return { text: "Sillage puissant : le parfum se remarque autour de vous.", tags: ["Sillage marqué", "Présence assurée"] };
+    if (score >= 6) return { text: "Sillage net, sans envahir la pièce.", tags: ["Sillage net", "Présence mesurée"] };
+    if (score >= 4) return { text: "Sillage discret : le parfum reste près de la peau.", tags: ["Sillage discret", "Proche de la peau"] };
+    return { text: "Sillage intime : perceptible seulement de très près.", tags: ["Sillage intime", "Très discret"] };
+  }
+
+  function renderGauge(value, max, label) {
+    const pct = Math.max(0, Math.min(100, (value / max) * 100));
     return `
-      <div class="pdp-sentiment-card${isWinner ? " is-winner" : ""}">
-        <span class="pdp-sentiment-card__icon"><i class="ti ${item.icon}"></i></span>
-        <span class="pdp-sentiment-card__label">${item.label}</span>
+      <div class="pdp-feel-card__gauge" role="img" aria-label="${label}">
+        <span class="pdp-feel-card__gauge-fill" style="width:${pct.toFixed(1)}%"></span>
       </div>`;
   }
 
-  function renderSentimentRow(label, cardsHtml) {
+  function renderFeelCard({ icon, iconsHtml, title, sub, gaugeValue, gaugeMax, score, text, tags }) {
     return `
-      <div class="pdp-sentiment-row">
-        <div class="pdp-sentiment-row__label">${label} <i class="ti ti-info-circle"></i></div>
-        <div class="pdp-sentiment-cards">${cardsHtml}</div>
-      </div>`;
+      <article class="pdp-feel-card">
+        <div class="pdp-feel-card__icon">${iconsHtml || `<i class="ti ${icon}" aria-hidden="true"></i>`}</div>
+        <h3 class="pdp-feel-card__title">${title}</h3>
+        <p class="pdp-feel-card__sub">${sub}</p>
+        ${renderGauge(gaugeValue, gaugeMax, `${title} : ${score}`)}
+        <p class="pdp-feel-card__score">${score}</p>
+        <p class="pdp-feel-card__text">${text}</p>
+        <ul class="pdp-feel-card__tags">${tags}</ul>
+      </article>`;
+  }
+
+  function renderSeasonCard(seasons) {
+    const kept = SEASON_META.filter((sn) => seasons.includes(sn.key));
+    if (!kept.length) return "";
+    const iconsHtml = `<span class="pdp-feel-card__seasons">${SEASON_META.map(
+      (sn) =>
+        `<i class="ti ${sn.icon}${seasons.includes(sn.key) ? "" : " is-off"}" aria-hidden="true"></i>`
+    ).join('<span class="pdp-feel-card__seasons-sep" aria-hidden="true"></span>')}</span>`;
+
+    const noms = kept.map((sn) => sn.label.toLowerCase()).join(", ");
+    // On decrit ce que la donnee dit : les saisons retenues. Pas de note /10
+    // sur les saisons, il n'en existe aucune.
+    const text =
+      kept.length === 4
+        ? "Portable toute l'année, quelle que soit la saison."
+        : `Idéal ${kept.length > 1 ? "en " : "en "}${noms}.`;
+    const tags = SEASON_META.map(
+      (sn) =>
+        `<li class="${seasons.includes(sn.key) ? "is-on" : "is-off"}">${sn.label}</li>`
+    ).join("");
+
+    return renderFeelCard({
+      iconsHtml,
+      title: "Saisons",
+      sub: "Périodes idéales",
+      gaugeValue: kept.length,
+      gaugeMax: 4,
+      score: `${kept.length} saison${kept.length > 1 ? "s" : ""} sur 4`,
+      text,
+      tags,
+    });
+  }
+
+  function tagList(tags) {
+    return tags.map((t) => `<li class="is-on">${t}</li>`).join("");
   }
 
   function renderSentiment(product) {
-    const occasions = product.occasions || [];
     const seasons = product.seasons || [];
-    const longevityLevel = product.longevity || LONGEVITY_LEVEL[product.intensity] || 3;
-    const projectionLevel = product.sillage || PROJECTION_LEVEL[product.intensity] || 2;
+    const cards = [];
 
-    const momentCards = MOMENT_META.map((m) => renderSentimentCard(m, occasions.includes(m.key))).join("");
-    const seasonCards = SEASON_META.map((s) => renderSentimentCard(s, seasons.includes(s.key))).join("");
-    const longevityCards = LONGEVITY_META.map((l) => renderSentimentCard(l, l.level === longevityLevel)).join("");
-    const projectionCards = PROJECTION_META.map((p) => renderSentimentCard(p, p.level === projectionLevel)).join("");
+    const longevity = Number(product.longevity);
+    if (Number.isFinite(longevity) && longevity > 0) {
+      const copy = longevityCopy(longevity);
+      cards.push(
+        renderFeelCard({
+          icon: "ti-hourglass",
+          title: "Longévité",
+          sub: "Tenue sur la peau",
+          gaugeValue: longevity,
+          gaugeMax: 10,
+          score: `${String(longevity).replace(".", ",")} / 10`,
+          text: copy.text,
+          tags: tagList(copy.tags),
+        })
+      );
+    }
+
+    const projection = Number(product.projection ?? product.sillage);
+    if (Number.isFinite(projection) && projection > 0) {
+      const copy = projectionCopy(projection);
+      cards.push(
+        renderFeelCard({
+          icon: "ti-ripple",
+          title: "Projection",
+          sub: "Sillage & diffusion",
+          gaugeValue: projection,
+          gaugeMax: 10,
+          score: `${String(projection).replace(".", ",")} / 10`,
+          text: copy.text,
+          tags: tagList(copy.tags),
+        })
+      );
+    }
+
+    const seasonCard = renderSeasonCard(seasons);
+    if (seasonCard) cards.push(seasonCard);
+
+    // Aucune donnee : la section entiere disparait, sans laisser de blanc.
+    if (!cards.length) return "";
+
+    // Bandeau communaute : uniquement si des avis clients existent vraiment.
+    // La boutique n'a aucune commande a ce jour, donc il ne s'affiche pas.
+    const reviews = product.reviews;
+    const band =
+      reviews?.count && reviews?.average
+        ? `<div class="pdp-feel-band">
+            <div class="pdp-feel-band__score">
+              <span class="pdp-feel-band__label">Note de la communauté</span>
+              <span class="pdp-feel-band__value">${String(reviews.average).replace(".", ",")} <small>/ 5</small></span>
+              <span class="pdp-feel-band__stars">${ui.renderStars ? ui.renderStars(reviews.average) : ""}</span>
+              <span class="pdp-feel-band__count">Basée sur ${reviews.count.toLocaleString("fr-FR")} avis</span>
+            </div>
+            ${
+              reviews.quote
+                ? `<blockquote class="pdp-feel-band__quote">
+                    <p>« ${esc(reviews.quote.text)} »</p>
+                    <cite>— ${esc(reviews.quote.author)}</cite>
+                  </blockquote>`
+                : ""
+            }
+            <a class="pdp-feel-band__link" href="#pdp-acc-avis">Voir tous les avis</a>
+          </div>`
+        : "";
 
     return `
-      <section class="pdp-sentiment pdp-reveal">
-        <div class="pdp-sentiment__head">
-          <h2>Ressenti</h2>
+      <section class="pdp-feel pdp-reveal">
+        <div class="pdp-feel__head">
+          <h2 class="pdp-feel__title">Ressenti</h2>
+          <span class="pdp-feel__rule" aria-hidden="true"></span>
+          <p class="pdp-feel__sub">L'expérience olfactive d'<em>${esc(product.name)}</em>, telle que le catalogue la décrit.</p>
         </div>
-        <div class="pdp-sentiment__body">
-          ${renderSentimentRow("Meilleur moment de la journée", momentCards)}
-          ${renderSentimentRow("Meilleure saison pour porter", seasonCards)}
-          ${renderSentimentRow("Longévité", longevityCards)}
-          ${renderSentimentRow("Projection", projectionCards)}
-        </div>
+        <div class="pdp-feel__grid" data-cards="${cards.length}">${cards.join("")}</div>
+        ${band}
       </section>`;
   }
 

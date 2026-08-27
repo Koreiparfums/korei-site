@@ -6659,6 +6659,13 @@ body[data-page="favoris"] .favoris-hero {
 .media-slot--loaded .media-slot__image {
   display: block;
 }
+/* L'image reste visible par defaut : c'est l'attribut `hidden` conjugue a
+   loading="lazy" qui empechait le navigateur de la telecharger, et les photos
+   de parfum ne s'affichaient jamais. Elle n'est retiree qu'en cas d'echec
+   reel, ou le placeholder prend le relais. */
+.media-slot--empty .media-slot__image {
+  display: none;
+}
 .media-slot--card {
   height: 210.61px;
 }

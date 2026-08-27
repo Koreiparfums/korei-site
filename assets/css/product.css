@@ -1772,3 +1772,214 @@ a.pdp-coffret-promo__view {
     height: 46px;
   }
 }
+
+/* ─── KOR-B9 · section Ressenti (maquette du 24 aout) ───────────────────── */
+.pdp-feel {
+  max-width: var(--pdp-max);
+  margin: 0 auto;
+  padding: 56px var(--px);
+}
+.pdp-feel__head {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.pdp-feel__title {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 300;
+  font-size: clamp(28px, 3vw, 40px);
+  color: var(--pdp-ink);
+}
+.pdp-feel__rule {
+  display: block;
+  width: 48px;
+  height: 1px;
+  margin: 16px auto;
+  background: var(--pdp-gold);
+}
+.pdp-feel__sub {
+  font-size: 15px;
+  color: var(--pdp-ink-soft);
+}
+.pdp-feel__sub em {
+  font-style: normal;
+  color: var(--pdp-gold);
+}
+.pdp-feel__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+/* Une seule carte ne doit pas s'etaler sur toute la largeur : elle reste
+   a la taille d'une carte, centree. */
+.pdp-feel__grid[data-cards="1"] {
+  grid-template-columns: minmax(260px, 380px);
+  justify-content: center;
+}
+.pdp-feel-card {
+  border: 1px solid var(--pdp-line);
+  border-radius: var(--pdp-radius-lg);
+  background: var(--pdp-white);
+  padding: 30px 26px 26px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.pdp-feel-card__icon {
+  font-size: 34px;
+  color: var(--pdp-gold);
+  line-height: 1;
+  margin-bottom: 16px;
+}
+.pdp-feel-card__seasons {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 26px;
+}
+.pdp-feel-card__seasons .is-off {
+  color: var(--pdp-line);
+}
+.pdp-feel-card__seasons-sep {
+  width: 1px;
+  height: 22px;
+  background: var(--pdp-line);
+}
+.pdp-feel-card__title {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  color: var(--pdp-ink);
+}
+.pdp-feel-card__sub {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--pdp-ink-soft);
+}
+.pdp-feel-card__gauge {
+  width: 100%;
+  height: 6px;
+  margin: 20px 0 12px;
+  border-radius: 999px;
+  background: var(--pdp-panel, #f3efe8);
+  overflow: hidden;
+}
+.pdp-feel-card__gauge-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--pdp-gold);
+}
+.pdp-feel-card__score {
+  font-size: 16px;
+  color: var(--pdp-gold);
+  font-variant-numeric: tabular-nums;
+}
+.pdp-feel-card__text {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--pdp-ink-soft);
+}
+.pdp-feel-card__tags {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.pdp-feel-card__tags li {
+  padding: 7px 13px;
+  border-radius: var(--pdp-radius-sm);
+  font-size: 13px;
+  border: 1px solid var(--pdp-line);
+  color: var(--pdp-ink);
+}
+/* Une saison non retenue reste lisible mais visiblement en retrait. */
+.pdp-feel-card__tags li.is-off {
+  color: var(--pdp-ink-soft);
+  opacity: 0.55;
+}
+.pdp-feel-card__tags li.is-on {
+  background: var(--pdp-panel, #faf7f2);
+}
+
+.pdp-feel-band {
+  margin-top: 24px;
+  padding: 26px 30px;
+  border: 1px solid var(--pdp-line);
+  border-radius: var(--pdp-radius-lg);
+  background: var(--pdp-white);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 28px;
+  align-items: center;
+}
+.pdp-feel-band__label {
+  display: block;
+  font-size: 13px;
+  color: var(--pdp-ink-soft);
+}
+.pdp-feel-band__value {
+  display: block;
+  margin-top: 4px;
+  font-size: 32px;
+  color: var(--pdp-gold);
+  font-variant-numeric: tabular-nums;
+}
+.pdp-feel-band__value small {
+  font-size: 18px;
+  color: var(--pdp-ink-soft);
+}
+.pdp-feel-band__count {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--pdp-ink-soft);
+}
+.pdp-feel-band__quote {
+  margin: 0;
+  padding-left: 28px;
+  border-left: 1px solid var(--pdp-line);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--pdp-ink);
+}
+.pdp-feel-band__quote cite {
+  display: block;
+  margin-top: 8px;
+  font-style: normal;
+  font-size: 13px;
+  color: var(--pdp-gold);
+}
+.pdp-feel-band__link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 22px;
+  border: 1px solid var(--pdp-gold);
+  border-radius: var(--pdp-radius-sm);
+  color: var(--pdp-gold);
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .pdp-feel-band {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    text-align: center;
+  }
+  .pdp-feel-band__quote {
+    padding-left: 0;
+    padding-top: 20px;
+    border-left: 0;
+    border-top: 1px solid var(--pdp-line);
+  }
+  .pdp-feel-band__link {
+    justify-self: center;
+  }
+}

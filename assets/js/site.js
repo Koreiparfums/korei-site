@@ -214,14 +214,12 @@
         slot.classList.add("media-slot--empty");
         slot.classList.remove("media-slot--loaded");
         if (placeholder) placeholder.hidden = false;
-        img.hidden = true;
       };
 
       const showImage = () => {
         slot.classList.remove("media-slot--empty");
         slot.classList.add("media-slot--loaded");
         if (placeholder) placeholder.hidden = true;
-        img.hidden = false;
       };
 
       img.addEventListener("error", showPlaceholder);
@@ -248,7 +246,7 @@
         const meta = LIFESTYLE_SLOTS[i] || { title: "Korei", subtitle: "" };
         return `
           <div class="lifestyle-slot media-slot" data-slot="lifestyle-${i + 1}">
-            <img class="media-slot__image lifestyle-slot__img" src="${path}" alt="${meta.title} — Korei" width="1600" height="900" loading="lazy" decoding="async" hidden />
+            <img class="media-slot__image lifestyle-slot__img" src="${path}" alt="${meta.title} — Korei" width="1600" height="900" loading="lazy" decoding="async" />
             ${renderPlaceholder("lifestyle", { ...meta, index: i })}
           </div>`;
       })
