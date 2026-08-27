@@ -63,7 +63,7 @@
         <span class="banner-sep"></span>
         <span class="banner-item">Expédition sous 24h</span>
         <span class="banner-sep"></span>
-        <span class="banner-item">100+ maisons de niche</span>
+        <span class="banner-item">Maisons de niche sélectionnées</span>
         <span class="banner-sep"></span>
         <span class="banner-item">Cadeau mystère offert</span>
         <span class="banner-sep"></span>
@@ -75,7 +75,7 @@
         <span class="banner-sep"></span>
         <span class="banner-item">Expédition sous 24h</span>
         <span class="banner-sep"></span>
-        <span class="banner-item">100+ maisons de niche</span>
+        <span class="banner-item">Maisons de niche sélectionnées</span>
         <span class="banner-sep"></span>
         <span class="banner-item">Cadeau mystère offert</span>
         <span class="banner-sep"></span>
@@ -180,99 +180,64 @@
 
     <main>
     <section class="hero">
-      <div class="hero-ghost" aria-hidden="true">KŌREI</div>
-      <div class="hero-content">
-        <div class="hero-eyebrow">Parfums de niche</div>
-        <h1 class="hero-title">Le luxe olfactif,<br />accessible à tous</h1>
-        <div class="hero-divider" aria-hidden="true"></div>
-        <div class="hero-ctas">
-          <a href="pages/catalogue.html" class="btn-dark">Explorer</a>
-          <a href="pages/catalogue.html" class="btn-outline"
-            >Découvrir les décants</a
-          >
+      <!-- Photo fournie par le client : espace libre a gauche pour le texte. -->
+      <picture class="hero__media">
+        <source media="(max-width: 640px)" srcset="assets/images/hero/hero-flacons-niche-sm.webp" />
+        <img src="assets/images/hero/hero-flacons-niche.webp"
+             alt="Flacons de parfums de niche Byredo, Creed, Amouage et Tom Ford sur un plateau de marbre"
+             width="1600" height="900" fetchpriority="high" decoding="async" />
+      </picture>
+
+      <div class="hero__inner">
+        <div class="hero__content">
+          <p class="hero__eyebrow">Parfum de niche</p>
+          <h1 class="hero__title">
+            Testez <span id="hero-count">500+</span> parfums de niche<br />
+            dès <span id="hero-from">8,90€</span>
+          </h1>
+          <p class="hero__sub">
+            Découvrez les maisons de luxe sans compromis — Byredo, Le Labo,
+            Creed, et plus.
+          </p>
+
+          <!-- KOR-D7 — preuve sociale. Ne s'affiche que si les chiffres sont
+               reels : voir SOCIAL_PROOF dans assets/js/main.js. Rien n'est
+               invente ici, le bloc reste masque tant que la donnee manque. -->
+          <div class="hero__proof" id="hero-proof" hidden>
+            <span class="hero__proof-stars" id="hero-proof-stars"></span>
+            <span class="hero__proof-score" id="hero-proof-score"></span>
+            <span class="hero__proof-sep" aria-hidden="true"></span>
+            <span class="hero__proof-orders">
+              <i class="ti ti-package" aria-hidden="true"></i>
+              <span id="hero-proof-orders"></span>
+            </span>
+          </div>
+
+          <!-- Repli honnete tant que la preuve sociale n'existe pas : des faits
+               verifiables, tires du catalogue. -->
+          <div class="hero__proof hero__proof--facts" id="hero-facts">
+            <span class="hero__proof-orders">
+              <i class="ti ti-building-store" aria-hidden="true"></i>
+              <span id="hero-brand-count">Maisons de niche sélectionnées</span>
+            </span>
+            <span class="hero__proof-sep" aria-hidden="true"></span>
+            <span class="hero__proof-orders">
+              <i class="ti ti-certificate" aria-hidden="true"></i>
+              <span>Décants officiels, remplis à la main</span>
+            </span>
+          </div>
+
+          <!-- Un seul bouton principal (brief §1). -->
+          <a href="pages/catalogue.html" class="hero__cta">Découvrir les parfums</a>
         </div>
-      </div>
-      <div class="hero-decant-slot">
-        <div class="hero-decant-shadow" aria-hidden="true"></div>
-        <div class="hero-decant-group">
-          <div class="hero-decant-item hero-decant-item--2ml">
-            <img
-              src="assets/images/hero/hero-decant-2ml.webp"
-              alt="Décant Kōrei 2ml"
-              class="hero-decant-img" width="94" height="494" decoding="async" />
-          </div>
-          <div class="hero-decant-item hero-decant-item--5ml">
-            <img
-              src="assets/images/hero/hero-decant-5ml.webp"
-              alt="Décant Kōrei 5ml"
-              class="hero-decant-img" width="105" height="659" decoding="async" />
-          </div>
-          <div class="hero-decant-item hero-decant-item--10ml">
-            <img
-              src="assets/images/hero/hero-decant-10ml.webp"
-              alt="Décant Kōrei 10ml"
-              class="hero-decant-img" width="112" height="851" decoding="async" />
-          </div>
-        </div>
-      </div>
-      <div class="hero-trust-card">
-        <p class="hero-trust-card__title">Pourquoi un décant ?</p>
-        <p class="hero-trust-card__text">
-          Essayez un parfum chez vous avant d'acheter le flacon.
-        </p>
-        <ul class="hero-trust-card__list">
-          <li>Dès 2 ml</li>
-          <li>Rempli à la main</li>
-          <li>Authentique à 100%</li>
-        </ul>
-        <a href="pages/catalogue.html" class="hero-trust-card__link"
-          >Découvrir <span aria-hidden="true">→</span></a
-        >
       </div>
     </section>
 
-    <div class="ticker">
-      <div class="ticker-track">
-        <div class="ticker-item">
-          <span class="ticker-dot"></span>100% authentique
-        </div>
-        <div class="ticker-item">
-          <span class="ticker-dot"></span>Flacons &amp; décants
-        </div>
-        <div class="ticker-item">
-          <span class="ticker-dot"></span>100+ maisons de niche
-        </div>
-        <div class="ticker-item">
-          <span class="ticker-dot"></span>Expédition sous 24h
-        </div>
-        <div class="ticker-item">
-          <span class="ticker-dot"></span>Cadeau mystère offert
-        </div>
-        <div class="ticker-item">
-          <span class="ticker-dot"></span>Satisfaction 30 jours
-        </div>
-        <div class="ticker-item">
-          <span class="ticker-dot"></span>100% authentique
-        </div>
-        <div class="ticker-item">
-          <span class="ticker-dot"></span>Flacons &amp; décants
-        </div>
-        <div class="ticker-item">
-          <span class="ticker-dot"></span>100+ maisons de niche
-        </div>
-        <div class="ticker-item">
-          <span class="ticker-dot"></span>Expédition sous 24h
-        </div>
-        <div class="ticker-item">
-          <span class="ticker-dot"></span>Cadeau mystère offert
-        </div>
-        <div class="ticker-item">
-          <span class="ticker-dot"></span>Satisfaction 30 jours
-        </div>
-      </div>
-    </div>
+    <!-- KOR-D4 — le second bandeau de promesses a ete retire : il repetait
+         mot pour mot celui du haut de page. Le brief §1 demande un seul
+         bandeau de reassurance, pas un empilement. -->
 
-    <section class="favorites-section">
+<section class="favorites-section">
       <div class="favorites-head">
         <div class="favorites-heading">
           <div class="favorites-eyebrow">Les plus aimés</div>

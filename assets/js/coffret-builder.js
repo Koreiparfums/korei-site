@@ -2,16 +2,17 @@
  * Kōrei — Coffret personnalisé
  * État partagé (localStorage) + widget flottant réutilisable sur toutes les pages.
  * Un coffret est composé exclusivement de décants (2ml/5ml/10ml), sur le modèle
- * des formats vendus sur la page Coffret : Découverte (10×2ml), Équilibré (5×5ml),
- * Collection (3×10ml).
+ * des formats vendus sur la page Coffret : Découverte (10×2ml), Voyage (5×5ml),
+ * Iconique (3×10ml).
  */
 (function (global) {
   const STORAGE_KEY = "korei-coffret";
   const esc = (v) => (global.KoreiSite?.escapeHtml || ((x) => x))(v);
   const SLOT_COUNTS = { "2ml": 10, "5ml": 5, "10ml": 3 };
   // Libellés alignés sur les trois coffrets réels : 10x2ml, 5x5ml, 3x10ml.
-  const PACK_LABELS = { "2ml": "Découverte", "5ml": "Signature", "10ml": "Collection" };
-  // KOR-C1 — un coffret complet donne -10 % sur chaque flacon qu'il contient.
+  // Noms arretes par le brief du 24 aout 2026 (KOR-C11).
+  const PACK_LABELS = { "2ml": "Découverte", "5ml": "Voyage", "10ml": "Iconique" };
+  // KOR-C1 — un coffret complet donne −10 % sur chaque flacon qu'il contient.
   // KOR-C6 — et la livraison offerte. La règle est le coffret, pas un montant :
   // un seuil en euros rendrait le message d'incitation faux (« plus que 1
   // parfum pour la livraison offerte » alors qu'elle le serait déjà).
@@ -96,7 +97,7 @@
   // KOR-C3 — le coffret se forme tout seul quand le compte est atteint.
   function announceCoffret(format, total, slots) {
     if (!slots || total % slots !== 0) return;
-    showStockNotice(`Coffret ${PACK_LABELS[format]} complet. −10 % sur chaque flacon et livraison offerte.`);
+    showStockNotice(`Coffret ${PACK_LABELS[format]} complet. −10 % sur chaque flacon et livraison offerte.`);
   }
 
   function removeItem(productId, format) {
@@ -296,9 +297,9 @@
           <span>${state.qty} flacon${state.qty > 1 ? "s" : ""}</span>
           <strong>${money(state.total)}</strong>
         </div>
-        ${state.discount > 0 ? `<div class="coffret-summary__saved">−10 % appliqué · vous économisez ${money(state.discount)}</div>` : ""}
+        ${state.discount > 0 ? `<div class="coffret-summary__saved">−10 % appliqué · vous économisez ${money(state.discount)}</div>` : ""}
         ${state.freeShipping ? `<div class="coffret-summary__saved">Livraison offerte</div>` : ""}
-        ${nextStep ? `<p class="coffret-summary__next">Plus que <strong>${nextStep.missing} parfum${nextStep.missing > 1 ? "s" : ""}</strong> en ${nextStep.format.replace("ml", " ml")} pour −10 % et la livraison offerte</p>` : ""}
+        ${nextStep ? `<p class="coffret-summary__next">Plus que <strong>${nextStep.missing} parfum${nextStep.missing > 1 ? "s" : ""}</strong> en ${nextStep.format.replace("ml", " ml")} pour −10 % et la livraison offerte</p>` : ""}
       </div>` +
       Object.keys(SLOT_COUNTS)
       .map((format) => {
@@ -446,13 +447,13 @@
               </div>
               <div class="panier-group__money">
                 <span class="panier-group__total">${money(net)}</span>
-                ${group.discount > 0 ? `<span class="panier-group__saved">−10 % · ${money(group.discount)} économisés</span>` : ""}
+                ${group.discount > 0 ? `<span class="panier-group__saved">−10 % · ${money(group.discount)} économisés</span>` : ""}
               </div>
             </div>
             ${
               complete
                 ? ""
-                : `<p class="panier-group__next">Plus que ${group.missing} parfum${group.missing > 1 ? "s" : ""} pour ${state.freeShipping ? "−10 % sur ces flacons" : "−10 % et la livraison offerte"}</p>`
+                : `<p class="panier-group__next">Plus que ${group.missing} parfum${group.missing > 1 ? "s" : ""} pour ${state.freeShipping ? "−10 % sur ces flacons" : "−10 % et la livraison offerte"}</p>`
             }
             <ul class="panier-group__items">
               ${groupItems.map(renderPanierItem).join("")}
@@ -589,7 +590,7 @@
       discountRow.hidden = state.discount <= 0;
       const boxLabel = state.boxes > 1 ? `${state.boxes} coffrets` : "Coffret complet";
       const label = discountRow.querySelector("[data-discount-label]");
-      if (label) label.textContent = `${boxLabel} · −10 %`;
+      if (label) label.textContent = `${boxLabel} · −10 %`;
       if (discountEl) discountEl.textContent = `−${money(state.discount)}`;
     }
 
@@ -603,11 +604,11 @@
       if (state.freeShipping && !next) {
         hintEl.hidden = false;
         hintEl.classList.add("is-won");
-        hintEl.textContent = "−10 % appliqué · Livraison offerte";
+        hintEl.textContent = "−10 % appliqué · Livraison offerte";
       } else if (next) {
         hintEl.hidden = false;
         hintEl.classList.toggle("is-won", false);
-        const gain = state.freeShipping ? "−10 % sur ces flacons" : "−10 % et la livraison offerte";
+        const gain = state.freeShipping ? "−10 % sur ces flacons" : "−10 % et la livraison offerte";
         hintEl.textContent = `Plus que ${next.missing} parfum${next.missing > 1 ? "s" : ""} en ${next.format.replace("ml", " ml")} pour ${gain}`;
       } else {
         hintEl.hidden = true;

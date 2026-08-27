@@ -7589,3 +7589,621 @@ body.has-cookie-banner .chatbot-widget {
     transform: translate(-50%, -50%);
   }
 }
+
+/* ==========================================================================
+   Les trois coffrets vendus (KOR-C9, brief §3.3 et §4)
+   Une carte par format. La remise et la livraison offerte sont annoncees sur
+   la carte elle-meme : c'est le point le plus important du brief.
+   ========================================================================== */
+.coffret-collections .dose-title {
+  text-wrap: balance;
+}
+.dose-sub {
+  max-width: 58ch;
+  margin: 16px auto 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--text-15);
+  line-height: 1.65;
+}
+.box-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  max-width: 1120px;
+  margin: 40px auto 0;
+  padding: 0 var(--px);
+}
+.box-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.box-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3.2px);
+  box-shadow: 0 12px 32px -20px rgba(26, 26, 24, 0.4);
+}
+.box-card:focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3.2px;
+}
+.box-card--popular {
+  border-color: var(--accent);
+}
+.box-card__badge,
+.box-card__discount {
+  position: absolute;
+  top: 12.8px;
+  z-index: 2;
+  padding: 4.8px 11.2px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+.box-card__badge {
+  left: 12.8px;
+  background: var(--accent);
+  color: #fff;
+}
+.box-card__discount {
+  right: 12.8px;
+  background: var(--text);
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.box-card__media {
+  /* Les photos officielles du coffret sont carrees, sur fond blanc.
+     On les affiche entieres : recadrer couperait le logo Korei. */
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #fff;
+}
+.box-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.box-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  flex: 1;
+}
+.box-card__name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-23);
+  font-weight: 300;
+  margin: 0;
+}
+.box-card__format {
+  margin: 0;
+  color: var(--accent);
+  font-size: var(--text-13);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+.box-card__desc {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 1.6;
+}
+.box-card__perks {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6.4px;
+}
+.box-card__perks li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-13);
+  color: var(--text);
+}
+.box-card__perks i {
+  color: var(--accent);
+  font-size: 16px;
+}
+.box-card__cta {
+  margin-top: auto;
+  padding-top: 14px;
+  font-size: var(--text-13);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text);
+}
+.box-card:hover .box-card__cta {
+  color: var(--accent);
+}
+
+.box-trust {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1px;
+  max-width: 1120px;
+  margin: 32px auto 0;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--border);
+  overflow: hidden;
+}
+.box-trust__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 20px;
+  background: var(--surface);
+}
+.box-trust__item i {
+  color: var(--accent);
+  font-size: 22.4px;
+  flex: none;
+}
+.box-trust__item span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--text-12);
+  color: var(--text-muted);
+}
+.box-trust__item b {
+  font-size: var(--text-13);
+  font-weight: 500;
+  color: var(--text);
+}
+@media (max-width: 640px) {
+  .box-grid {
+    margin-top: 28px;
+  }
+  .box-trust {
+    margin-left: var(--px);
+    margin-right: var(--px);
+  }
+}
+
+/* ==========================================================================
+   Configurateur : etapes, compteurs, recapitulatif (KOR-C12, C13, C14, C15)
+   ========================================================================== */
+
+/* Les trois etapes du brief : boutons, pour pouvoir revenir en arriere. */
+.cb2-timeline {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-bottom: 0.8px solid var(--border);
+}
+.cb2-timeline__step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 6px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font: inherit;
+  font-size: var(--text-13);
+  color: var(--text-light);
+  cursor: pointer;
+  text-align: center;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.cb2-timeline__step:disabled {
+  cursor: default;
+}
+.cb2-timeline__step.is-current {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.cb2-timeline__step.is-done {
+  color: var(--text);
+}
+.cb2-timeline__num {
+  display: grid;
+  place-items: center;
+  width: 22.4px;
+  height: 22.4px;
+  flex: none;
+  border-radius: 50%;
+  border: 0.8px solid currentColor;
+  font-size: var(--text-11);
+  font-variant-numeric: tabular-nums;
+}
+.cb2-timeline__step.is-current .cb2-timeline__num {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.cb2-timeline__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Compteur de resultats de la recherche. */
+.cb2-results__count {
+  margin: 12px 0 8px;
+  font-size: var(--text-12);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Compteur « − quantite + » sur chaque parfum suggere. */
+.cb2-result__qty {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  flex: none;
+}
+.cb2-qty-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--text-17);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+.cb2-qty-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.cb2-qty-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.cb2-qty-value {
+  min-width: 24px;
+  text-align: center;
+  font-size: var(--text-15);
+  font-variant-numeric: tabular-nums;
+}
+.cb2-result.is-picked {
+  border-color: var(--accent);
+}
+.cb2-result__check {
+  position: absolute;
+  top: -4.8px;
+  right: -4.8px;
+  display: grid;
+  place-items: center;
+  width: 20.8px;
+  height: 20.8px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: var(--text-11);
+}
+.cb2-result__media {
+  position: relative;
+}
+
+/* Recapitulatif chiffre, toujours visible. */
+.cb2-recap {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 0.8px solid var(--border);
+}
+.cb2-recap__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: var(--text-13);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.cb2-recap__row--discount {
+  color: var(--accent);
+}
+.cb2-recap__row--discount[hidden] {
+  display: none;
+}
+#cb2Ship.is-won {
+  color: var(--accent);
+}
+
+/* ==========================================================================
+   Recapitulatif du coffret sur telephone (KOR-C14, brief §4)
+   Sur ordinateur, l'apercu est une colonne collante a gauche. Sous 860 px il
+   devient une barre fixe en bas, depliable : c'est ce que demande le brief,
+   et cela corrige le chevauchement de l'apercu collant sur les resultats.
+   ========================================================================== */
+.cb2-dock {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .cb2-media-col {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: var(--bottom-chrome, 0px);
+    top: auto;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border-top: 0.8px solid var(--border);
+    box-shadow: 0 -8px 28px -18px rgba(26, 26, 24, 0.5);
+    max-height: calc(88dvh - var(--bottom-chrome, 0px));
+  }
+  .cb2-dock {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    min-height: 60px;
+    padding: 12px var(--px);
+    border: 0;
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    flex: none;
+  }
+  .cb2-dock__left,
+  .cb2-dock__right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .cb2-dock__left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  .cb2-dock__name {
+    font-size: var(--text-14);
+    color: var(--text);
+  }
+  .cb2-dock__count {
+    font-size: var(--text-12);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .cb2-dock__total {
+    font-size: var(--text-19);
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .cb2-dock__chevron {
+    color: var(--text-muted);
+    font-size: 19.2px;
+    transition: transform 0.25s ease;
+  }
+  .cb2-dock[aria-expanded="true"] .cb2-dock__chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Replie : seule la barre reste. Deplie : l'apercu complet defile. */
+  .cb2-preview {
+    display: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0 var(--px) 20px;
+    background: var(--surface);
+  }
+  .cb2-media-col.is-open .cb2-preview {
+    display: block;
+  }
+
+  /* Le contenu de la page ne doit pas finir sous la barre. */
+  .cb2 {
+    padding-bottom: 84px;
+  }
+}
+
+/* ==========================================================================
+   Hero d'accueil (KOR-D1, KOR-D7, brief §1)
+   Photo pleine largeur, texte a gauche dans la zone laissee libre par la
+   photo, un seul bouton. La preuve sociale est sous l'accroche, visible
+   sans avoir a faire defiler.
+   ========================================================================== */
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-height: 76vh;
+  min-height: 76dvh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--bg);
+}
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+.hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 70% center;
+}
+/* Voile clair a gauche : le texte reste lisible sur la photo, sans la ternir. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    100deg,
+    rgba(250, 247, 242, 0.97) 0%,
+    rgba(250, 247, 242, 0.92) 28%,
+    rgba(250, 247, 242, 0.45) 52%,
+    rgba(250, 247, 242, 0) 72%
+  );
+}
+.hero__inner {
+  width: 100%;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 64px var(--px);
+}
+.hero__content {
+  max-width: 34rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+.hero__eyebrow {
+  margin: 0;
+  font-size: var(--text-11);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.hero__title {
+  margin: 0;
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  font-size: clamp(2.1rem, 1rem + 4.4vw, 4.2rem);
+  line-height: 1.08;
+  color: var(--text);
+  text-wrap: balance;
+}
+.hero__sub {
+  margin: 0;
+  max-width: 34ch;
+  font-size: var(--text-16);
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+.hero__proof {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  font-size: var(--text-13);
+  color: var(--text);
+}
+.hero__proof[hidden] {
+  display: none;
+}
+.hero__proof-stars {
+  display: inline-flex;
+  gap: 2px;
+  color: var(--accent);
+}
+.hero__proof-score {
+  font-size: var(--text-17);
+  font-variant-numeric: tabular-nums;
+}
+.hero__proof-sep {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+}
+.hero__proof-orders {
+  display: inline-flex;
+  align-items: center;
+  gap: 6.4px;
+  color: var(--text-muted);
+}
+.hero__proof-orders i {
+  color: var(--accent);
+  font-size: 16px;
+}
+.hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  margin-top: 8px;
+  padding: 0 32px;
+  border-radius: var(--radius-pill);
+  background: var(--text);
+  color: var(--bg);
+  font-size: var(--text-15);
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+.hero__cta:hover {
+  background: var(--accent);
+  transform: translateY(-1.6px);
+}
+.hero__cta:focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3.2px;
+}
+
+@media (max-width: 860px) {
+  .hero {
+    min-height: 0;
+    align-items: flex-end;
+  }
+  .hero__media img {
+    object-position: 62% center;
+  }
+  /* Sur telephone la photo passe derriere un voile plus dense en bas :
+     le texte reste lisible sans reduire la photo a une bande. */
+  .hero::before {
+    background: linear-gradient(
+      180deg,
+      rgba(250, 247, 242, 0.15) 0%,
+      rgba(250, 247, 242, 0.75) 42%,
+      rgba(250, 247, 242, 0.98) 62%
+    );
+  }
+  .hero__inner {
+    padding: 220px var(--px) 40px;
+  }
+  .hero__content {
+    max-width: none;
+    gap: 16px;
+  }
+  .hero__cta {
+    width: 100%;
+  }
+  /* Les faits passent l'un sous l'autre : le separateur vertical n'a plus
+     de sens et laissait une barre orpheline en fin de ligne. */
+  .hero__proof {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .hero__proof-sep {
+    display: none;
+  }
+}

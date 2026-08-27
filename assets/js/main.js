@@ -338,7 +338,60 @@
   }
 
   // ── Init page accueil
+  /**
+   * KOR-D7 — preuve sociale du hero.
+   *
+   * Le brief montre « 4.8/5 » et « 1200+ commandes ». La boutique n'a aucune
+   * commande a ce jour : ces deux chiffres ne sont donc pas affiches. Le bloc
+   * reste masque tant que ces valeurs ne sont pas renseignees ici avec des
+   * donnees reelles. Ne rien inventer : une fausse note se voit et se paie.
+   */
+  const SOCIAL_PROOF = {
+    rating: null, // ex. 4.8
+    ratingMax: 5,
+    orders: null, // ex. "1200+ commandes"
+  };
+
+  function initHeroProof() {
+    const store = global.KoreiProductStore;
+    if (!store) return;
+    const products = store.getAllProducts?.() || [];
+
+    // Nombre de parfums et prix d'entree, calcules sur le catalogue reel.
+    const countEl = document.getElementById("hero-count");
+    if (countEl && products.length) countEl.textContent = `${products.length}`;
+
+    const fromEl = document.getElementById("hero-from");
+    if (fromEl && products.length) {
+      const prices = products
+        .map((p) => store.getFormatPrice(p, "2ml"))
+        .filter((v) => Number.isFinite(v) && v > 0);
+      if (prices.length) {
+        const min = Math.min(...prices);
+        fromEl.textContent = `${min.toFixed(2).replace(".", ",").replace(",00", "")}€`;
+      }
+    }
+
+    const brandEl = document.getElementById("hero-brand-count");
+    if (brandEl && products.length) {
+      const brands = new Set(products.map((p) => p.brandId || p.brand)).size;
+      brandEl.textContent = `${brands} maisons de niche sélectionnées`;
+    }
+
+    // Preuve sociale : uniquement si les chiffres existent vraiment.
+    const proof = document.getElementById("hero-proof");
+    const facts = document.getElementById("hero-facts");
+    if (!proof || SOCIAL_PROOF.rating == null || !SOCIAL_PROOF.orders) return;
+    document.getElementById("hero-proof-stars").innerHTML = renderStars(SOCIAL_PROOF.rating);
+    document.getElementById("hero-proof-score").textContent =
+      `${String(SOCIAL_PROOF.rating).replace(".", ",")}/${SOCIAL_PROOF.ratingMax}`;
+    document.getElementById("hero-proof-orders").textContent = SOCIAL_PROOF.orders;
+    proof.hidden = false;
+    if (facts) facts.hidden = true;
+  }
+
   function initHomePage() {
+    initHeroProof();
     const store = global.KoreiProductStore;
 
     const bestsellers = store.getBestsellers();

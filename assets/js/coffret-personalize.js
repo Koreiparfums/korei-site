@@ -8,13 +8,23 @@
  */
 (function () {
   // KOR-C1 — plus de prix fixe. Chaque format renvoie vers sa clé décant, et
-  // le prix du coffret est la somme des parfums choisis, chacun à -10 %.
+  // le prix du coffret est la somme des parfums choisis, chacun à −10 %.
   const FORMATS = {
     "10x2ml": { label: "Découverte", capacity: 10, key: "2ml" },
-    "5x5ml": { label: "Signature", capacity: 5, key: "5ml" },
-    "3x10ml": { label: "Collection", capacity: 3, key: "10ml" },
+    "5x5ml": { label: "Voyage", capacity: 5, key: "5ml" },
+    "3x10ml": { label: "Iconique", capacity: 3, key: "10ml" },
   };
   const DISCOUNT = 0.1;
+
+  // KOR-C15 — familles du brief §4. Le catalogue nomme parfois les memes
+  // familles autrement : on regroupe ici plutot que de renommer les donnees.
+  const FAMILY_ALIASES = {
+    "boisé": ["boisé", "boise", "woody", "chypre"],
+    floral: ["floral", "florale", "fleuri"],
+    oriental: ["oriental", "orientale", "ambré", "ambre", "épicé", "epice"],
+    frais: ["frais", "fraîche", "fraiche", "agrumes", "citrus", "aquatique", "hespéridé"],
+    gourmand: ["gourmand", "gourmande", "sucré", "sucre", "vanillé"],
+  };
 
   const coffret = {
     format: "5x5ml",
@@ -164,6 +174,11 @@
     const messageInput = document.getElementById("cb2Message");
     const messageCount = document.getElementById("cb2MessageCount");
     const timelineSteps = document.querySelectorAll("#cb2Timeline .cb2-timeline__step");
+    const subtotalEl = document.getElementById("cb2Subtotal");
+    const discountRow = document.getElementById("cb2DiscountRow");
+    const discountEl = document.getElementById("cb2Discount");
+    const shipEl = document.getElementById("cb2Ship");
+    const resultsCountEl = document.getElementById("cb2ResultsCount");
 
     // Restaure un brouillon éventuel avant le premier rendu, puis remet en
     // phase les contrôles qui ne sont pas recalculés par render() (boutons
@@ -223,7 +238,9 @@
       if (!coffret.filter) return true;
       if (coffret.filter === "bestseller") return !!p.bestseller;
       if (coffret.filter === "new") return !!p.new;
-      return p.family === coffret.filter;
+      const aliases = FAMILY_ALIASES[coffret.filter] || [coffret.filter];
+      const family = normalize(p.family);
+      return aliases.some((a) => family === normalize(a));
     }
     function searchCandidates() {
       const q = normalize(coffret.search).trim();
@@ -231,13 +248,13 @@
         .filter((p) => matchesFilter(p))
         .filter((p) => !q || normalize(`${p.brand} ${p.name}`).includes(q));
 
-      if (q || coffret.filter) return matched.slice(0, 8);
+      if (q || coffret.filter) return { list: matched.slice(0, 8), matched: matched.length };
 
       // Rien de saisi : on met les best-sellers en avant, puis le reste.
       const ranked = matched
         .slice()
         .sort((a, b) => Number(Boolean(b.bestseller)) - Number(Boolean(a.bestseller)));
-      return ranked.slice(0, 8);
+      return { list: ranked.slice(0, 8), matched: matched.length };
     }
     // Les suggestions sont visibles dès l'arrivée : sans elles, la zone
     // « Ajoutez vos parfums » restait vide tant qu'on ne tapait rien.
@@ -251,22 +268,28 @@
         resultsEl.innerHTML = "";
         return;
       }
-      const candidates = searchCandidates();
+      const { list: candidates, matched } = searchCandidates();
       const full = total() >= capacity();
       resultsEl.hidden = false;
+      if (resultsCountEl) {
+        resultsCountEl.textContent = matched === 0
+          ? ""
+          : `${matched} parfum${matched > 1 ? "s" : ""} disponible${matched > 1 ? "s" : ""}${candidates.length < matched ? ` · ${candidates.length} affichés` : ""}`;
+      }
       if (candidates.length === 0) {
         resultsEl.innerHTML = `<div class="cb2-results__empty">Aucun parfum ne correspond à cette recherche.</div>`;
         return;
       }
+      // KOR-C13 — un compteur « − quantite + » par parfum : on peut prendre
+      // deux fois le meme flacon dans un coffret.
       resultsEl.innerHTML = candidates
-        .map(
-          (p) => `
-        <div class="cb2-result" data-product-id="${p.id}">
+        .map((p) => {
+          const qty = getItem(p.id)?.quantity || 0;
+          return `
+        <div class="cb2-result${qty ? " is-picked" : ""}" data-product-id="${p.id}">
           <div class="cb2-result__media">
             <span class="cb2-result__thumb">${thumbHtml(p)}</span>
-            <button type="button" class="cb2-result__add" data-add-id="${p.id}" ${full ? "disabled" : ""} aria-label="Ajouter ${p.name}">
-              <i class="ti ti-plus" aria-hidden="true"></i>
-            </button>
+            ${qty ? '<span class="cb2-result__check" aria-hidden="true"><i class="ti ti-check"></i></span>' : ""}
           </div>
           <div class="cb2-result__info">
             <div class="cb2-result__name">${p.name}</div>
@@ -274,8 +297,13 @@
             <div class="cb2-result__notes">${notesOf(p)}</div>
             ${p.rating ? `<div class="cb2-result__rating">${renderStars(p.rating)}</div>` : ""}
           </div>
-        </div>`
-        )
+          <div class="cb2-result__qty">
+            <button type="button" class="cb2-qty-btn" data-qty="-1" data-id="${p.id}" ${qty === 0 ? "disabled" : ""} aria-label="Retirer un ${p.name}">−</button>
+            <span class="cb2-qty-value" aria-live="polite">${qty}</span>
+            <button type="button" class="cb2-qty-btn" data-qty="1" data-id="${p.id}" ${full ? "disabled" : ""} aria-label="Ajouter un ${p.name}">+</button>
+          </div>
+        </div>`;
+        })
         .join("");
     }
 
@@ -338,7 +366,8 @@
         .join("");
     }
 
-    // ── Timeline : où en est le client dans les 4 étapes
+    // ── KOR-C12 — les trois etapes du brief. L'etape avance seule : des le
+    // format choisi on passe a 2, des le coffret complet on passe a 3.
     function updateTimeline() {
       if (!timelineSteps.length) return;
       const t = total();
@@ -351,10 +380,13 @@
       timelineSteps.forEach((step, i) => {
         const key = step.dataset.step;
         const numEl = step.querySelector(".cb2-timeline__num");
-        const s = state[key];
-        step.classList.toggle("is-done", s === "done");
-        step.classList.toggle("is-current", s === "current");
-        if (numEl) numEl.textContent = s === "done" ? "✓" : String(i + 1);
+        const st = state[key];
+        step.classList.toggle("is-done", st === "done");
+        step.classList.toggle("is-current", st === "current");
+        // Une etape non franchie n'est pas cliquable : on ne saute pas en avant.
+        step.disabled = st === "pending";
+        step.setAttribute("aria-current", st === "current" ? "step" : "false");
+        if (numEl) numEl.textContent = st === "done" ? "✓" : String(i + 1);
       });
     }
 
@@ -388,6 +420,20 @@
       formatNameEl.textContent = FORMATS[coffret.format].label;
       const priceText = money(coffret.price);
       priceEl.textContent = priceText;
+
+      // KOR-C14 — le detail du calcul reste sous les yeux : sous-total,
+      // remise incluse, livraison. Trois lignes mises a jour a chaque geste.
+      if (subtotalEl) subtotalEl.textContent = money(coffret.gross);
+      if (discountRow) {
+        const has = coffret.saved > 0;
+        discountRow.hidden = !has;
+        if (discountEl) discountEl.textContent = `−${money(coffret.saved)}`;
+      }
+      if (shipEl) {
+        const complete0 = total() === cap;
+        shipEl.textContent = complete0 ? "Offerte" : "Selon le panier";
+        shipEl.classList.toggle("is-won", complete0);
+      }
       if (ctaPriceEl) ctaPriceEl.textContent = priceText;
       if (coffret.price !== lastPrice) {
         priceEl.classList.remove("is-updating");
@@ -408,13 +454,13 @@
       hint.hidden = false;
       if (complete) {
         hint.classList.add("is-won");
-        hint.textContent = `−10 % appliqué · vous économisez ${money(coffret.saved)} · livraison offerte`;
+        hint.textContent = `−10 % appliqué · vous économisez ${money(coffret.saved)} · livraison offerte`;
       } else if (t === 0) {
         hint.classList.remove("is-won");
-        hint.textContent = `Choisissez ${cap} parfums pour −10 % sur chaque flacon et la livraison offerte`;
+        hint.textContent = `Choisissez ${cap} parfums pour −10 % sur chaque flacon et la livraison offerte`;
       } else {
         hint.classList.remove("is-won");
-        hint.textContent = `Plus que ${missing} parfum${missing > 1 ? "s" : ""} pour −10 % et la livraison offerte`;
+        hint.textContent = `Plus que ${missing} parfum${missing > 1 ? "s" : ""} pour −10 % et la livraison offerte`;
       }
 
       updateTimeline();
@@ -436,12 +482,37 @@
 
     filterChips.forEach((chip) => {
       chip.addEventListener("click", () => {
-        const key = chip.dataset.filter;
+        const key = chip.dataset.filter || null;
         coffret.filter = coffret.filter === key ? null : key;
-        filterChips.forEach((c) => c.classList.toggle("is-active", c.dataset.filter === coffret.filter));
+        filterChips.forEach((c) =>
+          c.classList.toggle("is-active", (c.dataset.filter || null) === coffret.filter),
+        );
         renderResults();
       });
     });
+
+    // KOR-C12 — revenir a une etape deja franchie en cliquant dessus.
+    const SECTION_OF_STEP = { format: "#cb2Formats", parfums: "#cb2Search", validation: ".cb2-action" };
+    timelineSteps.forEach((step) => {
+      step.addEventListener("click", () => {
+        const target = document.querySelector(SECTION_OF_STEP[step.dataset.step]);
+        target?.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (step.dataset.step === "parfums") searchInput?.focus({ preventScroll: true });
+      });
+    });
+
+    // KOR-C9 — les trois cartes de coffret preselectionnent leur format.
+    document.querySelectorAll(".box-card[data-format]").forEach((card) => {
+      card.addEventListener("click", (e) => {
+        e.preventDefault();
+        setFormat(card.dataset.format);
+        document.getElementById("personnaliser")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    // Format passe en parametre d'URL (lien depuis la fiche produit).
+    const urlFormat = new URLSearchParams(location.search).get("format");
+    if (urlFormat && FORMATS[urlFormat] && urlFormat !== coffret.format) setFormat(urlFormat);
 
     document.addEventListener("click", (e) => {
       // La liste de suggestions reste visible : rien à masquer au clic extérieur.
@@ -449,13 +520,24 @@
 
     if (resultsEl) {
       resultsEl.addEventListener("click", (e) => {
+        // KOR-C13 — les boutons − et + de chaque parfum suggere.
+        const qtyBtn = e.target.closest("[data-qty]");
+        if (qtyBtn && !qtyBtn.disabled) {
+          const id = qtyBtn.dataset.id;
+          const delta = Number(qtyBtn.dataset.qty);
+          if (delta > 0) {
+            addProduct(id);
+          } else {
+            const item = getItem(id);
+            if (!item) return;
+            if (item.quantity <= 1) removeProduct(id);
+            else stepProduct(id, -1);
+          }
+          return;
+        }
         const btn = e.target.closest("[data-add-id]");
         if (!btn || btn.disabled) return;
         addProduct(btn.dataset.addId);
-        if (searchInput) {
-          searchInput.value = "";
-          coffret.search = "";
-        }
       });
     }
 
@@ -533,7 +615,7 @@
 
         const originalLabel = ctaLabel ? ctaLabel.textContent : "";
         if (ctaLabel) ctaLabel.textContent = "Coffret ajouté au panier";
-        cart.notice?.(`Coffret ${FORMATS[coffret.format].label} ajouté · −10 % et livraison offerte`);
+        cart.notice?.(`Coffret ${FORMATS[coffret.format].label} ajouté · −10 % et livraison offerte`);
         render();
         setTimeout(() => {
           if (ctaLabel) ctaLabel.textContent = originalLabel;

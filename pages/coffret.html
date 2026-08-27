@@ -38,7 +38,7 @@
         <span class="banner-sep"></span>
         <span class="banner-item">Expédition sous 24h</span>
         <span class="banner-sep"></span>
-        <span class="banner-item">100+ maisons de niche</span>
+        <span class="banner-item">Maisons de niche sélectionnées</span>
         <span class="banner-sep"></span>
         <span class="banner-item">Cadeau mystère offert</span>
         <span class="banner-sep"></span>
@@ -50,7 +50,7 @@
         <span class="banner-sep"></span>
         <span class="banner-item">Expédition sous 24h</span>
         <span class="banner-sep"></span>
-        <span class="banner-item">100+ maisons de niche</span>
+        <span class="banner-item">Maisons de niche sélectionnées</span>
         <span class="banner-sep"></span>
         <span class="banner-item">Cadeau mystère offert</span>
         <span class="banner-sep"></span>
@@ -191,85 +191,126 @@
       </div>
     </div>
 
+    <!-- KOR-C9 — les trois coffrets reellement vendus, un par format.
+         Remplace quatre cartes « Ete / Hiver / Floral / Gourmand » qui
+         pointaient vers le catalogue filtre : ce sont des collections, pas des
+         coffrets. Elles existent deja sur la page Collections. -->
     <section class="coffret-collections" id="coffrets">
       <div class="dose-head">
         <div class="dose-eyebrow">Nos coffrets</div>
         <h2 class="dose-title">
-          Quatre univers, <em>une signature</em> à chaque saison.
+          Trois formats, <em>une seule règle</em> : coffret complet, −10 % sur chaque flacon.
         </h2>
         <span class="dose-title-rule" aria-hidden="true"></span>
+        <p class="dose-sub">
+          Vous choisissez le format, puis vos parfums. Le prix se met à jour à
+          chaque ajout. Dès que le coffret est complet, chaque flacon perd 10 %
+          et la livraison est offerte.
+        </p>
       </div>
-      <div class="coffret-grid">
-        <a href="catalogue.html?season=été" class="coffret-card">
-          <div
-            class="coffret-card__media"
-            style="background-image: url('../assets/images/coffrets/coffret_ete.webp')"
-          ></div>
-          <span class="coffret-card__badge"
-            ><i class="ti ti-sun" aria-hidden="true"></i> Coffret</span
-          >
-          <div class="coffret-card__content">
-            <h3 class="coffret-card__name">Été</h3>
-            <span class="coffret-card__cta"
-              >Découvrir <span aria-hidden="true">→</span></span
-            >
+
+      <div class="box-grid">
+        <a class="box-card" href="#personnaliser" data-format="10x2ml">
+          <span class="box-card__discount">−10 %</span>
+          <div class="box-card__media">
+            <img src="../assets/images/coffrets/coffret-decouverte-10x2ml.webp"
+                 srcset="../assets/images/coffrets/coffret-decouverte-10x2ml-sm.webp 800w, ../assets/images/coffrets/coffret-decouverte-10x2ml.webp 1024w"
+                 sizes="(max-width: 640px) 90vw, 320px"
+                 alt="Coffret Découverte Kōrei ouvert, dix décants de 2 ml"
+                 width="1024" height="1024" loading="lazy" decoding="async" />
+          </div>
+          <div class="box-card__body">
+            <h3 class="box-card__name">Coffret Découverte</h3>
+            <p class="box-card__format">10 × 2 ml</p>
+            <p class="box-card__desc">Dix créations, dix émotions. Idéal pour explorer notre univers.</p>
+            <ul class="box-card__perks">
+              <li><i class="ti ti-discount-2" aria-hidden="true"></i> −10 % sur chaque flacon</li>
+              <li><i class="ti ti-truck-delivery" aria-hidden="true"></i> Livraison offerte</li>
+            </ul>
+            <span class="box-card__cta">Composer ce coffret <span aria-hidden="true">→</span></span>
           </div>
         </a>
-        <a href="catalogue.html?season=hiver" class="coffret-card">
-          <div
-            class="coffret-card__media"
-            style="background-image: url('../assets/images/coffrets/coffret_hiver.webp')"
-          ></div>
-          <span class="coffret-card__badge"
-            ><i class="ti ti-snowflake" aria-hidden="true"></i> Coffret</span
-          >
-          <div class="coffret-card__content">
-            <h3 class="coffret-card__name">Hiver</h3>
-            <span class="coffret-card__cta"
-              >Découvrir <span aria-hidden="true">→</span></span
-            >
+
+        <a class="box-card box-card--popular" href="#personnaliser" data-format="5x5ml">
+          <span class="box-card__badge">Populaire</span>
+          <span class="box-card__discount">−10 %</span>
+          <div class="box-card__media">
+            <img src="../assets/images/coffrets/coffret-voyage-5x5ml.webp"
+                 srcset="../assets/images/coffrets/coffret-voyage-5x5ml-sm.webp 800w, ../assets/images/coffrets/coffret-voyage-5x5ml.webp 1024w"
+                 sizes="(max-width: 640px) 90vw, 320px"
+                 alt="Coffret Voyage Kōrei ouvert, cinq décants de 5 ml"
+                 width="1024" height="1024" loading="lazy" decoding="async" />
+          </div>
+          <div class="box-card__body">
+            <h3 class="box-card__name">Coffret Voyage</h3>
+            <p class="box-card__format">5 × 5 ml</p>
+            <p class="box-card__desc">Cinq parfums iconiques, assez pour affiner vos goûts.</p>
+            <ul class="box-card__perks">
+              <li><i class="ti ti-discount-2" aria-hidden="true"></i> −10 % sur chaque flacon</li>
+              <li><i class="ti ti-truck-delivery" aria-hidden="true"></i> Livraison offerte</li>
+            </ul>
+            <span class="box-card__cta">Composer ce coffret <span aria-hidden="true">→</span></span>
           </div>
         </a>
-        <a href="catalogue.html?family=floral" class="coffret-card">
-          <div
-            class="coffret-card__media"
-            style="background-image: url('../assets/images/coffrets/coffret_floral.webp')"
-          ></div>
-          <span class="coffret-card__badge"
-            ><i class="ti ti-flower" aria-hidden="true"></i> Coffret</span
-          >
-          <div class="coffret-card__content">
-            <h3 class="coffret-card__name">Floral</h3>
-            <span class="coffret-card__cta"
-              >Découvrir <span aria-hidden="true">→</span></span
-            >
+
+        <a class="box-card" href="#personnaliser" data-format="3x10ml">
+          <span class="box-card__discount">−10 %</span>
+          <div class="box-card__media">
+            <img src="../assets/images/coffrets/coffret-iconique-3x10ml.webp"
+                 srcset="../assets/images/coffrets/coffret-iconique-3x10ml-sm.webp 800w, ../assets/images/coffrets/coffret-iconique-3x10ml.webp 1024w"
+                 sizes="(max-width: 640px) 90vw, 320px"
+                 alt="Coffret Iconique Kōrei ouvert, trois décants de 10 ml"
+                 width="1024" height="1024" loading="lazy" decoding="async" />
+          </div>
+          <div class="box-card__body">
+            <h3 class="box-card__name">Coffret Iconique</h3>
+            <p class="box-card__format">3 × 10 ml</p>
+            <p class="box-card__desc">Trois essentiels en grand format, pour une expérience prolongée.</p>
+            <ul class="box-card__perks">
+              <li><i class="ti ti-discount-2" aria-hidden="true"></i> −10 % sur chaque flacon</li>
+              <li><i class="ti ti-truck-delivery" aria-hidden="true"></i> Livraison offerte</li>
+            </ul>
+            <span class="box-card__cta">Composer ce coffret <span aria-hidden="true">→</span></span>
           </div>
         </a>
-        <a href="catalogue.html?family=gourmand" class="coffret-card">
-          <div
-            class="coffret-card__media"
-            style="background-image: url('../assets/images/coffrets/coffret_gourmand.webp')"
-          ></div>
-          <span class="coffret-card__badge"
-            ><i class="ti ti-cookie" aria-hidden="true"></i> Coffret</span
-          >
-          <div class="coffret-card__content">
-            <h3 class="coffret-card__name">Gourmand</h3>
-            <span class="coffret-card__cta"
-              >Découvrir <span aria-hidden="true">→</span></span
-            >
-          </div>
-        </a>
+      </div>
+
+      <div class="box-trust">
+        <div class="box-trust__item">
+          <i class="ti ti-shield-check" aria-hidden="true"></i>
+          <span><b>Authentique &amp; sécurisé</b>Décants officiels Kōrei</span>
+        </div>
+        <div class="box-trust__item">
+          <i class="ti ti-flask-2" aria-hidden="true"></i>
+          <span><b>Flacons en verre premium</b>Préserve l'intégrité des parfums</span>
+        </div>
+        <div class="box-trust__item">
+          <i class="ti ti-package" aria-hidden="true"></i>
+          <span><b>Expédition 24 h</b>Emballage soigné &amp; sécurisé</span>
+        </div>
       </div>
     </section>
 
     <section class="cb2" id="personnaliser">
       <div class="cb2-grid" id="cb2Grid">
-        <div class="cb2-media-col">
+        <div class="cb2-media-col" id="cb2MediaCol">
+          <!-- KOR-C14 — sur telephone, cette colonne devient une barre fixe en
+               bas de l'ecran. Cet en-tete est la partie toujours visible ; le
+               reste se deplie au clic. -->
+          <button type="button" class="cb2-dock" id="cb2Dock" aria-expanded="false" aria-controls="cb2Preview">
+            <span class="cb2-dock__left">
+              <span class="cb2-dock__name" id="cb2DockName">Coffret Voyage</span>
+              <span class="cb2-dock__count" id="cb2DockCount">0 / 5 flacons</span>
+            </span>
+            <span class="cb2-dock__right">
+              <span class="cb2-dock__total" id="cb2DockTotal">0€</span>
+              <i class="ti ti-chevron-up cb2-dock__chevron" aria-hidden="true"></i>
+            </span>
+          </button>
           <div class="cb2-preview" id="cb2Preview">
             <div class="cb2-preview__head">
               <span class="cb2-preview__label">Votre coffret</span>
-              <span class="cb2-preview__format" id="cb2PreviewFormatName">Signature</span>
+              <span class="cb2-preview__format" id="cb2PreviewFormatName">Voyage</span>
             </div>
 
             <div class="cb2-preview__slots" id="cb2Slots"></div>
@@ -285,9 +326,26 @@
               </li>
             </ul>
 
+            <!-- KOR-C14 — recapitulatif chiffre, toujours visible :
+                 sous-total, remise incluse, total. -->
+            <div class="cb2-recap" id="cb2Recap">
+              <div class="cb2-recap__row">
+                <span>Sous-total</span>
+                <span id="cb2Subtotal">0€</span>
+              </div>
+              <div class="cb2-recap__row cb2-recap__row--discount" id="cb2DiscountRow" hidden>
+                <span>Remise 10 % incluse</span>
+                <span id="cb2Discount">−0€</span>
+              </div>
+              <div class="cb2-recap__row cb2-recap__row--ship" id="cb2ShipRow">
+                <span>Livraison</span>
+                <span id="cb2Ship">Selon le panier</span>
+              </div>
+            </div>
+
             <div class="cb2-preview__foot">
-              <span>Prix du coffret</span>
-              <span class="cb2-preview__price" id="cb2PreviewPrice">99€</span>
+              <span>Total</span>
+              <span class="cb2-preview__price" id="cb2PreviewPrice">0€</span>
             </div>
           </div>
         </div>
@@ -300,20 +358,20 @@
             </p>
           </div>
 
-          <div class="cb2-timeline" id="cb2Timeline">
-            <div class="cb2-timeline__step" data-step="format">
+          <ol class="cb2-timeline" id="cb2Timeline">
+            <li><button type="button" class="cb2-timeline__step" data-step="format">
               <span class="cb2-timeline__num">1</span>
-              <span class="cb2-timeline__label">Format</span>
-            </div>
-            <div class="cb2-timeline__step" data-step="parfums">
+              <span class="cb2-timeline__label">Choisissez votre coffret</span>
+            </button></li>
+            <li><button type="button" class="cb2-timeline__step" data-step="parfums">
               <span class="cb2-timeline__num">2</span>
-              <span class="cb2-timeline__label">Vos parfums</span>
-            </div>
-            <div class="cb2-timeline__step" data-step="validation">
+              <span class="cb2-timeline__label">Sélectionnez vos parfums</span>
+            </button></li>
+            <li><button type="button" class="cb2-timeline__step" data-step="validation">
               <span class="cb2-timeline__num">3</span>
-              <span class="cb2-timeline__label">Validation</span>
-            </div>
-          </div>
+              <span class="cb2-timeline__label">Validez votre commande</span>
+            </button></li>
+          </ol>
 
           <div class="cb2-step">
             <h3 class="cb2-step__title">Choisissez votre format</h3>
@@ -343,7 +401,7 @@
                 role="radio"
                 aria-checked="true"
               >
-                <span class="cb2-format__name">Signature</span>
+                <span class="cb2-format__name">Voyage</span>
                 <span class="cb2-format__ml">5 × 5 ml</span>
                 <span class="cb2-format__desc"
                   >Le meilleur équilibre entre découverte et quotidien.</span
@@ -356,7 +414,7 @@
                 role="radio"
                 aria-checked="false"
               >
-                <span class="cb2-format__name">Collection</span>
+                <span class="cb2-format__name">Iconique</span>
                 <span class="cb2-format__ml">3 × 10 ml</span>
                 <span class="cb2-format__desc"
                   >Pour profiter durablement de vos coups de cœur.</span
@@ -374,14 +432,15 @@
             </div>
 
             <div class="cb2-filter-chips" id="cb2FilterChips">
-              <button type="button" class="cb2-filter-chip" data-filter="bestseller"><i class="ti ti-flame" aria-hidden="true"></i> Best-sellers</button>
-              <button type="button" class="cb2-filter-chip" data-filter="new"><i class="ti ti-sparkles" aria-hidden="true"></i> Nouveautés</button>
-              <button type="button" class="cb2-filter-chip" data-filter="floral"><i class="ti ti-flower" aria-hidden="true"></i> Floral</button>
+              <button type="button" class="cb2-filter-chip is-active" data-filter="">Toutes</button>
               <button type="button" class="cb2-filter-chip" data-filter="boisé"><i class="ti ti-trees" aria-hidden="true"></i> Boisé</button>
-              <button type="button" class="cb2-filter-chip" data-filter="fruity"><i class="ti ti-apple" aria-hidden="true"></i> Fruité</button>
+              <button type="button" class="cb2-filter-chip" data-filter="floral"><i class="ti ti-flower" aria-hidden="true"></i> Floral</button>
+              <button type="button" class="cb2-filter-chip" data-filter="oriental"><i class="ti ti-flame" aria-hidden="true"></i> Oriental</button>
+              <button type="button" class="cb2-filter-chip" data-filter="frais"><i class="ti ti-droplet" aria-hidden="true"></i> Frais</button>
               <button type="button" class="cb2-filter-chip" data-filter="gourmand"><i class="ti ti-cookie" aria-hidden="true"></i> Gourmand</button>
             </div>
 
+            <p class="cb2-results__count" id="cb2ResultsCount" aria-live="polite"></p>
             <div class="cb2-results" id="cb2Results" hidden></div>
 
             <div class="cb2-selected" id="cb2Selected"></div>

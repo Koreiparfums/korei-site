@@ -42,9 +42,9 @@
     if (sub && state) {
       const next = cart.getNextStep ? cart.getNextStep(state) : null;
       if (state.boxes > 0) {
-        sub.textContent = `${state.boxes} coffret(s) complet(s) · −10 % et livraison offerte`;
+        sub.textContent = `${state.boxes} coffret(s) complet(s) · −10 % et livraison offerte`;
       } else if (next) {
-        sub.textContent = `Plus que ${next.missing} parfum(s) pour −10 %`;
+        sub.textContent = `Plus que ${next.missing} parfum(s) pour −10 %`;
       }
     }
   }

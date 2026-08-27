@@ -377,10 +377,11 @@
   // KOR-C1 — plus de prix fixe. Le coffret coûte la somme des flacons choisis,
   // chacun remisé de 10 % une fois le coffret complet. Le prix affiché ici est
   // donc une estimation basée sur CE parfum, annoncée comme telle.
+  // Noms arretes par le brief du 24 aout 2026 (KOR-C11).
   const COFFRET_TIERS = [
     { format: "2ml", label: "Découverte", capacity: 10 },
-    { format: "5ml", label: "Signature", capacity: 5 },
-    { format: "10ml", label: "Collection", capacity: 3 },
+    { format: "5ml", label: "Voyage", capacity: 5 },
+    { format: "10ml", label: "Iconique", capacity: 3 },
   ];
 
   const GUARANTEE_ITEMS = [
@@ -412,7 +413,7 @@
       <div class="pdp-coffret-promo pdp-reveal">
         <span class="pdp-label">Ce parfum en coffret</span>
         <p class="pdp-coffret-promo__pitch">
-          Composez un coffret complet et gagnez <strong>−10 % sur chaque flacon</strong>,
+          Composez un coffret complet et gagnez <strong>−10 % sur chaque flacon</strong>,
           livraison offerte.
         </p>
         <div class="pdp-coffret-promo__list">
@@ -475,11 +476,11 @@
         if (state && state.discount > 0 && !next) {
           noteEl.hidden = false;
           noteEl.classList.add("is-won");
-          noteEl.textContent = `−10 % appliqué · Livraison offerte · vous économisez ${formatPriceLabel(state.discount)}€`;
+          noteEl.textContent = `−10 % appliqué · Livraison offerte · vous économisez ${formatPriceLabel(state.discount)}€`;
         } else if (next) {
           noteEl.hidden = false;
           noteEl.classList.remove("is-won");
-          noteEl.textContent = `Plus que ${next.missing} parfum${next.missing > 1 ? "s" : ""} en ${next.format.replace("ml", " ml")} pour −10 % et la livraison offerte`;
+          noteEl.textContent = `Plus que ${next.missing} parfum${next.missing > 1 ? "s" : ""} en ${next.format.replace("ml", " ml")} pour −10 % et la livraison offerte`;
         } else {
           noteEl.hidden = true;
         }
