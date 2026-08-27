@@ -9083,3 +9083,67 @@ body.has-cookie-banner .chatbot-widget {
     padding-top: 36px;
   }
 }
+
+/* ─── Vignettes de notes par famille olfactive ───────────────────────────
+   Les photos d'ingredients n'existent que pour 5 des 51 notes du catalogue.
+   En attendant les vraies photos, la vignette dit la famille de la note :
+   une couleur et un picto, au lieu d'une initiale qui n'apprend rien. */
+.note-image--family {
+  background: var(--note-bg, var(--accent-light));
+  border-color: var(--note-line, var(--border));
+  color: var(--note-ink, var(--accent));
+  font-style: normal;
+}
+.note-image--family i {
+  font-size: 0.52em;
+  line-height: 1;
+}
+.note-image--family[data-family="agrume"] {
+  --note-bg: #f6f9e9;
+  --note-line: #dfe8bf;
+  --note-ink: #7f9130;
+}
+.note-image--family[data-family="fruit"] {
+  --note-bg: #fdf0ef;
+  --note-line: #f2d3cf;
+  --note-ink: #b8574c;
+}
+.note-image--family[data-family="fleur"] {
+  --note-bg: #fdf0f4;
+  --note-line: #f2d2dd;
+  --note-ink: #b45877;
+}
+.note-image--family[data-family="bois"] {
+  --note-bg: #f4f1ea;
+  --note-line: #ded5c4;
+  --note-ink: #7a6544;
+}
+.note-image--family[data-family="epice"] {
+  --note-bg: #fdf1e6;
+  --note-line: #f0d7ba;
+  --note-ink: #b4712c;
+}
+.note-image--family[data-family="gourmand"] {
+  --note-bg: #f9f1e6;
+  --note-line: #e8d5bb;
+  --note-ink: #96693a;
+}
+.note-image--family[data-family="resine"] {
+  --note-bg: #f7f0e4;
+  --note-line: #e5d4b6;
+  --note-ink: #9a7524;
+}
+.note-image--family[data-family="musc"] {
+  --note-bg: #f4f4f2;
+  --note-line: #ddddd8;
+  --note-ink: #7d7d74;
+}
+/* Dans la pyramide, la vignette est plus grande : le picto suit. */
+.pdp-py-note .note-image--family i {
+  font-size: 22px;
+}
+.pdp-py-note .note-image--photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

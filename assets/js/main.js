@@ -50,15 +50,54 @@
   // et generait autant de 404 avant de retomber sur la lettre.
   const NOTE_IMAGES = new Set(["ananas", "bergamote", "bouleau", "jasmin", "mousse"]);
 
+  // Faute de photo d'ingredient (5 existent sur les 51 notes du catalogue), la
+  // vignette porte la famille olfactive de la note : une pastille coloree et
+  // un picto. C'est une information vraie et lisible, la ou une simple lettre
+  // grise ne disait rien. Une vraie photo, quand elle existe, passe devant.
+  const NOTE_FAMILIES = {
+    agrume: { icon: "ti-lemon-2", notes: ["bergamote", "citron", "pamplemousse", "orange", "mandarine", "yuzu", "neroli", "petit-grain"] },
+    fruit: { icon: "ti-apple", notes: ["ananas", "pomme", "litchi", "peche", "poire", "fruits-rouges", "cassis", "framboise", "figue"] },
+    fleur: { icon: "ti-flower", notes: ["rose", "rose-centifolia", "jasmin", "pivoine", "violette", "violet", "iris", "muguet", "tubereuse", "ylang-ylang", "fleur-d-oranger", "lavande"] },
+    bois: { icon: "ti-tree", notes: ["bois", "bois-de-cedre", "cedre", "santal", "bois-de-santal", "gaiac", "bois-de-gaiac", "vetiver", "patchouli", "bouleau", "oud", "chene", "oak", "mousse", "mousse-de-chene"] },
+    epice: { icon: "ti-flame", notes: ["poivre", "poivre-rose", "pink-pepper", "cardamome", "cannelle", "safran", "anis", "anis-etoile", "star-anise", "noix-de-muscade", "nutmeg", "epices", "gingembre"] },
+    gourmand: { icon: "ti-candy", notes: ["vanille", "tonka", "praline", "chocolat", "cafe", "caramel", "miel", "rhum", "cognac"] },
+    resine: { icon: "ti-droplet", notes: ["ambre", "resine", "encens", "oliban", "styrax", "benjoin", "labdanum", "fumee", "tabac", "cuir"] },
+    musc: { icon: "ti-wind", notes: ["musc", "musc-blanc", "ambroxan", "cashmeran"] },
+  };
+
+  const NOTE_FAMILY_BY_SLUG = (() => {
+    const map = {};
+    Object.entries(NOTE_FAMILIES).forEach(([family, def]) => {
+      def.notes.forEach((slug) => {
+        map[slug] = { family, icon: def.icon };
+      });
+    });
+    return map;
+  })();
+
+  function noteFamilyOf(note) {
+    return NOTE_FAMILY_BY_SLUG[noteSlug(note)] || null;
+  }
+
   function noteImageHtml(note, basePath = "") {
     const slug = noteSlug(note);
     const esc = site?.escapeHtml || ((v) => v);
-    const img = NOTE_IMAGES.has(slug)
-      ? `<img src="${basePath}assets/images/notes/${slug}.webp" alt="" width="38" height="38" loading="lazy" decoding="async" data-onerror="remove" />`
-      : "";
+    if (NOTE_IMAGES.has(slug)) {
+      return `
+      <span class="note-image note-image--photo">
+        <img src="${basePath}assets/images/notes/${slug}.webp" alt="" width="38" height="38" loading="lazy" decoding="async" data-onerror="remove" />
+      </span>`;
+    }
+    const fam = noteFamilyOf(note);
+    if (fam) {
+      return `
+      <span class="note-image note-image--family" data-family="${fam.family}">
+        <i class="ti ${fam.icon}" aria-hidden="true"></i>
+      </span>`;
+    }
+    // Note inconnue du classement : on retombe sur l'initiale, jamais sur un vide.
     return `
       <span class="note-image">
-        ${img}
         <span>${esc(note.slice(0, 1))}</span>
       </span>`;
   }
