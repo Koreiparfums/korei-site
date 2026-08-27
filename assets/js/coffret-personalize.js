@@ -141,7 +141,7 @@
     }
     function thumbHtml(p) {
       const src = p.image ? withBase(p.image, basePath) : "";
-      const img = src ? `<img src="${src}" alt="" data-onerror="remove" />` : "";
+      const img = src ? `<img src="${src}" alt="" width="750" height="1000" loading="lazy" decoding="async" data-onerror="remove" />` : "";
       return `${img}<span>${initialOf(p)}</span>`;
     }
 

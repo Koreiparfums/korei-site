@@ -184,7 +184,7 @@
         </button>
         ${inCoffret ? `<span class="fav-card__tag"><i class="ti ti-package"></i> Dans mon coffret</span>` : ""}
         <a href="../pages/product.html?id=${product.id}" class="fav-card__media">
-          ${src ? `<img src="${src}" alt="" loading="lazy" />` : ""}
+          ${src ? `<img src="${src}" alt="" width="750" height="1000" loading="lazy" decoding="async" />` : ""}
         </a>
         <div class="fav-card__body">
           <a href="../pages/product.html?id=${product.id}" class="fav-card__link">
@@ -207,7 +207,7 @@
     return `
       <div class="fav-card fav-card--cta">
         <div class="fav-card--cta__media">
-          <img src="../assets/images/packs/signature.webp" alt="" loading="lazy" />
+          <img src="../assets/images/packs/signature.webp" alt="" width="1600" height="600" loading="lazy" decoding="async" />
         </div>
         <div class="fav-card--cta__body">
           <span class="fav-card--cta__icon" aria-hidden="true"><i class="ti ti-sparkles"></i></span>

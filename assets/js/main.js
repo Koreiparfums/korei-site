@@ -20,13 +20,17 @@
     if (!src) return "";
     const esc = site?.escapeHtml || ((v) => v);
     const alt = `${esc(product.brand)} ${esc(product.name)}`;
-    return `<img class="${className} media-slot__image" src="${src}" alt="${alt}" hidden />`;
+    // Dimensions intrinseques des visuels produit : 750x1000. Les porter en
+    // attribut reserve la place avant le chargement (aucun saut de page).
+    const small = src.replace(/\.webp$/, "-sm.webp");
+    const srcset = src.endsWith(".webp") ? ` srcset="${small} 400w, ${src} 750w" sizes="(max-width: 640px) 45vw, 220px"` : "";
+    return `<img class="${className} media-slot__image" src="${src}"${srcset} alt="${alt}" width="750" height="1000" loading="lazy" decoding="async" hidden />`;
   }
 
   function renderProductGlowHtml(product, basePath = "") {
     const src = productImageSrc(product, basePath);
     if (!src) return "";
-    return `<img class="card-img-glow" src="${src}" alt="" aria-hidden="true" loading="lazy" />`;
+    return `<img class="card-img-glow" src="${src}" alt="" aria-hidden="true" width="750" height="1000" loading="lazy" decoding="async" />`;
   }
 
   function noteSlug(note) {
@@ -38,12 +42,20 @@
       .replace(/^-|-$/g, "");
   }
 
+  // Vignettes de notes reellement presentes dans assets/images/notes.
+  // Sans cette liste, chaque page reclamait une cinquantaine de fichiers absents
+  // et generait autant de 404 avant de retomber sur la lettre.
+  const NOTE_IMAGES = new Set(["ananas", "bergamote", "bouleau", "jasmin", "mousse"]);
+
   function noteImageHtml(note, basePath = "") {
     const slug = noteSlug(note);
     const esc = site?.escapeHtml || ((v) => v);
+    const img = NOTE_IMAGES.has(slug)
+      ? `<img src="${basePath}assets/images/notes/${slug}.webp" alt="" width="38" height="38" loading="lazy" decoding="async" data-onerror="remove" />`
+      : "";
     return `
       <span class="note-image">
-        <img src="${basePath}assets/images/notes/${slug}.webp" alt="" loading="lazy" data-onerror="remove" />
+        ${img}
         <span>${esc(note.slice(0, 1))}</span>
       </span>`;
   }

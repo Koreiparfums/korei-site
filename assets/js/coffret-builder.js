@@ -480,7 +480,7 @@
     return `
       <li class="panier-item${available ? "" : " is-soldout"}" data-product-id="${item.productId}" data-format="${item.format}">
         <a href="../pages/product.html?id=${item.productId}" class="panier-item__media">
-          ${src ? `<img src="${src}" alt="" loading="lazy" />` : ""}
+          ${src ? `<img src="${src}" alt="" width="750" height="1000" loading="lazy" decoding="async" />` : ""}
         </a>
         <div class="panier-item__body">
           <a href="../pages/product.html?id=${item.productId}" class="panier-item__link">

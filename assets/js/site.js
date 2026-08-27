@@ -248,7 +248,7 @@
         const meta = LIFESTYLE_SLOTS[i] || { title: "Korei", subtitle: "" };
         return `
           <div class="lifestyle-slot media-slot" data-slot="lifestyle-${i + 1}">
-            <img class="media-slot__image lifestyle-slot__img" src="${path}" alt="${meta.title} — Korei" hidden />
+            <img class="media-slot__image lifestyle-slot__img" src="${path}" alt="${meta.title} — Korei" width="1600" height="900" loading="lazy" decoding="async" hidden />
             ${renderPlaceholder("lifestyle", { ...meta, index: i })}
           </div>`;
       })
@@ -363,4 +363,20 @@
     initHeaderScroll();
     initCookieBanner();
   }
+
+  /**
+   * Enregistrement du service worker (KOR-A7).
+   * Uniquement en HTTPS ou sur localhost : ailleurs le navigateur refuse.
+   */
+  if ("serviceWorker" in navigator) {
+    const local = ["localhost", "127.0.0.1"].includes(global.location.hostname);
+    if (global.location.protocol === "https:" || local) {
+      global.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch(() => {
+          // Un echec d'enregistrement ne doit jamais casser la page.
+        });
+      });
+    }
+  }
+
 })(window);

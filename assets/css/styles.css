@@ -7509,3 +7509,83 @@ body.has-cookie-banner .chatbot-widget {
     display: none;
   }
 }
+
+/* ==========================================================================
+   Transitions entre pages facon application (KOR-A8)
+   L'API View Transitions anime le passage d'une page a l'autre sans
+   framework. Les navigateurs qui ne la connaissent pas ignorent la regle.
+   ========================================================================== */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: korei-fade-out 0.16s ease both;
+}
+::view-transition-new(root) {
+  animation: korei-fade-in 0.22s ease both;
+}
+@keyframes korei-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes korei-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* Respect du reglage systeme : aucune animation de page si l'utilisateur a
+   demande a en voir moins. @view-transition ne peut pas etre imbrique dans
+   @media (regle du langage) : on neutralise donc les animations elles-memes,
+   ce qui revient au meme et ne casse pas l'analyse de la feuille. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   Zones de toucher (KOR-A8, brief §6)
+   Sous 860 px, tout ce qui se touche fait au moins 44 px de haut. On agrandit
+   la zone sensible sans grossir le dessin : le bouton garde son apparence.
+   ========================================================================== */
+@media (max-width: 860px) {
+  .hamburger,
+  .logo,
+  .btn-dark,
+  .btn-outline,
+  .btn-white,
+  .pdp-btn,
+  .chatbot-suggestion,
+  .pdp-carousel-nav button,
+  .quiz-note-chip,
+  .brand-mark {
+    min-height: 44px;
+  }
+  /* Boutons ronds : on elargit la zone sensible avec un pseudo-element
+     centre, ce qui evite de deformer la carte produit. */
+  .chatbot-send {
+    height: 44px;
+    width: 44px;
+  }
+  .card-fav,
+  .card-add,
+  .chatbot-close {
+    position: relative;
+  }
+  .card-fav::after,
+  .card-add::after,
+  .chatbot-close::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+}

@@ -94,7 +94,7 @@
             .map(
               (src, i) => `
             <button class="pdp-thumb${i === 0 ? " is-active" : ""}" type="button" data-thumb-index="${i}" aria-label="Photo ${i + 1}">
-              <img src="${src}" alt="" loading="lazy" />
+              <img src="${src}" alt="" width="750" height="1000" loading="lazy" decoding="async" />
             </button>`
             )
             .join("")}
@@ -102,7 +102,7 @@
         <div class="pdp-gallery__mainstack">
           <div class="pdp-gallery__main">
             <div class="pdp-badges">${renderBadges(product)}</div>
-            <img class="pdp-gallery__main-img" id="pdp-main-img" src="${images[0] || ""}" alt="${alt}" data-onerror="fade" />
+            <img class="pdp-gallery__main-img" id="pdp-main-img" src="${images[0] || ""}" alt="${alt}" width="750" height="1000" decoding="async" fetchpriority="high" data-onerror="fade" />
           </div>
         </div>
       </div>`;
@@ -841,6 +841,9 @@
     if (ui.productBreadcrumbSchema) site?.setJsonLd("korei-product-breadcrumb-schema", ui.productBreadcrumbSchema(product));
 
     main.innerHTML = `
+      <a class="pdp-back" href="catalogue.html" aria-label="Retour aux parfums">
+        <i class="ti ti-chevron-left"></i><span>Parfums</span>
+      </a>
       <nav class="pdp-breadcrumb">
         <a href="../index.html">Accueil</a>
         <span>/</span>

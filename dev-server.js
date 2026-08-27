@@ -152,7 +152,7 @@ function safeFilePath(urlPath) {
 // Reflète les headers définis dans netlify.toml [[headers]] for "/*", pour
 // pouvoir tester la CSP en local avant qu'elle n'atteigne la prod.
 const CSP =
-  "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'";
+  "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'";
 
 function setSecurityHeaders(res) {
   res.setHeader("X-Content-Type-Options", "nosniff");
