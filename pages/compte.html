@@ -3,21 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Contactez Korei — questions sur les parfums, décants, livraison ou conseils olfactifs." />
-    <title>Contact — Korei</title>
+    <meta name="description" content="Mon espace Korei : mes favoris, mon panier, mes commandes et mes informations." />
+    <title>Mon espace — Korei</title>
     <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="../manifest.webmanifest" />
     <meta name="theme-color" content="#1a1a18" />
-    <link rel="canonical" href="https://korei.fr/pages/contact" />
+    <link rel="canonical" href="https://korei.fr/pages/compte" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Korei" />
-    <meta property="og:title" content="Contact — Korei" />
-    <meta property="og:description" content="Contactez l'équipe Korei pour toute question." />
-    <meta property="og:url" content="https://korei.fr/pages/contact" />
+    <meta property="og:title" content="Mon espace — Korei" />
+    <meta property="og:description" content="Mon espace Korei : favoris, panier, commandes." />
+    <meta property="og:url" content="https://korei.fr/pages/compte" />
     <meta property="og:image" content="https://korei.fr/assets/images/og/og-default.svg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Contact — Korei" />
-    <meta name="twitter:description" content="Contactez l'équipe Korei pour toute question." />
+    <meta name="twitter:title" content="Mon espace — Korei" />
+    <meta name="twitter:description" content="Mon espace Korei : favoris, panier, commandes." />
     <meta name="twitter:image" content="https://korei.fr/assets/images/og/og-default.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
     <link rel="stylesheet" href="../assets/css/styles.css" />
   </head>
-  <body data-page="static">
+  <body data-page="compte">
     <header class="header">
       <div class="header-left">
         <button class="hamburger" data-toggle-menu aria-label="Menu" type="button">
@@ -92,61 +92,68 @@
     </div>
 
     <main>
-    <section class="page-hero">
-      <div class="page-hero-eyebrow">Aide</div>
-      <h1 class="page-hero-title">Nous <em>contacter</em></h1>
-      <p class="page-hero-sub">Une question sur un parfum, une commande ou un conseil olfactif ?</p>
-    </section>
-
-    <article class="static-content">
-      <div class="contact-cards">
-        <div class="contact-card">
-          <div class="contact-card-icon"><i class="ti ti-mail"></i></div>
-          <h2>Email</h2>
-          <p><a href="mailto:contact@korei.fr">contact@korei.fr</a></p>
-          <p class="contact-card-hint">Réponse sous 24h ouvrées</p>
+      <section class="compte">
+        <div class="compte-head">
+          <p class="page-hero-eyebrow">Mon espace</p>
+          <h1 class="compte-title">Bonjour</h1>
+          <p class="compte-lede">
+            Retrouvez ici vos parfums mis de côté, votre coffret en cours et vos commandes.
+          </p>
         </div>
-        <div class="contact-card">
-          <div class="contact-card-icon"><i class="ti ti-message-chatbot"></i></div>
-          <h2>Conseiller olfactif</h2>
-          <p>Une réponse instantanée pour vous orienter vers le bon parfum.</p>
-          <p><button type="button" class="btn-text" data-open-chatbot>ouvrir le chatbot</button></p>
-        </div>
-      </div>
 
-      <form
-        class="contact-form"
-        name="contact"
-        method="POST"
-        action="/pages/contact?contact=success"
-        data-netlify="true"
-        netlify-honeypot="bot-field"
-        data-contact-form
-      >
-        <input type="hidden" name="form-name" value="contact" />
-        <label class="contact-honeypot">
-          Ne pas remplir
-          <input type="text" name="bot-field" tabindex="-1" autocomplete="off" />
-        </label>
-        <h2>Formulaire</h2>
-        <p class="static-note" data-contact-status role="status" aria-live="polite">
-          Réponse sous 24h ouvrées.
-        </p>
-        <label>
-          <span>Nom</span>
-          <input type="text" name="name" placeholder="Votre nom" autocomplete="name" required />
-        </label>
-        <label>
-          <span>Email</span>
-          <input type="email" name="email" placeholder="votre@email.com" autocomplete="email" required />
-        </label>
-        <label>
-          <span>Message</span>
-          <textarea name="message" rows="4" placeholder="Votre message…" required></textarea>
-        </label>
-        <button type="submit" class="btn-dark">Envoyer</button>
-      </form>
-    </article>
+        <div class="compte-grid">
+          <a class="compte-card" href="favoris.html">
+            <span class="compte-card__icon"><i class="ti ti-heart"></i></span>
+            <span class="compte-card__body">
+              <span class="compte-card__title">Mes favoris</span>
+              <span class="compte-card__sub"><span id="compte-fav-count">0</span> parfum(s) mis de côté</span>
+            </span>
+            <i class="ti ti-chevron-right compte-card__go"></i>
+          </a>
+
+          <a class="compte-card" href="panier.html">
+            <span class="compte-card__icon"><i class="ti ti-shopping-bag"></i></span>
+            <span class="compte-card__body">
+              <span class="compte-card__title">Mon panier</span>
+              <span class="compte-card__sub"><span id="compte-cart-count">0</span> flacon(s) · <span id="compte-cart-total">0€</span></span>
+            </span>
+            <i class="ti ti-chevron-right compte-card__go"></i>
+          </a>
+
+          <a class="compte-card" href="coffret.html">
+            <span class="compte-card__icon"><i class="ti ti-gift"></i></span>
+            <span class="compte-card__body">
+              <span class="compte-card__title">Mon coffret</span>
+              <span class="compte-card__sub" id="compte-coffret-sub">Composez un coffret et gagnez 10 %</span>
+            </span>
+            <i class="ti ti-chevron-right compte-card__go"></i>
+          </a>
+
+          <a class="compte-card" href="contact.html">
+            <span class="compte-card__icon"><i class="ti ti-help-circle"></i></span>
+            <span class="compte-card__body">
+              <span class="compte-card__title">Aide et contact</span>
+              <span class="compte-card__sub">Une question sur une commande</span>
+            </span>
+            <i class="ti ti-chevron-right compte-card__go"></i>
+          </a>
+        </div>
+
+        <div class="compte-orders">
+          <h2 class="compte-h2">Mes commandes</h2>
+          <p class="compte-empty">
+            Le suivi de commande se fait depuis votre compte client, à la fin de votre
+            première commande. Le lien vous est envoyé par e-mail.
+          </p>
+        </div>
+
+        <div class="compte-links">
+          <a href="cgv.html">Conditions générales</a>
+          <a href="mentions-legales.html">Mentions légales</a>
+          <a href="about.html">À propos de Kōrei</a>
+        </div>
+      </section>
+    </main>
     </main>
 
     <footer>
@@ -195,6 +202,7 @@
     <script src="../assets/js/coffret-builder.js"></script>
     <script src="../assets/js/tabbar.js"></script>
     <script src="../assets/js/chatbot.js"></script>
+    <script src="../assets/js/compte.js"></script>
 
     <div id="chatbot-widget" class="chatbot-widget">
       <div id="chatbot-panel" class="chatbot-panel" role="dialog" aria-label="Conseiller olfactif Korei">

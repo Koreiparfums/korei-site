@@ -1,19 +1,20 @@
 /**
- * Korei — Barre d'onglets mobile (KOR-A1)
+ * Korei — Barre d'onglets mobile (KOR-A1, KOR-A9)
  *
- * Barre fixe en bas, visible uniquement sous 860px. Quatre onglets, l'actif en doré.
+ * Barre fixe en bas, visible uniquement sous 860px. Cinq onglets, l'actif en doré,
+ * conformément au brief du 24 août : Accueil, Recherche, Favoris, Panier, Compte.
  * Le compteur du panier suit KoreiCoffret.onChange, comme l'icône du header.
  *
- * Note : la maquette prévoit un onglet « Compte ». Aucune page compte n'existe
- * aujourd'hui (hors périmètre), l'onglet pointe donc sur Favoris, qui est
- * l'espace personnel réellement disponible.
+ * L'onglet Recherche n'est pas un lien : il ouvre la recherche en plein écran
+ * sans quitter la page en cours (overlay #searchOverlay, déjà présent partout).
  */
 (function (global) {
   const TABS = [
     { id: "home", label: "Accueil", icon: "ti-home", href: "index.html", pages: ["home"] },
-    { id: "parfums", label: "Parfums", icon: "ti-flask-2", href: "pages/catalogue.html", pages: ["catalogue", "product", "brands", "collections"] },
+    { id: "recherche", label: "Recherche", icon: "ti-search", action: "search", pages: [] },
     { id: "favoris", label: "Favoris", icon: "ti-heart", href: "pages/favoris.html", pages: ["favoris"] },
     { id: "panier", label: "Panier", icon: "ti-shopping-bag", href: "pages/panier.html", pages: ["panier", "coffret"], badge: true },
+    { id: "compte", label: "Compte", icon: "ti-user", href: "pages/compte.html", pages: ["compte"] },
   ];
 
   function basePath() {
@@ -37,16 +38,20 @@
     nav.setAttribute("aria-label", "Navigation principale");
     nav.innerHTML = TABS.map((tab) => {
       const active = tab.pages.includes(page);
-      return `
-        <a class="tabbar__item${active ? " is-active" : ""}"
-           href="${base}${tab.href}"
-           ${active ? 'aria-current="page"' : ""}>
+      const inner = `
           <span class="tabbar__icon">
             <i class="ti ${tab.icon}"></i>
             ${tab.badge ? '<span class="tabbar__badge" id="tabbar-count" hidden>0</span>' : ""}
           </span>
-          <span class="tabbar__label">${esc(tab.label)}</span>
-        </a>`;
+          <span class="tabbar__label">${esc(tab.label)}</span>`;
+      // La recherche est un bouton : elle ouvre l'overlay sans changer de page.
+      if (tab.action === "search") {
+        return `<button type="button" class="tabbar__item" data-toggle-search aria-label="Rechercher">${inner}</button>`;
+      }
+      return `
+        <a class="tabbar__item${active ? " is-active" : ""}"
+           href="${base}${tab.href}"
+           ${active ? 'aria-current="page"' : ""}>${inner}</a>`;
     }).join("");
 
     document.body.appendChild(nav);

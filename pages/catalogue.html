@@ -78,15 +78,15 @@
           <button class="icon-btn search-mobile-btn" data-toggle-search aria-label="Rechercher" type="button">
             <i class="ti ti-search"></i>
           </button>
-          <button class="icon-btn" aria-label="Favoris" type="button">
+          <a class="icon-btn" href="favoris.html" aria-label="Favoris">
             <i class="ti ti-heart"></i>
-          </button>
-          <button class="icon-btn" aria-label="Panier" type="button">
+          </a>
+          <a class="icon-btn" href="panier.html" aria-label="Panier">
             <i class="ti ti-shopping-bag"></i>
-          </button>
-          <button class="icon-btn" aria-label="Compte" type="button">
+          </a>
+          <a class="icon-btn" href="compte.html" aria-label="Compte">
             <i class="ti ti-user"></i>
-          </button>
+          </a>
         </div>
       </div>
     </header>
@@ -139,6 +139,7 @@
       <!-- Sidebar filtres -->
       <aside class="catalogue-sidebar" id="filterSidebar">
         <div class="filters-panel">
+          <div class="filters-handle" id="filters-handle" aria-hidden="true"><span></span></div>
           <div class="filters-header">
             <div class="filters-header-top">
               <h2 class="filters-title">Filtres</h2>
@@ -152,8 +153,8 @@
 
           <div class="filters-scroll">
             <!-- Marques -->
-            <div class="filter-group" data-group="brand">
-              <button class="filter-group-head" type="button" aria-expanded="false">
+            <div class="filter-group open" data-group="brand">
+              <button class="filter-group-head" type="button" aria-expanded="true">
                 <span>Marques</span>
                 <i class="ti ti-chevron-up filter-chevron"></i>
               </button>
@@ -168,8 +169,8 @@
             </div>
 
             <!-- Famille olfactive -->
-            <div class="filter-group" data-group="family">
-              <button class="filter-group-head" type="button" aria-expanded="false">
+            <div class="filter-group open" data-group="family">
+              <button class="filter-group-head" type="button" aria-expanded="true">
                 <span>Famille olfactive</span>
                 <i class="ti ti-chevron-up filter-chevron"></i>
               </button>
@@ -219,8 +220,8 @@
             </div>
 
             <!-- Prix -->
-            <div class="filter-group" data-group="price">
-              <button class="filter-group-head" type="button" aria-expanded="false">
+            <div class="filter-group open" data-group="price">
+              <button class="filter-group-head" type="button" aria-expanded="true">
                 <span>Prix</span>
                 <i class="ti ti-chevron-up filter-chevron"></i>
               </button>

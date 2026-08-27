@@ -731,7 +731,7 @@ body[data-page="product"] {
   font-weight: 600;
   color: var(--pdp-ink);
 }
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .pdp-coffret-tier {
     flex-wrap: wrap;
   }
@@ -955,14 +955,14 @@ body[data-page="product"] {
 }
 
 /* ═════════════════════ RESPONSIVE ═════════════════════ */
-@media (max-width: 1200px) {
+@media (max-width: 1120px) {
   .pdp-hero__grid,
   .pdp-story__grid {
     gap: 48px;
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1120px) {
   .pdp-hero__grid {
     grid-template-columns: 1fr;
     gap: 40px;

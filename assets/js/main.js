@@ -838,17 +838,66 @@
     });
     document.getElementById("activeFiltersClearAll")?.addEventListener("click", resetAllFilters);
 
-    // ── Ouverture / fermeture du drawer mobile
+    // ── Ouverture / fermeture du tiroir de filtres (KOR-A10)
+    const sidebarEl = document.getElementById("filterSidebar");
     function openDrawer() {
       document.body.classList.add("filters-open");
     }
     function closeDrawer() {
       document.body.classList.remove("filters-open");
+      if (sidebarEl) {
+        sidebarEl.classList.remove("is-dragging");
+        sidebarEl.style.transform = "";
+      }
     }
     document.getElementById("filters-open-btn")?.addEventListener("click", openDrawer);
     document.getElementById("filters-mobile-close")?.addEventListener("click", closeDrawer);
     document.getElementById("filtersOverlay")?.addEventListener("click", closeDrawer);
     document.getElementById("filters-apply")?.addEventListener("click", closeDrawer);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && document.body.classList.contains("filters-open")) {
+        closeDrawer();
+      }
+    });
+
+    // Glissement vers le bas sur la poignée : le tiroir suit le doigt, puis se
+    // ferme au-delà d'un quart de sa hauteur, sinon il revient en place.
+    const handle = document.getElementById("filters-handle");
+    if (handle && sidebarEl) {
+      let startY = 0;
+      let delta = 0;
+      let dragging = false;
+
+      const onMove = (event) => {
+        if (!dragging) return;
+        const y = event.touches ? event.touches[0].clientY : event.clientY;
+        delta = Math.max(0, y - startY);
+        sidebarEl.style.transform = `translateY(${delta}px)`;
+      };
+      const onEnd = () => {
+        if (!dragging) return;
+        dragging = false;
+        sidebarEl.classList.remove("is-dragging");
+        sidebarEl.style.transform = "";
+        if (delta > sidebarEl.getBoundingClientRect().height / 4) closeDrawer();
+        document.removeEventListener("touchmove", onMove);
+        document.removeEventListener("touchend", onEnd);
+        document.removeEventListener("mousemove", onMove);
+        document.removeEventListener("mouseup", onEnd);
+      };
+      const onStart = (event) => {
+        dragging = true;
+        delta = 0;
+        startY = event.touches ? event.touches[0].clientY : event.clientY;
+        sidebarEl.classList.add("is-dragging");
+        document.addEventListener("touchmove", onMove, { passive: true });
+        document.addEventListener("touchend", onEnd);
+        document.addEventListener("mousemove", onMove);
+        document.addEventListener("mouseup", onEnd);
+      };
+      handle.addEventListener("touchstart", onStart, { passive: true });
+      handle.addEventListener("mousedown", onStart);
+    }
 
     // ── Paramètres d'URL (liens entrants depuis home / collections)
     const urlParams = new URLSearchParams(window.location.search);
