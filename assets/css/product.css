@@ -1537,3 +1537,238 @@ a.pdp-coffret-promo__view {
   color: var(--pdp-gold);
   text-underline-offset: 3px;
 }
+
+/* ─── KOR-B7 · en-tete produit ──────────────────────────────────────────── */
+.pdp-head-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.pdp-head-row__text {
+  min-width: 0;
+  flex: 1;
+}
+.pdp-brandline {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.pdp-brandline .pdp-brand {
+  margin-bottom: 0;
+  text-decoration: none;
+}
+.pdp-brandline .pdp-brand:hover {
+  color: var(--pdp-ink);
+}
+.pdp-brandline .pdp-badge {
+  position: static;
+}
+.pdp-head-row .pdp-name {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.pdp-head-row .pdp-rating-line {
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.pdp-rating-line__value {
+  color: var(--pdp-ink);
+  font-variant-numeric: tabular-nums;
+}
+.pdp-rating-line__link {
+  color: var(--pdp-ink-soft);
+  font-size: 13px;
+  text-underline-offset: 3px;
+}
+.pdp-from {
+  font-size: 15px;
+  color: var(--pdp-ink-soft);
+}
+.pdp-from b {
+  font-weight: 500;
+  color: var(--pdp-ink);
+  font-variant-numeric: tabular-nums;
+}
+.pdp-head-row__actions {
+  display: flex;
+  gap: 8px;
+  flex: none;
+}
+.pdp-iconbtn {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--pdp-line);
+  border-radius: 50%;
+  background: var(--pdp-white);
+  color: var(--pdp-ink);
+  font-size: 19px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s var(--pdp-ease),
+    color 0.2s var(--pdp-ease);
+}
+.pdp-iconbtn:hover {
+  border-color: var(--pdp-gold);
+}
+.pdp-iconbtn[aria-pressed="true"] {
+  color: var(--pdp-gold);
+  border-color: var(--pdp-gold);
+}
+.pdp-iconbtn[aria-pressed="true"] .ti-heart::before {
+  content: "\ea6d";
+}
+
+@media (max-width: 640px) {
+  /* Sur un ecran de 375 px, l'en-tete doit etre lisible sans faire defiler :
+     la photo cede de la hauteur pour laisser monter le nom, la note et le
+     prix d'entree. */
+  .pdp-gallery__main {
+    aspect-ratio: 4 / 5;
+    max-height: 36vh;
+  }
+  .pdp-hero__grid {
+    gap: 20px;
+  }
+  .pdp-head-row {
+    margin-bottom: 16px;
+  }
+}
+
+/* ─── KOR-B8 · pyramide olfactive (maquette du 24 aout) ─────────────────── */
+.pdp-py {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: none;
+}
+.pdp-py-row {
+  display: grid;
+  grid-template-columns: 56px minmax(200px, 260px) 1fr;
+  gap: 0 28px;
+  align-items: start;
+  padding: 28px 0;
+  border-top: 1px solid var(--pdp-line);
+}
+.pdp-py-row:first-child {
+  border-top: 0;
+  padding-top: 8px;
+}
+.pdp-py-row__num {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--pdp-gold);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 17px;
+  font-variant-numeric: lining-nums;
+  color: var(--pdp-gold);
+}
+.pdp-py-row__label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--pdp-gold);
+}
+.pdp-py-row__title {
+  margin: 8px 0 0;
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  font-size: 27px;
+  line-height: 1.15;
+  color: var(--pdp-ink);
+}
+.pdp-py-row__rule {
+  display: block;
+  width: 28px;
+  height: 1px;
+  margin: 14px 0;
+  background: var(--pdp-gold);
+}
+.pdp-py-row__desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--pdp-ink-soft);
+  max-width: 30ch;
+}
+.pdp-py-row__notes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 32px;
+  align-items: center;
+}
+.pdp-py-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+/* Le medaillon a initiale reste le repli tant que la photo d'ingredient
+   n'existe pas : cinq notes sur cinquante et une en ont une aujourd'hui. */
+.pdp-py-note .note-image {
+  width: 56px;
+  height: 56px;
+  flex: none;
+}
+.pdp-py-note .note-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.pdp-py-note__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.pdp-py-note__name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 19px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--pdp-ink);
+  line-height: 1.1;
+}
+.pdp-py-note__latin {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--pdp-gold);
+}
+
+@media (max-width: 860px) {
+  .pdp-py-row {
+    grid-template-columns: 40px 1fr;
+    gap: 0 16px;
+    padding: 22px 0;
+  }
+  .pdp-py-row__num {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+  .pdp-py-row__notes {
+    grid-column: 1 / -1;
+    margin-top: 18px;
+    gap: 16px 24px;
+  }
+  .pdp-py-row__title {
+    font-size: 22px;
+  }
+  .pdp-py-note .note-image {
+    width: 46px;
+    height: 46px;
+  }
+}

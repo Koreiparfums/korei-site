@@ -85,12 +85,14 @@
       : `${basePath}assets/images/hero/hero-decant-5ml.webp`;
   }
 
+  // La pastille « Authentique » est passee a cote du nom de la maison
+  // (KOR-B7) : sur la photo, elle repetait une promesse deja affichee trois
+  // fois sur la page. Ne restent ici que les mentions propres au produit.
   function renderBadges(product) {
-    const badges = [`<span class="pdp-badge pdp-badge--authentic"><i class="ti ti-shield-check"></i>Authentique</span>`];
     if (product.badge === "exclusive") {
-      badges.push(`<span class="pdp-badge pdp-badge--limited">Édition limitée</span>`);
+      return `<span class="pdp-badge pdp-badge--limited">Édition limitée</span>`;
     }
-    return badges.join("");
+    return "";
   }
 
   function renderGallery(product, basePath) {
@@ -282,27 +284,159 @@
   };
 
   // ── Pyramide olfactive (sous la galerie, colonne gauche)
+  // ── KOR-B8 : pyramide olfactive d'apres la maquette du 24 aout
+  //
+  // Trois etages numerotes, chacun avec son intitule, une phrase d'explication
+  // et la liste des notes portant leur nom latin. Le nom latin est une donnee
+  // botanique verifiable, pas une accroche : une note dont le nom latin n'est
+  // pas etabli (fumee, musc blanc) n'en affiche aucun plutot qu'un a peu pres.
+  //
+  // Les photos d'ingredients restent le point bloquant : cinq existent dans le
+  // depot sur les cinquante et une notes du catalogue. Une note sans photo
+  // garde le medaillon a initiale, jamais un cadre vide.
+  const NOTE_LATIN = {
+    ambre: "Ambra",
+    ananas: "Ananas comosus",
+    anis: "Pimpinella anisum",
+    bergamote: "Citrus bergamia",
+    bois: null,
+    "bois-de-gaiac": "Bulnesia sarmientoi",
+    "bois-de-santal": "Santalum album",
+    bouleau: "Betula pendula",
+    cafe: "Coffea arabica",
+    cannelle: "Cinnamomum verum",
+    cardamome: "Elettaria cardamomum",
+    chocolat: "Theobroma cacao",
+    citron: "Citrus limon",
+    cognac: null,
+    cuir: null,
+    cedre: "Cedrus atlantica",
+    encens: "Boswellia sacra",
+    fumee: null,
+    gaiac: "Bulnesia sarmientoi",
+    iris: "Iris pallida",
+    jasmin: "Jasminum grandiflorum",
+    lavande: "Lavandula angustifolia",
+    litchi: "Litchi chinensis",
+    mousse: "Evernia prunastri",
+    "mousse-de-chene": "Evernia prunastri",
+    musc: "Musk",
+    "musc-blanc": null,
+    "noix-de-muscade": "Myristica fragrans",
+    chene: "Quercus robur",
+    oliban: "Boswellia sacra",
+    oud: "Aquilaria malaccensis",
+    patchouli: "Pogostemon cablin",
+    "poivre-rose": "Schinus molle",
+    pivoine: "Paeonia lactiflora",
+    poivre: "Piper nigrum",
+    pomme: "Malus domestica",
+    praline: null,
+    rhum: "Saccharum officinarum",
+    rose: "Rosa centifolia",
+    "rose-centifolia": "Rosa centifolia",
+    resine: null,
+    safran: "Crocus sativus",
+    santal: "Santalum album",
+    "anis-etoile": "Illicium verum",
+    styrax: "Liquidambar orientalis",
+    tabac: "Nicotiana tabacum",
+    tonka: "Dipteryx odorata",
+    vanille: "Vanilla planifolia",
+    violette: "Viola odorata",
+    vetiver: "Chrysopogon zizanioides",
+    epices: null,
+  };
+
+  // Quelques notes arrivent du scraping en anglais. On les ramene au francais
+  // avant l'affichage : « Star anise » sur une fiche francaise fait amateur.
+  const NOTE_ALIASES = {
+    nutmeg: "Noix de muscade",
+    oak: "Chêne",
+    "star-anise": "Anis étoilé",
+    "pink-pepper": "Poivre rose",
+    violet: "Violette",
+    "oak-moss": "Mousse de chêne",
+  };
+
+  const TIER_META = [
+    {
+      key: "top",
+      num: "01",
+      label: "Notes de tête",
+      title: "La première impression",
+      desc: "Ce que l'on sent dès la vaporisation, pendant les premières minutes.",
+    },
+    {
+      key: "heart",
+      num: "02",
+      label: "Notes de cœur",
+      title: "Le cœur du parfum",
+      desc: "Ce qui s'installe après une demi-heure et signe la composition.",
+    },
+    {
+      key: "base",
+      num: "03",
+      label: "Notes de fond",
+      title: "La trace qui reste",
+      desc: "Ce qui subsiste sur la peau plusieurs heures après.",
+    },
+  ];
+
+  function noteSlugLocal(note) {
+    return String(note || "")
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  }
+
+  function renderPyramidNote(note) {
+    const slug = noteSlugLocal(note);
+    const label = NOTE_ALIASES[slug] || note;
+    const latin = NOTE_LATIN[noteSlugLocal(label)] ?? NOTE_LATIN[slug];
+    return `
+      <li class="pdp-py-note">
+        ${ui.noteImageHtml ? ui.noteImageHtml(label, "../") : ""}
+        <span class="pdp-py-note__text">
+          <span class="pdp-py-note__name">${esc(label)}</span>
+          ${latin ? `<em class="pdp-py-note__latin">${esc(latin)}</em>` : ""}
+        </span>
+      </li>`;
+  }
+
   function renderPyramid(product) {
-    const tiers = [
-      { label: "Notes de tête", notes: product.notesTop },
-      { label: "Notes de cœur", notes: product.notesHeart },
-      { label: "Notes de fond", notes: product.notesBase },
-    ].filter((t) => t.notes.length);
+    const notesByTier = {
+      top: product.notesTop || [],
+      heart: product.notesHeart || [],
+      base: product.notesBase || [],
+    };
+    const tiers = TIER_META.filter((t) => notesByTier[t.key].length);
     if (!tiers.length) return "";
+
     return `
       <div class="pdp-pyramid pdp-reveal">
         <span class="pdp-pyramid__title">Pyramide olfactive</span>
-        ${tiers
-          .map(
-            (t) => `
-          <div class="pdp-pyramid-tier">
-            <div class="pdp-pyramid-tier__label">${t.label}</div>
-            <div class="pdp-pyramid-tier__row">
-              ${t.notes.map(renderNoteCard).join("")}
-            </div>
-          </div>`
-          )
-          .join("")}
+        <ol class="pdp-py">
+          ${tiers
+            .map(
+              (t) => `
+            <li class="pdp-py-row">
+              <span class="pdp-py-row__num" aria-hidden="true">${t.num}</span>
+              <div class="pdp-py-row__head">
+                <span class="pdp-py-row__label">${t.label}</span>
+                <h3 class="pdp-py-row__title">${t.title}</h3>
+                <span class="pdp-py-row__rule" aria-hidden="true"></span>
+                <p class="pdp-py-row__desc">${t.desc}</p>
+              </div>
+              <ul class="pdp-py-row__notes">
+                ${notesByTier[t.key].map(renderPyramidNote).join("")}
+              </ul>
+            </li>`
+            )
+            .join("")}
+        </ol>
         <button type="button" class="pdp-btn pdp-btn--outline pdp-pyramid__cta" id="pdp-ingredients-toggle" aria-expanded="false">
           <i class="ti ti-star"></i> Voir pour les ingrédients
         </button>
@@ -311,6 +445,7 @@
         </p>
       </div>`;
   }
+
 
   // ── KOR-B10 : reassurance juste sous le bouton d'achat.
   // Les quatre promesses sont exactement celles du bandeau du site : une
@@ -331,6 +466,73 @@
       </ul>`;
   }
 
+  // ── KOR-B7 : en-tete produit
+  // Maison, pastille d'authenticite, note et prix d'entree tiennent ensemble
+  // en haut de la fiche. Le coeur et le partage sont des boutons a part : ils
+  // ne doivent jamais declencher l'ouverture du produit.
+  function renderProductHead(product, selected) {
+    const formats = getFormats(product);
+    const prices = formats.filter((f) => f.available && f.price > 0).map((f) => f.price);
+    const from = prices.length ? Math.min(...prices) : null;
+    const fr = product.fragrantica;
+    const rating = fr?.rating || null;
+    const ratingLine = rating
+      ? `<div class="pdp-rating-line">
+          ${ui.renderStars ? ui.renderStars(rating) : ""}
+          <span class="pdp-rating-line__value">${String(rating).replace(".", ",")}/5</span>
+          <a class="pdp-rating-line__link" href="#pdp-acc-avis">${
+            fr?.votes ? `${fr.votes.toLocaleString("fr-FR")} avis Fragrantica` : "sur Fragrantica"
+          }</a>
+        </div>`
+      : "";
+
+    return `
+      <div class="pdp-head-row">
+        <div class="pdp-head-row__text">
+          <div class="pdp-brandline">
+            <a class="pdp-brand" href="brands.html?brand=${encodeURIComponent(product.brandId)}">${esc(product.brand)}</a>
+            <span class="pdp-badge pdp-badge--authentic"><i class="ti ti-shield-check" aria-hidden="true"></i>Authentique</span>
+          </div>
+          <h1 class="pdp-name">${esc(product.name)}</h1>
+          ${ratingLine}
+          ${from ? `<div class="pdp-from">À partir de <b>${formatPriceLabel(from)}€</b></div>` : ""}
+        </div>
+        <div class="pdp-head-row__actions">
+          <button class="pdp-iconbtn" id="pdp-fav" type="button" aria-label="Ajouter aux favoris" aria-pressed="false" data-fav-btn data-product-id="${product.id}">
+            <i class="ti ti-heart" aria-hidden="true"></i>
+          </button>
+          <button class="pdp-iconbtn" id="pdp-share" type="button" aria-label="Partager ce parfum">
+            <i class="ti ti-share-2" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>`;
+  }
+
+  // Partage natif quand le telephone le propose, copie du lien sinon. On ne
+  // promet jamais « copie » sans que la copie ait reellement eu lieu.
+  function initShare(main, product) {
+    const btn = main.querySelector("#pdp-share");
+    if (!btn) return;
+    btn.addEventListener("click", async () => {
+      const data = {
+        title: `${product.name} — ${product.brand}`,
+        text: `${product.name} de ${product.brand}, en décant chez Kōrei.`,
+        url: window.location.href,
+      };
+      try {
+        if (navigator.share) {
+          await navigator.share(data);
+          return;
+        }
+        await navigator.clipboard.writeText(window.location.href);
+        global.KoreiCoffret?.notice?.("Lien copié");
+      } catch (error) {
+        // Partage annule ou presse-papiers refuse : on ne dit rien plutot que
+        // d'annoncer une copie qui n'a pas eu lieu.
+      }
+    });
+  }
+
   // ── Section 1 : Hero
   function renderHero(product, basePath) {
     const formats = getFormats(product);
@@ -342,9 +544,7 @@
             ${renderGallery(product, basePath)}
           </div>
           <div class="pdp-info pdp-reveal">
-            <h1 class="pdp-name">${esc(product.name)}</h1>
-            <div class="pdp-brand">${esc(product.brand)}</div>
-            <div class="pdp-rating-line">${ui.renderStars ? ui.renderStars(product.rating) : ""}</div>
+            ${renderProductHead(product, selected)}
 
             <span class="pdp-label">Choisir un format</span>
             ${renderFormats(formats)}
@@ -353,9 +553,6 @@
               <div class="pdp-actions__row">
                 <button class="pdp-btn pdp-btn--primary" id="pdp-cta" type="button"${selected.available ? "" : " disabled"}>
                   ${selected.available ? `Ajouter au panier — ${formatPriceLabel(selected.price)}€` : "Format indisponible"}
-                </button>
-                <button class="pdp-btn pdp-btn--ghost" id="pdp-fav" type="button" aria-label="Ajouter aux favoris" aria-pressed="false" data-fav-btn data-product-id="${product.id}">
-                  <i class="ti ti-heart"></i>
                 </button>
               </div>
             </div>
@@ -460,7 +657,10 @@
       const update = () => {
         ticking = false;
         const rect = cta.getBoundingClientRect();
-        const passed = rect.bottom < 0 || rect.top > global.innerHeight;
+        // Uniquement quand le bouton est passe AU-DESSUS de l'ecran. S'il est
+        // encore plus bas, la barre s'afficherait des l'ouverture de la page
+        // et masquerait le nom, la note et le prix d'entree (KOR-B7).
+        const passed = rect.bottom < 0;
         stickyBar.classList.toggle("is-visible", passed);
       };
       const onScroll = () => {
@@ -701,13 +901,6 @@
   }
 
   // ── Section 3 : Notes phares (façon Fragrantica — photo + libellé par note)
-  function renderNoteCard(note) {
-    return `
-      <div class="pdp-note-card" title="${esc(note)}">
-        ${ui.noteImageHtml ? ui.noteImageHtml(note, "../") : ""}
-        <span>${esc(note)}</span>
-      </div>`;
-  }
 
   // ── Section 5 : Ressenti (façon Fragrantica — cartes avec l'option dominante mise en avant)
   const MOMENT_META = [
@@ -1080,6 +1273,7 @@
     initGallery(main, galleryImages(product, "../"));
     initHero(main, product);
     initCoffretPromo(main, product);
+    initShare(main, product);
     initAccordions(main);
     initReveal(main);
 
