@@ -8029,6 +8029,11 @@ body.has-cookie-banner .chatbot-widget {
   .cb2 {
     padding-bottom: 84px;
   }
+  /* Brief §6 : rien ne chevauche un bouton d'action. Le bouton conseiller
+     s'efface quand le recapitulatif est deplie. */
+  body:has(.cb2-media-col.is-open) .chatbot-widget {
+    display: none;
+  }
 }
 
 /* ==========================================================================

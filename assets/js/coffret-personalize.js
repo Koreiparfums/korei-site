@@ -179,6 +179,11 @@
     const discountEl = document.getElementById("cb2Discount");
     const shipEl = document.getElementById("cb2Ship");
     const resultsCountEl = document.getElementById("cb2ResultsCount");
+    const mediaCol = document.getElementById("cb2MediaCol");
+    const dock = document.getElementById("cb2Dock");
+    const dockName = document.getElementById("cb2DockName");
+    const dockCount = document.getElementById("cb2DockCount");
+    const dockTotal = document.getElementById("cb2DockTotal");
 
     // Restaure un brouillon éventuel avant le premier rendu, puis remet en
     // phase les contrôles qui ne sont pas recalculés par render() (boutons
@@ -434,6 +439,11 @@
         shipEl.textContent = complete0 ? "Offerte" : "Selon le panier";
         shipEl.classList.toggle("is-won", complete0);
       }
+
+      // Barre fixe du telephone : elle reprend le nom, l'avancement et le total.
+      if (dockName) dockName.textContent = `Coffret ${FORMATS[coffret.format].label}`;
+      if (dockCount) dockCount.textContent = `${t} / ${cap} flacons`;
+      if (dockTotal) dockTotal.textContent = priceText;
       if (ctaPriceEl) ctaPriceEl.textContent = priceText;
       if (coffret.price !== lastPrice) {
         priceEl.classList.remove("is-updating");
@@ -489,6 +499,12 @@
         );
         renderResults();
       });
+    });
+
+    // La barre fixe du telephone se deplie au clic (KOR-C14).
+    dock?.addEventListener("click", () => {
+      const open = mediaCol.classList.toggle("is-open");
+      dock.setAttribute("aria-expanded", String(open));
     });
 
     // KOR-C12 — revenir a une etape deja franchie en cliquant dessus.

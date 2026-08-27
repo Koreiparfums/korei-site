@@ -168,6 +168,17 @@
     return Number.isInteger(rounded) ? `${rounded}` : rounded.toFixed(2).replace(".", ",");
   }
 
+  /**
+   * KOR-B12 — chaque format annonce quatre choses : prix, prix au ml, nombre
+   * de pulverisations estime et mention d'usage. Reperes du brief §3.3.
+   * Le 5 ml porte l'etiquette « Populaire ».
+   */
+  const FORMAT_INFO = {
+    "2ml": { sprays: 30, usage: "Idéal pour découvrir" },
+    "5ml": { sprays: 75, usage: "Parfait pour se décider", popular: true },
+    "10ml": { sprays: 150, usage: "Pour les amateurs convaincus" },
+  };
+
   function renderFormats(formats) {
     const selected = firstSelectable(formats);
     return `
@@ -175,20 +186,35 @@
         ${formats
           .map((f) => {
             const isActive = f === selected;
+            const info = FORMAT_INFO[f.key] || {};
             return `
-          <button class="pdp-format${isActive ? " is-active" : ""}${f.best ? " is-best" : ""}${f.available ? "" : " is-unavailable"}"
+          <button class="pdp-format${isActive ? " is-active" : ""}${f.best ? " is-best" : ""}${info.popular ? " is-popular" : ""}${f.available ? "" : " is-unavailable"}"
                   type="button" role="radio" aria-checked="${isActive}"
                   ${f.available ? "" : "disabled"}
                   data-price="${f.price}" data-vol="${f.key}" data-available="${f.available}">
+            ${info.popular ? '<span class="pdp-format__badge">Populaire</span>' : ""}
             ${f.best ? '<span class="pdp-format__flag">Meilleur rapport</span>' : ""}
             <span class="pdp-format__vol">${f.vol}</span>
             <span class="pdp-format__price">${f.available ? `${formatPriceLabel(f.price)}€` : "—"}</span>
             <span class="pdp-format__unit">${f.available ? `${formatPriceLabel(f.pricePerMl)}€ / ml` : "Indisponible"}</span>
+            ${
+              info.sprays
+                ? `<span class="pdp-format__sprays"><i class="ti ti-spray" aria-hidden="true"></i>Environ ${info.sprays} pulvérisations</span>
+                   <span class="pdp-format__usage">${info.usage}</span>`
+                : ""
+            }
           </button>`;
           })
           .join("")}
       </div>`;
   }
+
+  // KOR-B13 — les photos et les libelles du rappel coffret (brief §3.3).
+  const COFFRET_PHOTOS = {
+    "2ml": "coffret-decouverte-10x2ml",
+    "5ml": "coffret-voyage-5x5ml",
+    "10ml": "coffret-iconique-3x10ml",
+  };
 
   // ── Pyramide olfactive (sous la galerie, colonne gauche)
   function renderPyramid(product) {
@@ -425,13 +451,23 @@
             return `
             <div class="pdp-coffret-tier${t.format === "5ml" ? " is-recommended" : ""}${f?.available ? "" : " is-soldout"}" data-tier-format="${t.format}">
               ${t.format === "5ml" ? `<span class="pdp-coffret-tier__badge">Le plus choisi</span>` : ""}
+              <span class="pdp-coffret-tier__off">−10 %</span>
+              <span class="pdp-coffret-tier__media">
+                <img src="../assets/images/coffrets/${COFFRET_PHOTOS[t.format]}-sm.webp"
+                     alt="Coffret ${t.label} Kōrei" width="800" height="800"
+                     loading="lazy" decoding="async" />
+              </span>
               <div class="pdp-coffret-tier__info">
                 <span class="pdp-coffret-tier__vol">${t.capacity} × ${t.format.replace("ml", " ml")} <span class="pdp-coffret-tier__label">${t.label}</span></span>
+                ${
+                  f?.available
+                    ? `<span class="pdp-coffret-tier__prices"><b>${formatPriceLabel(full - saved)}€</b> <s>${formatPriceLabel(full)}€</s></span>
+                       <span class="pdp-coffret-tier__hint">Ce coffret rempli de ce parfum</span>`
+                    : ""
+                }
                 <span class="pdp-coffret-tier__progress" data-tier-progress>—</span>
+                <span class="pdp-coffret-tier__ship"><i class="ti ti-truck-delivery" aria-hidden="true"></i> Livraison offerte</span>
               </div>
-              <span class="pdp-coffret-tier__price">
-                ${f?.available ? `<em>Économie</em> ${formatPriceLabel(saved)}€` : "—"}
-              </span>
               <button type="button" class="pdp-btn pdp-btn--outline pdp-coffret-tier__cta" data-tier-cta>
                 Ajouter
               </button>
