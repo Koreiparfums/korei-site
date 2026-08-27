@@ -268,96 +268,142 @@
       <div class="products-scroll" id="bestsellers-grid"></div>
     </section>
 
-    <section class="packs-section">
+
+    <!-- KOR-D2 — carrousel « Nos formats ». Les prix de depart sont calcules
+         sur le catalogue reel (main.js), jamais ecrits en dur : un prix affiche
+         doit toujours etre un prix vendable. -->
+    <section class="formats-section">
       <div class="dose-head">
-        <div class="dose-eyebrow">Coffrets découverte</div>
-        <h2 class="dose-title">Trouvez le <em>coffret</em> parfait</h2>
-        <p class="dose-subtitle">Deux façons de découvrir Kōrei.</p>
+        <div class="dose-eyebrow">Le principe du décant</div>
+        <h2 class="dose-title">Nos <em>formats</em></h2>
+        <p class="dose-subtitle">
+          Le parfum d'origine, reconditionné dans nos flacons. Vous payez le jus, pas le flacon de la maison.
+        </p>
         <span class="dose-title-rule" aria-hidden="true"></span>
       </div>
-      <div class="pack-choice-grid">
-        <div class="pack-choice-card">
-          <div
-            class="pack-choice-card__media media-slot"
-            data-slot="pack-signature"
-          >
-            <img
-              class="media-slot__image"
-              src="assets/images/packs/signature.webp"
-              alt="Coffrets Signature — Kōrei"
-              hidden width="1600" height="600" loading="lazy" decoding="async" />
-            <div
-              class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
-              data-variant="1"
-            >
-              <div
-                class="placeholder-premium__pattern"
-                aria-hidden="true"
-              ></div>
+      <div class="formats-carousel">
+        <button class="formats-arrow formats-arrow--prev" type="button" aria-label="Format précédent" data-formats-dir="-1">
+          <i class="ti ti-chevron-left" aria-hidden="true"></i>
+        </button>
+        <ul class="formats-track" id="formats-track">
+          <li class="format-card" data-vial="2ml">
+            <div class="format-card__media">
+              <img src="assets/images/hero/hero-decant-2ml.webp" alt="Flacon Kōrei de 2 ml" width="94" height="494" loading="lazy" decoding="async" />
             </div>
-          </div>
-          <div class="pack-choice-card__body">
-            <span class="pack-choice-card__eyebrow">Sélections signature</span>
-            <h3 class="pack-choice-card__title">Coffrets Signature</h3>
-            <p class="pack-choice-card__desc">
-              Des collections déjà composées, imaginées par nos experts.
-            </p>
-            <ul class="pack-choice-card__list">
-              <li><i class="ti ti-check" aria-hidden="true"></i> Été</li>
-              <li><i class="ti ti-check" aria-hidden="true"></i> Hiver</li>
-              <li><i class="ti ti-check" aria-hidden="true"></i> Floral</li>
-              <li><i class="ti ti-check" aria-hidden="true"></i> Boisé</li>
-              <li><i class="ti ti-check" aria-hidden="true"></i> Gourmand</li>
-              <li><i class="ti ti-check" aria-hidden="true"></i> Oud</li>
-            </ul>
-            <a
-              href="pages/catalogue.html?type=pack"
-              class="btn-dark pack-choice-card__cta"
-              >Découvrir <span aria-hidden="true">→</span></a
-            >
-          </div>
-        </div>
-        <div class="pack-choice-card">
-          <div
-            class="pack-choice-card__media media-slot"
-            data-slot="pack-personnalise"
-          >
-            <img
-              class="media-slot__image"
-              src="assets/images/hero/hero_page_coffrets.webp"
-              alt="Coffret personnalisé Kōrei — décants à composer"
-              hidden width="1600" height="840" decoding="async" />
-            <div
-              class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
-              data-variant="2"
-            >
-              <div
-                class="placeholder-premium__pattern"
-                aria-hidden="true"
-              ></div>
+            <div class="format-card__body">
+              <span class="format-card__size">2 ml</span>
+              <p class="format-card__use">Environ 30 pulvérisations. Pour découvrir un parfum.</p>
+              <span class="format-card__price">À partir de <b data-format-from="2ml">—</b></span>
+              <a class="format-card__cta" href="pages/catalogue.html">Choisir un parfum <span aria-hidden="true">→</span></a>
             </div>
+          </li>
+          <li class="format-card" data-vial="5ml">
+            <span class="format-card__flag">Le plus choisi</span>
+            <div class="format-card__media">
+              <img src="assets/images/hero/hero-decant-5ml.webp" alt="Flacon Kōrei de 5 ml" width="105" height="659" loading="lazy" decoding="async" />
+            </div>
+            <div class="format-card__body">
+              <span class="format-card__size">5 ml</span>
+              <p class="format-card__use">Environ 75 pulvérisations. Pour se décider.</p>
+              <span class="format-card__price">À partir de <b data-format-from="5ml">—</b></span>
+              <a class="format-card__cta" href="pages/catalogue.html">Choisir un parfum <span aria-hidden="true">→</span></a>
+            </div>
+          </li>
+          <li class="format-card" data-vial="10ml">
+            <div class="format-card__media">
+              <img src="assets/images/hero/hero-decant-10ml.webp" alt="Flacon Kōrei de 10 ml" width="112" height="851" loading="lazy" decoding="async" />
+            </div>
+            <div class="format-card__body">
+              <span class="format-card__size">10 ml</span>
+              <p class="format-card__use">Environ 150 pulvérisations. Pour un parfum qu'on aime déjà.</p>
+              <span class="format-card__price">À partir de <b data-format-from="10ml">—</b></span>
+              <a class="format-card__cta" href="pages/catalogue.html">Choisir un parfum <span aria-hidden="true">→</span></a>
+            </div>
+          </li>
+        </ul>
+        <button class="formats-arrow formats-arrow--next" type="button" aria-label="Format suivant" data-formats-dir="1">
+          <i class="ti ti-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="formats-dots" id="formats-dots" aria-hidden="true"></div>
+    </section>
+
+    <!-- KOR-D6 — bloc coffret de l'accueil. L'ancien bloc menait a
+         catalogue.html?type=pack : ce parametre n'est lu nulle part, le
+         visiteur tombait sur le catalogue complet. Les trois cartes menent
+         maintenant au configurateur, format deja selectionne. -->
+    <section class="packs-section">
+      <div class="dose-head">
+        <div class="dose-eyebrow">Coffrets à composer</div>
+        <h2 class="dose-title">Composez votre <em>coffret</em></h2>
+        <p class="dose-subtitle">
+          Vous choisissez le format, puis vos parfums.
+        </p>
+        <span class="dose-title-rule" aria-hidden="true"></span>
+      </div>
+
+      <p class="packs-promise">
+        <span class="packs-promise__item"><i class="ti ti-discount-2" aria-hidden="true"></i> <b>−10 %</b> sur chaque flacon</span>
+        <span class="packs-promise__sep" aria-hidden="true"></span>
+        <span class="packs-promise__item"><i class="ti ti-truck-delivery" aria-hidden="true"></i> <b>Livraison offerte</b></span>
+      </p>
+
+      <div class="box-grid packs-boxes">
+        <a class="box-card" href="pages/coffret.html?format=10x2ml#personnaliser">
+          <span class="box-card__discount">−10 %</span>
+          <div class="box-card__media">
+            <img src="assets/images/coffrets/coffret-decouverte-10x2ml.webp"
+                 srcset="assets/images/coffrets/coffret-decouverte-10x2ml-sm.webp 800w, assets/images/coffrets/coffret-decouverte-10x2ml.webp 1024w"
+                 sizes="(max-width: 640px) 90vw, 320px"
+                 alt="Coffret Découverte Kōrei ouvert, dix décants de 2 ml"
+                 width="1024" height="1024" loading="lazy" decoding="async" />
           </div>
-          <div class="pack-choice-card__body">
-            <span class="pack-choice-card__eyebrow"
-              >Création personnalisée</span
-            >
-            <h3 class="pack-choice-card__title">Composez votre coffret</h3>
-            <p class="pack-choice-card__desc">
-              Choisissez parmi plus de 500 parfums de niche et créez un coffret
-              qui vous ressemble.
-            </p>
-            <ul class="pack-choice-card__list">
-              <li><i class="ti ti-check" aria-hidden="true"></i> 10 × 2 ml</li>
-              <li><i class="ti ti-check" aria-hidden="true"></i> 5 × 5 ml</li>
-              <li><i class="ti ti-check" aria-hidden="true"></i> 3 × 10 ml</li>
-            </ul>
-            <a
-              href="pages/coffret.html#personnaliser"
-              class="btn-dark pack-choice-card__cta"
-              >Créer mon coffret</a
-            >
+          <div class="box-card__body">
+            <h3 class="box-card__name">Coffret Découverte</h3>
+            <p class="box-card__format">10 × 2 ml</p>
+            <p class="box-card__desc">Dix créations, dix émotions. Idéal pour explorer notre univers.</p>
+            <span class="box-card__cta">Composer ce coffret <span aria-hidden="true">→</span></span>
           </div>
-        </div>
+        </a>
+
+        <a class="box-card box-card--popular" href="pages/coffret.html?format=5x5ml#personnaliser">
+          <span class="box-card__badge">Populaire</span>
+          <span class="box-card__discount">−10 %</span>
+          <div class="box-card__media">
+            <img src="assets/images/coffrets/coffret-voyage-5x5ml.webp"
+                 srcset="assets/images/coffrets/coffret-voyage-5x5ml-sm.webp 800w, assets/images/coffrets/coffret-voyage-5x5ml.webp 1024w"
+                 sizes="(max-width: 640px) 90vw, 320px"
+                 alt="Coffret Voyage Kōrei ouvert, cinq décants de 5 ml"
+                 width="1024" height="1024" loading="lazy" decoding="async" />
+          </div>
+          <div class="box-card__body">
+            <h3 class="box-card__name">Coffret Voyage</h3>
+            <p class="box-card__format">5 × 5 ml</p>
+            <p class="box-card__desc">Cinq parfums iconiques, assez pour affiner vos goûts.</p>
+            <span class="box-card__cta">Composer ce coffret <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="box-card" href="pages/coffret.html?format=3x10ml#personnaliser">
+          <span class="box-card__discount">−10 %</span>
+          <div class="box-card__media">
+            <img src="assets/images/coffrets/coffret-iconique-3x10ml.webp"
+                 srcset="assets/images/coffrets/coffret-iconique-3x10ml-sm.webp 800w, assets/images/coffrets/coffret-iconique-3x10ml.webp 1024w"
+                 sizes="(max-width: 640px) 90vw, 320px"
+                 alt="Coffret Iconique Kōrei ouvert, trois décants de 10 ml"
+                 width="1024" height="1024" loading="lazy" decoding="async" />
+          </div>
+          <div class="box-card__body">
+            <h3 class="box-card__name">Coffret Iconique</h3>
+            <p class="box-card__format">3 × 10 ml</p>
+            <p class="box-card__desc">Trois essentiels en grand format, pour une expérience prolongée.</p>
+            <span class="box-card__cta">Composer ce coffret <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </div>
+
+      <div class="packs-cta-row">
+        <a href="pages/coffret.html#personnaliser" class="btn-dark">Composer mon coffret</a>
       </div>
     </section>
 
@@ -592,138 +638,18 @@
       </div>
     </section>
 
+    <!-- KOR-D3 — grille des maisons, remplace le bandeau defilant. La grille
+         est construite par main.js a partir du catalogue reel : une maison sans
+         parfum en vente n'apparait pas, et le lien mene au catalogue filtre.
+         L'ancien texte « Plus de 250 maisons » etait faux. -->
     <section class="brands-section">
-      <div class="brands-marquee">
-        <div class="brands-marquee-track">
-          <a href="pages/catalogue.html?brand=chanel" class="brand-mark"
-            ><img src="assets/images/brands/chanel.webp" alt="Chanel" width="222" height="133" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a href="pages/catalogue.html?brand=dior" class="brand-mark"
-            ><img src="assets/images/brands/dior.webp" alt="Dior" width="209" height="86" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a href="pages/catalogue.html?brand=creed" class="brand-mark"
-            ><img src="assets/images/brands/creed.webp" alt="Creed" width="225" height="98" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a href="pages/catalogue.html?brand=byredo" class="brand-mark"
-            ><img src="assets/images/brands/byredo.webp" alt="Byredo" width="197" height="49" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a href="pages/catalogue.html?brand=tom-ford" class="brand-mark"
-            ><img src="assets/images/brands/tom-ford.webp" alt="Tom Ford" width="210" height="40" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a href="pages/catalogue.html?brand=xerjoff" class="brand-mark"
-            ><img src="assets/images/brands/xerjoff.webp" alt="Xerjoff" width="225" height="47" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a href="pages/catalogue.html?brand=kilian" class="brand-mark"
-            ><img src="assets/images/brands/kilian.webp" alt="Kilian" width="153" height="76" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a href="pages/catalogue.html?brand=amouage" class="brand-mark"
-            ><img src="assets/images/brands/amouage.webp" alt="Amouage" width="210" height="35" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a
-            href="pages/catalogue.html?brand=maison-margiela"
-            class="brand-mark"
-            ><img
-              src="assets/images/brands/maison-margiela.webp"
-              alt="Maison Margiela" width="171" height="42" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a href="pages/catalogue.html?brand=initio" class="brand-mark"
-            ><img src="assets/images/brands/initio.webp" alt="Initio" width="177" height="59" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a
-            href="pages/catalogue.html?brand=chanel"
-            class="brand-mark"
-            aria-hidden="true"
-            ><img
-              src="assets/images/brands/chanel.webp"
-              alt=""
-              aria-hidden="true" width="222" height="133" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a
-            href="pages/catalogue.html?brand=dior"
-            class="brand-mark"
-            aria-hidden="true"
-            ><img src="assets/images/brands/dior.webp" alt="" aria-hidden="true" width="209" height="86" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a
-            href="pages/catalogue.html?brand=creed"
-            class="brand-mark"
-            aria-hidden="true"
-            ><img
-              src="assets/images/brands/creed.webp"
-              alt=""
-              aria-hidden="true" width="225" height="98" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a
-            href="pages/catalogue.html?brand=byredo"
-            class="brand-mark"
-            aria-hidden="true"
-            ><img
-              src="assets/images/brands/byredo.webp"
-              alt=""
-              aria-hidden="true" width="197" height="49" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a
-            href="pages/catalogue.html?brand=tom-ford"
-            class="brand-mark"
-            aria-hidden="true"
-            ><img
-              src="assets/images/brands/tom-ford.webp"
-              alt=""
-              aria-hidden="true" width="210" height="40" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a
-            href="pages/catalogue.html?brand=xerjoff"
-            class="brand-mark"
-            aria-hidden="true"
-            ><img
-              src="assets/images/brands/xerjoff.webp"
-              alt=""
-              aria-hidden="true" width="225" height="47" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a
-            href="pages/catalogue.html?brand=kilian"
-            class="brand-mark"
-            aria-hidden="true"
-            ><img
-              src="assets/images/brands/kilian.webp"
-              alt=""
-              aria-hidden="true" width="153" height="76" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a
-            href="pages/catalogue.html?brand=amouage"
-            class="brand-mark"
-            aria-hidden="true"
-            ><img
-              src="assets/images/brands/amouage.webp"
-              alt=""
-              aria-hidden="true" width="210" height="35" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a
-            href="pages/catalogue.html?brand=maison-margiela"
-            class="brand-mark"
-            aria-hidden="true"
-            ><img
-              src="assets/images/brands/maison-margiela.webp"
-              alt=""
-              aria-hidden="true" width="171" height="42" loading="lazy" decoding="async" /></a>
-          <span class="brand-sep" aria-hidden="true">✦</span>
-          <a
-            href="pages/catalogue.html?brand=initio"
-            class="brand-mark"
-            aria-hidden="true"
-            ><img
-              src="assets/images/brands/initio.webp"
-              alt=""
-              aria-hidden="true" width="177" height="59" loading="lazy" decoding="async" /></a>
-        </div>
+      <div class="dose-head">
+        <div class="dose-eyebrow">Nos maisons</div>
+        <h2 class="dose-title">Des marques que vous <em>reconnaissez</em></h2>
+        <span class="dose-title-rule" aria-hidden="true"></span>
       </div>
+      <div class="home-maisons" id="home-maisons-grid"></div>
       <div class="brands-outro">
-        <p class="brands-outro-lead">
-          Plus de <em>250 maisons</em> soigneusement sélectionnées.
-        </p>
-        <div class="brands-outro-divider" aria-hidden="true">
-          <span>✦</span>
-        </div>
         <p class="brands-outro-sub">
           Des classiques intemporels aux créations
           <em>les plus confidentielles</em>.

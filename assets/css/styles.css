@@ -7662,6 +7662,8 @@ body.has-cookie-banner .chatbot-widget {
   background: var(--text);
   color: #fff;
   font-variant-numeric: tabular-nums;
+  /* La pastille ne doit jamais se couper en deux lignes. */
+  white-space: nowrap;
 }
 .box-card__media {
   /* Les photos officielles du coffret sont carrees, sur fond blanc.
@@ -8543,4 +8545,277 @@ body.has-cookie-banner .chatbot-widget {
   .maisons-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* ─── KOR-D2 · carrousel « Nos formats » ─────────────────────────────────
+   Balayage sur telephone, fleches sur ordinateur. Les points indiquent la
+   position : sans eux, rien ne dit qu'il reste des cartes a droite. */
+.formats-section {
+  padding: 64px var(--px) 8px;
+}
+.formats-carousel {
+  position: relative;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.formats-track {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0 8px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(240px, 1fr);
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  flex: 1;
+}
+.formats-track::-webkit-scrollbar {
+  display: none;
+}
+.format-card {
+  position: relative;
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px 20px;
+  text-align: center;
+}
+.format-card__flag {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.format-card__media {
+  height: 190px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+/* Les trois flacons sont a l'echelle les uns des autres : un 10 ml doit
+   visiblement etre plus grand qu'un 2 ml, sinon la section n'explique rien. */
+.format-card__media img {
+  width: auto;
+  object-fit: contain;
+}
+[data-vial="2ml"] .format-card__media img {
+  height: 58%;
+}
+[data-vial="5ml"] .format-card__media img {
+  height: 77%;
+}
+[data-vial="10ml"] .format-card__media img {
+  height: 100%;
+}
+.format-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.format-card__size {
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-28);
+  font-variant-numeric: lining-nums;
+  color: var(--text);
+  line-height: 1;
+}
+.format-card__use {
+  font-size: var(--text-13);
+  color: var(--text-muted);
+  line-height: 1.55;
+  max-width: 22ch;
+}
+.format-card__price {
+  font-size: var(--text-13);
+  color: var(--text);
+}
+.format-card__price b {
+  font-weight: 500;
+  color: var(--accent);
+}
+.format-card__cta {
+  margin-top: 6px;
+  gap: 6px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text);
+  border-bottom: 1px solid var(--accent);
+  text-decoration: none;
+}
+.formats-arrow {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.formats-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+/* Trois cartes tiennent sur un grand ecran : plutot que deux fleches grises
+   qui ne servent a rien, on les retire. */
+.formats-carousel[data-static] .formats-arrow {
+  display: none;
+}
+.formats-dots {
+  display: none;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+.formats-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.2s ease, width 0.2s ease;
+}
+.formats-dot.is-active {
+  width: 18px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+/* ─── KOR-D6 · promesse coffret sur l'accueil ─── */
+.packs-promise {
+  max-width: var(--max-w);
+  margin: 0 auto 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  font-size: var(--text-14);
+  color: var(--text);
+}
+.packs-promise__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.packs-promise__item i {
+  color: var(--accent);
+}
+.packs-promise__item b {
+  font-weight: 500;
+}
+.packs-promise__sep {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+}
+.packs-cta-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+/* ─── KOR-D3 · grille des maisons sur l'accueil ─── */
+.home-maisons {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.home-maison {
+  background: #fff;
+  min-height: 116px;
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.home-maison:hover,
+.home-maison:focus-visible {
+  background: var(--surface);
+}
+.home-maison__logo {
+  max-width: 108px;
+  max-height: 34px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.home-maison__wordmark {
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-20);
+  color: var(--text);
+  text-align: center;
+  line-height: 1.1;
+}
+.home-maison__count {
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+@media (max-width: 1120px) {
+  .home-maisons {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (max-width: 860px) {
+  .home-maisons {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  /* Sur telephone : deux colonnes (brief §2) et balayage plutot que fleches. */
+  .home-maisons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .formats-arrow {
+    display: none;
+  }
+  .formats-dots {
+    display: flex;
+  }
+  .formats-track {
+    grid-auto-columns: 76%;
+    gap: 14px;
+  }
+  .format-card__media {
+    height: 150px;
+  }
+  .packs-promise__sep {
+    display: none;
+  }
+}
+.formats-dots.is-hidden {
+  display: none;
 }

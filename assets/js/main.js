@@ -390,6 +390,121 @@
     if (facts) facts.hidden = true;
   }
 
+  // ── KOR-D2 : carrousel « Nos formats »
+  // Les prix de depart viennent du catalogue, pas d'une valeur ecrite en dur :
+  // le jour ou un prix Shopify bouge, l'accueil suit tout seul.
+  function initFormatsSection() {
+    const track = document.getElementById("formats-track");
+    const store = global.KoreiProductStore;
+    if (!track || !store) return;
+
+    const products = store.getAllProducts?.() || [];
+    document.querySelectorAll("[data-format-from]").forEach((el) => {
+      const format = el.getAttribute("data-format-from");
+      const prices = products
+        .map((p) => store.getFormatPrice(p, format))
+        .filter((v) => Number.isFinite(v) && v > 0);
+      if (!prices.length) {
+        el.closest(".format-card__price")?.setAttribute("hidden", "");
+        return;
+      }
+      const min = Math.min(...prices);
+      el.textContent = `${min.toFixed(2).replace(".", ",").replace(",00", "")}€`;
+    });
+
+    const cards = Array.from(track.children);
+    const dots = document.getElementById("formats-dots");
+    if (dots) {
+      dots.innerHTML = cards.map(() => '<span class="formats-dot"></span>').join("");
+    }
+    const dotEls = dots ? Array.from(dots.children) : [];
+
+    function currentIndex() {
+      const mid = track.scrollLeft + track.clientWidth / 2;
+      let best = 0;
+      let bestDist = Infinity;
+      cards.forEach((card, i) => {
+        const center = card.offsetLeft + card.offsetWidth / 2;
+        const dist = Math.abs(center - mid);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = i;
+        }
+      });
+      return best;
+    }
+
+    function syncUI() {
+      const i = currentIndex();
+      dotEls.forEach((d, k) => d.classList.toggle("is-active", k === i));
+      // Une fleche qui ne peut plus rien faire est desactivee plutot que muette.
+      const maxScroll = track.scrollWidth - track.clientWidth - 2;
+      // Tout tient a l'ecran : ni fleches ni points a afficher.
+      const statique = maxScroll <= 0;
+      track.parentElement?.toggleAttribute("data-static", statique);
+      if (dots) dots.classList.toggle("is-hidden", statique);
+      track.parentElement
+        ?.querySelectorAll("[data-formats-dir]")
+        .forEach((btn) => {
+          const dir = Number(btn.getAttribute("data-formats-dir"));
+          btn.disabled = dir < 0 ? track.scrollLeft <= 2 : track.scrollLeft >= maxScroll;
+        });
+    }
+
+    track.parentElement?.querySelectorAll("[data-formats-dir]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const dir = Number(btn.getAttribute("data-formats-dir"));
+        const target = cards[Math.min(cards.length - 1, Math.max(0, currentIndex() + dir))];
+        if (target) {
+          track.scrollTo({ left: target.offsetLeft - track.offsetLeft, behavior: "smooth" });
+        }
+      });
+    });
+    track.addEventListener("scroll", syncUI, { passive: true });
+    window.addEventListener("resize", syncUI);
+    syncUI();
+  }
+
+  // ── KOR-D3 : grille des maisons
+  // Uniquement les maisons dont au moins un parfum est en vente. Le clic mene
+  // au catalogue deja filtre.
+  // Les fichiers .svg du dossier brands/ ne sont PAS des logos : ce sont des
+  // placeholders qui ecrivent le nom en Georgia. Les vrais logos sont les .webp.
+  const HOME_LOGOS = new Set([
+    "amouage", "byredo", "chanel", "creed", "dior",
+    "initio", "kilian", "maison-margiela", "tom-ford", "xerjoff",
+  ]);
+
+  function initHomeMaisons() {
+    const grid = document.getElementById("home-maisons-grid");
+    const store = global.KoreiProductStore;
+    if (!grid || !store) return;
+
+    const maisons = (store.getBrands?.() || [])
+      .map((b) => ({ ...b, count: (store.getProductsByBrand(b.id) || []).length }))
+      .filter((b) => b.count > 0)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+
+    if (!maisons.length) {
+      grid.closest("section")?.setAttribute("hidden", "");
+      return;
+    }
+
+    grid.innerHTML = maisons
+      .map((b) => {
+        const logo = HOME_LOGOS.has(b.id)
+          ? `<img class="home-maison__logo" src="assets/images/brands/${b.id}.webp" alt="${b.name}" loading="lazy" decoding="async" />`
+          : `<span class="home-maison__wordmark">${b.name}</span>`;
+        const label = `${b.count} parfum${b.count > 1 ? "s" : ""}`;
+        return `<a class="home-maison" href="pages/catalogue.html?brand=${b.id}" aria-label="${b.name}, ${label}">
+            ${logo}
+            <span class="home-maison__count">${label}</span>
+          </a>`;
+      })
+      .join("");
+  }
+
   function initHomePage() {
     initHeroProof();
     const store = global.KoreiProductStore;
@@ -409,6 +524,8 @@
     } else if (newsSection) {
       newsSection.hidden = true;
     }
+    initFormatsSection();
+    initHomeMaisons();
     initBrandChips();
     initChatbotTriggers();
   }

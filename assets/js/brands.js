@@ -2,9 +2,11 @@
  * Korei — Page marques
  */
 (function (global) {
-  // Maisons dont le logo existe en SVG : plus net qu'une image matricielle,
-  // et sans poids supplementaire (KOR-E3).
-  const LOGOS_SVG = new Set(["amouage", "byredo", "chanel", "creed", "dior", "initio", "kilian", "maison-margiela", "tom-ford", "xerjoff"]);
+  // Maisons dont le logo existe reellement dans le depot.
+  // ATTENTION : les fichiers .svg de brands/ ne sont pas des logos, ce sont des
+  // placeholders qui ecrivent le nom de la marque en Georgia. On utilise donc
+  // les .webp, qui sont les vraies marques (KOR-E3).
+  const LOGOS = new Set(["amouage", "byredo", "chanel", "creed", "dior", "initio", "kilian", "maison-margiela", "tom-ford", "xerjoff"]);
 
   const FAMILY_LABELS = {
     "boisé": "Boisé",
@@ -183,7 +185,11 @@
                      etre ni hidden ni differee, sinon le navigateur ne la
                      charge jamais et on ne voit que le repli. -->
                 <span class="maison-card__wordmark">${brand.name}</span>
-                <img class="maison-card__mark" src="../assets/images/brands/${brand.id}${LOGOS_SVG.has(brand.id) ? ".svg" : ".webp"}" alt="${brand.name}" width="200" height="60" decoding="async" data-onerror="remove" />
+                ${
+                  LOGOS.has(brand.id)
+                    ? `<img class="maison-card__mark" src="../assets/images/brands/${brand.id}.webp" alt="${brand.name}" width="200" height="60" decoding="async" data-onerror="remove" />`
+                    : ""
+                }
               </span>
               <span class="maison-card__country">${brand.country || ""}</span>
               <span class="maison-card__count">${count} parfum${count > 1 ? "s" : ""}</span>
