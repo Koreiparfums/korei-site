@@ -3,25 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Votre panier Korei — retrouvez votre coffret en cours de composition et finalisez votre commande." />
-    <meta name="robots" content="noindex, follow" />
-    <title>Mon panier — Korei</title>
+    <meta name="description" content="Les Boxes Kōrei — des coffrets thématiques déjà composés, à offrir ou à s'offrir." />
+    <meta name="robots" content="index, follow" />
+    <title>Les Boxes Kōrei — Korei</title>
     <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="../manifest.webmanifest" />
     <meta name="theme-color" content="#1a1a18" />
     <link rel="apple-touch-icon" href="/assets/images/app/icon-192.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Kōrei" />
-    <link rel="canonical" href="https://korei.fr/pages/panier" />
+    <link rel="canonical" href="https://korei.fr/pages/boxes" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Korei" />
-    <meta property="og:title" content="Mon panier — Korei" />
-    <meta property="og:description" content="Votre coffret en cours de composition sur Korei." />
-    <meta property="og:url" content="https://korei.fr/pages/panier" />
+    <meta property="og:title" content="Les Boxes Kōrei — Korei" />
+    <meta property="og:description" content="Les Boxes Kōrei — des coffrets thématiques déjà composés, à offrir ou à s'offrir." />
+    <meta property="og:url" content="https://korei.fr/pages/boxes" />
     <meta property="og:image" content="https://korei.fr/assets/images/og/og-default.svg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Mon panier — Korei" />
-    <meta name="twitter:description" content="Votre coffret en cours de composition sur Korei." />
+    <meta name="twitter:title" content="Les Boxes Kōrei — Korei" />
+    <meta name="twitter:description" content="Les Boxes Kōrei — des coffrets thématiques déjà composés, à offrir ou à s'offrir." />
     <meta name="twitter:image" content="https://korei.fr/assets/images/og/og-default.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
     <link rel="stylesheet" href="../assets/css/styles.css" />
   </head>
-  <body data-page="panier">
+  <body data-page="boxes">
     <div class="banner">
       <div class="banner-track">
         <span class="banner-item">Livraison offerte dès un coffret</span>
@@ -67,7 +67,7 @@
           <a href="../index.html">Accueil</a>
           <a href="catalogue.html">Parfums</a>
           <a href="coffret.html">Coffrets</a>
-          <a href="boxes.html">Les Boxes</a>
+          <a href="boxes.html" class="active">Les Boxes</a>
           <a href="brands.html">Marques</a>
           <a href="collections.html">Collections</a>
         </nav>
@@ -105,9 +105,9 @@
           </button>
         </div>
         <a href="../index.html">Accueil</a>
-        <a href="catalogue.html">Tous les parfums</a>
-        <a href="coffret.html">Coffret</a>
-        <a href="boxes.html">Les Boxes</a>
+        <a href="catalogue.html">Parfums</a>
+        <a href="coffret.html">Coffrets</a>
+        <a href="boxes.html" aria-current="page">Les Boxes</a>
         <a href="brands.html">Marques</a>
         <a href="collections.html">Collections</a>
         <a href="#" data-open-chatbot>Conseiller IA</a>
@@ -126,113 +126,70 @@
     </div>
 
     <main>
-    <section class="panier-head">
-      <h1 class="panier-head__title">Panier</h1>
-      <span class="panier-head__rule" aria-hidden="true"></span>
-      <p class="panier-head__count" id="panier-stats" hidden><span id="panier-stat-count">0 article</span></p>
+    <section class="boxes-hero">
+      <span class="boxes-hero__eyebrow">Kōrei</span>
+      <h1 class="boxes-hero__title">Les <em>Boxes</em></h1>
+      <span class="boxes-hero__rule" aria-hidden="true"></span>
+      <p class="boxes-hero__sub">
+        Des coffrets déjà composés, pensés autour d'une idée. Vous n'avez rien
+        à choisir : la sélection est faite, la boîte est prête à offrir.
+      </p>
+      <p class="boxes-hero__note">
+        <i class="ti ti-info-circle" aria-hidden="true"></i>
+        Les Boxes arrivent bientôt. En attendant, vous pouvez composer votre
+        propre coffret, flacon par flacon.
+      </p>
+      <a href="coffret.html#personnaliser" class="btn-dark boxes-hero__cta">Composer mon coffret</a>
     </section>
 
-    <div class="panier-content" id="panier-content" hidden>
-      <div class="panier-card">
-        <ul class="panier-list" id="panier-groups"></ul>
-        <div class="panier-card__foot">
-          <button type="button" class="panier-card__save" id="panier-save">
-            <i class="ti ti-heart" aria-hidden="true"></i> Sauvegarder la sélection
-          </button>
-          <button type="button" class="panier-card__clear" id="panier-clear">
-            <i class="ti ti-trash" aria-hidden="true"></i> Vider le panier
-          </button>
-        </div>
+    <!-- KOR-G1 — l'offre 10 x 10 ml annoncee dans le brief du 24 aout. Aucune
+         box n'est achetable tant que le contenu n'est pas arrete : on annonce,
+         on ne fait pas semblant de vendre. -->
+    <section class="boxes-feature">
+      <div class="boxes-feature__media">
+        <img src="../assets/images/coffrets/coffret-iconique-3x10ml.webp"
+             srcset="../assets/images/coffrets/coffret-iconique-3x10ml-sm.webp 800w, ../assets/images/coffrets/coffret-iconique-3x10ml.webp 1024w"
+             sizes="(max-width: 860px) 92vw, 480px"
+             alt="Coffret Kōrei ouvert, flacons de 10 ml"
+             width="1024" height="1024" loading="lazy" decoding="async" />
       </div>
-      <aside class="panier-summary">
-        <div class="panier-summary__card">
-          <h2 class="panier-summary__title">Votre commande</h2>
-          <span class="panier-summary__rule" aria-hidden="true"></span>
-          <div class="panier-summary__row">
-            <span>Sous-total</span>
-            <span id="panier-subtotal-value">0€</span>
-          </div>
-          <div class="panier-summary__row panier-summary__row--discount" id="panier-discount-row" hidden>
-            <span data-discount-label>Coffret complet · −10 %</span>
-            <span id="panier-discount-value">−0€</span>
-          </div>
-          <div class="panier-summary__row">
-            <span>Livraison</span>
-            <span id="panier-ship-value" class="is-free">Offerte</span>
-          </div>
-          <p class="panier-summary__hint" id="panier-ship-hint" hidden></p>
-          <div class="panier-summary__total">
-            <span>Total <em>TTC</em></span>
-            <span id="panier-total-value">0€</span>
-          </div>
-          <button class="btn-dark panier-summary__cta" type="button" disabled title="Bientôt disponible">
-            Passer la commande <span aria-hidden="true">→</span>
-          </button>
-          <p class="panier-summary__secure"><i class="ti ti-lock" aria-hidden="true"></i> Paiement 100% sécurisé</p>
-        </div>
-        <ul class="panier-trust">
-          <li>
-            <i class="ti ti-certificate" aria-hidden="true"></i>
-            <div><strong>Parfums 100% authentiques</strong><span>Sélectionnés avec exigence</span></div>
-          </li>
-          <li>
-            <i class="ti ti-truck-delivery" aria-hidden="true"></i>
-            <div><strong>Expédition sous 24h</strong><span>Colis préparé avec soin</span></div>
-          </li>
-          <li>
-            <i class="ti ti-truck" aria-hidden="true"></i>
-            <div><strong>Livraison offerte dès un coffret</strong><span>En France métropolitaine</span></div>
-          </li>
-          <li>
-            <i class="ti ti-rotate" aria-hidden="true"></i>
-            <div><strong>Retours gratuits</strong><span>Sous 14 jours</span></div>
-          </li>
+      <div class="boxes-feature__body">
+        <span class="boxes-feature__flag">Prochainement</span>
+        <h2 class="boxes-feature__title">La Box 10 × 10 ml</h2>
+        <p class="boxes-feature__desc">
+          Dix grands formats dans une seule boîte. Le format le plus généreux
+          de la maison, pensé pour les amateurs qui veulent de la matière.
+        </p>
+        <ul class="boxes-feature__list">
+          <li><i class="ti ti-flask-2" aria-hidden="true"></i> 10 flacons de 10 ml, soit 100 ml au total</li>
+          <li><i class="ti ti-gift" aria-hidden="true"></i> Boîte Kōrei, prête à offrir</li>
+          <li><i class="ti ti-truck-delivery" aria-hidden="true"></i> Livraison offerte</li>
         </ul>
-      </aside>
-    </div>
-    <div class="panier-empty" id="panier-empty" hidden>
-      <i class="ti ti-shopping-bag" aria-hidden="true"></i>
-      <p>Votre panier est vide.</p>
-      <span>Ajoutez des décants à votre coffret depuis une fiche parfum ou la page favoris pour les retrouver ici.</span>
-      <a href="coffret.html#personnaliser" class="btn-dark">Composer mon coffret</a>
-    </div>
-
-    <section class="favoris-explore">
-      <div class="favoris-explore__head">
-        <h2>Continuez l'exploration</h2>
-        <a href="collections.html">Voir toutes les collections <span aria-hidden="true">→</span></a>
-      </div>
-      <div class="favoris-explore__grid">
-        <a href="catalogue.html?season=été" class="favoris-explore__tile">
-          <img src="../assets/images/collections/ete.webp" alt="" loading="lazy" width="1536" height="1024" decoding="async" />
-          <span>Été</span>
-        </a>
-        <a href="catalogue.html?family=floral" class="favoris-explore__tile">
-          <img src="../assets/images/collections/floral.webp" alt="" loading="lazy" width="1586" height="992" decoding="async" />
-          <span>Floral</span>
-        </a>
-        <a href="catalogue.html?family=boisé" class="favoris-explore__tile">
-          <img src="../assets/images/collections/boise.webp" alt="" loading="lazy" width="1586" height="992" decoding="async" />
-          <span>Boisé</span>
-        </a>
-        <a href="catalogue.html?family=gourmand" class="favoris-explore__tile">
-          <img src="../assets/images/collections/gourmand.webp" alt="" loading="lazy" width="1536" height="1024" decoding="async" />
-          <span>Gourmand</span>
-        </a>
-        <a href="catalogue.html?note=oud" class="favoris-explore__tile">
-          <img src="../assets/images/collections/oud.webp" alt="" loading="lazy" width="1586" height="992" decoding="async" />
-          <span>Oud</span>
-        </a>
+        <p class="boxes-feature__pending">
+          Le contenu et le prix seront annoncés prochainement.
+        </p>
       </div>
     </section>
 
-    <section class="favoris-trust">
-      <div class="favoris-trust__bar">
-        <div class="favoris-trust__item"><i class="ti ti-truck-delivery"></i><span>Livraison offerte<br />dès un coffret</span></div>
-        <div class="favoris-trust__item"><i class="ti ti-shield-check"></i><span>Paiement sécurisé<br />3D Secure</span></div>
-        <div class="favoris-trust__item"><i class="ti ti-gift"></i><span>Échantillons offerts<br />pour chaque commande</span></div>
-        <div class="favoris-trust__item"><i class="ti ti-rotate"></i><span>Retours gratuits<br />sous 14 jours</span></div>
+    <section class="boxes-themes">
+      <div class="dose-head">
+        <div class="dose-eyebrow">Ce qui arrive</div>
+        <h2 class="dose-title">Nos <em>univers</em></h2>
+        <p class="dose-subtitle">
+          Chaque box réunit des parfums qui se répondent.
+        </p>
+        <span class="dose-title-rule" aria-hidden="true"></span>
       </div>
+      <div class="boxes-grid" id="boxes-grid"></div>
+    </section>
+
+    <section class="boxes-alt">
+      <h2 class="boxes-alt__title">Vous préférez choisir vous-même&nbsp;?</h2>
+      <p class="boxes-alt__sub">
+        Composez votre coffret parmi tous les parfums du catalogue. Dès qu'il
+        est complet, chaque flacon perd 10 % et la livraison est offerte.
+      </p>
+      <a href="coffret.html#personnaliser" class="btn-dark">Composer mon coffret</a>
     </section>
     </main>
 
@@ -309,5 +266,6 @@
     <script src="../assets/js/coffret-builder.js"></script>
     <script src="../assets/js/tabbar.js"></script>
     <script src="../assets/js/chatbot.js"></script>
+    <script src="../assets/js/boxes.js"></script>
   </body>
 </html>
