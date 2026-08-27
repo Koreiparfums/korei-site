@@ -152,7 +152,9 @@ body[data-page="product"] {
   grid-row: 2;
 }
 .pdp-coffret-promo {
-  grid-column: 2;
+  /* La pyramide olfactive est passee dans les accordeons (KOR-B4) : le rappel
+     coffret occupe donc toute la largeur sous la galerie et la fiche. */
+  grid-column: 1 / -1;
   grid-row: 2;
 }
 .pdp-gallery {
@@ -1335,4 +1337,203 @@ a.pdp-coffret-promo__view {
 .pdp-coffret-tier__ship i {
   color: var(--accent);
   font-size: 14px;
+}
+
+/* ─── KOR-B6 · galerie ────────────────────────────────────────────────────
+   Une seule photo : pas de colonne de miniatures, pas de compteur, et
+   surtout pas de bande vide a gauche. */
+.pdp-gallery--single {
+  grid-template-columns: 1fr;
+}
+.pdp-gallery__counter {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(26, 26, 24, 0.72);
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.pdp-gallery__counter b {
+  font-weight: 500;
+}
+/* Rail de balayage : une photo par ecran, arret net sur chacune. */
+.pdp-gallery__rail {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.pdp-gallery__rail::-webkit-scrollbar {
+  display: none;
+}
+.pdp-gallery__slide {
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pdp-gallery__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 56px;
+  mix-blend-mode: multiply;
+}
+
+@media (max-width: 640px) {
+  .pdp-gallery__slide img,
+  .pdp-gallery__main-img {
+    padding: 28px;
+  }
+}
+
+/* ─── KOR-B10 · reassurance sous le bouton d'achat ─── */
+.pdp-trustrow {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--pdp-line);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 18px;
+}
+.pdp-trustrow li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--pdp-ink-soft, #6b6b64);
+}
+.pdp-trustrow i {
+  color: var(--pdp-gold);
+  font-size: 16px;
+  flex: none;
+}
+@media (max-width: 640px) {
+  .pdp-trustrow {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+/* ─── KOR-B4 · accordeons Notes, Details, Avis ──────────────────────────── */
+.pdp-acc {
+  margin: 0 auto;
+  padding: 8px var(--px) 0;
+}
+.pdp-acc__item {
+  border-top: 1px solid var(--pdp-line);
+}
+.pdp-acc__item:last-child {
+  border-bottom: 1px solid var(--pdp-line);
+}
+.pdp-acc__head {
+  margin: 0;
+}
+.pdp-acc__btn {
+  width: 100%;
+  min-height: 64px;
+  padding: 18px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  color: var(--pdp-ink);
+  font-family: inherit;
+}
+.pdp-acc__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 22px;
+  line-height: 1.2;
+}
+.pdp-acc__meta {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--pdp-ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.pdp-acc__chevron {
+  margin-left: auto;
+  font-size: 20px;
+  color: var(--pdp-ink-soft);
+  transition: transform 0.25s var(--pdp-ease);
+}
+.pdp-acc__btn[aria-expanded="true"] .pdp-acc__chevron {
+  transform: rotate(180deg);
+}
+.pdp-acc__inner {
+  padding-bottom: 28px;
+  animation: pdp-acc-open 0.25s var(--pdp-ease);
+}
+@keyframes pdp-acc-open {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pdp-acc__inner {
+    animation: none;
+  }
+  .pdp-acc__chevron {
+    transition: none;
+  }
+}
+/* Dans un accordeon, la pyramide n'a plus besoin de son cadre ni de son
+   titre : le cadre et le titre, c'est l'accordeon. */
+.pdp-acc .pdp-pyramid {
+  border: 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+.pdp-acc .pdp-pyramid__title {
+  display: none;
+}
+
+.pdp-details {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 40px;
+}
+.pdp-details__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--pdp-line);
+  font-size: 14px;
+}
+.pdp-details dt {
+  color: var(--pdp-ink-soft);
+}
+.pdp-details dd {
+  margin: 0;
+  text-align: right;
+  color: var(--pdp-ink);
+}
+@media (max-width: 860px) {
+  .pdp-details {
+    grid-template-columns: 1fr;
+  }
+}
+.pdp-reviews__source {
+  color: var(--pdp-gold);
+  text-underline-offset: 3px;
 }

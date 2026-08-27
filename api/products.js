@@ -30,6 +30,12 @@ const PRODUCTS_QUERY = `
           url
           altText
         }
+        images(first: 6) {
+          nodes {
+            url
+            altText
+          }
+        }
         priceRange {
           minVariantPrice {
             amount
@@ -129,6 +135,9 @@ function mapProduct(product) {
     description: product.description || "",
     image: product.featuredImage?.url || null,
     imageAlt: product.featuredImage?.altText || `${product.vendor || "Korei"} ${product.title}`,
+    // KOR-B6 — la galerie a besoin de toutes les photos, pas seulement de la
+    // principale. Sans ca, la fiche ne peut jamais montrer un second angle.
+    images: (product.images?.nodes || []).map((node) => node.url).filter(Boolean),
     price,
     currencyCode: product.priceRange?.minVariantPrice?.currencyCode || "EUR",
     supplierAvailable: product.availableForSale,

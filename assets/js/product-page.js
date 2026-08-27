@@ -66,14 +66,23 @@
   }
 
 
-  // ── Galerie (duplique l'unique photo tant qu'il n'y a pas plusieurs angles réels)
+  // ── Galerie (KOR-B6)
+  // Une seule photo existe pour la plupart des parfums. On ne la duplique plus
+  // en quatre miniatures identiques : quatre fois la meme image donne
+  // l'impression d'une galerie cassee, pas d'un produit photographie.
   function galleryImages(product, basePath) {
-    const src = ui.productImageSrc ? ui.productImageSrc(product, basePath) : null;
-    if (!src) return [];
     if (Array.isArray(product.images) && product.images.length) {
       return product.images.map((p) => (site?.withBase ? site.withBase(p, basePath) : `${basePath}${p}`));
     }
-    return Array(4).fill(src);
+    const src = ui.productImageSrc ? ui.productImageSrc(product, basePath) : null;
+    return src ? [src] : [];
+  }
+
+  // Aucune photo : un visuel Korei plutot qu'un cadre vide.
+  function galleryFallback(basePath) {
+    return site?.withBase
+      ? site.withBase("assets/images/hero/hero-decant-5ml.webp", basePath)
+      : `${basePath}assets/images/hero/hero-decant-5ml.webp`;
   }
 
   function renderBadges(product) {
@@ -87,37 +96,93 @@
   function renderGallery(product, basePath) {
     const images = galleryImages(product, basePath);
     const alt = `${esc(product.brand)} ${esc(product.name)}`;
-    return `
-      <div class="pdp-gallery">
-        <div class="pdp-gallery__thumbs">
+    const multiple = images.length > 1;
+    const shown = images.length ? images : [galleryFallback(basePath)];
+
+    // Ni compteur ni miniatures quand il n'y a qu'une photo : rien ne doit
+    // laisser croire qu'il en existe d'autres.
+    const thumbs = multiple
+      ? `<div class="pdp-gallery__thumbs">
           ${images
             .map(
               (src, i) => `
-            <button class="pdp-thumb${i === 0 ? " is-active" : ""}" type="button" data-thumb-index="${i}" aria-label="Photo ${i + 1}">
+            <button class="pdp-thumb${i === 0 ? " is-active" : ""}" type="button" data-thumb-index="${i}" aria-label="Photo ${i + 1} sur ${images.length}">
               <img src="${src}" alt="" width="750" height="1000" loading="lazy" decoding="async" />
             </button>`
             )
             .join("")}
-        </div>
+        </div>`
+      : "";
+
+    const counter = multiple
+      ? `<span class="pdp-gallery__counter" id="pdp-gallery-counter" aria-live="polite"><b>1</b>/${images.length}</span>`
+      : "";
+
+    // Sur telephone, la galerie se balaye : chaque photo est un element du
+    // rail, et le compteur suit le defilement.
+    const rail = multiple
+      ? `<div class="pdp-gallery__rail" id="pdp-gallery-rail">
+          ${images
+            .map(
+              (src, i) => `<div class="pdp-gallery__slide"><img src="${src}" alt="${alt}" width="750" height="1000" ${
+                i === 0 ? 'decoding="async" fetchpriority="high"' : 'loading="lazy" decoding="async"'
+              } data-onerror="fade" /></div>`
+            )
+            .join("")}
+        </div>`
+      : `<img class="pdp-gallery__main-img" id="pdp-main-img" src="${shown[0]}" alt="${alt}" width="750" height="1000" decoding="async" fetchpriority="high" data-onerror="fade" />`;
+
+    return `
+      <div class="pdp-gallery${multiple ? " pdp-gallery--multi" : " pdp-gallery--single"}">
+        ${thumbs}
         <div class="pdp-gallery__mainstack">
           <div class="pdp-gallery__main">
             <div class="pdp-badges">${renderBadges(product)}</div>
-            <img class="pdp-gallery__main-img" id="pdp-main-img" src="${images[0] || ""}" alt="${alt}" width="750" height="1000" decoding="async" fetchpriority="high" data-onerror="fade" />
+            ${counter}
+            ${rail}
           </div>
         </div>
       </div>`;
   }
 
   function initGallery(root, images) {
-    const mainImg = root.querySelector("#pdp-main-img");
+    if (images.length < 2) return;
+    const rail = root.querySelector("#pdp-gallery-rail");
     const thumbs = Array.from(root.querySelectorAll(".pdp-thumb"));
+    const counter = root.querySelector("#pdp-gallery-counter b");
+    const slides = rail ? Array.from(rail.children) : [];
+
+    function show(i) {
+      thumbs.forEach((t, k) => t.classList.toggle("is-active", k === i));
+      if (counter) counter.textContent = String(i + 1);
+    }
+
     thumbs.forEach((thumb) => {
       thumb.addEventListener("click", () => {
-        thumbs.forEach((t) => t.classList.remove("is-active"));
-        thumb.classList.add("is-active");
-        if (mainImg) mainImg.src = images[Number(thumb.dataset.thumbIndex)];
+        const i = Number(thumb.dataset.thumbIndex);
+        show(i);
+        slides[i]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
       });
     });
+
+    // Le compteur suit le balayage, sinon il ment des la premiere photo suivante.
+    rail?.addEventListener(
+      "scroll",
+      () => {
+        const mid = rail.scrollLeft + rail.clientWidth / 2;
+        let best = 0;
+        let bestDist = Infinity;
+        slides.forEach((slide, i) => {
+          const d = Math.abs(slide.offsetLeft + slide.offsetWidth / 2 - mid);
+          if (d < bestDist) {
+            bestDist = d;
+            best = i;
+          }
+        });
+        show(best);
+      },
+      { passive: true }
+    );
   }
 
   // ── Formats & prix
@@ -247,6 +312,25 @@
       </div>`;
   }
 
+  // ── KOR-B10 : reassurance juste sous le bouton d'achat.
+  // Les quatre promesses sont exactement celles du bandeau du site : une
+  // promesse affichee ici et nulle part ailleurs serait une promesse inventee.
+  const TRUST_ROW = [
+    { icon: "ti-shield-check", label: "Décants 100 % authentiques" },
+    { icon: "ti-rotate", label: "Satisfait ou remboursé 30 jours" },
+    { icon: "ti-truck-delivery", label: "Expédition sous 24 h" },
+    { icon: "ti-gift", label: "Cadeau mystère offert" },
+  ];
+
+  function renderTrustRow() {
+    return `
+      <ul class="pdp-trustrow">
+        ${TRUST_ROW.map(
+          (it) => `<li><i class="ti ${it.icon}" aria-hidden="true"></i>${it.label}</li>`
+        ).join("")}
+      </ul>`;
+  }
+
   // ── Section 1 : Hero
   function renderHero(product, basePath) {
     const formats = getFormats(product);
@@ -276,9 +360,10 @@
               </div>
             </div>
 
+            ${renderTrustRow()}
+
             ${product.description ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
           </div>
-          ${renderPyramid(product)}
           ${renderCoffretPromo(product)}
         </div>
       </section>`;
@@ -727,34 +812,28 @@
     });
   }
 
-  // ── Section 9 : Avis clients (honnête — aucun faux avis fabriqué)
-  function renderReviews(product) {
+  // ── Avis clients (honnête — aucun faux avis fabriqué)
+  function renderReviewsBody(product) {
     const fr = product.fragrantica;
-    const rating = fr?.rating || product.rating;
-    const countLine = fr?.votes
-      ? `Basé sur ${fr.votes.toLocaleString("fr-FR")} avis Fragrantica`
-      : fr?.rating
-      ? "Note Fragrantica — nombre d'avis non communiqué"
-      : "Note Kōrei — avis clients à venir";
+    const rating = fr?.rating || null;
+    const source = fr?.url
+      ? `<a class="pdp-reviews__source" href="${fr.url}" target="_blank" rel="noopener">Voir la fiche Fragrantica</a>`
+      : "";
+    // La note affichee est celle de Fragrantica, pas une note maison : la
+    // boutique n'a aucune commande, donc aucun avis client.
+    const score = rating
+      ? `<div class="pdp-reviews__score">${String(rating).replace(".", ",")}</div>
+         <div class="pdp-reviews__stars">${ui.renderStars ? ui.renderStars(rating) : ""}</div>
+         <p class="pdp-reviews__count">Note des passionnés sur Fragrantica. ${source}</p>`
+      : "";
     return `
-      <section class="pdp-reviews">
-        <div class="pdp-head">
-          <div class="pdp-eyebrow">Avis clients</div>
-          <h2 class="pdp-title">Ce qu'ils en <em>pensent</em></h2>
-        </div>
-        <div class="pdp-reviews__panel pdp-reveal">
-          <div class="pdp-reviews__score">${rating}</div>
-          <div class="pdp-reviews__stars">${ui.renderStars ? ui.renderStars(rating) : ""}</div>
-          <p class="pdp-reviews__count">${countLine}</p>
-          <p class="pdp-reviews__empty">
-            Les avis vérifiés Kōrei arrivent bientôt sur cette fiche. Soyez la première personne
-            à partager votre expérience avec ce parfum.
-          </p>
-          <button class="pdp-btn pdp-btn--primary" type="button" disabled title="Bientôt disponible" style="max-width:240px;margin:0 auto">
-            Laisser un avis
-          </button>
-        </div>
-      </section>`;
+      <div class="pdp-reviews__panel">
+        ${score}
+        <p class="pdp-reviews__empty">
+          Aucun avis client Kōrei pour l'instant. Vous pourrez laisser le vôtre
+          après votre commande.
+        </p>
+      </div>`;
   }
 
   // ── Section 10 : FAQ
@@ -820,6 +899,103 @@
             .join("")}
         </div>
       </section>`;
+  }
+
+  // ── KOR-B4 : accordeons Notes, Details, Avis
+  // Fermes sur telephone, un seul ouvert a la fois, pour que le bouton d'achat
+  // reste a portee. Sur ordinateur ils sont ouverts : la place ne manque pas.
+  const GENDER_LABELS = { homme: "Masculin", femme: "Féminin", mixte: "Mixte", unisexe: "Mixte" };
+
+  function detailRows(product) {
+    const rows = [
+      ["Maison", product.brand],
+      ["Famille olfactive", product.family ? capitalize(product.family) : ""],
+      ["Pour", GENDER_LABELS[product.gender] || (product.gender ? capitalize(product.gender) : "")],
+      ["Intensité", product.intensity ? capitalize(product.intensity) : ""],
+      ["Occasions", (product.occasions || []).map(capitalize).join(", ")],
+      ["Saisons", (product.seasons || []).map(capitalize).join(", ")],
+      ["Contenances", getFormats(product).filter((f) => f.available && f.price > 0).map((f) => f.vol).join(" · ")],
+      ["Conditionnement", "Décant Kōrei, flacon vaporisateur en verre"],
+    ].filter(([, value]) => value);
+    // Une ligne sans valeur n'est pas affichee vide : elle disparait.
+    return rows;
+  }
+
+  function renderDetails(product) {
+    const rows = detailRows(product);
+    if (!rows.length) return "";
+    return `<dl class="pdp-details">
+      ${rows.map(([k, v]) => `<div class="pdp-details__row"><dt>${k}</dt><dd>${esc(String(v))}</dd></div>`).join("")}
+    </dl>`;
+  }
+
+  function accordionItem(id, title, meta, body, open) {
+    if (!body) return "";
+    return `
+      <section class="pdp-acc__item">
+        <h2 class="pdp-acc__head">
+          <button type="button" class="pdp-acc__btn" aria-expanded="${open ? "true" : "false"}" aria-controls="pdp-acc-${id}" data-acc-btn>
+            <span class="pdp-acc__title">${title}</span>
+            ${meta ? `<span class="pdp-acc__meta">${meta}</span>` : ""}
+            <i class="ti ti-chevron-down pdp-acc__chevron" aria-hidden="true"></i>
+          </button>
+        </h2>
+        <div class="pdp-acc__panel" id="pdp-acc-${id}" ${open ? "" : "hidden"}>
+          <div class="pdp-acc__inner">${body}</div>
+        </div>
+      </section>`;
+  }
+
+  function reviewsMeta(product) {
+    const fr = product.fragrantica;
+    if (fr?.rating && fr?.votes) {
+      return `${String(fr.rating).replace(".", ",")}/5 · ${fr.votes.toLocaleString("fr-FR")} avis Fragrantica`;
+    }
+    if (fr?.rating) return `${String(fr.rating).replace(".", ",")}/5 sur Fragrantica`;
+    // Aucun avis client a ce jour : on n'affiche pas de note maison inventee.
+    return "";
+  }
+
+  function renderAccordions(product) {
+    const items = [
+      accordionItem("notes", "Notes olfactives", "", renderPyramid(product), true),
+      accordionItem("details", "Détails", "", renderDetails(product), true),
+      accordionItem("avis", "Avis", reviewsMeta(product), renderReviewsBody(product), true),
+    ].join("");
+    if (!items.trim()) return "";
+    return `<div class="pdp-acc pdp-container">${items}</div>`;
+  }
+
+  function initAccordions(main) {
+    const btns = Array.from(main.querySelectorAll("[data-acc-btn]"));
+    if (!btns.length) return;
+    const mobile = window.matchMedia("(max-width: 860px)");
+
+    function panelOf(btn) {
+      return document.getElementById(btn.getAttribute("aria-controls"));
+    }
+    function setOpen(btn, open) {
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      const panel = panelOf(btn);
+      if (panel) panel.hidden = !open;
+    }
+    function applyViewport() {
+      btns.forEach((btn, i) => setOpen(btn, mobile.matches ? i === -1 : true));
+    }
+
+    btns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const open = btn.getAttribute("aria-expanded") === "true";
+        if (mobile.matches && !open) {
+          // Un seul ouvert a la fois sur telephone.
+          btns.forEach((other) => other !== btn && setOpen(other, false));
+        }
+        setOpen(btn, !open);
+      });
+    });
+
+    applyViewport();
+    mobile.addEventListener("change", applyViewport);
   }
 
   // ── Reveal au scroll
@@ -892,9 +1068,9 @@
       </nav>
       ${renderHero(product, "../")}
       ${renderSentiment(product)}
+      ${renderAccordions(product)}
       ${renderCarouselSection("pdp-similar", "Sélection", "Parfums similaires")}
-      ${renderCarouselSection("pdp-suggested", "Découverte", "Vous pourriez aimer")}
-      ${renderReviews(product)}
+      ${renderCarouselSection("pdp-suggested", "La maison", `Autres créations ${esc(product.brand)}`)}
       ${renderFaq(product)}
       ${renderGuarantees()}
       ${renderFamily(product)}
@@ -904,35 +1080,34 @@
     initGallery(main, galleryImages(product, "../"));
     initHero(main, product);
     initCoffretPromo(main, product);
+    initAccordions(main);
     initReveal(main);
+
+    // KOR-B11 — sous trois resultats, la section disparait entierement : une
+    // rangee d'un seul parfum donne l'impression d'un catalogue vide.
+    function fillCarousel(trackId, items) {
+      const section = document.getElementById(trackId)?.closest(".pdp-carousel-section");
+      if (!section) return;
+      if (items.length >= 3 && ui.renderProducts) {
+        ui.renderProducts(document.getElementById(trackId), items, { basePath: "../" });
+        initCarousel(section);
+      } else {
+        section.remove();
+      }
+    }
 
     const similar = store
       .getProductsByFamily(product.family)
       .filter((p) => p.id !== product.id)
       .slice(0, 8);
-    const similarSection = document.getElementById("pdp-similar")?.closest(".pdp-carousel-section");
-    if (similarSection) {
-      if (similar.length && ui.renderProducts) {
-        ui.renderProducts(document.getElementById("pdp-similar"), similar, { basePath: "../" });
-        initCarousel(similarSection);
-      } else {
-        similarSection.style.display = "none";
-      }
-    }
+    fillCarousel("pdp-similar", similar);
 
-    const suggested = store
-      .getBestsellers()
-      .filter((p) => p.id !== product.id && !similar.some((s) => s.id === p.id))
+    // Autres creations de la maison : la marque du parfum, pas les best-sellers.
+    const sameHouse = store
+      .getProductsByBrand(product.brandId)
+      .filter((p) => p.id !== product.id)
       .slice(0, 8);
-    const suggestedSection = document.getElementById("pdp-suggested")?.closest(".pdp-carousel-section");
-    if (suggestedSection) {
-      if (suggested.length && ui.renderProducts) {
-        ui.renderProducts(document.getElementById("pdp-suggested"), suggested, { basePath: "../" });
-        initCarousel(suggestedSection);
-      } else {
-        suggestedSection.style.display = "none";
-      }
-    }
+    fillCarousel("pdp-suggested", sameHouse);
 
     site?.initMediaSlots();
   }
