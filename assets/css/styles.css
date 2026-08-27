@@ -8207,3 +8207,335 @@ body.has-cookie-banner .chatbot-widget {
     display: none;
   }
 }
+
+/* ==========================================================================
+   Page Maisons (KOR-E1, E4, E5, brief §5)
+   Annuaire de marques : titre editorial, barre alphabetique, deux filtres,
+   grille de logos sobre, puis les maisons phares avec leur produit signature.
+   ========================================================================== */
+.maisons-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 64px var(--px) 40px;
+  text-align: center;
+}
+.maisons-hero__title {
+  margin: 0;
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  font-size: clamp(2.4rem, 1.2rem + 4vw, 4.4rem);
+  line-height: 1.1;
+  color: var(--text);
+}
+.maisons-hero__title em {
+  font-style: normal;
+  color: var(--accent);
+}
+.maisons-hero__rule {
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: var(--accent);
+}
+.maisons-hero__sub {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--text-muted);
+  font-size: var(--text-15);
+}
+
+/* Barre A–Z. Elle defile horizontalement sur telephone. */
+.maisons-alpha {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+  padding: 0 var(--px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-top: 0.8px solid var(--border);
+  border-bottom: 0.8px solid var(--border);
+}
+.maisons-alpha::-webkit-scrollbar {
+  display: none;
+}
+.maisons-alpha__letter {
+  flex: none;
+  min-width: 34px;
+  min-height: 44px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font: inherit;
+  font-size: var(--text-13);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    color 0.16s ease,
+    border-color 0.16s ease;
+}
+.maisons-alpha__letter:disabled {
+  color: var(--border);
+  cursor: default;
+}
+.maisons-alpha__letter.is-active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.maisons-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 24px var(--px);
+}
+.maisons-toolbar__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.maisons-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.maisons-select__label {
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.maisons-select select,
+.maisons-search input {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--text-13);
+}
+.maisons-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+.maisons-search i {
+  position: absolute;
+  left: 14px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.maisons-search input {
+  padding-left: 38px;
+  min-width: 220px;
+}
+.maisons-count {
+  color: var(--accent);
+  font-size: var(--text-14);
+  font-variant-numeric: tabular-nums;
+}
+.maisons-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 6.4px;
+  min-height: 44px;
+  margin-left: auto;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--text-13);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.maisons-reset:hover {
+  color: var(--accent);
+}
+
+.maisons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--px) 64px;
+}
+.maison-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 168px;
+  padding: 24px 20px;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+.maison-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-1.6px);
+}
+.maison-card:focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3.2px;
+}
+.maison-card.is-highlight {
+  border-color: var(--accent);
+}
+.maison-card__logo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 52px;
+}
+/* Le logo se pose par-dessus le nom. S'il manque, l'image est retiree du DOM
+   et le nom reapparait tout seul : jamais de cadre vide. */
+.maison-card__mark {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: auto;
+  max-width: 100%;
+  height: 100%;
+  max-height: 52px;
+  object-fit: contain;
+  background: var(--surface);
+}
+/* Une maison sans logo garde son nom en typographie de marque : jamais un
+   cadre vide (KOR-E1). */
+.maison-card__wordmark {
+  display: grid;
+  place-items: center;
+  /* Sans cette ligne, le display:grid l'emporte sur l'attribut hidden et le
+     nom de la maison restait affiche par-dessus son logo. */
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-19);
+  letter-spacing: 0.06em;
+  text-align: center;
+  color: var(--text);
+}
+.maison-card__country {
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.maison-card__count {
+  font-size: var(--text-12);
+  color: var(--text-light);
+}
+
+.maisons-phares {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 48px var(--px) 72px;
+  border-top: 0.8px solid var(--border);
+}
+.maisons-phares__title {
+  margin: 0;
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  font-size: var(--text-23);
+  color: var(--text);
+}
+.maisons-phares__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: var(--max-w);
+  margin-top: 16px;
+}
+.phare-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 14px;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+.phare-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-1.6px);
+}
+.phare-card__brand {
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-16);
+  color: var(--text);
+  text-align: center;
+}
+.phare-card__media {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+}
+.phare-card__media img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.phare-card__name {
+  font-size: var(--text-11);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text);
+  text-align: center;
+}
+.phare-card__type {
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .maisons-hero {
+    padding-top: 36px;
+  }
+  .maisons-alpha {
+    justify-content: flex-start;
+  }
+  .maisons-toolbar__filters {
+    width: 100%;
+  }
+  .maisons-search input {
+    min-width: 0;
+    width: 100%;
+  }
+  .maisons-search {
+    flex: 1 1 100%;
+  }
+  .maisons-reset {
+    margin-left: 0;
+  }
+  .maisons-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

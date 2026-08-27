@@ -124,40 +124,52 @@
     </div>
 
     <main>
-    <section class="brands-head">
-      <div class="brands-head-rule" aria-hidden="true"></div>
-      <div class="brands-head-inner">
-        <h1 class="brands-head-title"><em>Maisons</em></h1>
-        <p class="brands-head-sub">
-          Les plus grandes maisons de parfumerie de niche réunies au même endroit.
-        </p>
-        <div class="brands-head-stat">100+ marques</div>
-      </div>
-      <div class="brands-head-rule" aria-hidden="true"></div>
+    <section class="maisons-hero">
+      <h1 class="maisons-hero__title">Nos <em>Maisons</em></h1>
+      <span class="maisons-hero__rule" aria-hidden="true"></span>
+      <p class="maisons-hero__sub" id="maisons-hero-sub">
+        Les maisons de parfumerie de niche sélectionnées avec soin.
+      </p>
     </section>
 
-    <div class="brands-search-wrap">
-      <div class="brands-search">
-        <i class="ti ti-search brands-search-icon" aria-hidden="true"></i>
-        <input
-          type="search"
-          id="brands-search-input"
-          placeholder="Rechercher une marque…"
-          aria-label="Rechercher une marque"
-        />
-      </div>
-      <div class="brands-popular">
-        <span class="brands-popular-label">Populaires</span>
-        <div class="brands-popular-list" id="brands-popular-list"></div>
-      </div>
-    </div>
+    <!-- KOR-E4 — barre alphabetique. Les lettres sans maison sont grisees et
+         non cliquables : on ne propose jamais un filtre qui ne donne rien. -->
+    <nav class="maisons-alpha" id="maisons-alpha" aria-label="Filtrer par lettre"></nav>
 
-    <div class="brands-filters" id="brands-filters"></div>
+    <div class="maisons-toolbar">
+      <div class="maisons-toolbar__filters">
+        <label class="maisons-select">
+          <span class="maisons-select__label">Pays</span>
+          <select id="maisons-country"></select>
+        </label>
+        <label class="maisons-select">
+          <span class="maisons-select__label">Famille olfactive</span>
+          <select id="maisons-family"></select>
+        </label>
+        <div class="maisons-search">
+          <i class="ti ti-search" aria-hidden="true"></i>
+          <input type="search" id="brands-search-input" placeholder="Rechercher une maison…" aria-label="Rechercher une maison" />
+        </div>
+      </div>
+      <span class="maisons-count" id="maisons-count" aria-live="polite"></span>
+      <button type="button" class="maisons-reset" id="maisons-reset">
+        <i class="ti ti-refresh" aria-hidden="true"></i> Réinitialiser
+      </button>
+    </div>
 
     <div id="brands-grid"></div>
     <p id="brands-empty" class="brands-empty" hidden>
-      Aucune marque ne correspond à votre recherche.
+      Aucune maison ne correspond à votre recherche.
     </p>
+
+    <!-- KOR-E5 — maisons phares : chaque entree mene a la fiche du produit
+         signature, pas a la page de la marque. -->
+    <section class="maisons-phares" id="maisons-phares" hidden>
+      <h2 class="maisons-phares__title">Maisons phares</h2>
+      <span class="maisons-hero__rule" aria-hidden="true"></span>
+      <div class="maisons-phares__row" id="maisons-phares-row"></div>
+    </section>
+
     </main>
 
     <footer>
