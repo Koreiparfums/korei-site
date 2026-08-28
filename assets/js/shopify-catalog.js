@@ -26,7 +26,47 @@
     }
   }
 
-  function useShopifyProducts(shopifyProducts) {
+  // Les produits de la boutique arrivent avec le nom de la maison colle devant
+  // le nom du parfum (« Initio — Atomic Rose »), et parfois avec « Korei »
+  // comme marque (Louis Vuitton Imagination, Montale Arabian Tonka). Affiche
+  // tel quel, cela donne une carte au logo Initio surmontant « Initio — Atomic
+  // Rose », ou un parfum Louis Vuitton signe Korei. On corrige a l'affichage
+  // uniquement : la boutique en ligne n'est pas modifiee.
+  const SEPARATEURS = /^\s*[—–-]\s*/;
+
+  function sansAccent(str) {
+    return String(str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+  }
+
+  function nettoyerIdentite(product) {
+    const maisons = (global.KoreiProducts && global.KoreiProducts.BRANDS) || [];
+    let nom = String(product.name || "");
+    let brand = product.brand;
+    let brandId = product.brandId;
+
+    // Marque generique : on cherche la maison au debut du nom du parfum.
+    const marqueGenerique = !brand || sansAccent(brand) === "korei";
+    if (marqueGenerique) {
+      const trouvee = maisons
+        .filter((m) => sansAccent(nom).startsWith(sansAccent(m.name)))
+        .sort((a, b) => b.name.length - a.name.length)[0];
+      if (trouvee) {
+        brand = trouvee.name;
+        brandId = trouvee.id;
+      }
+    }
+
+    // Nom prefixe par sa propre maison : on retire le doublon.
+    if (brand && sansAccent(nom).startsWith(sansAccent(brand))) {
+      const reste = nom.slice(brand.length).replace(SEPARATEURS, "").trim();
+      if (reste) nom = reste;
+    }
+
+    return { ...product, name: nom, brand: brand || product.brand, brandId: brandId || product.brandId };
+  }
+
+  function useShopifyProducts(bruts) {
+    const shopifyProducts = bruts.map(nettoyerIdentite);
     const byHandle = new Map(
       shopifyProducts.map((product) => [product.shopifyHandle || product.id, product]),
     );
