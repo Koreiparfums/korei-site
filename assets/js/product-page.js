@@ -545,9 +545,6 @@
             <div class="pdp-info pdp-reveal">
               <h1 class="pdp-name">${esc(product.name)}</h1>
               <div class="pdp-brand">${esc(product.brand)}</div>
-              <div class="pdp-rating-line">${ui.renderStars ? ui.renderStars(product.rating) : ""}</div>
-
-              <span class="pdp-label">Choisir un format</span>
               ${renderFormats(formats)}
 
               <div class="pdp-actions">

@@ -20,7 +20,9 @@ body[data-page="product"] {
   --pdp-radius-lg: var(--radius-xl);
   --pdp-radius-md: var(--radius-lg);
   --pdp-radius-sm: var(--radius-md);
-  --pdp-max: var(--max-w);
+  /* La fiche est la seule page en deux colonnes : a 1120 px chaque colonne
+     tombait a 477 px et les cartes de format se retrouvaient a 150 px. */
+  --pdp-max: 1320px;
   --pdp-shadow: var(--shadow-lg);
   --pdp-ease: cubic-bezier(0.22, 1, 0.36, 1);
   background: var(--pdp-bg);
@@ -272,9 +274,11 @@ body[data-page="product"] {
   /* Les visuels produit sont au format portrait 3:4. Un cadre carre laissait
      une large bande vide de chaque cote du flacon et le rapetissait. */
   aspect-ratio: 4 / 5;
-  max-width: none;
+  max-width: 560px;
   border-radius: var(--pdp-radius-lg);
   background: radial-gradient(ellipse at 50% 40%, var(--pdp-white) 0%, var(--pdp-panel) 100%);
+  /* Sans filet, le degrade est presque blanc et le flacon flotte sur le vide. */
+  border: 1px solid var(--pdp-line);
   overflow: hidden;
 }
 .pdp-gallery__main-img {
@@ -385,6 +389,10 @@ body[data-page="product"] {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
+  /* Le bandeau des cartes deborde de 8 px vers le haut : sans cette reserve
+     il venait mordre le titre de la section. */
+  padding-top: 12px;
+  margin-top: 12px;
   margin-bottom: 28px;
 }
 .pdp-format {
@@ -415,7 +423,7 @@ body[data-page="product"] {
 }
 /* Le flacon est a l'echelle : un 10 ml est plus grand qu'un 2 ml. */
 .pdp-format__vial {
-  height: 96px;
+  height: 132px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -426,10 +434,10 @@ body[data-page="product"] {
   object-fit: contain;
 }
 .pdp-format[data-vol="2ml"] .pdp-format__vial img {
-  height: 62%;
+  height: 58%;
 }
 .pdp-format[data-vol="5ml"] .pdp-format__vial img {
-  height: 80%;
+  height: 78%;
 }
 .pdp-format[data-vol="10ml"] .pdp-format__vial img {
   height: 100%;
