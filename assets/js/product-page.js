@@ -244,6 +244,9 @@
     "10ml": { sprays: 150, usage: "Pour les amateurs convaincus" },
   };
 
+  // Photo du flacon Korei par format, comme la maquette du 24 aout.
+  const FORMAT_VIALS = { "2ml": "hero-decant-2ml", "5ml": "hero-decant-5ml", "10ml": "hero-decant-10ml" };
+
   function renderFormats(formats) {
     const selected = firstSelectable(formats);
     return `
@@ -252,6 +255,7 @@
           .map((f) => {
             const isActive = f === selected;
             const info = FORMAT_INFO[f.key] || {};
+            const vial = FORMAT_VIALS[f.key];
             return `
           <button class="pdp-format${isActive ? " is-active" : ""}${f.best ? " is-best" : ""}${info.popular ? " is-popular" : ""}${f.available ? "" : " is-unavailable"}"
                   type="button" role="radio" aria-checked="${isActive}"
@@ -259,13 +263,23 @@
                   data-price="${f.price}" data-vol="${f.key}" data-available="${f.available}">
             ${info.popular ? '<span class="pdp-format__badge">Populaire</span>' : ""}
             ${f.best ? '<span class="pdp-format__flag">Meilleur rapport</span>' : ""}
+            ${
+              vial
+                ? `<span class="pdp-format__vial"><img src="../assets/images/hero/${vial}.webp" alt="" width="112" height="851" loading="lazy" decoding="async"></span>`
+                : ""
+            }
             <span class="pdp-format__vol">${f.vol}</span>
             <span class="pdp-format__price">${f.available ? `${formatPriceLabel(f.price)}€` : "—"}</span>
             <span class="pdp-format__unit">${f.available ? `${formatPriceLabel(f.pricePerMl)}€ / ml` : "Indisponible"}</span>
             ${
               info.sprays
-                ? `<span class="pdp-format__sprays"><i class="ti ti-spray" aria-hidden="true"></i>Environ ${info.sprays} pulvérisations</span>
-                   <span class="pdp-format__usage">${info.usage}</span>`
+                ? `<span class="pdp-format__detail">
+                     <i class="ti ti-spray" aria-hidden="true"></i>
+                     <span>
+                       <b class="pdp-format__sprays">Environ ${info.sprays} pulvérisations</b>
+                       <span class="pdp-format__usage">${info.usage}</span>
+                     </span>
+                   </span>`
                 : ""
             }
           </button>`;
@@ -533,7 +547,11 @@
               <div class="pdp-brand">${esc(product.brand)}</div>
               <div class="pdp-rating-line">${ui.renderStars ? ui.renderStars(product.rating) : ""}</div>
 
-              <span class="pdp-label">Choisir un format</span>
+              <div class="pdp-formats-head">
+                <span class="pdp-formats-head__eyebrow">Choisissez votre format</span>
+                <h2 class="pdp-formats-head__title">Formats disponibles</h2>
+                <p class="pdp-formats-head__sub">Décants officiels Kōrei, préparés à la main.</p>
+              </div>
               ${renderFormats(formats)}
 
               <div class="pdp-actions">
