@@ -269,8 +269,10 @@ body[data-page="product"] {
 .pdp-gallery__main {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
-  max-width: 700px;
+  /* Les visuels produit sont au format portrait 3:4. Un cadre carre laissait
+     une large bande vide de chaque cote du flacon et le rapetissait. */
+  aspect-ratio: 4 / 5;
+  max-width: none;
   border-radius: var(--pdp-radius-lg);
   background: radial-gradient(ellipse at 50% 40%, var(--pdp-white) 0%, var(--pdp-panel) 100%);
   overflow: hidden;
@@ -379,30 +381,6 @@ body[data-page="product"] {
    détail des pulvérisations sous un filet. La carte choisie se marque au
    liseré doré : le remplissage noir de la version précédente écrasait la
    photo et sortait de la charte. */
-.pdp-formats-head {
-  margin-bottom: 18px;
-}
-.pdp-formats-head__eyebrow {
-  display: block;
-  font-family: "Cormorant Garamond", serif;
-  font-size: 17px;
-  font-style: italic;
-  color: var(--pdp-gold);
-}
-.pdp-formats-head__title {
-  margin: 4px 0 0;
-  font-family: "Cormorant Garamond", serif;
-  font-weight: 300;
-  font-size: clamp(26px, 2.6vw, 34px);
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  color: var(--pdp-ink);
-}
-.pdp-formats-head__sub {
-  margin: 6px 0 0;
-  font-size: 13.5px;
-  color: var(--pdp-ink-soft);
-}
 .pdp-formats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

@@ -547,11 +547,7 @@
               <div class="pdp-brand">${esc(product.brand)}</div>
               <div class="pdp-rating-line">${ui.renderStars ? ui.renderStars(product.rating) : ""}</div>
 
-              <div class="pdp-formats-head">
-                <span class="pdp-formats-head__eyebrow">Choisissez votre format</span>
-                <h2 class="pdp-formats-head__title">Formats disponibles</h2>
-                <p class="pdp-formats-head__sub">Décants officiels Kōrei, préparés à la main.</p>
-              </div>
+              <span class="pdp-label">Choisir un format</span>
               ${renderFormats(formats)}
 
               <div class="pdp-actions">
