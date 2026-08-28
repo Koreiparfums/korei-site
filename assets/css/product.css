@@ -132,30 +132,95 @@ body[data-page="product"] {
   max-width: var(--pdp-max);
   margin: 0 auto;
 }
+/* Deux colonnes de meme largeur, comme la reference : a gauche la photo, a
+   droite tout ce qui se lit et s'achete. */
 .pdp-hero__grid {
   display: grid;
-  grid-template-columns: 1.25fr 1fr;
-  column-gap: 80px;
-  row-gap: 16px;
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 64px;
+  /* Surtout pas `align-items: start` : la colonne de gauche se replierait sur
+     la hauteur de la photo et le collant n'aurait aucune course. */
+  align-items: stretch;
 }
 .pdp-gallery-col {
-  grid-column: 1;
-  grid-row: 1;
+  min-width: 0;
 }
-.pdp-info {
-  grid-column: 2;
-  grid-row: 1;
+/* La photo reste a l'ecran tant qu'on lit la fiche : elle se decolle
+   naturellement quand la colonne de droite est finie. Le decalage laisse la
+   place a l'en-tete du site, qui est lui aussi collant. */
+.pdp-sticky-media {
+  position: sticky;
+  top: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
-.pdp-pyramid {
-  grid-column: 1;
-  grid-row: 2;
+.pdp-col {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 }
-.pdp-coffret-promo {
-  /* La pyramide olfactive est passee dans les accordeons (KOR-B4) : le rappel
-     coffret occupe donc toute la largeur sous la galerie et la fiche. */
-  grid-column: 1 / -1;
-  grid-row: 2;
+/* Dans la colonne, ces blocs perdent leur largeur et leurs marges de section :
+   ils sont deja dans la bonne colonne. */
+.pdp-col .pdp-coffret-promo,
+.pdp-col .pdp-feel,
+.pdp-col .pdp-acc {
+  max-width: none;
+  margin: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+.pdp-col .pdp-feel {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.pdp-col .pdp-feel__head {
+  text-align: left;
+  margin-bottom: 22px;
+}
+.pdp-col .pdp-feel__rule {
+  margin-left: 0;
+}
+.pdp-col .pdp-feel__grid {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+.pdp-col .pdp-feel__grid[data-cards="1"] {
+  grid-template-columns: minmax(0, 1fr);
+  justify-content: stretch;
+}
+
+/* Notes phares sous la photo */
+.pdp-keynotes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.pdp-keynote {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pdp-ink-soft);
+}
+.pdp-keynote .note-image {
+  width: 54px;
+  height: 54px;
+}
+.pdp-keynote .note-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pdp-keynote .note-image--family i {
+  font-size: 21px;
 }
 .pdp-gallery {
   display: grid;
@@ -969,12 +1034,13 @@ body[data-page="product"] {
     grid-template-columns: 1fr;
     gap: 40px;
   }
-  .pdp-gallery-col,
-  .pdp-info,
-  .pdp-pyramid,
-  .pdp-coffret-promo {
-    grid-column: 1;
-    grid-row: auto;
+  /* Une seule colonne : plus rien a rendre collant, la photo passe simplement
+     au-dessus du reste. */
+  .pdp-sticky-media {
+    position: static;
+  }
+  .pdp-col {
+    gap: 36px;
   }
   .pdp-gallery__main {
     max-width: 560px;

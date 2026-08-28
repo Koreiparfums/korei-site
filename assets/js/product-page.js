@@ -465,6 +465,10 @@
   }
 
   // ── Section 1 : Hero
+  // ── Fiche produit en deux colonnes, structure du concurrent de reference :
+  //    a gauche la photo, collante, avec sous elle les notes phares ;
+  //    a droite tout ce qui se lit et s'achete, qui defile.
+  //    La photo reste donc visible tant qu'on lit la fiche.
   function renderHero(product, basePath) {
     const formats = getFormats(product);
     const selected = firstSelectable(formats);
@@ -472,34 +476,59 @@
       <section class="pdp-hero">
         <div class="pdp-hero__grid">
           <div class="pdp-gallery-col">
-            ${renderGallery(product, basePath)}
-          </div>
-          <div class="pdp-info pdp-reveal">
-            <h1 class="pdp-name">${esc(product.name)}</h1>
-            <div class="pdp-brand">${esc(product.brand)}</div>
-            <div class="pdp-rating-line">${ui.renderStars ? ui.renderStars(product.rating) : ""}</div>
-
-            <span class="pdp-label">Choisir un format</span>
-            ${renderFormats(formats)}
-
-            <div class="pdp-actions">
-              <div class="pdp-actions__row">
-                <button class="pdp-btn pdp-btn--primary" id="pdp-cta" type="button"${selected.available ? "" : " disabled"}>
-                  ${selected.available ? `Ajouter au panier — ${formatPriceLabel(selected.price)}€` : "Format indisponible"}
-                </button>
-                <button class="pdp-btn pdp-btn--ghost" id="pdp-fav" type="button" aria-label="Ajouter aux favoris" aria-pressed="false" data-fav-btn data-product-id="${product.id}">
-                  <i class="ti ti-heart"></i>
-                </button>
-              </div>
+            <div class="pdp-sticky-media">
+              ${renderGallery(product, basePath)}
+              ${renderKeyNotes(product)}
             </div>
-
-            ${renderTrustRow()}
-
-            ${product.description ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
           </div>
-          ${renderCoffretPromo(product)}
+          <div class="pdp-col">
+            <div class="pdp-info pdp-reveal">
+              <h1 class="pdp-name">${esc(product.name)}</h1>
+              <div class="pdp-brand">${esc(product.brand)}</div>
+              <div class="pdp-rating-line">${ui.renderStars ? ui.renderStars(product.rating) : ""}</div>
+
+              <span class="pdp-label">Choisir un format</span>
+              ${renderFormats(formats)}
+
+              <div class="pdp-actions">
+                <div class="pdp-actions__row">
+                  <button class="pdp-btn pdp-btn--primary" id="pdp-cta" type="button"${selected.available ? "" : " disabled"}>
+                    ${selected.available ? `Ajouter au panier — ${formatPriceLabel(selected.price)}€` : "Format indisponible"}
+                  </button>
+                  <button class="pdp-btn pdp-btn--ghost" id="pdp-fav" type="button" aria-label="Ajouter aux favoris" aria-pressed="false" data-fav-btn data-product-id="${product.id}">
+                    <i class="ti ti-heart"></i>
+                  </button>
+                </div>
+              </div>
+
+              ${renderTrustRow()}
+
+              ${product.description ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
+            </div>
+            ${renderCoffretPromo(product)}
+            ${renderSentiment(product)}
+            ${renderAccordions(product)}
+          </div>
         </div>
       </section>`;
+  }
+
+  // Notes phares sous la photo collante : trois notes, comme la reference.
+  // Elles viennent des notes de tete du produit, pas d'une liste ecrite en dur.
+  function renderKeyNotes(product) {
+    const notes = [...(product.notesTop || []), ...(product.notesHeart || [])].slice(0, 3);
+    if (!notes.length) return "";
+    return `
+      <ul class="pdp-keynotes">
+        ${notes
+          .map(
+            (n) => `<li class="pdp-keynote">
+              ${ui.noteImageHtml ? ui.noteImageHtml(n, "../") : ""}
+              <span>${esc(n)}</span>
+            </li>`
+          )
+          .join("")}
+      </ul>`;
   }
 
   // KOR-A3 — barre d'achat collante, visible dès que le bouton principal sort
@@ -593,8 +622,11 @@
       const update = () => {
         ticking = false;
         const rect = cta.getBoundingClientRect();
-        const passed = rect.bottom < 0 || rect.top > global.innerHeight;
-        stickyBar.classList.toggle("is-visible", passed);
+        // Uniquement quand le bouton est passe AU-DESSUS de l'ecran. S'il est
+        // encore plus bas, la barre s'afficherait des l'ouverture sur
+        // telephone : on proposerait d'acheter avant d'avoir montre le prix,
+        // et elle masquerait la photo et les notes.
+        stickyBar.classList.toggle("is-visible", rect.bottom < 0);
       };
       const onScroll = () => {
         if (ticking) return;
@@ -1294,8 +1326,6 @@
         <span>${esc(product.name)}</span>
       </nav>
       ${renderHero(product, "../")}
-      ${renderSentiment(product)}
-      ${renderAccordions(product)}
       ${renderCarouselSection("pdp-similar", "Sélection", "Parfums similaires")}
       ${renderCarouselSection("pdp-suggested", "La maison", `Autres créations ${esc(product.brand)}`)}
       ${renderFaq(product)}
