@@ -30,7 +30,7 @@
     };
   }
 
-  const PRODUCT_CATALOG = [
+  const CATALOGUE_COMPLET = [
     createProduct({
       id: "interlude-man",
       brand: "Amouage",
@@ -357,6 +357,52 @@
     }),
   ];
 
+  // Parfums retires de la boutique tant que le client n'a pas fourni la photo
+  // du flacon. Ils restent dans le fichier (notes, prix, description) : il
+  // suffira de retirer l'identifiant de cette liste une fois la photo posee
+  // dans assets/images/products. En attendant, la fiche affichait une photo
+  // d'ingredient a la place du flacon, ce qui ne se vend pas.
+  const SANS_PHOTO = new Set([
+    "replica-jazz-club", "bal-dafrique", "oud-for-greatness", "irish-leather",
+    "layton", "angels-share", "black-phantom", "sauvage-elixir",
+  ]);
+
+  const PRODUCT_CATALOG = CATALOGUE_COMPLET.filter((p) => !SANS_PHOTO.has(p.id));
+
+  // Tenue et projection, notees sur 10, affichees dans le bloc « Ressenti »
+  // de la fiche produit.
+  //
+  // ATTENTION — VALEURS PROVISOIRES. Elles ont ete posees en interne pour que
+  // le bloc existe, en attendant que le client donne ses propres notes. Elles
+  // n'ont aucune source affichee sur le site et doivent etre relues une par
+  // une avant la mise en vente. Un parfum absent de cette liste n'affiche
+  // simplement pas les deux jauges : rien n'est invente a l'affichage.
+  const SENSORIEL = {
+    "interlude-man": { tenue: 9, projection: 9 },
+    "oud-wood": { tenue: 7, projection: 6 },
+    aventus: { tenue: 7, projection: 8 },
+    "rose-centifolia": { tenue: 6, projection: 5 },
+    "lettre-de-pushkar": { tenue: 7, projection: 6 },
+    // parfums en attente de photo, prets a revenir
+    "replica-jazz-club": { tenue: 6, projection: 6 },
+    "bal-dafrique": { tenue: 6, projection: 6 },
+    "oud-for-greatness": { tenue: 9, projection: 9 },
+    "irish-leather": { tenue: 8, projection: 7 },
+    layton: { tenue: 8, projection: 8 },
+    "angels-share": { tenue: 7, projection: 7 },
+    "black-phantom": { tenue: 7, projection: 7 },
+    "sauvage-elixir": { tenue: 8, projection: 8 },
+    // produits venant de Shopify
+    "test-poc-bdk-parfums-312-saint-honore": { tenue: 7, projection: 6 },
+    "test-poc-bdk-parfums-pas-ce-soir": { tenue: 7, projection: 7 },
+    "test-poc-bdk-parfums-rouge-smoking": { tenue: 8, projection: 7 },
+    "test-poc-initio-atomic-rose": { tenue: 8, projection: 8 },
+    "test-poc-initio-psychedelic-love": { tenue: 8, projection: 8 },
+    "test-poc-initio-rehab": { tenue: 7, projection: 7 },
+    "louis-vuitton-imagination": { tenue: 7, projection: 7 },
+    "montale-arabian-tonka": { tenue: 8, projection: 8 },
+  };
+
   const BRANDS = [
     { id: "amouage", name: "Amouage", country: "Oman", tagline: "L'art de la parfumerie orientale" },
     { id: "tom-ford", name: "Tom Ford", country: "USA", tagline: "Luxe et audace olfactive" },
@@ -374,6 +420,11 @@
     { id: "louis-vuitton", name: "Louis Vuitton", country: "France", tagline: "Le luxe parisien en flacon" },
     { id: "ella-k", name: "Ella K Parfums", country: "France", tagline: "Récits de voyage olfactifs" },
     { id: "mancera", name: "Mancera", country: "France", tagline: "Parfumerie gourmande et opulente" },
+    // Deux maisons deja vendues sur la boutique en ligne, qui manquaient ici :
+    // sans leur fiche, leurs parfums restaient hors de la page Maisons et
+    // Montale s'affichait sous la marque « Korei ».
+    { id: "bdk-parfums", name: "BDK Parfums", country: "France", tagline: "Parfumerie parisienne contemporaine" },
+    { id: "montale", name: "Montale", country: "France", tagline: "Ouds et fruits, signature orientale" },
   ];
 
   function formatNotes(notes) {
@@ -386,6 +437,10 @@
 
   global.KoreiProducts = {
     PRODUCTS: PRODUCT_CATALOG,
+    // Catalogue complet, parfums sans photo compris : sert au back-office.
+    CATALOGUE_COMPLET,
+    SANS_PHOTO,
+    SENSORIEL,
     BRANDS,
     formatNotes,
     formatPrice,
