@@ -1421,6 +1421,11 @@ a.pdp-coffret-promo__view {
   font-size: 16px;
   flex: none;
 }
+/* La description venait se coller a zero pixel sous la reassurance : les deux
+   blocs se lisaient comme un seul. */
+.pdp-trustrow + .pdp-desc {
+  margin-top: 22px;
+}
 @media (max-width: 640px) {
   .pdp-trustrow {
     grid-template-columns: 1fr;
@@ -1536,108 +1541,6 @@ a.pdp-coffret-promo__view {
 .pdp-reviews__source {
   color: var(--pdp-gold);
   text-underline-offset: 3px;
-}
-
-/* ─── KOR-B7 · en-tete produit ──────────────────────────────────────────── */
-.pdp-head-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 22px;
-}
-.pdp-head-row__text {
-  min-width: 0;
-  flex: 1;
-}
-.pdp-brandline {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.pdp-brandline .pdp-brand {
-  margin-bottom: 0;
-  text-decoration: none;
-}
-.pdp-brandline .pdp-brand:hover {
-  color: var(--pdp-ink);
-}
-.pdp-brandline .pdp-badge {
-  position: static;
-}
-.pdp-head-row .pdp-name {
-  margin-top: 0;
-  margin-bottom: 10px;
-}
-.pdp-head-row .pdp-rating-line {
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
-.pdp-rating-line__value {
-  color: var(--pdp-ink);
-  font-variant-numeric: tabular-nums;
-}
-.pdp-rating-line__link {
-  color: var(--pdp-ink-soft);
-  font-size: 13px;
-  text-underline-offset: 3px;
-}
-.pdp-from {
-  font-size: 15px;
-  color: var(--pdp-ink-soft);
-}
-.pdp-from b {
-  font-weight: 500;
-  color: var(--pdp-ink);
-  font-variant-numeric: tabular-nums;
-}
-.pdp-head-row__actions {
-  display: flex;
-  gap: 8px;
-  flex: none;
-}
-.pdp-iconbtn {
-  width: 44px;
-  height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--pdp-line);
-  border-radius: 50%;
-  background: var(--pdp-white);
-  color: var(--pdp-ink);
-  font-size: 19px;
-  cursor: pointer;
-  transition:
-    border-color 0.2s var(--pdp-ease),
-    color 0.2s var(--pdp-ease);
-}
-.pdp-iconbtn:hover {
-  border-color: var(--pdp-gold);
-}
-.pdp-iconbtn[aria-pressed="true"] {
-  color: var(--pdp-gold);
-  border-color: var(--pdp-gold);
-}
-.pdp-iconbtn[aria-pressed="true"] .ti-heart::before {
-  content: "\ea6d";
-}
-
-@media (max-width: 640px) {
-  /* Sur un ecran de 375 px, l'en-tete doit etre lisible sans faire defiler :
-     la photo cede de la hauteur pour laisser monter le nom, la note et le
-     prix d'entree. */
-  .pdp-gallery__main {
-    aspect-ratio: 4 / 5;
-    max-height: 36vh;
-  }
-  .pdp-hero__grid {
-    gap: 20px;
-  }
-  .pdp-head-row {
-    margin-bottom: 16px;
-  }
 }
 
 /* ─── KOR-B8 · pyramide olfactive (maquette du 24 aout) ─────────────────── */

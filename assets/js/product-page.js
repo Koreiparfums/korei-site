@@ -85,14 +85,12 @@
       : `${basePath}assets/images/hero/hero-decant-5ml.webp`;
   }
 
-  // La pastille « Authentique » est passee a cote du nom de la maison
-  // (KOR-B7) : sur la photo, elle repetait une promesse deja affichee trois
-  // fois sur la page. Ne restent ici que les mentions propres au produit.
   function renderBadges(product) {
+    const badges = [`<span class="pdp-badge pdp-badge--authentic"><i class="ti ti-shield-check"></i>Authentique</span>`];
     if (product.badge === "exclusive") {
-      return `<span class="pdp-badge pdp-badge--limited">Édition limitée</span>`;
+      badges.push(`<span class="pdp-badge pdp-badge--limited">Édition limitée</span>`);
     }
-    return "";
+    return badges.join("");
   }
 
   function renderGallery(product, basePath) {
@@ -466,73 +464,6 @@
       </ul>`;
   }
 
-  // ── KOR-B7 : en-tete produit
-  // Maison, pastille d'authenticite, note et prix d'entree tiennent ensemble
-  // en haut de la fiche. Le coeur et le partage sont des boutons a part : ils
-  // ne doivent jamais declencher l'ouverture du produit.
-  function renderProductHead(product, selected) {
-    const formats = getFormats(product);
-    const prices = formats.filter((f) => f.available && f.price > 0).map((f) => f.price);
-    const from = prices.length ? Math.min(...prices) : null;
-    const fr = product.fragrantica;
-    const rating = fr?.rating || null;
-    const ratingLine = rating
-      ? `<div class="pdp-rating-line">
-          ${ui.renderStars ? ui.renderStars(rating) : ""}
-          <span class="pdp-rating-line__value">${String(rating).replace(".", ",")}/5</span>
-          <a class="pdp-rating-line__link" href="#pdp-acc-avis">${
-            fr?.votes ? `${fr.votes.toLocaleString("fr-FR")} avis Fragrantica` : "sur Fragrantica"
-          }</a>
-        </div>`
-      : "";
-
-    return `
-      <div class="pdp-head-row">
-        <div class="pdp-head-row__text">
-          <div class="pdp-brandline">
-            <a class="pdp-brand" href="brands.html?brand=${encodeURIComponent(product.brandId)}">${esc(product.brand)}</a>
-            <span class="pdp-badge pdp-badge--authentic"><i class="ti ti-shield-check" aria-hidden="true"></i>Authentique</span>
-          </div>
-          <h1 class="pdp-name">${esc(product.name)}</h1>
-          ${ratingLine}
-          ${from ? `<div class="pdp-from">À partir de <b>${formatPriceLabel(from)}€</b></div>` : ""}
-        </div>
-        <div class="pdp-head-row__actions">
-          <button class="pdp-iconbtn" id="pdp-fav" type="button" aria-label="Ajouter aux favoris" aria-pressed="false" data-fav-btn data-product-id="${product.id}">
-            <i class="ti ti-heart" aria-hidden="true"></i>
-          </button>
-          <button class="pdp-iconbtn" id="pdp-share" type="button" aria-label="Partager ce parfum">
-            <i class="ti ti-share-2" aria-hidden="true"></i>
-          </button>
-        </div>
-      </div>`;
-  }
-
-  // Partage natif quand le telephone le propose, copie du lien sinon. On ne
-  // promet jamais « copie » sans que la copie ait reellement eu lieu.
-  function initShare(main, product) {
-    const btn = main.querySelector("#pdp-share");
-    if (!btn) return;
-    btn.addEventListener("click", async () => {
-      const data = {
-        title: `${product.name} — ${product.brand}`,
-        text: `${product.name} de ${product.brand}, en décant chez Kōrei.`,
-        url: window.location.href,
-      };
-      try {
-        if (navigator.share) {
-          await navigator.share(data);
-          return;
-        }
-        await navigator.clipboard.writeText(window.location.href);
-        global.KoreiCoffret?.notice?.("Lien copié");
-      } catch (error) {
-        // Partage annule ou presse-papiers refuse : on ne dit rien plutot que
-        // d'annoncer une copie qui n'a pas eu lieu.
-      }
-    });
-  }
-
   // ── Section 1 : Hero
   function renderHero(product, basePath) {
     const formats = getFormats(product);
@@ -544,7 +475,9 @@
             ${renderGallery(product, basePath)}
           </div>
           <div class="pdp-info pdp-reveal">
-            ${renderProductHead(product, selected)}
+            <h1 class="pdp-name">${esc(product.name)}</h1>
+            <div class="pdp-brand">${esc(product.brand)}</div>
+            <div class="pdp-rating-line">${ui.renderStars ? ui.renderStars(product.rating) : ""}</div>
 
             <span class="pdp-label">Choisir un format</span>
             ${renderFormats(formats)}
@@ -553,6 +486,9 @@
               <div class="pdp-actions__row">
                 <button class="pdp-btn pdp-btn--primary" id="pdp-cta" type="button"${selected.available ? "" : " disabled"}>
                   ${selected.available ? `Ajouter au panier — ${formatPriceLabel(selected.price)}€` : "Format indisponible"}
+                </button>
+                <button class="pdp-btn pdp-btn--ghost" id="pdp-fav" type="button" aria-label="Ajouter aux favoris" aria-pressed="false" data-fav-btn data-product-id="${product.id}">
+                  <i class="ti ti-heart"></i>
                 </button>
               </div>
             </div>
@@ -657,10 +593,7 @@
       const update = () => {
         ticking = false;
         const rect = cta.getBoundingClientRect();
-        // Uniquement quand le bouton est passe AU-DESSUS de l'ecran. S'il est
-        // encore plus bas, la barre s'afficherait des l'ouverture de la page
-        // et masquerait le nom, la note et le prix d'entree (KOR-B7).
-        const passed = rect.bottom < 0;
+        const passed = rect.bottom < 0 || rect.top > global.innerHeight;
         stickyBar.classList.toggle("is-visible", passed);
       };
       const onScroll = () => {
@@ -1374,7 +1307,6 @@
     initGallery(main, galleryImages(product, "../"));
     initHero(main, product);
     initCoffretPromo(main, product);
-    initShare(main, product);
     initAccordions(main);
     initReveal(main);
 
