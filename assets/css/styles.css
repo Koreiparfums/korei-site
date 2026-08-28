@@ -73,10 +73,13 @@ textarea {
   /* Échelle typographique — plage micro/label/corps (<20px), consolidée depuis
      55 valeurs décimales issues d'une conversion d'échelle jamais nettoyée.
      La plage titres/display (>=20px) reste à consolider dans une passe dédiée. */
-  --text-9: 8.8px;
-  --text-10: 9.6px;
-  --text-11: 10.4px;
-  --text-12: 11.2px;
+  /* Plancher de lisibilite : les quatre plus petits crans remontaient a
+     8,8 px / 9,6 px, illisibles sur mobile. On compresse le bas de l'echelle
+     pour qu'aucun texte du site ne descende sous 10,5 px. */
+  --text-9: 10.5px;
+  --text-10: 11px;
+  --text-11: 11.4px;
+  --text-12: 11.8px;
   --text-13: 12px;
   --text-14: 12.8px;
   --text-15: 13px;
@@ -203,6 +206,7 @@ textarea {
   color: var(--text-muted);
   cursor: pointer;
   padding: 4.8px;
+  min-width: 44px;
 }
 .logo {
   font-family: "Cormorant Garamond", serif;
@@ -329,10 +333,10 @@ textarea {
   right: -3.57px;
   background: var(--accent);
   color: var(--bg);
-  font-size: 7.14px;
+  font-size: 10.5px;
   font-weight: 500;
-  width: 12.85px;
-  height: 12.85px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1217,7 +1221,7 @@ body[data-page="home"] .hero {
   position: absolute;
   top: 9.83px;
   left: 9.83px;
-  font-size: 7.02px;
+  font-size: 10.5px;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   padding: 3.51px 8.42px;
@@ -1466,7 +1470,7 @@ body[data-page="home"] .card-img-icon {
 body[data-page="home"] .card-badge {
   top: 9.19px;
   left: 9.19px;
-  font-size: 6.56px;
+  font-size: 10.5px;
   padding: 3.28px 7.87px;
 }
 body[data-page="home"] .card-fav {
@@ -1816,6 +1820,9 @@ body[data-page="coffret"] .coffret-hero {
   gap: 40px;
   align-items: start;
 }
+.cb2-grid > * {
+  min-width: 0;
+}
 .cb2-media-col {
   position: sticky;
   top: 96px;
@@ -2112,6 +2119,9 @@ body[data-page="coffret"] .coffret-hero {
   display: flex;
   flex-direction: column;
   gap: 26px;
+  /* Sans ca, la colonne prend la largeur de son contenu le plus large
+     (min-width: auto) et la page defile sur le cote vers 1024 px. */
+  min-width: 0;
 }
 .cb2-title {
   font-family: "DM Sans", sans-serif;
@@ -2847,7 +2857,7 @@ body[data-page="coffret"] .coffret-hero {
   color: var(--bg);
 }
 .home-collection-card__cta {
-  font-size: 7.51px;
+  font-size: 10.5px;
   letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.85);
@@ -3536,8 +3546,8 @@ footer {
   gap: 8px;
 }
 .social-btn {
-  width: 33.6px;
-  height: 33.6px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 0.8px solid rgba(255, 255, 255, 0.2);
   background: none;
@@ -4174,7 +4184,8 @@ body[data-page="catalogue"] .page-hero {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0;
+  padding: 6px 0;
+  min-height: 44px;
   background: none;
   border: none;
   cursor: pointer;
@@ -5529,13 +5540,13 @@ body[data-page="catalogue"] .page-hero {
   position: absolute;
   top: -2.4px;
   right: -4.8px;
-  min-width: 11.52px;
-  height: 11.52px;
-  padding: 0 2.88px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
   border-radius: var(--radius-pill);
   background: var(--danger);
   color: #fff;
-  font-size: 6.72px;
+  font-size: 10.5px;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -6612,8 +6623,9 @@ body[data-page="favoris"] .favoris-hero {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 44px;
+    height: 44px;
+    margin: -8px -12px -8px 0;
     background: none;
     border: none;
     cursor: pointer;
@@ -7585,8 +7597,44 @@ body.has-cookie-banner .chatbot-widget {
   .chatbot-suggestion,
   .pdp-carousel-nav button,
   .quiz-note-chip,
-  .brand-mark {
+  .brand-mark,
+  .chip,
+  .cb2-filter-chip,
+  .filters-reset,
+  .show-more-link,
+  .maisons-select__label {
     min-height: 44px;
+  }
+  /* Un min-height seul laisse le texte colle en haut : on recentre. */
+  .btn-dark,
+  .btn-outline,
+  .btn-white,
+  .chip,
+  .cb2-filter-chip,
+  .filters-reset,
+  .quiz-note-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* .chip a une hauteur fixe de 36 px qui gagnerait sur le min-height. */
+  .chip {
+    height: auto;
+  }
+  /* Barre d'outils du catalogue : bouton filtres, tri, recherche interne,
+     et chaque ligne de case a cocher des filtres. */
+  .btn-filters-open,
+  .catalogue-topbar select,
+  .mini-search,
+  .cb2-search,
+  .pop-check {
+    min-height: 44px;
+  }
+  .btn-filters-open {
+    height: auto;
+  }
+  .catalogue-topbar select {
+    padding: 0 11.2px;
   }
   /* Boutons ronds : on elargit la zone sensible avec un pseudo-element
      centre, ce qui evite de deformer la carte produit. */
@@ -7594,7 +7642,9 @@ body.has-cookie-banner .chatbot-widget {
     height: 44px;
     width: 44px;
   }
-  .card-fav,
+  /* .card-fav est deja en position: absolute (coin haut droit de la photo) :
+     le remettre en relative le renvoyait au milieu de la carte. Un element
+     absolu est deja un contexte valable pour le ::after ci-dessous. */
   .card-add,
   .chatbot-close {
     position: relative;
@@ -7814,6 +7864,12 @@ body.has-cookie-banner .chatbot-widget {
   grid-template-columns: repeat(3, 1fr);
   gap: 0;
   border-bottom: 0.8px solid var(--border);
+}
+/* Sans min-width: 0, chaque etape prend la largeur de son libelle (nowrap)
+   et la grille deborde de la fenetre vers 1024 px. */
+.cb2-timeline > li,
+.cb2-timeline__step {
+  min-width: 0;
 }
 .cb2-timeline__step {
   display: flex;
@@ -8291,7 +8347,7 @@ body.has-cookie-banner .chatbot-widget {
 }
 .maisons-alpha__letter {
   flex: none;
-  min-width: 34px;
+  min-width: 44px;
   min-height: 44px;
   border: 0;
   border-bottom: 2px solid transparent;

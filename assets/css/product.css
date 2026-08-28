@@ -1406,7 +1406,7 @@ a.pdp-coffret-promo__view {
   border-radius: 999px;
   background: var(--accent);
   color: #fff;
-  font-size: 9.6px;
+  font-size: 10.5px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -1427,7 +1427,7 @@ a.pdp-coffret-promo__view {
   border-radius: 999px;
   background: var(--pdp-ink, #1a1a18);
   color: #fff;
-  font-size: 9.6px;
+  font-size: 10.5px;
   letter-spacing: 0.08em;
   font-variant-numeric: tabular-nums;
 }
