@@ -642,9 +642,17 @@
     previousCardIds = new Set();
   }
 
+  // Le catalogue en ligne arrive de facon asynchrone : demarrer sans l'attendre
+  // n'offrait que les parfums du fichier local.
+  function demarrer() {
+    Promise.resolve(window.KoreiShopifyCatalog?.load())
+      .then(() => window.KoreiCatalogLoader?.load())
+      .finally(init);
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", demarrer);
   } else {
-    init();
+    demarrer();
   }
 })();
