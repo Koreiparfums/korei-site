@@ -60,9 +60,12 @@
 
     const state = { search: "", country: "", family: "", letter: "" };
 
+    // Les maisons qui ont au moins un parfum au catalogue : elles seules
+    // peuvent etre mises en avant en bas de page.
     const vendues = brandsData.filter((b) => b.count > 0);
+
     if (subEl) {
-      subEl.textContent = `${vendues.length} maisons de parfumerie de niche sélectionnées avec soin.`;
+      subEl.textContent = `${brandsData.length} maisons de parfumerie de niche sélectionnées avec soin.`;
     }
 
     // ── Listes deroulantes Pays et Famille (maquette du client)
@@ -80,7 +83,7 @@
     function firstLetter(name) {
       return normalize(name).slice(0, 1).toUpperCase();
     }
-    const available = new Set(vendues.map((b) => firstLetter(b.name)));
+    const available = new Set(brandsData.map((b) => firstLetter(b.name)));
     if (alphaEl) {
       alphaEl.innerHTML = LETTERS.map((l) => {
         const has = available.has(l);
@@ -124,8 +127,9 @@
     });
 
     function matches(brand) {
-      // Une maison sans aucun parfum menerait vers un catalogue vide.
-      if (!brand.count) return false;
+      // Toutes les maisons sont affichees, meme celles dont aucun parfum n'est
+      // encore au catalogue : la carte existe, elle n'est simplement pas
+      // cliquable. Le client veut voir la maison des maintenant.
       if (state.country && brand.country !== state.country) return false;
       if (state.family && !brand.families.includes(state.family)) return false;
       if (state.letter && firstLetter(brand.name) !== state.letter) return false;
@@ -187,11 +191,15 @@
       grid.innerHTML = list
         .map((brand) => {
           const isHighlight = highlightBrand === brand.id;
-          const count = brand.count;
+          // Sans parfum au catalogue, le clic menerait sur une page vide :
+          // la carte reste, mais ce n'est plus un lien.
+          const vide = !brand.count;
+          const balise = vide ? "div" : "a";
+          const lien = vide ? "" : ` href="catalogue.html?brand=${brand.id}"`;
           return `
-            <a href="catalogue.html?brand=${brand.id}" class="maison-card${
+            <${balise}${lien} class="maison-card${vide ? " is-vide" : ""}${
               isHighlight ? " is-highlight" : ""
-            }" data-brand-id="${brand.id}">
+            }" data-brand-id="${brand.id}"${vide ? ` aria-disabled="true"` : ""}>
               <span class="maison-card__logo">
                 <!-- Le nom est le repli : il reste dessous et reapparait si
                      l'image manque (data-onerror="remove"). L'image ne doit
@@ -205,8 +213,8 @@
                 }
               </span>
               <span class="maison-card__country">${brand.country || ""}</span>
-              <span class="maison-card__count">${count} parfum${count > 1 ? "s" : ""}</span>
-            </a>`;
+              ${vide ? `<span class="maison-card__soon">Bientôt</span>` : ""}
+            </${balise}>`;
         })
         .join("");
 

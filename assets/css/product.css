@@ -1715,3 +1715,14 @@ body[data-page="product"] {
     padding: 22px 20px;
   }
 }
+
+/* Parfum en attente de la photo du flacon : visible, mais pas vendable. */
+.pdp-bientot {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--border-dark, #ccc8c0);
+  border-radius: var(--pdp-radius-sm);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--pdp-ink-soft);
+}

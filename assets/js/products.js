@@ -357,17 +357,20 @@
     }),
   ];
 
-  // Parfums retires de la boutique tant que le client n'a pas fourni la photo
-  // du flacon. Ils restent dans le fichier (notes, prix, description) : il
-  // suffira de retirer l'identifiant de cette liste une fois la photo posee
-  // dans assets/images/products. En attendant, la fiche affichait une photo
-  // d'ingredient a la place du flacon, ce qui ne se vend pas.
+  // Parfums en attente de la photo du flacon fournie par le client. Ils restent
+  // au catalogue mais ne sont pas vendables : la carte affiche un cadre neutre
+  // et « Bientot disponible » au lieu du prix. Les retirer completement vidait
+  // la page Maisons ; leur inventer une photo n'etait pas envisageable.
+  // Une fois le visuel pose dans assets/images/products, il suffit de retirer
+  // l'identifiant de cette liste.
   const SANS_PHOTO = new Set([
     "replica-jazz-club", "bal-dafrique", "oud-for-greatness", "irish-leather",
     "layton", "angels-share", "black-phantom", "sauvage-elixir",
   ]);
 
-  const PRODUCT_CATALOG = CATALOGUE_COMPLET.filter((p) => !SANS_PHOTO.has(p.id));
+  const PRODUCT_CATALOG = CATALOGUE_COMPLET.map((p) =>
+    SANS_PHOTO.has(p.id) ? { ...p, photoManquante: true, supplierAvailable: false } : p
+  );
 
   // Tenue et projection, notees sur 10, affichees dans le bloc « Ressenti »
   // de la fiche produit.

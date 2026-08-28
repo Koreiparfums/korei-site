@@ -312,8 +312,16 @@
 
     const minWidth = options.grid ? "style=\"min-width: 0\"" : "";
 
+    // Parfum en attente de sa photo : la carte reste visible, mais le prix
+    // laisse la place a « Bientot disponible ». On ne propose pas a l'achat
+    // un parfum qu'on ne peut pas montrer.
+    const bientot = product.photoManquante === true;
+    const actionHtml = bientot
+      ? `<span class="card-add card-add--bientot">Bientôt disponible</span>`
+      : `<button class="card-add" type="button" aria-label="Voir ${product.name}">${price}</button>`;
+
     return `
-      <a href="${productUrl}" class="product-card" ${minWidth} data-product-id="${product.id}">
+      <a href="${productUrl}" class="product-card${bientot ? " is-bientot" : ""}" ${minWidth} data-product-id="${product.id}">
         <div class="card-img media-slot media-slot--card">
           ${renderProductGlowHtml(product, basePath)}
           ${badgeHtml}
@@ -337,7 +345,7 @@
               )
               .join("")}
           </div>
-          <button class="card-add" type="button" aria-label="Voir ${product.name}">${price}</button>
+          ${actionHtml}
         </div>
       </a>`;
   }

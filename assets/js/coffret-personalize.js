@@ -249,6 +249,9 @@
     function searchCandidates() {
       const q = normalize(coffret.search).trim();
       const matched = products
+        // Un parfum sans photo de flacon n'est pas vendable : il ne peut pas
+        // entrer dans un coffret.
+        .filter((p) => p.supplierAvailable !== false)
         .filter((p) => matchesFilter(p))
         .filter((p) => !q || normalize(`${p.brand} ${p.name}`).includes(q));
 
