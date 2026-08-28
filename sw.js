@@ -5,7 +5,7 @@
  * connexion pour ce qui a deja ete vu. On ne met JAMAIS en cache les appels
  * a l'API (prix, stock, panier) : ces donnees doivent rester fraiches.
  */
-const VERSION = "korei-v1";
+const VERSION = "korei-v2";
 const SHELL = [
   "/",
   "/index.html",
@@ -60,9 +60,26 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Ressources statiques : on rend tout de suite la version en cache, et on
-  // rafraichit en arriere-plan. Le cache seul serait un piege : apres une mise
-  // en ligne, un visiteur deja venu garderait l'ancien CSS pour toujours.
+  // Code du site (JS, CSS) : le reseau d'abord, le cache en secours.
+  // En rendant d'abord la copie en cache, un visiteur deja venu voyait
+  // l'ancienne version a chaque mise en ligne et devait recharger deux fois.
+  if (/\.(?:js|css)$/.test(url.pathname)) {
+    event.respondWith(
+      fetch(request)
+        .then((res) => {
+          if (res.ok && res.type === "basic") {
+            const copy = res.clone();
+            caches.open(VERSION).then((c) => c.put(request, copy));
+          }
+          return res;
+        })
+        .catch(() => caches.match(request)),
+    );
+    return;
+  }
+
+  // Images, polices : on rend tout de suite la version en cache, et on
+  // rafraichit en arriere-plan.
   event.respondWith(
     caches.match(request).then((cached) => {
       const network = fetch(request)
