@@ -9,9 +9,10 @@ Un fichier `.webp` par maison, nommé avec l'identifiant de la marque
 - détouré au plus juste, sans marge
 - tient dans une boîte de 420 × 130 px (affiché à 52 px de haut au maximum)
 
-Les seize maisons du catalogue ont leur logo. Trois listes doivent rester
+Dix-sept maisons sur dix-huit ont leur logo. Deux listes doivent rester
 synchronisées avec ce dossier : `LOGOS` (`assets/js/brands.js`, deux usages)
-et `HOME_LOGOS` (`assets/js/main.js`).
+et `HOME_LOGOS` (`assets/js/main.js`). Une maison absente de ces listes
+affiche son nom en toutes lettres, ce qui reste propre.
 
 ## Provenance
 
@@ -25,8 +26,13 @@ Logos officiels des maisons, repris pour identifier les marques revendues.
 | Memo Paris | memoparis.com, logo d'en-tête |
 | Ella K Parfums | ellakparfums.com, logo d'en-tête |
 | Mancera | manceraparfums.com, logo de pied de page |
+| Montale | montaleparfums.com, logo d'en-tête |
 
 Les dix autres étaient déjà dans le dépôt.
+
+Manque encore BDK Parfums : leur site ne publie que le monogramme de bas de
+page, volontairement rogné, inutilisable tel quel. La carte affiche le nom
+en toutes lettres en attendant un fichier fourni par la maison.
 
 ## Régénérer
 

@@ -11,7 +11,7 @@
   const LOGOS = new Set([
     "amouage", "byredo", "chanel", "creed", "dior", "ella-k", "guerlain",
     "initio", "kilian", "louis-vuitton", "maison-margiela", "mancera",
-    "memo-paris", "parfums-de-marly", "tom-ford", "xerjoff",
+    "memo-paris", "montale", "parfums-de-marly", "tom-ford", "xerjoff",
   ]);
 
   const FAMILY_LABELS = {
@@ -166,7 +166,7 @@
             <span class="phare-card__brandname">${brand.name}</span>
           </span>
           <span class="phare-card__media">
-            <img src="../${hero.image}" alt="${brand.name} ${hero.name}"
+            <img src="${site?.withBase(hero.image, "../") || `../${hero.image}`}" alt="${brand.name} ${hero.name}"
                  width="750" height="1000" loading="lazy" decoding="async" />
           </span>
           <span class="phare-card__name">${hero.name}</span>

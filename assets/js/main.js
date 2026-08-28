@@ -518,7 +518,7 @@
   const HOME_LOGOS = new Set([
     "amouage", "byredo", "chanel", "creed", "dior", "ella-k", "guerlain",
     "initio", "kilian", "louis-vuitton", "maison-margiela", "mancera",
-    "memo-paris", "parfums-de-marly", "tom-ford", "xerjoff",
+    "memo-paris", "montale", "parfums-de-marly", "tom-ford", "xerjoff",
   ]);
 
   function initHomeMaisons() {
