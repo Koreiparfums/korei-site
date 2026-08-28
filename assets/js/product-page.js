@@ -1068,7 +1068,6 @@
             <div class="pdp-feel-band__score">
               <span class="pdp-feel-band__label">Note de la communauté</span>
               <span class="pdp-feel-band__value">${String(reviews.average).replace(".", ",")} <small>/ 5</small></span>
-              <span class="pdp-feel-band__stars">${ui.renderStars ? ui.renderStars(reviews.average) : ""}</span>
               <span class="pdp-feel-band__count">Basée sur ${reviews.count.toLocaleString("fr-FR")} avis</span>
             </div>
             ${
@@ -1138,8 +1137,7 @@
     // La note affichee est celle de Fragrantica, pas une note maison : la
     // boutique n'a aucune commande, donc aucun avis client.
     const score = rating
-      ? `<div class="pdp-reviews__score">${String(rating).replace(".", ",")}</div>
-         <div class="pdp-reviews__stars">${ui.renderStars ? ui.renderStars(rating) : ""}</div>
+      ? `<div class="pdp-reviews__score">${String(rating).replace(".", ",")}<small> / 5</small></div>
          <p class="pdp-reviews__count">Note des passionnés sur Fragrantica. ${source}</p>`
       : "";
     return `

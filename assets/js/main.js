@@ -134,11 +134,6 @@
           : "https://schema.org/InStock",
         url: site?.absoluteUrl(pagePath) || pagePath,
       },
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: product.fragrantica?.rating || product.rating,
-        reviewCount: product.fragrantica?.votes || Math.max(1, Math.round(product.rating * 12)),
-      },
     };
   }
 
@@ -330,9 +325,6 @@
               )
               .join("")}
           </div>
-          <div class="card-footer">
-            <div class="card-rating">${renderStars(product.rating)}</div>
-          </div>
           <button class="card-add" type="button" aria-label="Voir ${product.name}">${price}</button>
         </div>
       </a>`;
@@ -424,7 +416,6 @@
     const proof = document.getElementById("hero-proof");
     const facts = document.getElementById("hero-facts");
     if (!proof || SOCIAL_PROOF.rating == null || !SOCIAL_PROOF.orders) return;
-    document.getElementById("hero-proof-stars").innerHTML = renderStars(SOCIAL_PROOF.rating);
     document.getElementById("hero-proof-score").textContent =
       `${String(SOCIAL_PROOF.rating).replace(".", ",")}/${SOCIAL_PROOF.ratingMax}`;
     document.getElementById("hero-proof-orders").textContent = SOCIAL_PROOF.orders;

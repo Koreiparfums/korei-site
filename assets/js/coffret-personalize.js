@@ -133,7 +133,6 @@
 
     const basePath = "../";
     const withBase = (window.KoreiSite && window.KoreiSite.withBase) || ((p, b) => `${b}${p}`);
-    const renderStars = (window.KoreiUI && window.KoreiUI.renderStars) || (() => "");
     const products = (window.KoreiProducts && window.KoreiProducts.PRODUCTS) || [];
     const productById = new Map(products.map((p) => [p.id, p]));
 
@@ -300,7 +299,6 @@
             <div class="cb2-result__name">${p.name}</div>
             <div class="cb2-result__brand">${p.brand}</div>
             <div class="cb2-result__notes">${notesOf(p)}</div>
-            ${p.rating ? `<div class="cb2-result__rating">${renderStars(p.rating)}</div>` : ""}
           </div>
           <div class="cb2-result__qty">
             <button type="button" class="cb2-qty-btn" data-qty="-1" data-id="${p.id}" ${qty === 0 ? "disabled" : ""} aria-label="Retirer un ${p.name}">−</button>
