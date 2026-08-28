@@ -370,6 +370,7 @@
       num: "01",
       label: "Notes de tête",
       fallback: "La première impression",
+      court: "Ce que l'on sent dès la vaporisation, pendant les premières minutes.",
       desc: "Ce que l'on sent dès la vaporisation, pendant les premières minutes. Ces notes sont les plus volatiles : elles s'effacent en quinze à trente minutes pour laisser la place au cœur.",
     },
     {
@@ -377,6 +378,7 @@
       num: "02",
       label: "Notes de cœur",
       fallback: "Le cœur du parfum",
+      court: "Ce qui s'installe après une demi-heure et signe la composition.",
       desc: "Ce qui s'installe après une demi-heure et signe la composition. C'est le caractère du parfum, celui qu'on reconnaît et qu'on porte pendant plusieurs heures.",
     },
     {
@@ -384,6 +386,7 @@
       num: "03",
       label: "Notes de fond",
       fallback: "La trace qui reste",
+      court: "Ce qui subsiste sur la peau plusieurs heures après.",
       desc: "Ce qui subsiste sur la peau plusieurs heures après. Les molécules les plus lourdes, celles qui tiennent le sillage et laissent une signature sur les vêtements.",
     },
   ];
@@ -441,22 +444,34 @@
     const label = NOTE_ALIASES[slug] || note;
     const latin = NOTE_LATIN[noteSlugLocal(label)] ?? NOTE_LATIN[slug];
     const fam = ui.noteFamilyOf ? ui.noteFamilyOf(label) : null;
-    const photo = NOTE_PHOTOS.has(noteSlugLocal(label)) ? noteSlugLocal(label) : null;
+    const photo = hasNotePhoto(noteSlugLocal(label)) ? noteSlugLocal(label) : null;
     const media = photo
       ? `<img src="../assets/images/notes/${photo}.webp" alt="" width="400" height="400" loading="lazy" decoding="async">`
       : `<span class="pdp-py-tile__fallback"${fam ? ` data-family="${fam.family}"` : ""}>
            ${fam ? `<i class="ti ${fam.icon}" aria-hidden="true"></i>` : esc(label.slice(0, 1))}
          </span>`;
+    // Paire photo + libelle. Une paire sur deux est retournee : le ruban
+    // alterne photo/texte/texte/photo comme la maquette, et se termine par
+    // une photo qui file vers le bord droit.
     return `
-      <li class="pdp-py-tile${photo ? " has-photo" : ""}">
-        <span class="pdp-py-tile__media">${media}</span>
-        <span class="pdp-py-tile__name">${esc(label)}</span>
-        ${latin ? `<em class="pdp-py-tile__latin">${esc(latin)}</em>` : ""}
-      </li>`;
+      <figure class="pdp-py-pair">
+        <span class="pdp-py-shot${photo ? " has-photo" : ""}">${media}</span>
+        <figcaption class="pdp-py-cap">
+          <span class="pdp-py-cap__name">${esc(label)}</span>
+          <span class="pdp-py-cap__rule" aria-hidden="true"></span>
+          ${latin ? `<em class="pdp-py-cap__latin">${esc(latin)}</em>` : ""}
+        </figcaption>
+      </figure>`;
   }
 
-  // Photos d'ingredients reellement presentes dans le depot.
-  const NOTE_PHOTOS = new Set(["ananas", "bergamote", "bouleau", "jasmin", "mousse"]);
+  // Photos d'ingredients reellement presentes dans le depot. La liste vit
+  // dans KoreiUI (assets/js/main.js) : une seule source, tenue a jour par
+  // scripts/notes_ingredients.py. Lecture a l'appel, pas au chargement :
+  // l'ordre des balises <script> ne doit pas pouvoir figer une liste vide.
+  function hasNotePhoto(slug) {
+    const set = (global.KoreiUI && global.KoreiUI.NOTE_IMAGES) || null;
+    return Boolean(set && set.has(slug));
+  }
 
   function renderPyramid(product) {
     const notesByTier = {
@@ -479,16 +494,19 @@
                 <span class="pdp-py-row__num">${t.num}</span>
               </span>
               <div class="pdp-py-row__body">
+              <div class="pdp-py-row__intro">
                 <span class="pdp-py-row__label">${t.label}</span>
                 <h3 class="pdp-py-row__title">${tierTitle(notes, t.fallback)}</h3>
                 <span class="pdp-py-row__rule" aria-hidden="true"></span>
+                <p class="pdp-py-row__short">${t.court}</p>
                 <details class="pdp-py-row__more">
                   <summary><span class="pdp-py-row__plus" aria-hidden="true">+</span> En savoir plus</summary>
                   <p>${t.desc}</p>
                 </details>
-                <ul class="pdp-py-band">
-                  ${notes.map(renderPyramidNote).join("")}
-                </ul>
+              </div>
+              <div class="pdp-py-strip">
+                ${notes.map(renderPyramidNote).join("")}
+              </div>
               </div>
             </li>`;
             })
@@ -613,10 +631,8 @@
 
               ${renderTrustRow()}
             </div>
+            ${renderAccordions(product)}
           </div>
-        </div>
-        <div class="pdp-hero__wide">
-          ${renderAccordions(product)}
         </div>
       </section>`;
   }

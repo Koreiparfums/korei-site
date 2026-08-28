@@ -1,72 +1,39 @@
 # Images des notes olfactives
 
-Déposer ici les visuels des notes utilisées sur les fiches produit.
+Vignettes des ingrédients affichées sur les fiches produit : dans la pyramide
+olfactive (400 px) et dans les cartes du catalogue (38 px).
 
-Convention de nommage :
+## Convention
 
-- format recommandé : `.jpg`
-- nom en slug ASCII, sans accent, sans apostrophe, espaces remplacés par `-`
-- exemple : `Rose Centifolia` → `rose-centifolia.jpg`
+- format : `.webp`, carré 400 × 400, fond transparent
+- nom en slug ASCII : sans accent, sans apostrophe, espaces remplacés par `-`
+- exemple : `Rose Centifolia` → `rose-centifolia.webp`
 
-Si une image manque, le site affiche automatiquement une pastille typographique avec la première lettre de la note.
+Si une note n'a pas de photo, le site affiche automatiquement une pastille
+colorée portant sa famille olfactive et son picto. Jamais un cadre vide.
 
-## Fichiers attendus
+## Ajouter des photos
 
-- `ambre.jpg` — Ambre
-- `ambrette.jpg` — Ambrette
-- `ambroxan.jpg` — Ambroxan
-- `ananas.jpg` — Ananas
-- `anis.jpg` — Anis
-- `bergamote.jpg` — Bergamote
-- `bois.jpg` — Bois
-- `bois-de-cachemire.jpg` — Bois de cachemire
-- `bois-de-gaiac.jpg` — Bois de gaiac
-- `bois-de-santal.jpg` — Bois de santal
-- `bouleau.jpg` — Bouleau
-- `cafe.jpg` — Café
-- `cannelle.jpg` — Cannelle
-- `cardamome.jpg` — Cardamome
-- `cedre.jpg` — Cèdre
-- `chocolat.jpg` — Chocolat
-- `citron.jpg` — Citron
-- `cognac.jpg` — Cognac
-- `cuir.jpg` — Cuir
-- `cyanide.jpg` — Cyanide
-- `encens.jpg` — Encens
-- `epices.jpg` — Épices
-- `fumee.jpg` — Fumée
-- `gaiac.jpg` — Gaïac
-- `iris.jpg` — Iris
-- `jasmin.jpg` — Jasmin
-- `lavande.jpg` — Lavande
-- `litchi.jpg` — Litchi
-- `miel.jpg` — Miel
-- `mousse.jpg` — Mousse
-- `musc.jpg` — Musc
-- `musc-blanc.jpg` — Musc blanc
-- `noix-de-coco.jpg` — Noix de coco
-- `nutmeg.jpg` — Nutmeg
-- `oak.jpg` — Oak
-- `oliban.jpg` — Oliban
-- `oud.jpg` — Oud
-- `patchouli.jpg` — Patchouli
-- `pink-pepper.jpg` — Pink pepper
-- `pivoine.jpg` — Pivoine
-- `poivre.jpg` — Poivre
-- `pomme.jpg` — Pomme
-- `praline.jpg` — Praliné
-- `resine.jpg` — Résine
-- `rhum.jpg` — Rhum
-- `rose.jpg` — Rose
-- `rose-centifolia.jpg` — Rose Centifolia
-- `rose-de-damas.jpg` — Rose de Damas
-- `safran.jpg` — Safran
-- `santal.jpg` — Santal
-- `star-anise.jpg` — Star anise
-- `styrax.jpg` — Styrax
-- `tabac.jpg` — Tabac
-- `tonka.jpg` — Tonka
-- `vanille.jpg` — Vanille
-- `vanille-de-madagascar.jpg` — Vanille de Madagascar
-- `vetiver.jpg` — Vétiver
-- `violet.jpg` — Violet
+Déposer les sources dans `image_drive/Pyramide Olfactives`, compléter le
+dictionnaire `MAPPING` de `scripts/notes_ingredients.py`, puis lancer :
+
+```bash
+python3 scripts/notes_ingredients.py
+```
+
+Le script détoure le fond, recadre sur le sujet, normalise en carré de 400 px
+et écrit un fichier par slug. Il affiche ensuite la liste complète des slugs :
+la recopier dans `NOTE_IMAGES` (`assets/js/main.js`), qui est la seule source
+de vérité côté code.
+
+Une photo n'est associée qu'à une note qu'elle représente réellement. Pas de
+cliché de cèdre sous un libellé « bois de gaïac ».
+
+## État actuel
+
+46 photos fournies par le client, déclinées en 67 slugs.
+Sur les 51 notes du catalogue, 39 ont une photo.
+
+Notes encore sans visuel :
+`bois-de-gaiac`, `cannelle`, `cognac`, `cyanide`, `encens`, `fumee`,
+`gaiac`, `litchi`, `oliban`, `praline`, `rhum`, `tabac`.

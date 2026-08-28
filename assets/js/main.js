@@ -46,14 +46,26 @@
   }
 
   // Vignettes de notes reellement presentes dans assets/images/notes.
-  // Sans cette liste, chaque page reclamait une cinquantaine de fichiers absents
-  // et generait autant de 404 avant de retomber sur la lettre.
-  const NOTE_IMAGES = new Set(["ananas", "bergamote", "bouleau", "jasmin", "mousse"]);
+  // 46 photos d'ingredients fournies par le client, detourees et declinees
+  // par slug. Regenerer avec scripts/notes_ingredients.py apres tout ajout.
+  const NOTE_IMAGES = new Set([
+    "ambre", "ananas", "anis", "anis-etoile", "benjoin", "bergamote",
+    "bois", "bois-de-cedre", "bois-de-santal", "bouleau", "cacao", "cafe",
+    "cardamome", "cassis", "cedre", "chene", "chocolat", "citron",
+    "clou-de-girofle", "cuir", "epices", "fleur-d-oranger", "geranium", "gingembre",
+    "iris", "jasmin", "labdanum", "lavande", "mandarine", "menthe",
+    "miel", "mousse", "mousse-de-chene", "muguet", "musc", "musc-blanc",
+    "neroli", "noix-de-muscade", "nutmeg", "oak", "orange", "oud",
+    "pamplemousse", "patchouli", "pink-pepper", "pivoine", "poire", "poivre",
+    "poivre-rose", "pomme", "resine", "rose", "rose-centifolia", "rose-de-damas",
+    "safran", "santal", "sauge", "sauge-sclaree", "star-anise", "styrax",
+    "tonka", "tubereuse", "vanille", "vetiver", "violet", "violette",
+    "ylang-ylang",
+  ]);
 
-  // Faute de photo d'ingredient (5 existent sur les 51 notes du catalogue), la
-  // vignette porte la famille olfactive de la note : une pastille coloree et
-  // un picto. C'est une information vraie et lisible, la ou une simple lettre
-  // grise ne disait rien. Une vraie photo, quand elle existe, passe devant.
+  // Repli pour les notes encore sans photo : la vignette porte la famille
+  // olfactive, pastille coloree et picto. Une information vraie et lisible,
+  // la ou une simple lettre grise ne disait rien. La photo passe devant.
   const NOTE_FAMILIES = {
     agrume: { icon: "ti-lemon-2", notes: ["bergamote", "citron", "pamplemousse", "orange", "mandarine", "yuzu", "neroli", "petit-grain"] },
     fruit: { icon: "ti-apple", notes: ["ananas", "pomme", "litchi", "peche", "poire", "fruits-rouges", "cassis", "framboise", "figue"] },
@@ -1263,6 +1275,9 @@
     productBreadcrumbSchema,
     noteImageHtml,
     noteFamilyOf,
+    // Source unique des photos d'ingredients disponibles : la fiche produit
+    // en gardait une copie figee, qui se desynchronisait a chaque ajout.
+    NOTE_IMAGES,
     initBrandChips,
     initHomePage,
     initCataloguePage,
