@@ -96,7 +96,7 @@ body[data-page="product"] {
 .pdp-title {
   font-family: "DM Sans", sans-serif;
   font-weight: 400;
-  font-size: clamp(24px, 2.2vw, 32px);
+  font-size: clamp(22px, 1.9vw, 28px);
   line-height: 1.25;
   color: var(--pdp-ink);
 }
@@ -128,6 +128,89 @@ body[data-page="product"] {
   color: var(--pdp-gold);
 }
 
+/* ── Prix du format choisi ─────────────────────────────────────────────
+   Il n'existait qu'en 23 px dans une carte et en 11 px capitales dans le
+   bouton : plus petit que deux titres de section. */
+.pdp-price {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 20px 0 4px;
+}
+.pdp-price__amount {
+  font-size: clamp(30px, 3vw, 40px);
+  font-weight: 400;
+  line-height: 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--pdp-ink);
+}
+.pdp-price__unit {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Progression du coffret ────────────────────────────────────────────
+   Remplace les trois cartes-coffret qui affichaient « 162€ » au-dessus
+   d'un bouton n'ajoutant qu'un flacon a 18€. Une seule ligne, toujours
+   visible, placee juste au-dessus du bouton d'achat : c'est ce qui
+   transforme un achat de 18€ en achat de coffret. */
+.pdp-rail {
+  margin: 20px 0 24px;
+  padding: 16px 18px;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--pdp-radius-md);
+  background: var(--surface);
+}
+.pdp-rail.is-complete {
+  border-color: var(--pdp-gold);
+  background: var(--accent-light);
+}
+.pdp-rail__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.pdp-rail__name {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-loud);
+  text-transform: uppercase;
+  color: var(--pdp-ink);
+}
+.pdp-rail__count {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+.pdp-rail__track {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--border);
+  overflow: hidden;
+}
+.pdp-rail__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--pdp-gold);
+  transition: width 0.35s var(--pdp-ease);
+}
+.pdp-rail__msg {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+/* L'or est a 2,55:1 sur blanc : illisible. Le texte or passe sur la
+   teinte foncee, l'or plein reste pour les aplats et les filets. */
+.pdp-rail__msg strong {
+  font-weight: 500;
+  color: var(--badge-text);
+}
+
 /* ══════════════════ SECTION 1 — HERO ══════════════════ */
 .pdp-hero {
   padding: 32px var(--px) 80px;
@@ -147,6 +230,13 @@ body[data-page="product"] {
 .pdp-gallery-col {
   min-width: 0;
 }
+/* Les accordeons sortent des deux colonnes : dans le couloir de droite ils
+   etiraient la page de 2 249 px en laissant la colonne gauche vide, et les
+   tuiles de la pyramide etaient comprimees a 155 px. */
+.pdp-hero__wide {
+  margin-top: 56px;
+}
+
 /* La photo reste a l'ecran tant qu'on lit la fiche : elle se decolle
    naturellement quand la colonne de droite est finie. Le decalage laisse la
    place a l'en-tete du site, qui est lui aussi collant. */
@@ -343,10 +433,9 @@ body[data-page="product"] {
 .pdp-name {
   font-family: "DM Sans", sans-serif;
   font-weight: 400;
-  font-size: clamp(26px, 2.4vw, 34px);
-  line-height: 1.15;
-  margin-top: -6px;
-  margin-bottom: 14px;
+  font-size: clamp(34px, 3.2vw, 46px);
+  line-height: 1.1;
+  margin: 0 0 12px;
 }
 .pdp-rating-line {
   display: flex;
@@ -401,8 +490,8 @@ body[data-page="product"] {
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 24px 14px 18px;
-  border: 1px solid var(--pdp-line);
+  padding: 18px 12px 14px;
+  border: 1px solid var(--border-dark);
   border-radius: var(--pdp-radius-md);
   background: var(--pdp-white);
   color: var(--pdp-ink);
@@ -419,15 +508,24 @@ body[data-page="product"] {
 .pdp-format.is-active {
   border-color: var(--pdp-gold);
   box-shadow: inset 0 0 0 1px var(--pdp-gold);
-  background: var(--pdp-white);
+  background: var(--accent-light);
+}
+.pdp-format.is-active::before {
+  content: "\2713";
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--badge-text);
 }
 /* Le flacon est a l'echelle : un 10 ml est plus grand qu'un 2 ml. */
 .pdp-format__vial {
-  height: 132px;
+  height: 72px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 .pdp-format__vial img {
   width: auto;
@@ -458,14 +556,14 @@ body[data-page="product"] {
 }
 /* Le detail est separe par un filet, comme la maquette. */
 .pdp-format__detail {
-  margin-top: 14px;
-  padding-top: 14px;
+  /* Une seule ligne de texte : l'icone, le filet et la phrase d'usage
+     ajoutaient 60 px par carte sans rien apprendre de plus. */
+  margin-top: 8px;
   width: 100%;
-  border-top: 1px solid var(--pdp-line);
-  display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  text-align: left;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  text-align: center;
 }
 .pdp-format__detail i {
   color: var(--pdp-gold);
@@ -891,6 +989,19 @@ body[data-page="product"] {
   gap: 72px;
   align-items: center;
 }
+/* Tant qu'il n'y a pas de photo d'ambiance, la grille a deux colonnes
+   laissait un cadre vide de 897 px. Une colonne, largeur de lecture. */
+.pdp-story--text .pdp-story__grid,
+.pdp-family--text .pdp-family__grid {
+  grid-template-columns: minmax(0, 680px);
+  justify-content: center;
+  text-align: center;
+  gap: 0;
+}
+.pdp-family--text .pdp-family__desc {
+  margin-inline: auto;
+  max-width: 60ch;
+}
 .pdp-story__text {
   font-family: "DM Sans", sans-serif;
   font-size: clamp(19px, 1.7vw, 23px);
@@ -929,7 +1040,10 @@ body[data-page="product"] {
 }
 .pdp-family__name {
   font-family: "DM Sans", sans-serif;
-  font-size: clamp(30px, 3vw, 40px);
+  /* h2 : la graisse 700 par defaut le rendait plus lourd que le nom du
+     produit. Une seule graisse de titre sur la page. */
+  font-weight: 500;
+  font-size: clamp(22px, 1.9vw, 28px);
   margin-bottom: 20px;
 }
 .pdp-family__desc {
@@ -1556,6 +1670,37 @@ a.pdp-coffret-promo__view {
   .pdp-gallery__main-img {
     padding: 28px;
   }
+  /* Le premier ecran telephone ne montrait ni le nom, ni le prix, ni le
+     bouton : la photo en 4/5 et les trois notes phares le remplissaient a
+     elles seules, et le nom n'arrivait qu'a 742 px. La photo passe en carre
+     borne a la moitie de l'ecran. */
+  .pdp-gallery__main {
+    aspect-ratio: 1 / 1;
+    max-height: 48vh;
+  }
+  /* Les trois notes phares repetent mot pour mot les premieres tuiles de la
+     pyramide olfactive, juste en dessous. */
+  .pdp-keynotes {
+    display: none;
+  }
+  /* A 112 px de large, l'etiquette centree sur le bord haut sortait de la
+     carte et de l'ecran. On la borne a la largeur de sa carte. */
+  .pdp-format__flag,
+  .pdp-format__badge {
+    max-width: calc(100% - 8px);
+    padding: 2.4px 6px;
+    letter-spacing: 0.04em;
+  }
+  .pdp-format.is-active::before {
+    top: 6px;
+    right: 6px;
+  }
+  .pdp-price {
+    margin-top: 16px;
+  }
+  .pdp-rail {
+    margin: 16px 0 18px;
+  }
 }
 
 /* ─── KOR-B10 · reassurance sous le bouton d'achat ─── */
@@ -1770,9 +1915,9 @@ a.pdp-coffret-promo__view {
 .pdp-py-row__title {
   margin: 10px 0 0;
   font-family: "Cormorant Garamond", serif;
-  font-weight: 300;
-  font-size: clamp(24px, 2.4vw, 31px);
-  line-height: 1.12;
+  font-weight: 400;
+  font-size: clamp(19px, 1.6vw, 23px);
+  line-height: 1.2;
   letter-spacing: -0.01em;
   color: var(--pdp-ink);
   text-wrap: balance;
@@ -1829,8 +1974,12 @@ a.pdp-coffret-promo__view {
   margin: 22px 0 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
-  gap: 18px;
+  /* auto-fill etirait chaque tuile pour remplir la ligne : un etage de deux
+     notes laissait une case vide. Bornees et alignees a gauche, elles
+     gardent la meme taille quel que soit le nombre de notes. */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 190px));
+  justify-content: start;
+  gap: 20px;
 }
 .pdp-py-tile {
   display: flex;

@@ -260,26 +260,19 @@
           <button class="pdp-format${isActive ? " is-active" : ""}${f.best ? " is-best" : ""}${info.popular ? " is-popular" : ""}${f.available ? "" : " is-unavailable"}"
                   type="button" role="radio" aria-checked="${isActive}"
                   ${f.available ? "" : "disabled"}
-                  data-price="${f.price}" data-vol="${f.key}" data-available="${f.available}">
-            ${info.popular ? '<span class="pdp-format__badge">Populaire</span>' : ""}
-            ${f.best ? '<span class="pdp-format__flag">Meilleur rapport</span>' : ""}
+                  data-price="${f.price}" data-vol="${f.key}" data-available="${f.available}"
+                  aria-label="${f.vol} — ${f.available ? `${formatPriceLabel(f.price)} euros` : "indisponible"}">
+            ${f.best ? '<span class="pdp-format__flag">Meilleur prix</span>' : info.popular ? '<span class="pdp-format__badge">Populaire</span>' : ""}
             ${
               vial
                 ? `<span class="pdp-format__vial"><img src="../assets/images/hero/${vial}.webp" alt="" width="112" height="851" loading="lazy" decoding="async"></span>`
                 : ""
             }
             <span class="pdp-format__vol">${f.vol}</span>
-            <span class="pdp-format__price">${f.available ? `${formatPriceLabel(f.price)}€` : "—"}</span>
-            <span class="pdp-format__unit">${f.available ? `${formatPriceLabel(f.pricePerMl)}€ / ml` : "Indisponible"}</span>
+            <span class="pdp-format__price">${f.available ? `${formatPriceLabel(f.price)}€` : "Indisponible"}</span>
             ${
               info.sprays
-                ? `<span class="pdp-format__detail">
-                     <i class="ti ti-spray" aria-hidden="true"></i>
-                     <span>
-                       <b class="pdp-format__sprays">Environ ${info.sprays} pulvérisations</b>
-                       <span class="pdp-format__usage">${info.usage}</span>
-                     </span>
-                   </span>`
+                ? `<span class="pdp-format__detail">~${info.sprays} pulvérisations</span>`
                 : ""
             }
           </button>`;
@@ -524,6 +517,63 @@
       </ul>`;
   }
 
+  // ── Prix du format choisi
+  // Il n'existait qu'a deux endroits : dans une carte de format (23 px) et
+  // dans le libelle du bouton (11 px, en capitales). Plus petit que deux
+  // titres de section. C'est la deuxieme information lue d'une fiche produit.
+  function renderPriceBlock(sel) {
+    if (!sel) return "";
+    return `
+      <div class="pdp-price" data-price-block>
+        <span class="pdp-price__amount" data-price-amount>${formatPriceLabel(sel.price)}€</span>
+        <span class="pdp-price__unit" data-price-unit>${unitPriceLabel(sel)}</span>
+      </div>`;
+  }
+
+  function unitPriceLabel(f) {
+    const ml = parseFloat(String(f.key).replace("ml", ""));
+    if (!ml || !f.price) return "";
+    return `${formatPriceLabel(f.price / ml)}€ / ml`;
+  }
+
+  // ── Progression du coffret (remplace les trois cartes-coffret)
+  // L'ancien bloc affichait « 162€ » en gras au-dessus d'un bouton qui
+  // ajoutait un seul flacon a 18€ : le visiteur croyait acheter un coffret.
+  // Et la phrase qui explique la remise etait `hidden` tant que le panier
+  // etait vide, donc invisible pour tout nouveau visiteur.
+  // Ici : une seule ligne, toujours visible, qui suit le format selectionne.
+  function renderCoffretRail(product, sel) {
+    if (!global.KoreiCoffret || !sel) return "";
+    const t = COFFRET_TIERS.find((x) => x.format === sel.key);
+    if (!t) return "";
+    return `
+      <div class="pdp-rail" data-coffret-rail>
+        <div class="pdp-rail__head">
+          <span class="pdp-rail__name" data-rail-name>Coffret ${t.label}</span>
+          <span class="pdp-rail__count" data-rail-count>0/${t.capacity}</span>
+        </div>
+        <div class="pdp-rail__track" role="presentation">
+          <span class="pdp-rail__fill" data-rail-fill style="width:0%"></span>
+        </div>
+        <p class="pdp-rail__msg" data-rail-msg></p>
+      </div>`;
+  }
+
+  // Texte de la ligne de progression. Aucun prix de coffret n'est annonce :
+  // seule l'economie reelle sur le format choisi, calculee sur son prix.
+  function railMessage(sel, count, tier) {
+    const saved = sel.price * tier.capacity * 0.1;
+    if (count === 0) {
+      return `${tier.capacity} parfums en ${sel.vol} = <strong>−10 % sur chaque flacon</strong> (${formatPriceLabel(saved)}€ economises) et livraison offerte.`
+        .replace("economises", "économisés");
+    }
+    const rest = tier.capacity - (count % tier.capacity);
+    if (count % tier.capacity === 0) {
+      return `Coffret complet. <strong>−10 % sur chaque flacon</strong> et livraison offerte.`;
+    }
+    return `Plus que <strong>${rest} parfum${rest > 1 ? "s" : ""}</strong> en ${sel.vol} pour −10 % sur chaque flacon et la livraison offerte.`;
+  }
+
   // ── Section 1 : Hero
   // ── Fiche produit en deux colonnes, structure du concurrent de reference :
   //    a gauche la photo, collante, avec sous elle les notes phares ;
@@ -543,9 +593,12 @@
           </div>
           <div class="pdp-col">
             <div class="pdp-info pdp-reveal">
-              <h1 class="pdp-name">${esc(product.name)}</h1>
               <div class="pdp-brand">${esc(product.brand)}</div>
+              <h1 class="pdp-name">${esc(product.name)}</h1>
+              ${product.description ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
+              ${renderPriceBlock(selected)}
               ${renderFormats(formats)}
+              ${renderCoffretRail(product, selected)}
 
               <div class="pdp-actions">
                 <div class="pdp-actions__row">
@@ -559,13 +612,11 @@
               </div>
 
               ${renderTrustRow()}
-
-              ${product.description ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
             </div>
-            ${renderCoffretPromo(product)}
-            ${renderSentiment(product)}
-            ${renderAccordions(product)}
           </div>
+        </div>
+        <div class="pdp-hero__wide">
+          ${renderAccordions(product)}
         </div>
       </section>`;
   }
@@ -624,6 +675,34 @@
       return `Ajouter au panier — ${formatPriceLabel(current.price)}€`;
     }
 
+    const priceAmount = main.querySelector("[data-price-amount]");
+    const priceUnit = main.querySelector("[data-price-unit]");
+    const rail = main.querySelector("[data-coffret-rail]");
+
+    // La ligne de progression suit le format selectionne : changer de format
+    // change de coffret (10x2ml, 5x5ml, 3x10ml), donc de quota et d'economie.
+    function syncRail() {
+      if (!rail || !current) return;
+      const tier = COFFRET_TIERS.find((t) => t.format === current.key);
+      if (!tier) {
+        rail.hidden = true;
+        return;
+      }
+      rail.hidden = false;
+      const count = coffret?.countFor ? coffret.countFor(current.key) : 0;
+      const inBox = count % tier.capacity;
+      const done = count > 0 && inBox === 0;
+      rail.classList.toggle("is-complete", done);
+      const nameEl = rail.querySelector("[data-rail-name]");
+      const countEl = rail.querySelector("[data-rail-count]");
+      const fillEl = rail.querySelector("[data-rail-fill]");
+      const msgEl = rail.querySelector("[data-rail-msg]");
+      if (nameEl) nameEl.textContent = `Coffret ${tier.label}`;
+      if (countEl) countEl.textContent = `${done ? tier.capacity : inBox}/${tier.capacity}`;
+      if (fillEl) fillEl.style.width = `${((done ? tier.capacity : inBox) / tier.capacity) * 100}%`;
+      if (msgEl) msgEl.innerHTML = railMessage(current, count, tier);
+    }
+
     function syncButtons() {
       const text = label();
       const disabled = !current?.available || coffret?.hasItem(product.id, current.key);
@@ -633,6 +712,9 @@
         btn.disabled = Boolean(disabled);
       });
       if (stickyVol) stickyVol.textContent = current?.available ? current.vol : "";
+      if (priceAmount && current) priceAmount.textContent = `${formatPriceLabel(current.price)}€`;
+      if (priceUnit && current) priceUnit.textContent = unitPriceLabel(current);
+      syncRail();
     }
 
     formatBtns.forEach((btn) => {
@@ -880,7 +962,7 @@
   // ── Section 2 : Histoire
   function renderStory(product) {
     return `
-      <section class="pdp-story">
+      <section class="pdp-story pdp-story--text">
         <div class="pdp-story__grid">
           <div class="pdp-story__text pdp-reveal">
             <div class="pdp-eyebrow">L'histoire</div>
@@ -897,9 +979,7 @@
               fragrance que le flacon complet — simplement le format qui vous correspond.
             </p>
           </div>
-          <div class="pdp-story__media pdp-reveal">
-            ${site?.renderPlaceholder ? site.renderPlaceholder("lifestyle", { title: product.brand, subtitle: product.name }) : ""}
-          </div>
+
         </div>
       </section>`;
   }
@@ -908,11 +988,9 @@
   function renderFamily(product) {
     const family = familyInfo(product);
     return `
-      <section class="pdp-family">
+      <section class="pdp-family pdp-family--text">
         <div class="pdp-family__grid">
-          <div class="pdp-family__media pdp-reveal">
-            ${site?.renderPlaceholder ? site.renderPlaceholder("lifestyle", { title: family.label, subtitle: "Famille olfactive" }) : ""}
-          </div>
+
           <div class="pdp-family__text pdp-reveal">
             <div class="pdp-eyebrow">Famille olfactive</div>
             <h2 class="pdp-family__name">${family.label}</h2>
@@ -1223,7 +1301,9 @@
   function detailRows(product) {
     const rows = [
       ["Maison", product.brand],
-      ["Famille olfactive", product.family ? capitalize(product.family) : ""],
+      // Le tableau affichait la cle brute du catalogue (« Fruity »), en
+      // anglais, alors que la section plus bas affiche « Fruité ».
+      ["Famille olfactive", product.family ? familyInfo(product).label : ""],
       ["Pour", GENDER_LABELS[product.gender] || (product.gender ? capitalize(product.gender) : "")],
       ["Intensité", product.intensity ? capitalize(product.intensity) : ""],
       ["Occasions", (product.occasions || []).map(capitalize).join(", ")],
@@ -1293,8 +1373,12 @@
       const panel = panelOf(btn);
       if (panel) panel.hidden = !open;
     }
+    // Sur ordinateur les trois panneaux s'ouvraient d'un coup : la colonne
+    // de droite montait a 3 686 px pendant que la photo, collante, restait
+    // figee sur 2 886 px de defilement, laissant une colonne gauche vide.
+    // Seules les notes olfactives comptent a la premiere lecture.
     function applyViewport() {
-      btns.forEach((btn, i) => setOpen(btn, mobile.matches ? i === -1 : true));
+      btns.forEach((btn, i) => setOpen(btn, i === 0 && !mobile.matches));
     }
 
     btns.forEach((btn) => {
@@ -1383,15 +1467,13 @@
       ${renderHero(product, "../")}
       ${renderCarouselSection("pdp-similar", "Sélection", "Parfums similaires")}
       ${renderCarouselSection("pdp-suggested", "La maison", `Autres créations ${esc(product.brand)}`)}
-      ${renderFaq(product)}
-      ${renderGuarantees()}
       ${renderFamily(product)}
       ${renderStory(product)}
+      ${renderFaq(product)}
     `;
 
     initGallery(main, galleryImages(product, "../"));
     initHero(main, product);
-    initCoffretPromo(main, product);
     initAccordions(main);
     initReveal(main);
 
