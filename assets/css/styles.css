@@ -192,11 +192,15 @@ textarea {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
+/* Sans min-width: 0, les deux moities du header prennent la largeur de leur
+   contenu et le header depasse la fenetre de quelques pixels : la page
+   defile alors sur le cote (constate a 900 px). */
 .header-left {
   display: flex;
   align-items: center;
   gap: 17.14px;
   flex: 1 1 auto;
+  min-width: 0;
 }
 .hamburger {
   display: none;
@@ -251,7 +255,8 @@ textarea {
   align-items: center;
   justify-content: flex-end;
   gap: 12.85px;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 .search {
   display: flex;
@@ -4997,12 +5002,10 @@ body[data-page="catalogue"] .page-hero {
 }
 
 /* ─── BRANDS GRID ─── */
-#brands-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
-  margin: 0 var(--px) 64px;
-}
+/* Ancienne regle par identifiant, heritee d'une version precedente de la
+   page. Sa specificite (1-0-0) ecrasait .maisons-grid et imposait trois
+   colonnes quoi qu'on ecrive dans la classe. La mise en page appartient a
+   .maisons-grid, que le script pose sur cet element. */
 .brand-card {
   position: relative;
   display: flex;
@@ -8311,12 +8314,21 @@ body.has-cookie-banner .chatbot-widget {
    grille de logos sobre, puis les maisons phares avec leur produit signature.
    ========================================================================== */
 .maisons-hero {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  padding: 64px var(--px) 40px;
+  padding: 96px var(--px) 76px;
   text-align: center;
+  overflow: hidden;
+  background:
+    linear-gradient(to bottom, rgba(252, 250, 247, 0.82), rgba(252, 250, 247, 0.94)),
+    url("../images/hero/hero-flacons-niche-sm.webp") center / cover no-repeat;
+  border-bottom: 1px solid var(--border);
+}
+.maisons-hero > * {
+  position: relative;
 }
 .maisons-hero__title {
   margin: 0;
@@ -8459,7 +8471,10 @@ body.has-cookie-banner .chatbot-widget {
 
 .maisons-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  /* Quatre colonnes comme la maquette. En auto-fill le navigateur n'en
+     retenait que trois : on les pose explicitement, et les paliers plus
+     bas reduisent le compte. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
   max-width: var(--max-w);
   margin: 0 auto;
@@ -8585,6 +8600,21 @@ body.has-cookie-banner .chatbot-widget {
   color: var(--text);
   text-align: center;
 }
+/* Le logo de la maison coiffe la carte, comme la maquette. Le nom reste
+   dessous en repli : il reapparait si l'image manque (data-onerror). */
+.phare-card__mark {
+  display: block;
+  max-width: 96px;
+  max-height: 22px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto 2px;
+  opacity: 0.85;
+}
+.phare-card__mark + .phare-card__brandname {
+  display: none;
+}
 .phare-card__media {
   display: grid;
   place-items: center;
@@ -8634,6 +8664,17 @@ body.has-cookie-banner .chatbot-widget {
   }
   .maisons-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1120px) {
+  .maisons-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 860px) {
+  .maisons-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
