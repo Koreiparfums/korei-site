@@ -6,7 +6,13 @@
   // ATTENTION : les fichiers .svg de brands/ ne sont pas des logos, ce sont des
   // placeholders qui ecrivent le nom de la marque en Georgia. On utilise donc
   // les .webp, qui sont les vraies marques (KOR-E3).
-  const LOGOS = new Set(["amouage", "byredo", "chanel", "creed", "dior", "initio", "kilian", "maison-margiela", "tom-ford", "xerjoff"]);
+  // Les seize maisons du catalogue ont desormais leur logo dans
+  // assets/images/brands (voir scripts/logos_marques.py).
+  const LOGOS = new Set([
+    "amouage", "byredo", "chanel", "creed", "dior", "ella-k", "guerlain",
+    "initio", "kilian", "louis-vuitton", "maison-margiela", "mancera",
+    "memo-paris", "parfums-de-marly", "tom-ford", "xerjoff",
+  ]);
 
   const FAMILY_LABELS = {
     "boisé": "Boisé",
@@ -151,7 +157,14 @@
         .map(
           ({ brand, hero }) => `
         <a class="phare-card" href="product.html?id=${hero.id}">
-          <span class="phare-card__brand">${brand.name}</span>
+          <span class="phare-card__brand">
+            ${
+              LOGOS.has(brand.id)
+                ? `<img class="phare-card__mark" src="../assets/images/brands/${brand.id}.webp" alt="${brand.name}" width="200" height="60" decoding="async" data-onerror="remove" />`
+                : ""
+            }
+            <span class="phare-card__brandname">${brand.name}</span>
+          </span>
           <span class="phare-card__media">
             <img src="../${hero.image}" alt="${brand.name} ${hero.name}"
                  width="750" height="1000" loading="lazy" decoding="async" />

@@ -516,8 +516,9 @@
   // Les fichiers .svg du dossier brands/ ne sont PAS des logos : ce sont des
   // placeholders qui ecrivent le nom en Georgia. Les vrais logos sont les .webp.
   const HOME_LOGOS = new Set([
-    "amouage", "byredo", "chanel", "creed", "dior",
-    "initio", "kilian", "maison-margiela", "tom-ford", "xerjoff",
+    "amouage", "byredo", "chanel", "creed", "dior", "ella-k", "guerlain",
+    "initio", "kilian", "louis-vuitton", "maison-margiela", "mancera",
+    "memo-paris", "parfums-de-marly", "tom-ford", "xerjoff",
   ]);
 
   function initHomeMaisons() {
