@@ -85,10 +85,14 @@
       : `${basePath}assets/images/hero/hero-decant-5ml.webp`;
   }
 
+  // Le libelle du badge vient du catalogue, il n'est plus reecrit ici.
+  // « Edition limitee » etait affiche des que badge === "exclusive", alors
+  // que le catalogue dit « Exclusif » : Creed Aventus n'est pas une edition
+  // limitee, et l'affirmer sur une fiche de vente est faux.
   function renderBadges(product) {
     const badges = [`<span class="pdp-badge pdp-badge--authentic"><i class="ti ti-shield-check"></i>Authentique</span>`];
-    if (product.badge === "exclusive") {
-      badges.push(`<span class="pdp-badge pdp-badge--limited">Édition limitée</span>`);
+    if (product.badge && product.badgeLabel) {
+      badges.push(`<span class="pdp-badge pdp-badge--${esc(product.badge)}">${esc(product.badgeLabel)}</span>`);
     }
     return badges.join("");
   }
@@ -280,13 +284,6 @@
           .join("")}
       </div>`;
   }
-
-  // KOR-B13 — les photos et les libelles du rappel coffret (brief §3.3).
-  const COFFRET_PHOTOS = {
-    "2ml": "coffret-decouverte-10x2ml",
-    "5ml": "coffret-voyage-5x5ml",
-    "10ml": "coffret-iconique-3x10ml",
-  };
 
   // ── Pyramide olfactive (sous la galerie, colonne gauche)
   // ── KOR-B8 : pyramide olfactive d'apres la maquette du 24 aout
@@ -815,173 +812,19 @@
     { format: "10ml", label: "Iconique", capacity: 3 },
   ];
 
-  const GUARANTEE_ITEMS = [
-    { icon: "ti-certificate", title: "Authentique", desc: "100% des flacons proviennent de distributeurs officiels." },
-    { icon: "ti-lock", title: "Paiement sécurisé", desc: "Transactions chiffrées, aucune donnée bancaire conservée." },
-    { icon: "ti-truck-delivery", title: "Expédition rapide", desc: "Préparation et envoi sous 24 à 48h partout en France." },
-    { icon: "ti-headset", title: "Support dédié", desc: "Une question ? Notre équipe vous répond sous 48h." },
-  ];
-
-  function renderCoffretTrust() {
-    return `
-      <div class="pdp-coffret-trust">
-        ${GUARANTEE_ITEMS.map(
-          (it) => `
-          <div class="pdp-coffret-trust__item">
-            <i class="ti ${it.icon}" aria-hidden="true"></i>
-            <h4>${it.title}</h4>
-          </div>`
-        ).join("")}
-      </div>`;
-  }
-
-  function renderCoffretPromo(product) {
-    if (!global.KoreiCoffret) return "";
-    const formats = getFormats(product);
-    const byKey = Object.fromEntries(formats.map((f) => [f.key, f]));
-
-    return `
-      <div class="pdp-coffret-promo pdp-reveal">
-        <span class="pdp-label">Ce parfum en coffret</span>
-        <p class="pdp-coffret-promo__pitch">
-          Composez un coffret complet et gagnez <strong>−10 % sur chaque flacon</strong>,
-          livraison offerte.
-        </p>
-        <div class="pdp-coffret-promo__list">
-          ${COFFRET_TIERS.map((t) => {
-            const f = byKey[t.format];
-            const unit = f?.price || 0;
-            const full = unit * t.capacity;
-            const saved = full * 0.1;
-            return `
-            <div class="pdp-coffret-tier${t.format === "5ml" ? " is-recommended" : ""}${f?.available ? "" : " is-soldout"}" data-tier-format="${t.format}">
-              ${t.format === "5ml" ? `<span class="pdp-coffret-tier__badge">Le plus choisi</span>` : ""}
-              <span class="pdp-coffret-tier__off">−10 %</span>
-              <span class="pdp-coffret-tier__media">
-                <img src="../assets/images/coffrets/${COFFRET_PHOTOS[t.format]}-sm.webp"
-                     alt="Coffret ${t.label} Kōrei" width="800" height="800"
-                     loading="lazy" decoding="async" />
-              </span>
-              <div class="pdp-coffret-tier__info">
-                <span class="pdp-coffret-tier__vol">${t.capacity} × ${t.format.replace("ml", " ml")} <span class="pdp-coffret-tier__label">${t.label}</span></span>
-                ${
-                  f?.available
-                    ? `<span class="pdp-coffret-tier__prices"><b>${formatPriceLabel(full - saved)}€</b> <s>${formatPriceLabel(full)}€</s></span>
-                       <span class="pdp-coffret-tier__hint">Ce coffret rempli de ce parfum</span>`
-                    : ""
-                }
-                <span class="pdp-coffret-tier__progress" data-tier-progress>—</span>
-                <span class="pdp-coffret-tier__ship"><i class="ti ti-truck-delivery" aria-hidden="true"></i> Livraison offerte</span>
-              </div>
-              <button type="button" class="pdp-btn pdp-btn--outline pdp-coffret-tier__cta" data-tier-cta>
-                Ajouter
-              </button>
-            </div>`;
-          }).join("")}
-        </div>
-        <p class="pdp-coffret-promo__note" data-coffret-next hidden></p>
-        <a class="pdp-btn pdp-btn--outline pdp-coffret-promo__view" href="panier.html">
-          <i class="ti ti-package"></i> Voir mon panier
-        </a>
-        ${renderCoffretTrust()}
-      </div>`;
-  }
-
-  /**
-   * Libellé de progression d'un format. Au-delà du quota, on compte les
-   * coffrets complets et le lot en cours, jamais « 4/3 ».
-   */
-  function progressLabel(count, slots) {
-    if (!slots) return "—";
-    if (count === 0) return `0/${slots} sélectionné`;
-    const boxes = Math.floor(count / slots);
-    const rest = count % slots;
-    if (boxes === 0) return `${rest}/${slots} sélectionnés`;
-    const boxLabel = `${boxes} coffret${boxes > 1 ? "s" : ""}`;
-    return rest === 0 ? `${boxLabel} · complet` : `${boxLabel} + ${rest}/${slots}`;
-  }
-
-  function initCoffretPromo(main, product) {
-    const section = main.querySelector(".pdp-coffret-promo");
-    if (!section) return;
-    const coffret = global.KoreiCoffret;
-    if (!coffret) return;
-
-    const noteEl = section.querySelector("[data-coffret-next]");
-
-    const refresh = () => {
-      // KOR-C2 — message d'incitation, calculé sur l'état réel du panier.
-      if (noteEl) {
-        const state = coffret.getCartState?.();
-        const next = state ? coffret.getNextStep?.(state) : null;
-        if (state && state.discount > 0 && !next) {
-          noteEl.hidden = false;
-          noteEl.classList.add("is-won");
-          noteEl.textContent = `−10 % appliqué · Livraison offerte · vous économisez ${formatPriceLabel(state.discount)}€`;
-        } else if (next) {
-          noteEl.hidden = false;
-          noteEl.classList.remove("is-won");
-          noteEl.textContent = `Plus que ${next.missing} parfum${next.missing > 1 ? "s" : ""} en ${next.format.replace("ml", " ml")} pour −10 % et la livraison offerte`;
-        } else {
-          noteEl.hidden = true;
-        }
-      }
-
-      section.querySelectorAll("[data-tier-format]").forEach((tierEl) => {
-        const format = tierEl.dataset.tierFormat;
-        const { count, slots } = coffret.getProgress(format);
-        const progressEl = tierEl.querySelector("[data-tier-progress]");
-        if (progressEl) progressEl.textContent = progressLabel(count, slots);
-
-        const cta = tierEl.querySelector("[data-tier-cta]");
-        if (!cta) return;
-        const already = coffret.hasItem(product.id, format);
-        const available = store?.isVariantAvailable(product, format) !== false;
-        cta.classList.toggle("is-active", already);
-        cta.classList.toggle("is-soldout", !available);
-        cta.disabled = !available;
-        cta.textContent = !available ? "Rupture de stock" : already ? "Déjà ajouté — retirer" : "Ajouter ce parfum";
-      });
-    };
-
-    section.querySelectorAll("[data-tier-cta]").forEach((cta) => {
-      cta.addEventListener("click", () => {
-        const tierEl = cta.closest("[data-tier-format]");
-        const format = tierEl.dataset.tierFormat;
-        if (store?.isVariantAvailable(product, format) === false) return;
-        if (coffret.hasItem(product.id, format)) {
-          coffret.removeItem(product.id, format);
-        } else {
-          const f = getFormats(product).find((x) => x.key === format);
-          coffret.addItem({
-            productId: product.id,
-            name: product.name,
-            brand: product.brand,
-            format,
-            price: f ? f.price : 0,
-            variantId: f?.variantId || undefined,
-          });
-        }
-        refresh();
-      });
-    });
-
-    main.querySelector("#pdp-coffret-view")?.addEventListener("click", (event) => {
-      event.stopPropagation();
-      document.getElementById("coffret-toggle")?.click();
-    });
-
-    coffret.onChange(refresh);
-    refresh();
-  }
-
   // ── Section 2 : Histoire
   function renderStory(product) {
     return `
-      <section class="pdp-story pdp-story--text">
-        <div class="pdp-story__grid">
-          <div class="pdp-story__text pdp-reveal">
+      <section class="pdp-editorial">
+        <div class="pdp-editorial__grid pdp-reveal">
+          <div class="pdp-editorial__col">
+            <div class="pdp-eyebrow">Famille olfactive</div>
+            <h2 class="pdp-editorial__title">${familyInfo(product).label}</h2>
+            <p>${familyInfo(product).desc}</p>
+          </div>
+          <div class="pdp-editorial__col">
             <div class="pdp-eyebrow">L'histoire</div>
+            <h2 class="pdp-editorial__title">Le décant Kōrei</h2>
             <p>
               Chez Kōrei, chaque flacon est choisi avec la même exigence : celle de maisons de
               parfumerie de niche qui refusent le compromis. <em>${esc(product.name)}</em> a rejoint
@@ -995,197 +838,14 @@
               fragrance que le flacon complet — simplement le format qui vous correspond.
             </p>
           </div>
-
-        </div>
-      </section>`;
-  }
-
-  // ── Section 4 : Famille olfactive
-  function renderFamily(product) {
-    const family = familyInfo(product);
-    return `
-      <section class="pdp-family pdp-family--text">
-        <div class="pdp-family__grid">
-
-          <div class="pdp-family__text pdp-reveal">
-            <div class="pdp-eyebrow">Famille olfactive</div>
-            <h2 class="pdp-family__name">${family.label}</h2>
-            <p class="pdp-family__desc">${family.desc}</p>
-          </div>
         </div>
       </section>`;
   }
 
   // ── Section 3 : Notes phares (façon Fragrantica — photo + libellé par note)
 
-  // ── KOR-B9 : section Ressenti d'apres la maquette du 24 aout
-  //
-  // Trois cartes : Longevite, Projection, Saisons. Chacune porte une icone,
-  // une jauge doree, une note, une phrase et deux etiquettes courtes.
-  //
-  // ATTENTION, choix important : la longevite et la projection ne sont pas
-  // dans le catalogue. L'ancienne version les deduisait du champ « intensite »
-  // (leger / modere / intense), ce qui revenait a afficher une note inventee.
-  // Une carte sans donnee reelle ne s'affiche pas. Elle reapparaitra seule le
-  // jour ou le scraping Fragrantica remplira product.longevity et
-  // product.projection (KOR-F9), sans autre modification.
-  const SEASON_META = [
-    { key: "printemps", label: "Printemps", icon: "ti-flower" },
-    { key: "été", label: "Été", icon: "ti-sun" },
-    { key: "automne", label: "Automne", icon: "ti-leaf" },
-    { key: "hiver", label: "Hiver", icon: "ti-snowflake" },
-  ];
-
-  // Les etiquettes decoulent du score : elles decrivent la note affichee,
-  // elles ne racontent rien de plus qu'elle.
-  function longevityCopy(score) {
-    if (score >= 8) return { text: "Excellente tenue : le parfum reste présent toute la journée.", tags: ["Tenue longue durée", "Plus de 8 heures"] };
-    if (score >= 6) return { text: "Bonne tenue : le parfum traverse une journée de travail.", tags: ["Bonne tenue", "6 à 8 heures"] };
-    if (score >= 4) return { text: "Tenue modérée : une retouche en milieu de journée est utile.", tags: ["Tenue modérée", "4 à 6 heures"] };
-    return { text: "Tenue courte : le parfum s'estompe en quelques heures.", tags: ["Tenue courte", "Moins de 4 heures"] };
-  }
-
-  function projectionCopy(score) {
-    if (score >= 8) return { text: "Sillage puissant : le parfum se remarque autour de vous.", tags: ["Sillage marqué", "Présence assurée"] };
-    if (score >= 6) return { text: "Sillage net, sans envahir la pièce.", tags: ["Sillage net", "Présence mesurée"] };
-    if (score >= 4) return { text: "Sillage discret : le parfum reste près de la peau.", tags: ["Sillage discret", "Proche de la peau"] };
-    return { text: "Sillage intime : perceptible seulement de très près.", tags: ["Sillage intime", "Très discret"] };
-  }
-
-  function renderGauge(value, max, label) {
-    const pct = Math.max(0, Math.min(100, (value / max) * 100));
-    return `
-      <div class="pdp-feel-card__gauge" role="img" aria-label="${label}">
-        <span class="pdp-feel-card__gauge-fill" style="width:${pct.toFixed(1)}%"></span>
-      </div>`;
-  }
-
-  function renderFeelCard({ icon, iconsHtml, title, sub, gaugeValue, gaugeMax, score, text, tags }) {
-    return `
-      <article class="pdp-feel-card">
-        <div class="pdp-feel-card__icon">${iconsHtml || `<i class="ti ${icon}" aria-hidden="true"></i>`}</div>
-        <h3 class="pdp-feel-card__title">${title}</h3>
-        <p class="pdp-feel-card__sub">${sub}</p>
-        ${renderGauge(gaugeValue, gaugeMax, `${title} : ${score}`)}
-        <p class="pdp-feel-card__score">${score}</p>
-        <p class="pdp-feel-card__text">${text}</p>
-        <ul class="pdp-feel-card__tags">${tags}</ul>
-      </article>`;
-  }
-
-  function renderSeasonCard(seasons) {
-    const kept = SEASON_META.filter((sn) => seasons.includes(sn.key));
-    if (!kept.length) return "";
-    const iconsHtml = `<span class="pdp-feel-card__seasons">${SEASON_META.map(
-      (sn) =>
-        `<i class="ti ${sn.icon}${seasons.includes(sn.key) ? "" : " is-off"}" aria-hidden="true"></i>`
-    ).join('<span class="pdp-feel-card__seasons-sep" aria-hidden="true"></span>')}</span>`;
-
-    const noms = kept.map((sn) => sn.label.toLowerCase()).join(", ");
-    // On decrit ce que la donnee dit : les saisons retenues. Pas de note /10
-    // sur les saisons, il n'en existe aucune.
-    const text =
-      kept.length === 4
-        ? "Portable toute l'année, quelle que soit la saison."
-        : `Idéal ${kept.length > 1 ? "en " : "en "}${noms}.`;
-    const tags = SEASON_META.map(
-      (sn) =>
-        `<li class="${seasons.includes(sn.key) ? "is-on" : "is-off"}">${sn.label}</li>`
-    ).join("");
-
-    return renderFeelCard({
-      iconsHtml,
-      title: "Saisons",
-      sub: "Périodes idéales",
-      gaugeValue: kept.length,
-      gaugeMax: 4,
-      score: `${kept.length} saison${kept.length > 1 ? "s" : ""} sur 4`,
-      text,
-      tags,
-    });
-  }
-
   function tagList(tags) {
     return tags.map((t) => `<li class="is-on">${t}</li>`).join("");
-  }
-
-  function renderSentiment(product) {
-    const seasons = product.seasons || [];
-    const cards = [];
-
-    const longevity = Number(product.longevity);
-    if (Number.isFinite(longevity) && longevity > 0) {
-      const copy = longevityCopy(longevity);
-      cards.push(
-        renderFeelCard({
-          icon: "ti-hourglass",
-          title: "Longévité",
-          sub: "Tenue sur la peau",
-          gaugeValue: longevity,
-          gaugeMax: 10,
-          score: `${String(longevity).replace(".", ",")} / 10`,
-          text: copy.text,
-          tags: tagList(copy.tags),
-        })
-      );
-    }
-
-    const projection = Number(product.projection ?? product.sillage);
-    if (Number.isFinite(projection) && projection > 0) {
-      const copy = projectionCopy(projection);
-      cards.push(
-        renderFeelCard({
-          icon: "ti-ripple",
-          title: "Projection",
-          sub: "Sillage & diffusion",
-          gaugeValue: projection,
-          gaugeMax: 10,
-          score: `${String(projection).replace(".", ",")} / 10`,
-          text: copy.text,
-          tags: tagList(copy.tags),
-        })
-      );
-    }
-
-    const seasonCard = renderSeasonCard(seasons);
-    if (seasonCard) cards.push(seasonCard);
-
-    // Aucune donnee : la section entiere disparait, sans laisser de blanc.
-    if (!cards.length) return "";
-
-    // Bandeau communaute : uniquement si des avis clients existent vraiment.
-    // La boutique n'a aucune commande a ce jour, donc il ne s'affiche pas.
-    const reviews = product.reviews;
-    const band =
-      reviews?.count && reviews?.average
-        ? `<div class="pdp-feel-band">
-            <div class="pdp-feel-band__score">
-              <span class="pdp-feel-band__label">Note de la communauté</span>
-              <span class="pdp-feel-band__value">${String(reviews.average).replace(".", ",")} <small>/ 5</small></span>
-              <span class="pdp-feel-band__count">Basée sur ${reviews.count.toLocaleString("fr-FR")} avis</span>
-            </div>
-            ${
-              reviews.quote
-                ? `<blockquote class="pdp-feel-band__quote">
-                    <p>« ${esc(reviews.quote.text)} »</p>
-                    <cite>— ${esc(reviews.quote.author)}</cite>
-                  </blockquote>`
-                : ""
-            }
-            <a class="pdp-feel-band__link" href="#pdp-acc-avis">Voir tous les avis</a>
-          </div>`
-        : "";
-
-    return `
-      <section class="pdp-feel pdp-reveal">
-        <div class="pdp-feel__head">
-          <h2 class="pdp-feel__title">Ressenti</h2>
-          <span class="pdp-feel__rule" aria-hidden="true"></span>
-          <p class="pdp-feel__sub">L'expérience olfactive d'<em>${esc(product.name)}</em>, telle que le catalogue la décrit.</p>
-        </div>
-        <div class="pdp-feel__grid" data-cards="${cards.length}">${cards.join("")}</div>
-        ${band}
-      </section>`;
   }
 
   // ── Sections 7/8 : Carousels produits
@@ -1284,24 +944,6 @@
                 <i class="ti ti-plus faq-icon"></i>
               </button>
               <div class="faq-answer">${it.a}</div>
-            </div>`
-            )
-            .join("")}
-        </div>
-      </section>`;
-  }
-
-  // ── Section 11 : Garanties
-  function renderGuarantees() {
-    return `
-      <section class="pdp-guarantees">
-        <div class="pdp-guarantees__grid">
-          ${GUARANTEE_ITEMS.map(
-              (it) => `
-            <div class="pdp-guarantee pdp-reveal">
-              <i class="ti ${it.icon}" aria-hidden="true"></i>
-              <h3>${it.title}</h3>
-              <p>${it.desc}</p>
             </div>`
             )
             .join("")}
@@ -1483,7 +1125,6 @@
       ${renderHero(product, "../")}
       ${renderCarouselSection("pdp-similar", "Sélection", "Parfums similaires")}
       ${renderCarouselSection("pdp-suggested", "La maison", `Autres créations ${esc(product.brand)}`)}
-      ${renderFamily(product)}
       ${renderStory(product)}
       ${renderFaq(product)}
     `;

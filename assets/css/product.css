@@ -69,10 +69,6 @@ body[data-page="product"] {
   max-width: 640px;
   margin: 0 auto 56px;
 }
-.pdp-head--left {
-  text-align: left;
-  margin: 0 0 40px;
-}
 .pdp-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -99,12 +95,6 @@ body[data-page="product"] {
   font-size: clamp(22px, 1.9vw, 28px);
   line-height: 1.25;
   color: var(--pdp-ink);
-}
-.pdp-sub {
-  margin-top: 16px;
-  font-size: var(--text-17);
-  line-height: 1.7;
-  color: var(--pdp-ink-soft);
 }
 
 /* ─── Fil d'Ariane ─── */
@@ -413,7 +403,11 @@ body[data-page="product"] {
 .pdp-badge--authentic i {
   color: var(--pdp-gold);
 }
-.pdp-badge--limited {
+/* Le badge porte desormais la classe du badge catalogue : best, new,
+   exclusive. Meme traitement plein pour les trois. */
+.pdp-badge--best,
+.pdp-badge--new,
+.pdp-badge--exclusive {
   background: var(--pdp-ink);
   color: var(--pdp-white);
 }
@@ -437,14 +431,6 @@ body[data-page="product"] {
   line-height: 1.1;
   margin: 0 0 12px;
 }
-.pdp-rating-line {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 24px;
-  font-size: var(--text-15);
-  color: var(--pdp-ink-soft);
-}
 .pdp-rating-line .star,
 .pdp-rating-line .star-half-fill,
 .pdp-rating-line .star-half-bg {
@@ -459,15 +445,6 @@ body[data-page="product"] {
 .pdp-rating-line .star-half-bg {
   color: var(--pdp-gold);
   opacity: 0.4;
-}
-.pdp-label {
-  display: block;
-  font-size: var(--text-12);
-  font-weight: 500;
-  letter-spacing: var(--tracking-loud);
-  text-transform: uppercase;
-  color: var(--pdp-ink-soft);
-  margin-bottom: 14px;
 }
 /* ─── Sélecteur de formats, d'après la maquette du 24 août ───────────────
    Photo du flacon, volume et prix en serif, prix au ml en doré, puis le
@@ -571,21 +548,6 @@ body[data-page="product"] {
   flex: none;
   margin-top: 1px;
 }
-.pdp-format__sprays {
-  display: block;
-  font-size: 12.5px;
-  font-weight: 500;
-  line-height: 1.35;
-  color: var(--pdp-ink);
-}
-.pdp-format__usage {
-  display: block;
-  margin-top: 2px;
-  font-size: 12.5px;
-  line-height: 1.35;
-  color: var(--pdp-ink-soft);
-}
-
 
 .pdp-actions {
   display: flex;
@@ -666,24 +628,10 @@ body[data-page="product"] {
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
-.pdp-btn--outline {
-  width: 100%;
-  background: transparent;
-  border-color: var(--pdp-line);
-  color: var(--pdp-ink);
-}
-.pdp-btn--outline:hover:not(:disabled) {
-  border-color: var(--pdp-gold);
-  color: var(--pdp-gold);
-}
 .pdp-btn--outline.is-active {
   border-color: var(--pdp-gold);
   color: var(--pdp-gold);
   background: var(--pdp-gold-wash);
-}
-.pdp-btn--outline:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 /* ══════════════════ ACCORDÉON (Notes phares, Ressenti) ══════════════════ */
@@ -701,293 +649,31 @@ body[data-page="product"] {
   font: inherit;
   color: inherit;
 }
-.pdp-accordion-chevron {
-  flex: 0 0 auto;
-  font-size: var(--text-20);
-  color: var(--pdp-ink-soft);
-  transition: transform 0.25s ease;
-}
 .pdp-accordion.open .pdp-accordion-chevron {
   transform: rotate(180deg);
 }
-.pdp-accordion-body {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.3s ease;
-}
 .pdp-accordion.open .pdp-accordion-body {
   grid-template-rows: 1fr;
-}
-.pdp-accordion-body-inner {
-  overflow: hidden;
-}
-
-/* ══════════════════ PYRAMIDE OLFACTIVE (sous la galerie) ══════════════════ */
-.pdp-pyramid__title {
-  display: block;
-  font-size: var(--text-15);
-  font-weight: 600;
-  letter-spacing: var(--tracking-loud);
-  text-transform: uppercase;
-  color: var(--pdp-ink);
-  padding-bottom: 20px;
-  margin-bottom: 8px;
-  border-bottom: 1px solid var(--pdp-line);
-}
-.pdp-pyramid-tier {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  align-items: center;
-  gap: 20px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--pdp-line);
-}
-.pdp-pyramid-tier:last-of-type {
-  border-bottom: none;
-}
-.pdp-pyramid-tier__label {
-  font-size: var(--text-12);
-  font-weight: 600;
-  letter-spacing: var(--tracking-loud);
-  text-transform: uppercase;
-  color: var(--pdp-gold);
-}
-.pdp-pyramid-tier__row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-}
-.pdp-pyramid__cta {
-  margin-top: 28px;
-  width: 100%;
-}
-.pdp-pyramid__ingredients {
-  margin-top: 16px;
-  font-size: var(--text-14);
-  line-height: 1.6;
-  color: var(--pdp-ink-soft);
-}
-.pdp-note-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
 }
 .pdp-note-card .note-image {
   width: 40px;
   height: 40px;
   font-size: 17px;
 }
-.pdp-note-card > span:last-child {
-  font-size: var(--text-13);
-  color: var(--pdp-ink);
-  white-space: nowrap;
-}
-
-/* ══════════════════ SECTION 5 — RESSENTI ══════════════════ */
-.pdp-sentiment {
-  max-width: var(--pdp-max);
-  margin: 0 auto;
-  padding: 40px var(--px) 72px;
-  border-top: 1px solid var(--pdp-line);
-}
-.pdp-sentiment__head {
-  margin-bottom: 32px;
-}
-.pdp-sentiment__head h2 {
-  font-family: "DM Sans", sans-serif;
-  font-weight: 500;
-  font-size: 28px;
-  color: var(--pdp-ink);
-}
-.pdp-sentiment-row + .pdp-sentiment-row {
-  margin-top: 36px;
-}
-.pdp-sentiment-row__label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: var(--text-15);
-  color: var(--pdp-ink-soft);
-  margin-bottom: 16px;
-}
-.pdp-sentiment-row__label i {
-  font-size: var(--text-16);
-  cursor: help;
-}
-.pdp-sentiment-cards {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  overflow-x: auto;
-  padding-bottom: 6px;
-  scrollbar-width: thin;
-}
-.pdp-sentiment-card {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 128px;
-  padding: 20px 12px;
-  border: 1px solid var(--pdp-line);
-  border-radius: var(--pdp-radius-md);
-  text-align: center;
-  transition:
-    border-color 0.25s var(--pdp-ease),
-    background 0.25s var(--pdp-ease),
-    transform 0.2s var(--pdp-ease);
-}
-.pdp-sentiment-card:hover {
-  transform: translateY(var(--lift-hover));
-}
 .pdp-sentiment-card.is-winner {
   background: var(--pdp-gold-wash);
   border-color: var(--pdp-gold-soft);
 }
-.pdp-sentiment-card__icon {
-  font-size: 20px;
-  color: var(--pdp-ink-soft);
-}
 .pdp-sentiment-card.is-winner .pdp-sentiment-card__icon {
   color: var(--pdp-gold);
 }
-.pdp-sentiment-card__label {
-  font-size: var(--text-14);
-  color: var(--pdp-ink);
-}
-
-/* ══════════════════ CE PARFUM DANS UN COFFRET (colonne info du hero) ══════════════════ */
-.pdp-coffret-promo {
-  width: 100%;
-}
-.pdp-coffret-promo__list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 14px 0;
-}
-.pdp-coffret-tier {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  border: 1px solid var(--pdp-line);
-  border-radius: var(--pdp-radius-md);
-  transition: border-color 0.25s var(--pdp-ease);
-}
 .pdp-coffret-tier.is-recommended {
   border-color: var(--pdp-gold);
-}
-.pdp-coffret-tier__badge {
-  position: absolute;
-  top: -9px;
-  left: 16px;
-  padding: 3px 10px;
-  background: var(--pdp-gold);
-  color: var(--pdp-white);
-  font-size: var(--text-9);
-  font-weight: 500;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  border-radius: var(--radius-pill);
-}
-.pdp-coffret-tier__info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
-  min-width: 0;
-}
-.pdp-coffret-tier__vol {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 6px;
-  font-family: "DM Sans", sans-serif;
-  font-size: var(--text-14);
-  color: var(--pdp-ink);
-}
-.pdp-coffret-tier__label {
-  font-size: var(--text-9);
-  letter-spacing: var(--tracking-loud);
-  text-transform: uppercase;
-  color: var(--pdp-gold);
-}
-.pdp-coffret-tier__progress {
-  font-size: var(--text-11);
-  color: var(--pdp-ink-soft);
-}
-.pdp-coffret-tier__price {
-  font-family: "DM Sans", sans-serif;
-  font-size: var(--text-15);
-  color: var(--pdp-ink);
-  flex-shrink: 0;
-}
-.pdp-coffret-tier__cta {
-  width: auto;
-  min-width: 168px;
-  flex-shrink: 0;
-  padding: 8px 14px;
 }
 .pdp-coffret-tier__cta.is-active {
   background: transparent;
   color: var(--pdp-gold);
   border-color: var(--pdp-gold);
-}
-.pdp-coffret-promo__view {
-  width: 100%;
-}
-.pdp-coffret-trust {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 32px;
-}
-.pdp-coffret-trust__item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  text-align: center;
-}
-.pdp-coffret-trust__item i {
-  font-size: 20px;
-  color: var(--pdp-gold);
-}
-.pdp-coffret-trust__item h4 {
-  font-family: "DM Sans", sans-serif;
-  font-size: var(--text-12);
-  font-weight: 600;
-  color: var(--pdp-ink);
-}
-@media (max-width: 640px) {
-  .pdp-coffret-tier {
-    flex-wrap: wrap;
-  }
-  .pdp-coffret-tier__cta {
-    width: 100%;
-    order: 3;
-  }
-}
-
-/* ══════════════════ SECTION 2 — HISTOIRE ══════════════════ */
-.pdp-story {
-  padding: 80px var(--px);
-}
-.pdp-story__grid {
-  max-width: var(--pdp-max);
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  gap: 72px;
-  align-items: center;
 }
 /* Tant qu'il n'y a pas de photo d'ambiance, la grille a deux colonnes
    laissait un cadre vide de 897 px. Une colonne, largeur de lecture. */
@@ -998,58 +684,8 @@ body[data-page="product"] {
   text-align: center;
   gap: 0;
 }
-.pdp-family--text .pdp-family__desc {
-  margin-inline: auto;
-  max-width: 60ch;
-}
-.pdp-story__text {
-  font-family: "DM Sans", sans-serif;
-  font-size: clamp(19px, 1.7vw, 23px);
-  line-height: 1.75;
-  color: var(--pdp-ink);
-}
-.pdp-story__text p + p {
-  margin-top: 20px;
-}
-.pdp-story__media {
-  aspect-ratio: 4 / 5;
-  border-radius: var(--pdp-radius-lg);
-  overflow: hidden;
-}
-
-/* ══════════════════ SECTION 4 — FAMILLE OLFACTIVE ══════════════════ */
-.pdp-family {
-  padding: 88px var(--px);
-}
-.pdp-family__grid {
-  max-width: var(--pdp-max);
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 72px;
-  align-items: center;
-}
-.pdp-family__media {
-  aspect-ratio: 4 / 3;
-  border-radius: var(--pdp-radius-lg);
-  overflow: hidden;
-  order: -1;
-}
 .pdp-family__text .pdp-eyebrow {
   margin-bottom: 14px;
-}
-.pdp-family__name {
-  font-family: "DM Sans", sans-serif;
-  /* h2 : la graisse 700 par defaut le rendait plus lourd que le nom du
-     produit. Une seule graisse de titre sur la page. */
-  font-weight: 500;
-  font-size: clamp(22px, 1.9vw, 28px);
-  margin-bottom: 20px;
-}
-.pdp-family__desc {
-  font-size: var(--text-17);
-  line-height: 1.8;
-  color: var(--pdp-ink-soft);
 }
 
 /* ══════════════════ SECTIONS 7 / 8 — CAROUSELS ══════════════════ */
@@ -1119,10 +755,6 @@ body[data-page="product"] {
   line-height: 1;
   color: var(--pdp-ink);
 }
-.pdp-reviews__stars {
-  margin: 12px 0;
-  color: var(--pdp-gold);
-}
 .pdp-reviews__stars .star,
 .pdp-reviews__stars .star-empty,
 .pdp-reviews__stars .star-half-wrap {
@@ -1153,44 +785,6 @@ body[data-page="product"] {
   margin: 0 auto;
 }
 
-/* ══════════════════ SECTION 11 — GARANTIES ══════════════════ */
-.pdp-guarantees {
-  padding: 64px var(--px) 96px;
-  border-top: 1px solid var(--pdp-line);
-}
-.pdp-guarantees__grid {
-  max-width: var(--pdp-max);
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-}
-.pdp-guarantee {
-  text-align: center;
-  padding: 0 24px;
-  border-left: 1px solid var(--pdp-line);
-}
-.pdp-guarantee:first-child {
-  border-left: none;
-}
-.pdp-guarantee i {
-  font-size: 28px;
-  color: var(--pdp-gold);
-  margin-bottom: 16px;
-  display: inline-block;
-}
-.pdp-guarantee h3 {
-  font-family: "DM Sans", sans-serif;
-  font-weight: 500;
-  font-size: var(--text-20);
-  margin-bottom: 8px;
-}
-.pdp-guarantee p {
-  font-size: var(--text-14);
-  color: var(--pdp-ink-soft);
-  line-height: 1.6;
-}
-
 /* ─── État "produit introuvable" ─── */
 .pdp-not-found {
   text-align: center;
@@ -1215,6 +809,15 @@ body[data-page="product"] {
 }
 
 @media (max-width: 1120px) {
+  .pdp-col {
+    gap: 36px;
+  }
+}
+
+/* Les deux colonnes tiennent jusqu'a 900 px : a 1 024 px chacune fait encore
+   428 px. Le seuil etait a 1 120 px, ce qui faisait perdre la photo collante
+   sur toute une gamme d'ecrans ou elle tenait tres bien. */
+@media (max-width: 900px) {
   .pdp-hero__grid {
     grid-template-columns: 1fr;
     gap: 40px;
@@ -1224,26 +827,9 @@ body[data-page="product"] {
   .pdp-sticky-media {
     position: static;
   }
-  .pdp-col {
-    gap: 36px;
-  }
   .pdp-gallery__main {
     max-width: 560px;
     margin: 0 auto;
-  }
-  .pdp-story__grid,
-  .pdp-family__grid {
-    grid-template-columns: 1fr;
-  }
-  .pdp-family__media {
-    order: 0;
-  }
-  .pdp-guarantees__grid {
-    grid-template-columns: repeat(2, 1fr);
-    row-gap: 32px;
-  }
-  .pdp-guarantee:nth-child(3) {
-    border-left: none;
   }
 }
 
@@ -1284,9 +870,6 @@ body[data-page="product"] {
   .pdp-format__price {
     font-size: 19px;
   }
-  .pdp-format__unit {
-    font-size: 11.5px;
-  }
   .pdp-format__detail {
     margin-top: 10px;
     padding-top: 10px;
@@ -1294,14 +877,6 @@ body[data-page="product"] {
   }
   .pdp-format__detail i {
     font-size: 15px;
-  }
-  .pdp-format__sprays,
-  .pdp-format__usage {
-    font-size: 11px;
-  }
-  .pdp-pyramid-tier {
-    grid-template-columns: 1fr;
-    gap: 10px;
   }
   .pdp-story,
   .pdp-sentiment,
@@ -1312,18 +887,6 @@ body[data-page="product"] {
     padding-left: var(--px);
     padding-right: var(--px);
   }
-  .pdp-guarantees__grid {
-    grid-template-columns: 1fr;
-  }
-  .pdp-guarantee {
-    border-left: none;
-    border-top: 1px solid var(--pdp-line);
-    padding: 32px 0 0;
-  }
-  .pdp-guarantee:first-child {
-    border-top: none;
-    padding-top: 0;
-  }
   .pdp-actions {
     flex-wrap: wrap;
   }
@@ -1332,13 +895,6 @@ body[data-page="product"] {
 /* ─── SÉLECTEUR DE FORMATS — prix au ml, meilleur rapport (KOR-B3) ─── */
 .pdp-format {
   position: relative;
-}
-.pdp-format__unit {
-  display: block;
-  font-size: 13px;
-  color: var(--pdp-gold);
-  margin-top: 2px;
-  font-variant-numeric: tabular-nums;
 }
 .pdp-format__flag {
   position: absolute;
@@ -1427,54 +983,13 @@ body[data-page="product"] {
     min-width: 0;
   }
 }
-
-/* ─── Bloc coffret : promesse et progression (KOR-C1/C2/C7) ─── */
-.pdp-coffret-promo__pitch {
-  margin: 6.4px 0 16px;
-  font-size: var(--text-14);
-  line-height: 1.5;
-  color: var(--text-muted);
-}
-.pdp-coffret-promo__pitch strong {
-  color: var(--accent);
-  font-weight: 500;
-}
-.pdp-coffret-tier__price em {
-  display: block;
-  font-style: normal;
-  font-size: var(--text-10);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-.pdp-coffret-tier__price {
-  color: var(--accent);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-}
 .pdp-coffret-tier.is-soldout {
   opacity: 0.5;
-}
-.pdp-coffret-promo__note {
-  margin: 12.8px 0 0;
-  padding: 9.6px 12.8px;
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  font-size: var(--text-13);
-  line-height: 1.45;
-  color: var(--text-muted);
 }
 .pdp-coffret-promo__note.is-won {
   background: var(--accent-light);
   color: var(--text-warm);
   font-weight: 500;
-}
-a.pdp-coffret-promo__view {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  text-decoration: none;
 }
 
 /* ==========================================================================
@@ -1541,55 +1056,6 @@ a.pdp-coffret-promo__view {
 .pdp-coffret-tier {
   position: relative;
 }
-.pdp-coffret-tier__off {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  padding: 3.2px 8px;
-  border-radius: 999px;
-  background: var(--pdp-ink, #1a1a18);
-  color: #fff;
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  font-variant-numeric: tabular-nums;
-}
-.pdp-coffret-tier__media {
-  display: grid;
-  place-items: center;
-  width: 72px;
-  height: 72px;
-  flex: none;
-  border-radius: 8px;
-  background: #fff;
-  overflow: hidden;
-}
-.pdp-coffret-tier__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-.pdp-coffret-tier__prices {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  font-variant-numeric: tabular-nums;
-}
-.pdp-coffret-tier__prices b {
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--pdp-ink);
-}
-.pdp-coffret-tier__prices s {
-  font-size: 12.8px;
-  color: var(--pdp-ink-soft);
-}
-.pdp-coffret-tier__hint {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11.2px;
-  color: var(--pdp-ink-soft);
-}
 /* La livraison offerte est une pastille cerclee, comme la maquette : c'est un
    argument de vente, pas une note de bas de page. */
 .pdp-coffret-tier__ship {
@@ -1608,9 +1074,6 @@ a.pdp-coffret-promo__view {
   text-transform: uppercase;
   white-space: nowrap;
   color: var(--pdp-gold);
-}
-.pdp-coffret-tier__ship i {
-  font-size: 14px;
 }
 
 /* ─── KOR-B6 · galerie ────────────────────────────────────────────────────
@@ -2059,7 +1522,6 @@ a.pdp-coffret-promo__view {
   color: var(--badge-text);
 }
 
-
 @media (max-width: 640px) {
   .pdp-py-row {
     grid-template-columns: 42px minmax(0, 1fr);
@@ -2102,41 +1564,50 @@ a.pdp-coffret-promo__view {
   }
 }
 
-/* ─── KOR-B9 · section Ressenti (maquette du 24 aout) ───────────────────── */
-.pdp-feel {
-  max-width: var(--pdp-max);
+/* ── Bloc editorial : famille olfactive + histoire ─────────────────────
+   C'etaient deux sections batie chacune pour une photo d'ambiance a cote du
+   texte. Les cadres « photo manquante » retires, il restait deux colonnes de
+   texte seules, centrees au milieu de 1 440 px : 957 px de hauteur pour cinq
+   paragraphes, et une page qui se terminait sur du vide. Un seul bloc, deux
+   colonnes de lecture sur un fond teinte : la largeur est occupee sans avoir
+   besoin d'une photo qui n'existe pas. */
+.pdp-editorial {
   margin: 0 auto;
   padding: 56px var(--px);
+  max-width: var(--pdp-max);
 }
-.pdp-feel__head {
-  text-align: center;
-  margin-bottom: 36px;
+.pdp-editorial__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
 }
-.pdp-feel__title {
+.pdp-editorial__col {
+  padding: 36px 36px 40px;
+  border: 1px solid var(--pdp-line);
+  border-radius: var(--pdp-radius-lg);
+  background: var(--surface);
+}
+.pdp-editorial__title {
+  margin: 12px 0 14px;
   font-family: "DM Sans", sans-serif;
-  font-weight: 300;
-  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 500;
+  font-size: clamp(22px, 1.9vw, 28px);
+  line-height: 1.2;
   color: var(--pdp-ink);
 }
-.pdp-feel__rule {
-  display: block;
-  width: 48px;
-  height: 1px;
-  margin: 16px auto;
-  background: var(--pdp-gold);
-}
-.pdp-feel__sub {
+.pdp-editorial__col p {
+  margin: 0 0 14px;
+  max-width: 56ch;
   font-size: 15px;
+  line-height: 1.75;
   color: var(--pdp-ink-soft);
 }
-.pdp-feel__sub em {
-  font-style: normal;
-  color: var(--pdp-gold);
+.pdp-editorial__col p:last-child {
+  margin-bottom: 0;
 }
-.pdp-feel__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px;
+.pdp-editorial__col em {
+  font-style: italic;
+  color: var(--badge-text);
 }
 /* Une seule carte ne doit pas s'etaler sur toute la largeur : elle reste
    a la taille d'une carte, centree. */
@@ -2144,87 +1615,8 @@ a.pdp-coffret-promo__view {
   grid-template-columns: minmax(260px, 380px);
   justify-content: center;
 }
-.pdp-feel-card {
-  border: 1px solid var(--pdp-line);
-  border-radius: var(--pdp-radius-lg);
-  background: var(--pdp-white);
-  padding: 30px 26px 26px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.pdp-feel-card__icon {
-  font-size: 34px;
-  color: var(--pdp-gold);
-  line-height: 1;
-  margin-bottom: 16px;
-}
-.pdp-feel-card__seasons {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 26px;
-}
 .pdp-feel-card__seasons .is-off {
   color: var(--pdp-line);
-}
-.pdp-feel-card__seasons-sep {
-  width: 1px;
-  height: 22px;
-  background: var(--pdp-line);
-}
-.pdp-feel-card__title {
-  font-family: "DM Sans", sans-serif;
-  font-weight: 400;
-  font-size: 20px;
-  color: var(--pdp-ink);
-}
-.pdp-feel-card__sub {
-  margin-top: 4px;
-  font-size: 14px;
-  color: var(--pdp-ink-soft);
-}
-.pdp-feel-card__gauge {
-  width: 100%;
-  height: 6px;
-  margin: 20px 0 12px;
-  border-radius: 999px;
-  background: var(--pdp-panel, #f3efe8);
-  overflow: hidden;
-}
-.pdp-feel-card__gauge-fill {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-  background: var(--pdp-gold);
-}
-.pdp-feel-card__score {
-  font-size: 16px;
-  color: var(--pdp-gold);
-  font-variant-numeric: tabular-nums;
-}
-.pdp-feel-card__text {
-  margin-top: 12px;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--pdp-ink-soft);
-}
-.pdp-feel-card__tags {
-  list-style: none;
-  margin: 18px 0 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-}
-.pdp-feel-card__tags li {
-  padding: 7px 13px;
-  border-radius: var(--pdp-radius-sm);
-  font-size: 13px;
-  border: 1px solid var(--pdp-line);
-  color: var(--pdp-ink);
 }
 /* Une saison non retenue reste lisible mais visiblement en retrait. */
 .pdp-feel-card__tags li.is-off {
@@ -2233,82 +1625,4 @@ a.pdp-coffret-promo__view {
 }
 .pdp-feel-card__tags li.is-on {
   background: var(--pdp-panel, #faf7f2);
-}
-
-.pdp-feel-band {
-  margin-top: 24px;
-  padding: 26px 30px;
-  border: 1px solid var(--pdp-line);
-  border-radius: var(--pdp-radius-lg);
-  background: var(--pdp-white);
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 28px;
-  align-items: center;
-}
-.pdp-feel-band__label {
-  display: block;
-  font-size: 13px;
-  color: var(--pdp-ink-soft);
-}
-.pdp-feel-band__value {
-  display: block;
-  margin-top: 4px;
-  font-size: 32px;
-  color: var(--pdp-gold);
-  font-variant-numeric: tabular-nums;
-}
-.pdp-feel-band__value small {
-  font-size: 18px;
-  color: var(--pdp-ink-soft);
-}
-.pdp-feel-band__count {
-  display: block;
-  margin-top: 6px;
-  font-size: 13px;
-  color: var(--pdp-ink-soft);
-}
-.pdp-feel-band__quote {
-  margin: 0;
-  padding-left: 28px;
-  border-left: 1px solid var(--pdp-line);
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--pdp-ink);
-}
-.pdp-feel-band__quote cite {
-  display: block;
-  margin-top: 8px;
-  font-style: normal;
-  font-size: 13px;
-  color: var(--pdp-gold);
-}
-.pdp-feel-band__link {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  padding: 0 22px;
-  border: 1px solid var(--pdp-gold);
-  border-radius: var(--pdp-radius-sm);
-  color: var(--pdp-gold);
-  font-size: 14px;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-@media (max-width: 860px) {
-  .pdp-feel-band {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    text-align: center;
-  }
-  .pdp-feel-band__quote {
-    padding-left: 0;
-    padding-top: 20px;
-    border-left: 0;
-    border-top: 1px solid var(--pdp-line);
-  }
-  .pdp-feel-band__link {
-    justify-self: center;
-  }
 }
