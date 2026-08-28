@@ -246,30 +246,11 @@ body[data-page="product"] {
 /* Dans la colonne, ces blocs perdent leur largeur et leurs marges de section :
    ils sont deja dans la bonne colonne. */
 .pdp-col .pdp-coffret-promo,
-.pdp-col .pdp-feel,
 .pdp-col .pdp-acc {
   max-width: none;
   margin: 0;
   padding-left: 0;
   padding-right: 0;
-}
-.pdp-col .pdp-feel {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-.pdp-col .pdp-feel__head {
-  text-align: left;
-  margin-bottom: 22px;
-}
-.pdp-col .pdp-feel__rule {
-  margin-left: 0;
-}
-.pdp-col .pdp-feel__grid {
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-}
-.pdp-col .pdp-feel__grid[data-cards="1"] {
-  grid-template-columns: minmax(0, 1fr);
-  justify-content: stretch;
 }
 
 /* Notes phares sous la photo */
@@ -1609,20 +1590,128 @@ body[data-page="product"] {
   font-style: italic;
   color: var(--badge-text);
 }
-/* Une seule carte ne doit pas s'etaler sur toute la largeur : elle reste
-   a la taille d'une carte, centree. */
-.pdp-feel__grid[data-cards="1"] {
-  grid-template-columns: minmax(260px, 380px);
-  justify-content: center;
+
+/* ─── Ressenti : tenue, projection, quand le porter ───
+   Trois cartes de meme hauteur. Les deux premieres portent une jauge en dix
+   segments (la note est sur 10, la jauge le montre au lieu de l'ecrire),
+   la troisieme des pastilles de saisons et d'occasions. */
+.pdp-feel {
+  padding: 56px 0 8px;
 }
-.pdp-feel-card__seasons .is-off {
-  color: var(--pdp-line);
+.pdp-feel__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+  gap: 20px;
+  align-items: stretch;
 }
-/* Une saison non retenue reste lisible mais visiblement en retrait. */
-.pdp-feel-card__tags li.is-off {
+.pdp-feel__card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 28px 24px 26px;
+  border: 1px solid var(--pdp-line);
+  border-radius: var(--pdp-radius-md);
+  background: var(--surface, #faf7f2);
+}
+.pdp-feel__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 4px;
+  border: 1px solid var(--pdp-gold);
+  border-radius: 50%;
+  color: var(--pdp-gold);
+  font-size: 20px;
+}
+.pdp-feel__title {
+  font-size: var(--text-12);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
   color: var(--pdp-ink-soft);
-  opacity: 0.55;
 }
-.pdp-feel-card__tags li.is-on {
-  background: var(--pdp-panel, #faf7f2);
+.pdp-feel__label {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 23px;
+  line-height: 1.2;
+  color: var(--pdp-ink);
+}
+.pdp-feel__gauge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 2px;
+}
+.pdp-feel__segs {
+  display: flex;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.pdp-feel__seg {
+  flex: 1 1 0;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border-dark, #ccc8c0);
+  opacity: 0.5;
+}
+.pdp-feel__seg.is-on {
+  background: var(--pdp-gold);
+  opacity: 1;
+}
+.pdp-feel__score {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--badge-text, #8a6825);
+}
+.pdp-feel__score small {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--pdp-ink-soft);
+}
+.pdp-feel__text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--pdp-ink-soft);
+}
+.pdp-feel__sub {
+  margin: 6px 0 0;
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--pdp-ink-soft);
+}
+.pdp-feel__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pdp-feel__chip {
+  padding: 5px 11px;
+  border: 1px solid var(--pdp-line);
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--pdp-ink-soft);
+}
+/* Une saison non retenue reste lisible, mais visiblement en retrait :
+   l'interet de la carte est de voir d'un coup celles qui comptent. */
+.pdp-feel__chip.is-on {
+  border-color: var(--pdp-gold);
+  background: var(--accent-light, #f4ecda);
+  color: var(--badge-text, #8a6825);
+}
+@media (max-width: 640px) {
+  .pdp-feel {
+    padding-top: 40px;
+  }
+  .pdp-feel__card {
+    padding: 22px 20px;
+  }
 }

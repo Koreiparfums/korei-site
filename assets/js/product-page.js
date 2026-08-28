@@ -813,6 +813,106 @@
   ];
 
   // ── Section 2 : Histoire
+  // ── Ressenti : tenue, projection, quand le porter
+  //
+  // Les deux jauges lisent KoreiProducts.SENSORIEL. Un parfum absent de cette
+  // table n'affiche aucune jauge : on ne devine pas une note, et aucune source
+  // exterieure n'est citee sur la fiche.
+
+  const TENUE_PALIERS = [
+    { min: 9, label: "Très longue tenue", texte: "Il tient la journée entière et se sent encore le soir." },
+    { min: 7, label: "Longue tenue", texte: "Une bonne partie de la journée sans avoir à en remettre." },
+    { min: 5, label: "Tenue modérée", texte: "Une demi-journée. Prévoyez une retouche l'après-midi." },
+    { min: 0, label: "Tenue légère", texte: "Il s'estompe vite : un voile discret, à remettre au besoin." },
+  ];
+
+  const PROJECTION_PALIERS = [
+    { min: 9, label: "Sillage marqué", texte: "On vous sent entrer dans la pièce. À doser." },
+    { min: 7, label: "Sillage présent", texte: "Perceptible à un bras de distance, sans envahir." },
+    { min: 5, label: "Sillage mesuré", texte: "Il reste dans votre bulle : idéal au bureau." },
+    { min: 0, label: "Au plus près de la peau", texte: "Un parfum pour vous, que l'on découvre de tout près." },
+  ];
+
+  const SAISONS = [
+    ["printemps", "Printemps"],
+    ["été", "Été"],
+    ["automne", "Automne"],
+    ["hiver", "Hiver"],
+  ];
+
+  function palierDe(table, note) {
+    return table.find((p) => note >= p.min) || table[table.length - 1];
+  }
+
+  function sensorielDe(product) {
+    const table = (global.KoreiProducts && global.KoreiProducts.SENSORIEL) || {};
+    return table[product.id] || null;
+  }
+
+  function feelGauge(icone, titre, note, palier) {
+    const segments = Array.from(
+      { length: 10 },
+      (_, i) => `<span class="pdp-feel__seg${i < note ? " is-on" : ""}"></span>`
+    ).join("");
+    return `
+      <article class="pdp-feel__card">
+        <span class="pdp-feel__icon" aria-hidden="true"><i class="ti ti-${icone}"></i></span>
+        <h3 class="pdp-feel__title">${titre}</h3>
+        <p class="pdp-feel__label">${palier.label}</p>
+        <div class="pdp-feel__gauge" role="img" aria-label="${titre} : ${note} sur 10">
+          <span class="pdp-feel__segs">${segments}</span>
+          <span class="pdp-feel__score">${note}<small>/10</small></span>
+        </div>
+        <p class="pdp-feel__text">${palier.texte}</p>
+      </article>`;
+  }
+
+  function feelSeasons(product) {
+    const actives = new Set(product.seasons || []);
+    const chips = SAISONS.map(
+      ([cle, libelle]) => `<li class="pdp-feel__chip${actives.has(cle) ? " is-on" : ""}">${libelle}</li>`
+    ).join("");
+    const occasions = (product.occasions || [])
+      .map((o) => `<li class="pdp-feel__chip is-on">${esc(capitalize(o))}</li>`)
+      .join("");
+    const libelle = (product.seasons || []).map(capitalize).join(" et ");
+    return `
+      <article class="pdp-feel__card">
+        <span class="pdp-feel__icon" aria-hidden="true"><i class="ti ti-sun"></i></span>
+        <h3 class="pdp-feel__title">Quand le porter</h3>
+        <p class="pdp-feel__label">${esc(libelle)}</p>
+        <ul class="pdp-feel__chips">${chips}</ul>
+        ${occasions ? `<p class="pdp-feel__sub">Occasions</p><ul class="pdp-feel__chips">${occasions}</ul>` : ""}
+      </article>`;
+  }
+
+  function renderRessenti(product) {
+    const notes = sensorielDe(product);
+    const cartes = [];
+    if (notes && notes.tenue) {
+      cartes.push(feelGauge("hourglass", "Tenue", notes.tenue, palierDe(TENUE_PALIERS, notes.tenue)));
+    }
+    if (notes && notes.projection) {
+      cartes.push(
+        feelGauge("wave-sine", "Projection", notes.projection, palierDe(PROJECTION_PALIERS, notes.projection))
+      );
+    }
+    if ((product.seasons || []).length) cartes.push(feelSeasons(product));
+    // Une seule carte ne fait pas une section : elle ne dit rien de plus que
+    // le tableau des details, juste en plus gros.
+    if (cartes.length < 2) return "";
+    return `
+      <section class="pdp-feel">
+        <div class="pdp-container">
+          <div class="pdp-head">
+            <div class="pdp-eyebrow">Ressenti</div>
+            <h2 class="pdp-title">Ce que vous allez <em>sentir</em></h2>
+          </div>
+          <div class="pdp-feel__grid pdp-reveal">${cartes.join("")}</div>
+        </div>
+      </section>`;
+  }
+
   function renderStory(product) {
     return `
       <section class="pdp-editorial">
@@ -842,7 +942,7 @@
       </section>`;
   }
 
-  // ── Section 3 : Notes phares (façon Fragrantica — photo + libellé par note)
+  // ── Section 3 : Notes phares (photo + libellé par note)
 
   function tagList(tags) {
     return tags.map((t) => `<li class="is-on">${t}</li>`).join("");
@@ -882,21 +982,13 @@
   }
 
   // ── Avis clients (honnête — aucun faux avis fabriqué)
-  function renderReviewsBody(product) {
-    const fr = product.fragrantica;
-    const rating = fr?.rating || null;
-    const source = fr?.url
-      ? `<a class="pdp-reviews__source" href="${fr.url}" target="_blank" rel="noopener">Voir la fiche Fragrantica</a>`
-      : "";
-    // La note affichee est celle de Fragrantica, pas une note maison : la
-    // boutique n'a aucune commande, donc aucun avis client.
-    const score = rating
-      ? `<div class="pdp-reviews__score">${String(rating).replace(".", ",")}<small> / 5</small></div>
-         <p class="pdp-reviews__count">Note des passionnés sur Fragrantica. ${source}</p>`
-      : "";
+  function renderReviewsBody() {
+    // Une boutique n'affiche pas ses sources. La note Fragrantica servait de
+    // pis-aller en attendant les premiers avis clients, avec la mention
+    // « sur Fragrantica » juste en dessous : on ne la montre plus, ni la note
+    // ni le lien. La boutique n'a aucune commande, donc aucun avis.
     return `
       <div class="pdp-reviews__panel">
-        ${score}
         <p class="pdp-reviews__empty">
           Aucun avis client Kōrei pour l'instant. Vous pourrez laisser le vôtre
           après votre commande.
@@ -998,13 +1090,8 @@
       </section>`;
   }
 
-  function reviewsMeta(product) {
-    const fr = product.fragrantica;
-    if (fr?.rating && fr?.votes) {
-      return `${String(fr.rating).replace(".", ",")}/5 · ${fr.votes.toLocaleString("fr-FR")} avis Fragrantica`;
-    }
-    if (fr?.rating) return `${String(fr.rating).replace(".", ",")}/5 sur Fragrantica`;
-    // Aucun avis client a ce jour : on n'affiche pas de note maison inventee.
+  function reviewsMeta() {
+    // Pas de note affichee tant qu'aucun client n'en a laisse une.
     return "";
   }
 
@@ -1012,7 +1099,7 @@
     const items = [
       accordionItem("notes", "Notes olfactives", "", renderPyramid(product), true),
       accordionItem("details", "Détails", "", renderDetails(product), true),
-      accordionItem("avis", "Avis", reviewsMeta(product), renderReviewsBody(product), true),
+      accordionItem("avis", "Avis", reviewsMeta(), renderReviewsBody(), true),
     ].join("");
     if (!items.trim()) return "";
     return `<div class="pdp-acc pdp-container">${items}</div>`;
@@ -1123,6 +1210,7 @@
         <span>${esc(product.name)}</span>
       </nav>
       ${renderHero(product, "../")}
+      ${renderRessenti(product)}
       ${renderCarouselSection("pdp-similar", "Sélection", "Parfums similaires")}
       ${renderCarouselSection("pdp-suggested", "La maison", `Autres créations ${esc(product.brand)}`)}
       ${renderStory(product)}
