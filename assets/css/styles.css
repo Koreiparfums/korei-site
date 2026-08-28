@@ -7583,6 +7583,18 @@ body.has-cookie-banner .chatbot-widget {
 }
 
 /* ==========================================================================
+   L'attribut hidden doit toujours gagner
+   La regle du navigateur ([hidden] { display: none }) a la meme force qu'une
+   classe, et perd donc face a n'importe quel `.bloc { display: flex }` de la
+   feuille. Resultat : des blocs masques par le JS restaient a l'ecran, comme
+   la ligne « Coffret complet · −10 % : −0€ » du panier. Une seule regle ferme
+   la famille entiere de bugs.
+   ========================================================================== */
+[hidden] {
+  display: none !important;
+}
+
+/* ==========================================================================
    Zones de toucher (KOR-A8, brief §6)
    Sous 860 px, tout ce qui se touche fait au moins 44 px de haut. On agrandit
    la zone sensible sans grossir le dessin : le bouton garde son apparence.
