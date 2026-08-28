@@ -1271,6 +1271,7 @@
     productSchema,
     productBreadcrumbSchema,
     noteImageHtml,
+    noteFamilyOf,
     initBrandChips,
     initHomePage,
     initCataloguePage,

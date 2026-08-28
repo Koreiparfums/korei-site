@@ -1609,136 +1609,238 @@ a.pdp-coffret-promo__view {
   text-underline-offset: 3px;
 }
 
-/* ─── KOR-B8 · pyramide olfactive (maquette du 24 aout) ─────────────────── */
+/* ─── KOR-B8 · pyramide olfactive (maquette du 24 aout) ─────────────────
+   Un rail vertical relie les trois etages numerotes. A gauche l'intitule et
+   l'explication, en dessous le bandeau des notes : photo d'ingredient quand
+   elle existe, couleur de la famille olfactive sinon. */
 .pdp-py {
   list-style: none;
   margin: 0;
   padding: 0;
-  counter-reset: none;
 }
 .pdp-py-row {
   display: grid;
-  grid-template-columns: 56px minmax(200px, 260px) 1fr;
-  gap: 0 28px;
-  align-items: start;
-  padding: 28px 0;
+  grid-template-columns: 56px minmax(0, 1fr);
+  column-gap: 20px;
+  padding: 30px 0 34px;
   border-top: 1px solid var(--pdp-line);
 }
 .pdp-py-row:first-child {
   border-top: 0;
-  padding-top: 8px;
+  padding-top: 6px;
+}
+/* Le rail : le trait qui descend d'un etage au suivant, comme la maquette. */
+.pdp-py-row__rail {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+.pdp-py-row__rail::after {
+  content: "";
+  position: absolute;
+  top: 52px;
+  bottom: -34px;
+  width: 1px;
+  background: var(--pdp-line);
+}
+.pdp-py-row.is-last .pdp-py-row__rail::after {
+  display: none;
 }
 .pdp-py-row__num {
-  width: 48px;
-  height: 48px;
+  position: relative;
+  width: 46px;
+  height: 46px;
+  flex: none;
   border: 1px solid var(--pdp-gold);
   border-radius: 50%;
+  background: var(--pdp-white);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-family: "Cormorant Garamond", serif;
-  font-size: 17px;
+  font-size: 16px;
   font-variant-numeric: lining-nums;
+  letter-spacing: 0.06em;
   color: var(--pdp-gold);
+}
+.pdp-py-row__body {
+  min-width: 0;
 }
 .pdp-py-row__label {
   display: block;
   font-size: 11px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--pdp-gold);
 }
 .pdp-py-row__title {
-  margin: 8px 0 0;
+  margin: 10px 0 0;
   font-family: "Cormorant Garamond", serif;
   font-weight: 300;
-  font-size: 27px;
-  line-height: 1.15;
+  font-size: clamp(24px, 2.4vw, 31px);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
   color: var(--pdp-ink);
+  text-wrap: balance;
 }
 .pdp-py-row__rule {
   display: block;
   width: 28px;
   height: 1px;
-  margin: 14px 0;
+  margin: 16px 0;
   background: var(--pdp-gold);
 }
-.pdp-py-row__desc {
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--pdp-ink-soft);
-  max-width: 30ch;
-}
-.pdp-py-row__notes {
+/* « En savoir plus » : le texte est reellement replie, pas seulement un lien
+   decoratif comme sur la maquette. */
+.pdp-py-row__more summary {
   list-style: none;
-  margin: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--pdp-gold);
+}
+.pdp-py-row__more summary::-webkit-details-marker {
+  display: none;
+}
+.pdp-py-row__plus {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--pdp-gold);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+}
+.pdp-py-row__more[open] .pdp-py-row__plus {
+  transform: rotate(45deg);
+}
+.pdp-py-row__more p {
+  margin: 4px 0 0;
+  max-width: 52ch;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--pdp-ink-soft);
+}
+
+/* Bandeau des notes */
+.pdp-py-band {
+  list-style: none;
+  margin: 22px 0 0;
   padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 18px;
+}
+.pdp-py-tile {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px 32px;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
+  gap: 4px;
 }
-.pdp-py-note {
+.pdp-py-tile__media {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--pdp-panel, #f7f3ec);
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
 }
-/* Le medaillon a initiale reste le repli tant que la photo d'ingredient
-   n'existe pas : cinq notes sur cinquante et une en ont une aujourd'hui. */
-.pdp-py-note .note-image {
-  width: 56px;
-  height: 56px;
-  flex: none;
-}
-.pdp-py-note .note-image img {
+.pdp-py-tile__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 50%;
 }
-.pdp-py-note__text {
+/* Repli sans photo : la couleur et le picto de la famille olfactive. */
+.pdp-py-tile__fallback {
+  width: 100%;
+  height: 100%;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  background: var(--note-bg, var(--pdp-panel, #f7f3ec));
+  color: var(--note-ink, var(--pdp-gold));
 }
-.pdp-py-note__name {
+.pdp-py-tile__fallback[data-family="agrume"] {
+  --note-bg: #f6f9e9;
+  --note-ink: #7f9130;
+}
+.pdp-py-tile__fallback[data-family="fruit"] {
+  --note-bg: #fdf0ef;
+  --note-ink: #b8574c;
+}
+.pdp-py-tile__fallback[data-family="fleur"] {
+  --note-bg: #fdf0f4;
+  --note-ink: #b45877;
+}
+.pdp-py-tile__fallback[data-family="bois"] {
+  --note-bg: #f4f1ea;
+  --note-ink: #7a6544;
+}
+.pdp-py-tile__fallback[data-family="epice"] {
+  --note-bg: #fdf1e6;
+  --note-ink: #b4712c;
+}
+.pdp-py-tile__fallback[data-family="gourmand"] {
+  --note-bg: #f9f1e6;
+  --note-ink: #96693a;
+}
+.pdp-py-tile__fallback[data-family="resine"] {
+  --note-bg: #f7f0e4;
+  --note-ink: #9a7524;
+}
+.pdp-py-tile__fallback[data-family="musc"] {
+  --note-bg: #f4f4f2;
+  --note-ink: #7d7d74;
+}
+.pdp-py-tile__name {
   font-family: "Cormorant Garamond", serif;
-  font-size: 19px;
-  letter-spacing: 0.04em;
+  font-size: 17px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  line-height: 1.15;
   color: var(--pdp-ink);
-  line-height: 1.1;
 }
-.pdp-py-note__latin {
+.pdp-py-tile__latin {
   font-family: "Cormorant Garamond", serif;
   font-style: italic;
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1.3;
   color: var(--pdp-gold);
 }
 
-@media (max-width: 860px) {
+@media (max-width: 640px) {
   .pdp-py-row {
-    grid-template-columns: 40px 1fr;
-    gap: 0 16px;
-    padding: 22px 0;
+    grid-template-columns: 42px minmax(0, 1fr);
+    column-gap: 14px;
+    padding: 24px 0 28px;
   }
   .pdp-py-row__num {
     width: 36px;
     height: 36px;
     font-size: 14px;
   }
-  .pdp-py-row__notes {
-    grid-column: 1 / -1;
-    margin-top: 18px;
-    gap: 16px 24px;
+  .pdp-py-row__rail::after {
+    top: 42px;
+    bottom: -28px;
   }
-  .pdp-py-row__title {
-    font-size: 22px;
+  .pdp-py-band {
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    gap: 14px;
   }
-  .pdp-py-note .note-image {
-    width: 46px;
-    height: 46px;
+  .pdp-py-tile__name {
+    font-size: 15px;
   }
 }
 

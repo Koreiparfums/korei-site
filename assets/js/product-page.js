@@ -362,24 +362,61 @@
       key: "top",
       num: "01",
       label: "Notes de tête",
-      title: "La première impression",
-      desc: "Ce que l'on sent dès la vaporisation, pendant les premières minutes.",
+      fallback: "La première impression",
+      desc: "Ce que l'on sent dès la vaporisation, pendant les premières minutes. Ces notes sont les plus volatiles : elles s'effacent en quinze à trente minutes pour laisser la place au cœur.",
     },
     {
       key: "heart",
       num: "02",
       label: "Notes de cœur",
-      title: "Le cœur du parfum",
-      desc: "Ce qui s'installe après une demi-heure et signe la composition.",
+      fallback: "Le cœur du parfum",
+      desc: "Ce qui s'installe après une demi-heure et signe la composition. C'est le caractère du parfum, celui qu'on reconnaît et qu'on porte pendant plusieurs heures.",
     },
     {
       key: "base",
       num: "03",
       label: "Notes de fond",
-      title: "La trace qui reste",
-      desc: "Ce qui subsiste sur la peau plusieurs heures après.",
+      fallback: "La trace qui reste",
+      desc: "Ce qui subsiste sur la peau plusieurs heures après. Les molécules les plus lourdes, celles qui tiennent le sillage et laissent une signature sur les vêtements.",
     },
   ];
+
+  // Intitule de l'etage, deduit de la famille dominante de ses notes. Il n'est
+  // pas ecrit en dur produit par produit : un etage boise ne peut pas
+  // s'intituler « Florales & Raffinees ».
+  // Les familles proches se regroupent en un caractere : un etage d'ananas et
+  // de bergamote est « frais », meme si ce sont deux familles differentes.
+  // C'est la lecture de la maquette du 24 aout.
+  const TIER_MOODS = {
+    fraiche: { familles: ["agrume", "fruit"], titre: "Fraîches & Pétillantes" },
+    florale: { familles: ["fleur"], titre: "Florales & Raffinées" },
+    boisee: { familles: ["bois", "musc", "resine"], titre: "Boisées & Sensuelles" },
+    chaude: { familles: ["epice", "gourmand"], titre: "Chaudes & Gourmandes" },
+  };
+
+  const MOOD_BY_FAMILY = (() => {
+    const map = {};
+    Object.entries(TIER_MOODS).forEach(([mood, def]) => def.familles.forEach((f) => (map[f] = mood)));
+    return map;
+  })();
+
+  function tierTitle(notes, fallback) {
+    const compte = {};
+    let classees = 0;
+    notes.forEach((n) => {
+      const f = ui.noteFamilyOf ? ui.noteFamilyOf(n)?.family : null;
+      const mood = f ? MOOD_BY_FAMILY[f] : null;
+      if (!mood) return;
+      compte[mood] = (compte[mood] || 0) + 1;
+      classees += 1;
+    });
+    const ordre = Object.keys(compte).sort((a, b) => compte[b] - compte[a]);
+    // Il faut une vraie majorite pour nommer l'etage. Sinon on garde
+    // l'intitule neutre : annoncer « Boisees » un etage moitie floral
+    // serait faux.
+    if (!ordre.length || compte[ordre[0]] * 2 <= classees) return fallback;
+    return TIER_MOODS[ordre[0]].titre;
+  }
 
   function noteSlugLocal(note) {
     return String(note || "")
@@ -390,19 +427,29 @@
       .replace(/^-|-$/g, "");
   }
 
+  // Une note = une tuile du bandeau. Avec sa photo d'ingredient quand elle
+  // existe, sinon la couleur de sa famille olfactive : jamais un cadre vide.
   function renderPyramidNote(note) {
     const slug = noteSlugLocal(note);
     const label = NOTE_ALIASES[slug] || note;
     const latin = NOTE_LATIN[noteSlugLocal(label)] ?? NOTE_LATIN[slug];
+    const fam = ui.noteFamilyOf ? ui.noteFamilyOf(label) : null;
+    const photo = NOTE_PHOTOS.has(noteSlugLocal(label)) ? noteSlugLocal(label) : null;
+    const media = photo
+      ? `<img src="../assets/images/notes/${photo}.webp" alt="" width="400" height="400" loading="lazy" decoding="async">`
+      : `<span class="pdp-py-tile__fallback"${fam ? ` data-family="${fam.family}"` : ""}>
+           ${fam ? `<i class="ti ${fam.icon}" aria-hidden="true"></i>` : esc(label.slice(0, 1))}
+         </span>`;
     return `
-      <li class="pdp-py-note">
-        ${ui.noteImageHtml ? ui.noteImageHtml(label, "../") : ""}
-        <span class="pdp-py-note__text">
-          <span class="pdp-py-note__name">${esc(label)}</span>
-          ${latin ? `<em class="pdp-py-note__latin">${esc(latin)}</em>` : ""}
-        </span>
+      <li class="pdp-py-tile${photo ? " has-photo" : ""}">
+        <span class="pdp-py-tile__media">${media}</span>
+        <span class="pdp-py-tile__name">${esc(label)}</span>
+        ${latin ? `<em class="pdp-py-tile__latin">${esc(latin)}</em>` : ""}
       </li>`;
   }
+
+  // Photos d'ingredients reellement presentes dans le depot.
+  const NOTE_PHOTOS = new Set(["ananas", "bergamote", "bouleau", "jasmin", "mousse"]);
 
   function renderPyramid(product) {
     const notesByTier = {
@@ -415,32 +462,31 @@
 
     return `
       <div class="pdp-pyramid pdp-reveal">
-        <span class="pdp-pyramid__title">Pyramide olfactive</span>
         <ol class="pdp-py">
           ${tiers
-            .map(
-              (t) => `
-            <li class="pdp-py-row">
-              <span class="pdp-py-row__num" aria-hidden="true">${t.num}</span>
-              <div class="pdp-py-row__head">
+            .map((t, i) => {
+              const notes = notesByTier[t.key];
+              return `
+            <li class="pdp-py-row${i === tiers.length - 1 ? " is-last" : ""}">
+              <span class="pdp-py-row__rail" aria-hidden="true">
+                <span class="pdp-py-row__num">${t.num}</span>
+              </span>
+              <div class="pdp-py-row__body">
                 <span class="pdp-py-row__label">${t.label}</span>
-                <h3 class="pdp-py-row__title">${t.title}</h3>
+                <h3 class="pdp-py-row__title">${tierTitle(notes, t.fallback)}</h3>
                 <span class="pdp-py-row__rule" aria-hidden="true"></span>
-                <p class="pdp-py-row__desc">${t.desc}</p>
+                <details class="pdp-py-row__more">
+                  <summary><span class="pdp-py-row__plus" aria-hidden="true">+</span> En savoir plus</summary>
+                  <p>${t.desc}</p>
+                </details>
+                <ul class="pdp-py-band">
+                  ${notes.map(renderPyramidNote).join("")}
+                </ul>
               </div>
-              <ul class="pdp-py-row__notes">
-                ${notesByTier[t.key].map(renderPyramidNote).join("")}
-              </ul>
-            </li>`
-            )
+            </li>`;
+            })
             .join("")}
         </ol>
-        <button type="button" class="pdp-btn pdp-btn--outline pdp-pyramid__cta" id="pdp-ingredients-toggle" aria-expanded="false">
-          <i class="ti ti-star"></i> Voir pour les ingrédients
-        </button>
-        <p class="pdp-pyramid__ingredients" id="pdp-ingredients-text" hidden>
-          La liste complète des ingrédients (INCI) figure sur l'étiquette du flacon et vous est fournie avec votre commande.
-        </p>
       </div>`;
   }
 
