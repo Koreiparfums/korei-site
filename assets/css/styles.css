@@ -7759,8 +7759,7 @@ body.has-cookie-banner .chatbot-widget {
   .chip,
   .cb2-filter-chip,
   .filters-reset,
-  .show-more-link,
-  .maisons-select__label {
+  .show-more-link {
     min-height: 44px;
   }
   /* Un min-height seul laisse le texte colle en haut : on recentre. */
@@ -8806,6 +8805,18 @@ body.has-cookie-banner .chatbot-widget {
     justify-content: flex-start;
   }
   .maisons-toolbar__filters {
+    width: 100%;
+  }
+  /* Les deux libelles n'ont pas la meme longueur : cote a cote, chaque menu
+     demarrait a une abscisse differente. Le libelle passe au-dessus, les
+     deux menus s'alignent. */
+  .maisons-select {
+    flex: 1 1 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .maisons-select select {
     width: 100%;
   }
   .maisons-search input {
