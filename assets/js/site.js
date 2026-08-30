@@ -14,7 +14,7 @@
   const SITE_URL = "https://korei.fr";
 
   const SITE = {
-    name: "Korei",
+    name: "Kōrei",
     tagline: "Parfumerie de niche",
     locale: "fr_FR",
     url: SITE_URL,
@@ -167,7 +167,7 @@
         <div class="media-slot__placeholder placeholder-premium placeholder-premium--hero">
           <div class="placeholder-premium__pattern" aria-hidden="true"></div>
           <div class="placeholder-premium__content">
-            <span class="placeholder-premium__eyebrow">Korei</span>
+            <span class="placeholder-premium__eyebrow">Kōrei</span>
             <span class="placeholder-premium__title">Parfumerie<br>de niche</span>
             <span class="placeholder-premium__sub">Décants & flacons authentiques</span>
           </div>
@@ -181,7 +181,7 @@
           <div class="placeholder-premium__pattern" aria-hidden="true"></div>
           <div class="placeholder-premium__content">
             <i class="ti ti-photo placeholder-premium__icon" aria-hidden="true"></i>
-            <span class="placeholder-premium__title">${escapeHtml(data.title || "Korei")}</span>
+            <span class="placeholder-premium__title">${escapeHtml(data.title || "Kōrei")}</span>
             <span class="placeholder-premium__sub">${escapeHtml(data.subtitle || "")}</span>
           </div>
         </div>`;
@@ -243,10 +243,10 @@
     grid.innerHTML = IMAGES.lifestyle
       .map((src, i) => {
         const path = withBase(src, basePath);
-        const meta = LIFESTYLE_SLOTS[i] || { title: "Korei", subtitle: "" };
+        const meta = LIFESTYLE_SLOTS[i] || { title: "Kōrei", subtitle: "" };
         return `
           <div class="lifestyle-slot media-slot" data-slot="lifestyle-${i + 1}">
-            <img class="media-slot__image lifestyle-slot__img" src="${path}" alt="${meta.title} — Korei" width="1600" height="900" loading="lazy" decoding="async" />
+            <img class="media-slot__image lifestyle-slot__img" src="${path}" alt="${meta.title} — Kōrei" width="1600" height="900" loading="lazy" decoding="async" />
             ${renderPlaceholder("lifestyle", { ...meta, index: i })}
           </div>`;
       })

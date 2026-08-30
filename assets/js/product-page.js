@@ -1201,7 +1201,7 @@
     }
 
     site?.setPageMeta({
-      title: `${product.name} — ${product.brand} | Korei`,
+      title: `${product.name} — ${product.brand} | Kōrei`,
       description: `${product.description} Décant dès ${product.price}€.`,
       image: ui.productMetaImage ? ui.productMetaImage(product, "../") : undefined,
       path: `pages/product?id=${product.id}`,
