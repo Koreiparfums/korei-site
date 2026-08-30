@@ -38,6 +38,20 @@
     return String(str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
   }
 
+  // Familles olfactives reellement utilisees par le catalogue (voir
+  // FAMILY_LABELS dans main.js). Comparees sans accent.
+  const FAMILLES_REELLES = new Set([
+    "oriental",
+    "boise",
+    "floral",
+    "gourmand",
+    "cuir",
+    "fruity",
+    "fruite",
+    "aromatique",
+    "frais",
+  ]);
+
   function nettoyerIdentite(product) {
     const maisons = (global.KoreiProducts && global.KoreiProducts.BRANDS) || [];
     let nom = String(product.name || "");
@@ -62,7 +76,20 @@
       if (reste) nom = reste;
     }
 
-    return { ...product, name: nom, brand: brand || product.brand, brandId: brandId || product.brandId };
+    // La boutique en ligne range ses produits dans un type « Decant ». Ce
+    // n'est pas une famille olfactive : laissee telle quelle, elle apparait
+    // dans le filtre « Famille olfactive » a cote de Oriental et Boise. On
+    // ne garde que les familles reelles ; la boutique n'est pas modifiee,
+    // seul l'affichage l'est.
+    const famille = FAMILLES_REELLES.has(sansAccent(product.family || "")) ? product.family : "";
+
+    return {
+      ...product,
+      name: nom,
+      brand: brand || product.brand,
+      brandId: brandId || product.brandId,
+      family: famille,
+    };
   }
 
   function useShopifyProducts(bruts) {

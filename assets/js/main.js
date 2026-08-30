@@ -478,7 +478,7 @@
         <div class="card-body">
           <div class="card-brand">${esc(product.brand)}</div>
           <h3 class="card-name">${esc(product.name)}</h3>
-          <div class="card-note-strip" aria-label="Notes principales">
+          <div class="card-note-strip${keyNotes.length ? "" : " is-vide"}" aria-label="Notes principales">
             ${keyNotes
               .map(
                 (note) => `

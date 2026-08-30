@@ -1445,6 +1445,12 @@ body[data-page="home"] .hero {
   width: 100%;
   margin: 1.6px 0 10.4px;
 }
+/* Les produits venus de la boutique en ligne n'ont pas encore leurs notes.
+   Sans cette regle, la bande vide gardait ses marges et creusait un blanc
+   entre le nom du parfum et son prix. */
+.card-note-strip.is-vide {
+  display: none;
+}
 .card-note {
   display: grid;
   justify-items: center;
