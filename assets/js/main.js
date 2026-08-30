@@ -1028,7 +1028,9 @@
     });
 
     // ── Sillage / Longévité — jauges synchronisées (même axe d'intensité produit)
-    const gaugeGroups = [document.getElementById("longevity-gauges"), document.getElementById("sillage-gauges")];
+    // Un seul groupe de jauges : « Longevite » et « Sillage » pilotaient tous
+    // deux filters.intensity, si bien que cliquer dans l'un allumait l'autre.
+    const gaugeGroups = [document.getElementById("intensity-gauges")];
     function setIntensity(value) {
       filters.intensity = value;
       gaugeGroups.forEach((group) => {
@@ -1106,8 +1108,7 @@
       document.querySelectorAll(".chip.active").forEach((c) => c.classList.remove("active"));
       gaugeGroups.forEach((group) => group?.querySelectorAll(".gauge-row.active").forEach((r) => r.classList.remove("active")));
       occasionGrid?.querySelectorAll(".occasion-item.active").forEach((el) => el.classList.remove("active"));
-      document.querySelectorAll('input[name="concentration"]').forEach((r) => (r.checked = false));
-      ["pop-new", "pop-bestseller", "pop-limited", "pop-exclusive"].forEach((id) => {
+      ["pop-new", "pop-bestseller"].forEach((id) => {
         const el = document.getElementById(id);
         if (el) el.checked = false;
       });
