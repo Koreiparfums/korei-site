@@ -434,8 +434,14 @@
     return notes.join(" · ");
   }
 
+  // Ecriture francaise du prix : virgule decimale, deux decimales seulement
+  // quand elles existent, espace insecable avant l'euro. « 8.9€ » devient
+  // « 8,90 € ».
   function formatPrice(price) {
-    return `À partir de ${price}€`;
+    const n = Number(price);
+    if (!Number.isFinite(n)) return "";
+    const texte = Number.isInteger(n) ? String(n) : n.toFixed(2).replace(".", ",");
+    return `À partir de ${texte}\u00a0€`;
   }
 
   global.KoreiProducts = {

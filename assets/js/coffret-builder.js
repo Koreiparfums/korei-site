@@ -725,16 +725,52 @@
     }
   }
 
-  // ── CTA "Passer la commande" : n'est activé que si un panier Shopify réel
-  // (avec checkoutUrl) existe. Sinon, reste désactivé comme aujourd'hui.
+  // Une ligne ne peut partir en commande que si elle porte une variante
+  // Shopify. Les parfums encore absents de la boutique en ligne n'en ont pas.
+  function lignesNonCommandables() {
+    return load().filter((it) => !it.variantId);
+  }
+
+  // ── CTA "Passer la commande". Le bouton etait desactive sans rien dire :
+  // le visiteur cliquait dans le vide, avec pour seule explication une
+  // infobulle « Bientot disponible » invisible au doigt. Le panier annonce
+  // maintenant ce qui manque, et le bouton a l'air inactif quand il l'est.
   function initCheckoutCta() {
     const cta = document.querySelector(".panier-summary__cta");
     if (!cta) return;
 
+    let message = document.getElementById("panier-blocage");
+    if (!message) {
+      message = document.createElement("p");
+      message.className = "panier-summary__blocage";
+      message.id = "panier-blocage";
+      message.hidden = true;
+      cta.insertAdjacentElement("afterend", message);
+    }
+
     const sync = () => {
       const url = getCheckoutUrl();
       cta.disabled = !url;
-      cta.title = url ? "" : "Bientôt disponible";
+      cta.classList.toggle("is-verrouille", !url);
+      cta.title = "";
+
+      if (url) {
+        message.hidden = true;
+        return;
+      }
+      const bloquantes = lignesNonCommandables();
+      if (!bloquantes.length) {
+        message.hidden = true;
+        return;
+      }
+      const noms = bloquantes.map((it) => it.name).filter(Boolean);
+      const liste = noms.slice(0, 3).join(", ");
+      const reste = noms.length > 3 ? ` et ${noms.length - 3} autre${noms.length - 3 > 1 ? "s" : ""}` : "";
+      message.textContent =
+        noms.length === 1
+          ? `${liste} n'est pas encore en vente en ligne. Retirez-le du panier pour commander le reste.`
+          : `${liste}${reste} ne sont pas encore en vente en ligne. Retirez-les du panier pour commander le reste.`;
+      message.hidden = false;
     };
 
     cta.addEventListener("click", () => {
