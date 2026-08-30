@@ -9416,3 +9416,9 @@ body.has-cookie-banner .chatbot-widget {
   font-size: 24px;
   color: var(--text-light);
 }
+
+/* Trop peu de cartes pour un defilement : rangee simple, sans flechage. */
+.is-rangee-simple {
+  justify-content: flex-start;
+  overflow-x: auto;
+}

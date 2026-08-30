@@ -733,6 +733,20 @@
     const realCards = Array.from(track.children);
     if (realCards.length < 2) return;
 
+    // Le defilement infini duplique le jeu de cartes avant et apres. Quand le
+    // jeu reel ne remplit pas la largeur visible, les copies se retrouvent a
+    // l'ecran en meme temps que les originaux : le visiteur voit deux fois le
+    // meme parfum cote a cote. Dans ce cas on laisse une rangee simple.
+    const largeurReelle = realCards.reduce((somme, carte) => {
+      const b = carte.getBoundingClientRect();
+      return somme + b.width;
+    }, 0);
+    if (largeurReelle < track.clientWidth * 1.2) {
+      track.classList.add("is-rangee-simple");
+      nav.hidden = true;
+      return;
+    }
+
     const cloneSet = () =>
       realCards.map((card) => {
         const clone = card.cloneNode(true);
