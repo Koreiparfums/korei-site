@@ -194,7 +194,7 @@
           ${notes ? `<span class="fav-card__notes">${esc(notes)}</span>` : ""}
           <div class="fav-card__shop">
             <select class="fav-card__select" data-fav-select aria-label="Format">${optionsHtml}</select>
-            <span class="fav-card__price" data-fav-price>${formatPriceFor(product, "2ml")}€</span>
+            <span class="fav-card__price" data-fav-price>${global.KoreiProducts?.prixEuros(formatPriceFor(product, "2ml")) ?? `${formatPriceFor(product, "2ml")}\u00a0€`}</span>
             <button type="button" class="fav-card__add" data-fav-add aria-label="Ajouter ${esc(product.name)} au coffret">
               <i class="ti ti-package"></i>
             </button>
@@ -244,7 +244,7 @@
 
       select.addEventListener("change", () => {
         const opt = select.options[select.selectedIndex];
-        if (priceEl) priceEl.textContent = `${opt.dataset.price}€`;
+        if (priceEl) priceEl.textContent = global.KoreiProducts?.prixEuros(opt.dataset.price) ?? `${opt.dataset.price}\u00a0€`;
         syncAddState();
       });
 

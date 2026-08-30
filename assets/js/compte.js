@@ -9,7 +9,7 @@
   if (document.body.dataset.page !== "compte") return;
 
   const money = (v) =>
-    `${Number(v || 0).toFixed(2).replace(".", ",").replace(",00", "")}€`;
+    global.KoreiProducts?.prixEuros(v) ?? `${Number(v || 0).toFixed(2).replace(".", ",")}\u00a0€`;
 
   function read(key) {
     try {

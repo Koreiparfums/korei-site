@@ -232,9 +232,17 @@
     return formats.find((f) => f.available) || formats[0];
   }
 
+  // Le nombre seul, sans devise : sert aux libelles d'accessibilite qui
+  // disent « euros » en toutes lettres.
   function formatPriceLabel(value) {
     const rounded = Math.round(value * 100) / 100;
     return Number.isInteger(rounded) ? `${rounded}` : rounded.toFixed(2).replace(".", ",");
+  }
+
+  // Le montant complet, ecrit a la francaise. Une seule regle pour tout le
+  // site, definie dans products.js.
+  function prix(value) {
+    return global.KoreiProducts?.prixEuros(value) ?? `${formatPriceLabel(value)}\u00a0€`;
   }
 
   /**
@@ -273,7 +281,7 @@
                 : ""
             }
             <span class="pdp-format__vol">${f.vol}</span>
-            <span class="pdp-format__price">${f.available ? `${formatPriceLabel(f.price)}€` : "Indisponible"}</span>
+            <span class="pdp-format__price">${f.available ? `${prix(f.price)}` : "Indisponible"}</span>
             ${
               info.sprays
                 ? `<span class="pdp-format__detail">~${info.sprays} pulvérisations</span>`
@@ -540,7 +548,7 @@
     if (!sel) return "";
     return `
       <div class="pdp-price" data-price-block>
-        <span class="pdp-price__amount" data-price-amount>${formatPriceLabel(sel.price)}€</span>
+        <span class="pdp-price__amount" data-price-amount>${prix(sel.price)}</span>
         <span class="pdp-price__unit" data-price-unit>${unitPriceLabel(sel)}</span>
       </div>`;
   }
@@ -548,7 +556,7 @@
   function unitPriceLabel(f) {
     const ml = parseFloat(String(f.key).replace("ml", ""));
     if (!ml || !f.price) return "";
-    return `${formatPriceLabel(f.price / ml)}€ / ml`;
+    return `${prix(f.price / ml)} / ml`;
   }
 
   // ── Progression du coffret (remplace les trois cartes-coffret)
@@ -579,7 +587,7 @@
   function railMessage(sel, count, tier) {
     const saved = sel.price * tier.capacity * 0.1;
     if (count === 0) {
-      return `${tier.capacity} parfums en ${sel.vol} = <strong>−10 % sur chaque flacon</strong> (${formatPriceLabel(saved)}€ economises) et livraison offerte.`
+      return `${tier.capacity} parfums en ${sel.vol} = <strong>−10 % sur chaque flacon</strong> (${prix(saved)} economises) et livraison offerte.`
         .replace("economises", "économisés");
     }
     const rest = tier.capacity - (count % tier.capacity);
@@ -621,7 +629,7 @@
                 ${bientot ? `<p class="pdp-bientot">Ce parfum arrive bientôt en boutique. Sa photo est en cours de préparation.</p>` : ""}
                 <div class="pdp-actions__row">
                   <button class="pdp-btn pdp-btn--primary" id="pdp-cta" type="button"${selected.available && !bientot ? "" : " disabled"}>
-                    ${bientot ? "Bientôt disponible" : selected.available ? `Ajouter au panier — ${formatPriceLabel(selected.price)}€` : "Format indisponible"}
+                    ${bientot ? "Bientôt disponible" : selected.available ? `Ajouter au panier — ${prix(selected.price)}` : "Format indisponible"}
                   </button>
                   <button class="pdp-btn pdp-btn--ghost" id="pdp-fav" type="button" aria-label="Ajouter aux favoris" aria-pressed="false" data-fav-btn data-product-id="${product.id}">
                     <i class="ti ti-heart"></i>
@@ -690,7 +698,7 @@
       if (!current) return "Format indisponible";
       if (!current.available) return "Format indisponible";
       if (coffret?.hasItem(product.id, current.key)) return "Déjà dans le panier";
-      return `Ajouter au panier — ${formatPriceLabel(current.price)}€`;
+      return `Ajouter au panier — ${prix(current.price)}`;
     }
 
     const priceAmount = main.querySelector("[data-price-amount]");
@@ -731,7 +739,7 @@
         btn.disabled = Boolean(disabled);
       });
       if (stickyVol) stickyVol.textContent = current?.available ? current.vol : "";
-      if (priceAmount && current) priceAmount.textContent = `${formatPriceLabel(current.price)}€`;
+      if (priceAmount && current) priceAmount.textContent = `${prix(current.price)}`;
       if (priceUnit && current) priceUnit.textContent = unitPriceLabel(current);
       syncRail();
     }

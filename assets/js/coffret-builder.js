@@ -507,7 +507,7 @@
 
   function money(value) {
     const rounded = Math.round(value * 100) / 100;
-    return Number.isInteger(rounded) ? `${rounded}€` : `${rounded.toFixed(2).replace(".", ",")}€`;
+    return global.KoreiProducts?.prixEuros(rounded) ?? `${rounded}\u00a0€`;
   }
 
   /**

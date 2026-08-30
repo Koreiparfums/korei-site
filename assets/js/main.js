@@ -7,6 +7,11 @@
  */
 (function (global) {
   const { formatPrice } = global.KoreiProducts || {};
+
+  // Meme ecriture du prix partout : « 8,90 € », espace insecable comprise.
+  function formatPrix(valeur) {
+    return global.KoreiProducts?.prixEuros(valeur) ?? `${valeur}\u00a0€`;
+  }
   const site = global.KoreiSite;
 
   function productImageSrc(product, basePath = "") {
@@ -561,7 +566,7 @@
         .filter((v) => Number.isFinite(v) && v > 0);
       if (prices.length) {
         const min = Math.min(...prices);
-        fromEl.textContent = `${min.toFixed(2).replace(".", ",").replace(",00", "")}€`;
+        fromEl.textContent = formatPrix(min);
       }
     }
 
@@ -601,7 +606,7 @@
         return;
       }
       const min = Math.min(...prices);
-      el.textContent = `${min.toFixed(2).replace(".", ",").replace(",00", "")}€`;
+      el.textContent = formatPrix(min);
     });
 
     const cards = Array.from(track.children);
@@ -1210,7 +1215,7 @@
       if (filters.isNew) pills.push({ key: "isNew", value: "1" });
       if (filters.bestseller) pills.push({ key: "bestseller", value: "1" });
       if (filters.priceMin > PRICE_MIN || filters.priceMax < PRICE_MAX) {
-        pills.push({ key: "price", value: `${filters.priceMin}€ – ${filters.priceMax}€` });
+        pills.push({ key: "price", value: `${formatPrix(filters.priceMin)} – ${formatPrix(filters.priceMax)}` });
       }
 
       bar.hidden = pills.length === 0;

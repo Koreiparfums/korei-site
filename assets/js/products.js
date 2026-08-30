@@ -434,14 +434,22 @@
     return notes.join(" · ");
   }
 
-  // Ecriture francaise du prix : virgule decimale, deux decimales seulement
-  // quand elles existent, espace insecable avant l'euro. « 8.9€ » devient
-  // « 8,90 € ».
-  function formatPrice(price) {
-    const n = Number(price);
+  // Ecriture francaise d'un montant : virgule decimale, deux decimales
+  // seulement quand elles existent, espace insecable avant l'euro.
+  // « 8.9 » devient « 8,90 € », « 14 » devient « 14 € ».
+  // Un seul endroit dans tout le site : le prix s'ecrivait de six facons
+  // differentes selon la page.
+  function prixEuros(value) {
+    const n = Number(value);
     if (!Number.isFinite(n)) return "";
-    const texte = Number.isInteger(n) ? String(n) : n.toFixed(2).replace(".", ",");
-    return `À partir de ${texte}\u00a0€`;
+    const arrondi = Math.round(n * 100) / 100;
+    const texte = Number.isInteger(arrondi) ? String(arrondi) : arrondi.toFixed(2).replace(".", ",");
+    return `${texte}\u00a0€`;
+  }
+
+  function formatPrice(price) {
+    const montant = prixEuros(price);
+    return montant ? `À partir de ${montant}` : "";
   }
 
   global.KoreiProducts = {
@@ -453,5 +461,6 @@
     BRANDS,
     formatNotes,
     formatPrice,
+    prixEuros,
   };
 })(window);
