@@ -212,24 +212,163 @@
   }
 
   // ── Search overlay
+  // Le chemin depuis la page courante vers la racine du site : les pages de
+  // second niveau vivent dans /pages/, la page d'accueil a la racine.
+  function baseDepuisUrl() {
+    return window.location.pathname.includes("/pages/") ? "../" : "";
+  }
+
+  const RECHERCHE_TENDANCES = ["Oud", "Aventus", "Vanille", "Cuir"];
+
   function toggleSearch() {
     const overlay = document.getElementById("searchOverlay");
     if (!overlay) return;
     overlay.classList.toggle("open");
     if (overlay.classList.contains("open")) {
       document.body.style.overflow = "hidden";
-      overlay.querySelector(".search-overlay-input")?.focus();
+      const input = overlay.querySelector(".search-overlay-input");
+      input?.focus();
+      rendreRecherche(input?.value || "");
     } else {
       document.body.style.overflow = "";
     }
   }
 
+  function ligneParfum(product, basePath) {
+    const esc = site?.escapeHtml || ((v) => v);
+    const url = `${basePath}pages/product.html?id=${product.id}`;
+    const prix = formatPrice ? formatPrice(product.price) : `À partir de ${product.price}€`;
+    const indispo = product.photoManquante === true;
+    return `
+      <a class="search-hit" href="${url}">
+        <span class="search-hit__media">${
+          productImageSrc(product, basePath)
+            ? renderProductImageHtml(product, basePath, "search-hit__img")
+            : `<i class="ti ti-bottle search-hit__icone" aria-hidden="true"></i>`
+        }</span>
+        <span class="search-hit__body">
+          <span class="search-hit__brand">${esc(product.brand || "")}</span>
+          <span class="search-hit__name">${esc(product.name)}</span>
+        </span>
+        <span class="search-hit__price">${indispo ? "Bientôt" : esc(prix)}</span>
+      </a>`;
+  }
+
+  function ligneMaison(brand, basePath) {
+    const esc = site?.escapeHtml || ((v) => v);
+    const url = `${basePath}pages/catalogue.html?brand=${encodeURIComponent(brand.id)}`;
+    return `
+      <a class="search-hit search-hit--maison" href="${url}">
+        <span class="search-hit__body">
+          <span class="search-hit__name">${esc(brand.name)}</span>
+          <span class="search-hit__brand">${esc(brand.country || "")}</span>
+        </span>
+        <i class="ti ti-arrow-narrow-right" aria-hidden="true"></i>
+      </a>`;
+  }
+
+  // Rendu des resultats. Aucune donnee inventee : on n'affiche que ce que le
+  // catalogue contient reellement, et on le dit quand il ne contient rien.
+  function rendreRecherche(valeur) {
+    const zone = document.getElementById("searchResults");
+    if (!zone) return;
+    const esc = site?.escapeHtml || ((v) => v);
+    const basePath = baseDepuisUrl();
+    const store = global.KoreiProductStore;
+    const q = (valeur || "").trim();
+
+    if (q.length < 2) {
+      zone.innerHTML = `
+        <p class="search-results__hint">Recherches fréquentes</p>
+        <div class="search-tendances">
+          ${RECHERCHE_TENDANCES.map(
+            (mot) => `<button type="button" class="search-tendance" data-terme="${esc(mot)}">${esc(mot)}</button>`
+          ).join("")}
+        </div>`;
+      return;
+    }
+
+    const parfums = (store?.searchProducts?.(q) || []).slice(0, 6);
+    const qn = q
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+    const maisons = (store?.getBrands?.() || [])
+      .filter((b) =>
+        (b.name || "")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .includes(qn)
+      )
+      .slice(0, 4);
+
+    if (!parfums.length && !maisons.length) {
+      zone.innerHTML = `
+        <p class="search-results__vide">
+          Aucun parfum ne correspond à « ${esc(q)} ».<br />
+          <a href="${basePath}pages/catalogue.html">Parcourir tout le catalogue</a>
+        </p>`;
+      return;
+    }
+
+    zone.innerHTML = `
+      ${
+        maisons.length
+          ? `<p class="search-results__hint">Maisons</p>
+             <div class="search-results__list">${maisons.map((b) => ligneMaison(b, basePath)).join("")}</div>`
+          : ""
+      }
+      ${
+        parfums.length
+          ? `<p class="search-results__hint">Parfums</p>
+             <div class="search-results__list">${parfums.map((p) => ligneParfum(p, basePath)).join("")}</div>`
+          : ""
+      }
+      <a class="search-results__all" href="${basePath}pages/catalogue.html?search=${encodeURIComponent(q)}">
+        Voir tous les résultats <i class="ti ti-arrow-narrow-right" aria-hidden="true"></i>
+      </a>`;
+    site?.initMediaSlots?.();
+  }
+
   function initSearchOverlay() {
     const overlay = document.getElementById("searchOverlay");
     if (!overlay) return;
+
+    // La zone de resultats est injectee ici plutot que dans chaque gabarit :
+    // l'overlay est identique sur les quatorze pages du site.
+    if (!document.getElementById("searchResults")) {
+      const zone = document.createElement("div");
+      zone.className = "search-results";
+      zone.id = "searchResults";
+      overlay.appendChild(zone);
+    }
+    overlay.querySelector(".search-overlay-hint")?.remove();
+
+    const input = overlay.querySelector(".search-overlay-input");
+    let minuteur = null;
+    input?.addEventListener("input", () => {
+      clearTimeout(minuteur);
+      minuteur = setTimeout(() => rendreRecherche(input.value), 120);
+    });
+
+    overlay.addEventListener("click", (e) => {
+      const chip = e.target.closest("[data-terme]");
+      if (!chip || !input) return;
+      input.value = chip.dataset.terme;
+      input.focus();
+      rendreRecherche(input.value);
+    });
+
     overlay.addEventListener("keydown", (e) => {
       if (e.key === "Escape") toggleSearch();
+      if (e.key === "Enter" && input && input.value.trim().length >= 2) {
+        e.preventDefault();
+        window.location.href = `${baseDepuisUrl()}pages/catalogue.html?search=${encodeURIComponent(input.value.trim())}`;
+      }
     });
+
+    rendreRecherche("");
   }
 
   function initNavigationAccessibility() {
@@ -1153,6 +1292,14 @@
     const urlNote = urlParams.get("note");
     if (urlNote) filters.note = [urlNote];
     if (urlParams.get("isNew") === "1") filters.isNew = true;
+    // Arrivee depuis la recherche du header : le terme est preremplid dans le
+    // champ de filtre du catalogue, pour que l'utilisateur voie ce qui filtre.
+    const urlSearch = urlParams.get("search");
+    if (urlSearch) {
+      filters.search = urlSearch;
+      const champ = document.getElementById("filter-search");
+      if (champ) champ.value = urlSearch;
+    }
 
     refreshBrandVisibility();
     // Reflète l'état initial (URL) sur les chips déjà rendues

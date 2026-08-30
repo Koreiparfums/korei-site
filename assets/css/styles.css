@@ -569,6 +569,131 @@ a.brand-chip {
   text-transform: uppercase;
 }
 
+/* ─── RECHERCHE — resultats en direct ─── */
+.search-results {
+  width: 100%;
+  max-width: 640px;
+  overflow-y: auto;
+  padding-bottom: 40px;
+}
+.search-results__hint {
+  font-size: var(--text-9);
+  letter-spacing: var(--tracking-label);
+  color: var(--text-light);
+  text-transform: uppercase;
+  margin: 18px 0 8px;
+}
+.search-results__hint:first-child {
+  margin-top: 0;
+}
+.search-results__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.search-tendances {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.search-tendance {
+  font-family: "DM Sans", sans-serif;
+  font-size: var(--text-13);
+  color: var(--text);
+  background: var(--surface);
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.search-tendance:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.search-hit {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s;
+}
+.search-hit:hover,
+.search-hit:focus-visible {
+  background: var(--surface);
+}
+.search-hit__media {
+  width: 44px;
+  height: 52px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.search-hit__img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.search-hit__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.search-hit__brand {
+  font-size: var(--text-9);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-light);
+}
+.search-hit__name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-17);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.search-hit__price {
+  font-size: var(--text-13);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.search-hit--maison {
+  border-bottom: 0.8px solid var(--border);
+  border-radius: 0;
+}
+.search-hit--maison i {
+  color: var(--text-light);
+}
+.search-results__all {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  font-size: var(--text-13);
+  color: var(--accent);
+  text-decoration: none;
+}
+.search-results__all:hover {
+  text-decoration: underline;
+}
+.search-results__vide {
+  font-size: var(--text-15);
+  color: var(--text-muted);
+  line-height: 1.7;
+  padding: 12px 0;
+}
+.search-results__vide a {
+  color: var(--accent);
+}
+
+
 /* ─── HERO ─── */
 .hero {
   position: relative;
@@ -7212,6 +7337,10 @@ body.has-cookie-banner .chatbot-widget {
   .chatbot-widget {
     bottom: calc(68px + env(safe-area-inset-bottom, 0px));
   }
+  /* Les resultats de recherche ne se cachent pas derriere la barre d'onglets */
+  .search-results {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
   /* Le bandeau cookies se pose au-dessus de la barre, jamais dessous */
   .cookie-banner {
     bottom: calc(56px + env(safe-area-inset-bottom, 0px));
@@ -9280,4 +9409,10 @@ body.has-cookie-banner .chatbot-widget {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Parfum encore sans photo : une silhouette de flacon plutot qu'un trou. */
+.search-hit__icone {
+  font-size: 24px;
+  color: var(--text-light);
 }

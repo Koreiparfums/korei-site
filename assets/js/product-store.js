@@ -73,7 +73,9 @@
       ...product.occasions,
     ]
       .join(" ")
-      .toLowerCase();
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
   }
 
   function searchProducts(query) {
