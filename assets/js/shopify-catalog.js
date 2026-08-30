@@ -65,6 +65,57 @@
     return table[cleFiche(marque, nom)] || null;
   }
 
+
+  // ── Description ────────────────────────────────────────────────────────────
+  // Les fiches de la boutique portent un texte genere : il repete la pyramide
+  // que la page affiche deja proprement, il annonce une note moyenne venue
+  // d'ailleurs, et il se termine par une remarque interne de mise au point.
+  // On n'y garde que la premiere phrase, la seule qui presente le parfum.
+  // La boutique n'est pas modifiee, seul l'affichage l'est.
+  const COUPURES = [
+    /\s*Pyramide olfactive\b/i,
+    /\s*Accords principaux\s*:/i,
+    /\s*Ann[ée]e\s*:/i,
+    /\s*Note moyenne\s*:/i,
+    /\s*D[ée]cants K[oō]rei\s*[—-]/i,
+    /\s*Les prix et stocks affich[ée]s/i,
+  ];
+
+  function nettoyerDescription(texte, marque, nom) {
+    let t = String(texte || "").replace(/\s+/g, " ").trim();
+    if (!t) return "";
+
+    for (const coupure of COUPURES) {
+      const m = t.match(coupure);
+      if (m) t = t.slice(0, m.index).trim();
+    }
+
+    // « BDK Parfums — Rouge Smoking est un parfum... » : la maison et le nom
+    // sont deja au-dessus, la phrase demarre sur le parfum lui-meme.
+    const prefixe = new RegExp(
+      `^${echapperRegex(marque || "")}\\s*[—–-]\\s*${echapperRegex(nom || "")}\\s+est\\s+un\\s+parfum\\s+`,
+      "i",
+    );
+    if (prefixe.test(t)) {
+      t = t.replace(prefixe, "Un parfum ");
+    }
+
+    t = t.replace(/\s*[·•|,;]\s*$/, "").trim();
+    if (!t) return "";
+
+    // Quelques fiches portent encore une saisie de test (« abcd »,
+    // « JAJDHDBof »). Sous quatre mots, ce n'est pas une description : mieux
+    // vaut ne rien afficher qu'afficher n'importe quoi.
+    if (t.split(/\s+/).filter(Boolean).length < 4) return "";
+
+    if (!/[.!?]$/.test(t)) t += ".";
+    return t;
+  }
+
+  function echapperRegex(v) {
+    return String(v).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
   function nettoyerIdentite(product) {
     const maisons = (global.KoreiProducts && global.KoreiProducts.BRANDS) || [];
     let nom = String(product.name || "");
@@ -108,6 +159,7 @@
 
     return {
       ...product,
+      description: nettoyerDescription(product.description, brand || product.brand, nom),
       name: nom,
       brand: brand || product.brand,
       brandId: brandId || product.brandId,
