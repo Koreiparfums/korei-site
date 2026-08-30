@@ -52,6 +52,19 @@
     "frais",
   ]);
 
+  // Cle de recherche dans le releve : maison + nom, sans accent ni
+  // ponctuation. « BDK Parfums » + « 312 Saint-Honore » -> « bdkparfums|312sainthonore ».
+  function cleFiche(marque, nom) {
+    const net = (v) => sansAccent(v).replace(/[^a-z0-9]+/g, "");
+    return `${net(marque)}|${net(nom)}`;
+  }
+
+  function ficheNotes(marque, nom) {
+    const table = global.KoreiNotesCatalogue;
+    if (!table || !marque || !nom) return null;
+    return table[cleFiche(marque, nom)] || null;
+  }
+
   function nettoyerIdentite(product) {
     const maisons = (global.KoreiProducts && global.KoreiProducts.BRANDS) || [];
     let nom = String(product.name || "");
@@ -81,7 +94,17 @@
     // dans le filtre « Famille olfactive » a cote de Oriental et Boise. On
     // ne garde que les familles reelles ; la boutique n'est pas modifiee,
     // seul l'affichage l'est.
-    const famille = FAMILLES_REELLES.has(sansAccent(product.family || "")) ? product.family : "";
+    let famille = FAMILLES_REELLES.has(sansAccent(product.family || "")) ? product.family : "";
+
+    // Les fiches de la boutique arrivent sans pyramide olfactive. Le releve
+    // du catalogue, deja constitue par le client, la fournit. On ne remplit
+    // que ce qui manque : une donnee presente cote boutique fait foi.
+    const fiche = ficheNotes(brand || product.brand, nom);
+    const tete = product.notesTop?.length ? product.notesTop : fiche?.notesTop || [];
+    const coeur = product.notesHeart?.length ? product.notesHeart : fiche?.notesHeart || [];
+    const fond = product.notesBase?.length ? product.notesBase : fiche?.notesBase || [];
+    if (!famille && fiche?.family) famille = fiche.family;
+    const genre = product.gender || fiche?.gender || "";
 
     return {
       ...product,
@@ -89,6 +112,13 @@
       brand: brand || product.brand,
       brandId: brandId || product.brandId,
       family: famille,
+      gender: genre,
+      notesTop: tete,
+      notesHeart: coeur,
+      notesBase: fond,
+      notes: product.notes?.length ? product.notes : [...tete, ...coeur, ...fond],
+      annee: product.annee || fiche?.year || "",
+      parfumeur: product.parfumeur || fiche?.perfumer || "",
     };
   }
 
