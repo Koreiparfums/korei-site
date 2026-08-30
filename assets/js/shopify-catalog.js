@@ -81,6 +81,27 @@
     /\s*Les prix et stocks affich[ée]s/i,
   ];
 
+  // Phrase de presentation batie sur les seules donnees du releve : famille,
+  // genre, annee de lancement. Exactement la meme forme que celle deja
+  // affichee sur les six autres fiches de la boutique. Rien n'est invente :
+  // sans releve, la fonction ne rend rien.
+  const GENRE_EN_TOUTES_LETTRES = {
+    unisexe: "pour homme et femme",
+    homme: "pour homme",
+    femme: "pour femme",
+  };
+
+  function phraseDeReleve(marque, nom) {
+    const fiche = ficheNotes(marque, nom);
+    if (!fiche || !fiche.family) return "";
+    const morceaux = [`Un parfum ${fiche.family}`];
+    const genre = GENRE_EN_TOUTES_LETTRES[fiche.gender];
+    if (genre) morceaux.push(genre);
+    let phrase = morceaux.join(" ");
+    if (fiche.year) phrase += `, lancé en ${fiche.year}`;
+    return `${phrase}.`;
+  }
+
   function nettoyerDescription(texte, marque, nom) {
     let t = String(texte || "").replace(/\s+/g, " ").trim();
     if (!t) return "";
@@ -104,8 +125,7 @@
     if (!t) return "";
 
     // Quelques fiches portent encore une saisie de test (« abcd »,
-    // « JAJDHDBof »). Sous quatre mots, ce n'est pas une description : mieux
-    // vaut ne rien afficher qu'afficher n'importe quoi.
+    // « JAJDHDBof »). Sous quatre mots, ce n'est pas une description.
     if (t.split(/\s+/).filter(Boolean).length < 4) return "";
 
     if (!/[.!?]$/.test(t)) t += ".";
@@ -159,7 +179,9 @@
 
     return {
       ...product,
-      description: nettoyerDescription(product.description, brand || product.brand, nom),
+      description:
+        nettoyerDescription(product.description, brand || product.brand, nom) ||
+        phraseDeReleve(brand || product.brand, nom),
       name: nom,
       brand: brand || product.brand,
       brandId: brandId || product.brandId,
