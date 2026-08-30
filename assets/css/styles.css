@@ -2318,7 +2318,6 @@ body[data-page="coffret"] .coffret-hero {
   letter-spacing: var(--tracking-tight);
   text-transform: uppercase;
   color: var(--text-muted);
-  white-space: nowrap;
   transition: color 0.25s ease;
 }
 .cb2-timeline__step.is-current .cb2-timeline__num {
@@ -8076,10 +8075,13 @@ body.has-cookie-banner .chatbot-widget {
   border-color: var(--accent);
   color: #fff;
 }
+/* Le libelle tenait sur une ligne avec des points de suspension :
+   « Selectionnez vos parf... ». Il passe a la ligne plutot que d'etre
+   tronque, la barre d'etapes reste lisible d'un coup d'oeil. */
 .cb2-timeline__label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  text-wrap: balance;
+  line-height: 1.35;
 }
 
 /* Compteur de resultats de la recherche. */
