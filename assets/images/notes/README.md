@@ -9,8 +9,52 @@ olfactive (400 px) et dans les cartes du catalogue (38 px).
 - nom en slug ASCII : sans accent, sans apostrophe, espaces remplacés par `-`
 - exemple : `Rose Centifolia` → `rose-centifolia.webp`
 
-Si une note n'a pas de photo, le site affiche automatiquement une pastille
-colorée portant sa famille olfactive et son picto. Jamais un cadre vide.
+Si une note n'a pas de photo, le site cherche d'abord la photo de
+l'ingrédient de base : « Rose de Bulgarie » utilise `rose.webp`, « Oud de
+Thaïlande » utilise `oud.webp`. C'est le même ingrédient, nommé par son
+origine. Ce repli vit dans `slugDeRepli` (`assets/js/main.js`) et ne
+rapproche jamais deux ingrédients différents : « Ambroxan » ne devient pas
+« Ambre ».
+
+À défaut, le site affiche une pastille colorée portant la famille olfactive
+de la note et son picto. Jamais un cadre vide, jamais une lettre seule.
+
+## Notes encore sans photo
+
+Vingt-trois notes visibles sur le site attendent leur photo. Elles
+s'affichent aujourd'hui en pastille de famille :
+
+| Note | Famille affichée |
+| --- | --- |
+| Ambrostar™ | musc |
+| Ambroxan | musc |
+| Bois de cachemire | musc |
+| Bois de gaïac | bois |
+| Canne à sucre | gourmand |
+| Cannelle | épice |
+| Cerise | fruit |
+| Ciste | résine |
+| Cognac | gourmand |
+| Coing | fruit |
+| Cyanide | aucune |
+| Encens | résine |
+| Fumée | résine |
+| Gaïac | bois |
+| Hedione | fleur |
+| Héliotrope | fleur |
+| Litchi | fruit |
+| Myrrhe | résine |
+| Oliban | résine |
+| Praliné | gourmand |
+| Racine d'angélique | épice |
+| Rhum | gourmand |
+| Tabac | résine |
+
+Recalculer cette liste après tout ajout :
+
+```bash
+python3 scripts/notes_manquantes.py
+```
 
 ## Ajouter des photos
 

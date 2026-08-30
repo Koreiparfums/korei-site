@@ -73,13 +73,13 @@
   // la ou une simple lettre grise ne disait rien. La photo passe devant.
   const NOTE_FAMILIES = {
     agrume: { icon: "ti-lemon-2", notes: ["bergamote", "citron", "pamplemousse", "orange", "mandarine", "yuzu", "neroli", "petit-grain"] },
-    fruit: { icon: "ti-apple", notes: ["ananas", "pomme", "litchi", "peche", "poire", "fruits-rouges", "cassis", "framboise", "figue"] },
-    fleur: { icon: "ti-flower", notes: ["rose", "rose-centifolia", "jasmin", "pivoine", "violette", "violet", "iris", "muguet", "tubereuse", "ylang-ylang", "fleur-d-oranger", "lavande"] },
+    fruit: { icon: "ti-apple", notes: ["ananas", "pomme", "litchi", "peche", "poire", "fruits-rouges", "cassis", "framboise", "figue", "cerise", "coing", "mangue", "abricot", "prune", "fruits"] },
+    fleur: { icon: "ti-flower", notes: ["rose", "rose-centifolia", "jasmin", "pivoine", "violette", "violet", "iris", "muguet", "tubereuse", "ylang-ylang", "fleur-d-oranger", "lavande", "heliotrope", "hedione", "gardenia", "narcisse", "magnolia", "freesia"] },
     bois: { icon: "ti-tree", notes: ["bois", "bois-de-cedre", "cedre", "santal", "bois-de-santal", "gaiac", "bois-de-gaiac", "vetiver", "patchouli", "bouleau", "oud", "chene", "oak", "mousse", "mousse-de-chene"] },
-    epice: { icon: "ti-flame", notes: ["poivre", "poivre-rose", "pink-pepper", "cardamome", "cannelle", "safran", "anis", "anis-etoile", "star-anise", "noix-de-muscade", "nutmeg", "epices", "gingembre"] },
-    gourmand: { icon: "ti-candy", notes: ["vanille", "tonka", "praline", "chocolat", "cafe", "caramel", "miel", "rhum", "cognac"] },
-    resine: { icon: "ti-droplet", notes: ["ambre", "resine", "encens", "oliban", "styrax", "benjoin", "labdanum", "fumee", "tabac", "cuir"] },
-    musc: { icon: "ti-wind", notes: ["musc", "musc-blanc", "ambroxan", "cashmeran"] },
+    epice: { icon: "ti-flame", notes: ["poivre", "poivre-rose", "pink-pepper", "cardamome", "cannelle", "safran", "anis", "anis-etoile", "star-anise", "noix-de-muscade", "nutmeg", "epices", "gingembre", "racine-d-angelique", "clou-de-girofle", "sauge", "sauge-sclaree"] },
+    gourmand: { icon: "ti-candy", notes: ["vanille", "tonka", "feve-de-tonka", "praline", "chocolat", "cacao", "cafe", "caramel", "miel", "rhum", "cognac", "canne-a-sucre", "amande", "noix-de-coco", "lait", "creme-fouettee"] },
+    resine: { icon: "ti-droplet", notes: ["ambre", "resine", "encens", "oliban", "styrax", "benjoin", "labdanum", "fumee", "tabac", "cuir", "myrrhe", "ciste", "resines", "baume-de-tolu", "baume-du-perou"] },
+    musc: { icon: "ti-wind", notes: ["musc", "musc-blanc", "ambroxan", "ambrostar", "cashmeran", "bois-de-cachemire"] },
   };
 
   const NOTE_FAMILY_BY_SLUG = (() => {
@@ -93,16 +93,50 @@
   })();
 
   function noteFamilyOf(note) {
-    return NOTE_FAMILY_BY_SLUG[noteSlug(note)] || null;
+    const slug = noteSlug(note);
+    // « Rose de Bulgarie » herite de la famille de « rose » : meme repli que
+    // pour la photo, une variete reste dans la famille de son ingredient.
+    return NOTE_FAMILY_BY_SLUG[slug] || NOTE_FAMILY_BY_SLUG[slugDeRepli(slug)] || null;
+  }
+
+  // Le catalogue nomme souvent une note par son origine : « Rose de Bulgarie »,
+  // « Jasmin du Maroc », « Oud de Thailande ». C'est le meme ingredient que la
+  // photo de base. On retombe dessus plutot que d'afficher une pastille.
+  // Une variete n'est jamais rabattue sur un ingredient different : « Ambroxan »
+  // ne devient pas « Ambre », « Fleur d'oranger » ne devient pas « Orange ».
+  const NOTES_DE_BASE = [
+    "rose", "jasmin", "vanille", "patchouli", "oud", "poivre", "musc", "cedre",
+    "santal", "bois-de-santal", "iris", "ambre", "safran", "cuir", "tonka",
+    "lavande", "bergamote", "mandarine", "orange", "citron", "cacao", "cafe",
+    "miel", "mousse-de-chene", "vetiver", "benjoin", "labdanum", "styrax",
+    "gingembre", "cardamome", "geranium", "neroli", "tubereuse", "ylang-ylang",
+  ];
+
+  function slugDeRepli(slug) {
+    // « rose-de-bulgarie » -> « rose », « poivre-noir » -> « poivre ».
+    const candidats = NOTES_DE_BASE.filter(
+      (base) => slug === base || slug.startsWith(`${base}-`),
+    ).sort((a, b) => b.length - a.length);
+    for (const base of candidats) {
+      if (NOTE_IMAGES.has(base)) return base;
+    }
+    // « gousse-de-vanille-noire » : l'ingredient est au milieu du libelle.
+    for (const base of [...NOTES_DE_BASE].sort((a, b) => b.length - a.length)) {
+      if (slug.includes(`-${base}-`) || slug.endsWith(`-${base}`)) {
+        if (NOTE_IMAGES.has(base)) return base;
+      }
+    }
+    return "";
   }
 
   function noteImageHtml(note, basePath = "") {
     const slug = noteSlug(note);
     const esc = site?.escapeHtml || ((v) => v);
-    if (NOTE_IMAGES.has(slug)) {
+    const fichier = NOTE_IMAGES.has(slug) ? slug : slugDeRepli(slug);
+    if (fichier) {
       return `
       <span class="note-image note-image--photo">
-        <img src="${basePath}assets/images/notes/${slug}.webp" alt="" width="38" height="38" loading="lazy" decoding="async" data-onerror="remove" />
+        <img src="${basePath}assets/images/notes/${fichier}.webp" alt="" width="38" height="38" loading="lazy" decoding="async" data-onerror="remove" />
       </span>`;
     }
     const fam = noteFamilyOf(note);
@@ -1454,6 +1488,7 @@
     // Source unique des photos d'ingredients disponibles : la fiche produit
     // en gardait une copie figee, qui se desynchronisait a chaque ajout.
     NOTE_IMAGES,
+    slugDeRepli,
     initBrandChips,
     initHomePage,
     initCataloguePage,

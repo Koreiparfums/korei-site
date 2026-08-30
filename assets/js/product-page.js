@@ -449,7 +449,7 @@
     const label = NOTE_ALIASES[slug] || note;
     const latin = NOTE_LATIN[noteSlugLocal(label)] ?? NOTE_LATIN[slug];
     const fam = ui.noteFamilyOf ? ui.noteFamilyOf(label) : null;
-    const photo = hasNotePhoto(noteSlugLocal(label)) ? noteSlugLocal(label) : null;
+    const photo = fichierNote(noteSlugLocal(label)) || null;
     const media = photo
       ? `<img src="../assets/images/notes/${photo}.webp" alt="" width="400" height="400" loading="lazy" decoding="async">`
       : `<span class="pdp-py-tile__fallback"${fam ? ` data-family="${fam.family}"` : ""}>
@@ -473,9 +473,14 @@
   // dans KoreiUI (assets/js/main.js) : une seule source, tenue a jour par
   // scripts/notes_ingredients.py. Lecture a l'appel, pas au chargement :
   // l'ordre des balises <script> ne doit pas pouvoir figer une liste vide.
-  function hasNotePhoto(slug) {
+  // Rend le nom du fichier a utiliser, vide s'il n'y a pas de photo. Comme
+  // sur les cartes, une note nommee par son origine (« Rose de Bulgarie »)
+  // retombe sur la photo de l'ingredient de base.
+  function fichierNote(slug) {
     const set = (global.KoreiUI && global.KoreiUI.NOTE_IMAGES) || null;
-    return Boolean(set && set.has(slug));
+    if (!set) return "";
+    if (set.has(slug)) return slug;
+    return global.KoreiUI?.slugDeRepli?.(slug) || "";
   }
 
   function renderPyramid(product) {
