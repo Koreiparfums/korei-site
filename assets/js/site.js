@@ -11,14 +11,14 @@
  * Mettre à jour SITE_URL avant la mise en production.
  */
 (function (global) {
-  const SITE_URL = "https://korei.fr";
+  const SITE_URL = "https://korei-parfum.com";
 
   const SITE = {
     name: "Kōrei",
     tagline: "Parfumerie de niche",
     locale: "fr_FR",
     url: SITE_URL,
-    email: "contact@korei.fr",
+    email: "contact@korei-parfum.com",
   };
 
   const IMAGES = {

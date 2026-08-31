@@ -7,7 +7,7 @@
  */
 const store = require("./lib/catalog-store");
 
-const SITE_URL = "https://korei.fr";
+const SITE_URL = "https://korei-parfum.com";
 
 const STATIC_PAGES = [
   { path: "", changefreq: "weekly", priority: "1.0" },

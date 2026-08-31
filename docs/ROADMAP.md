@@ -75,7 +75,7 @@
 
 - [ ] Netlify : créer le compte / projet de production
 - [x] Netlify : configurer les variables d'environnement (`GROQ_API_KEY`, `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_PUBLIC_TOKEN`)
-- [ ] DNS : choisir et acheter le domaine officiel (`korei.fr`, `koreiparfums.fr` ou autre)
+- [x] DNS : domaine officiel acheté — `korei-parfum.com` (registrar Squarespace)
 - [ ] DNS : pointer le domaine principal et `www` vers Netlify
 - [ ] Email pro : créer au minimum `contact@...` et `support@...`
 - [ ] Newsletter : démarrer avec Netlify Forms, puis migrer vers Brevo si campagnes régulières
