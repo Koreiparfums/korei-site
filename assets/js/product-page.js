@@ -651,9 +651,11 @@
 
               ${renderTrustRow()}
             </div>
+            ${renderAccordions(product)}
+            ${renderRessenti(product)}
+            ${renderStory(product)}
           </div>
         </div>
-        <div class="pdp-hero__wide">${renderAccordions(product)}</div>
       </section>`;
   }
 
@@ -1237,10 +1239,8 @@
         <span>${esc(product.name)}</span>
       </nav>
       ${renderHero(product, "../")}
-      ${renderRessenti(product)}
       ${renderCarouselSection("pdp-similar", "Sélection", "Parfums similaires")}
       ${renderCarouselSection("pdp-suggested", "La maison", `Autres créations ${esc(product.brand)}`)}
-      ${renderStory(product)}
       ${renderFaq(product)}
     `;
 

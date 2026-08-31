@@ -1727,120 +1727,76 @@ body[data-page="product"] {
   color: var(--pdp-ink-soft);
 }
 
-/* ── Pyramide en pleine largeur ────────────────────────────────────────────
-   Les accordeons occupaient le couloir de droite : la colonne de gauche
-   restait vide sur pres de deux mille pixels, et la bande de notes etait
-   comprimee. Ils passent en pleine largeur (.pdp-hero__wide), ce qui oblige
-   a reprendre la mise en page de chaque etage.
+/* ── Colonne produit : tout ce qui parle du parfum ─────────────────────────
+   Structure du concurrent de reference : la photo colle a gauche, et TOUT ce
+   qui concerne le parfum defile a droite — prix, formats, pyramide, ressenti,
+   histoire. Seules les sections qui parlent d'autres parfums et la FAQ
+   passent en pleine largeur, sous les deux colonnes.
 
-   A partir de 1000 px, l'etage se lit en deux temps : a gauche l'intitule et
-   son texte, largeur fixe, a droite le ruban des ingredients. Sans cela le
-   texte s'etirait sur toute la largeur et les photos se dilataient jusqu'a
-   remplir un tiers de l'ecran. */
-@media (min-width: 1000px) {
-  .pdp-py-row__body {
-    display: grid;
-    grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
-    column-gap: 56px;
-    align-items: start;
-  }
-  .pdp-py-row__intro {
-    margin-bottom: 0;
-  }
-  /* `auto-fit` etirait trois notes sur cinq colonnes. On fixe la largeur des
-     tuiles et on les tasse a gauche : trois notes occupent trois tuiles. */
-  .pdp-py-strip {
-    grid-template-columns: repeat(auto-fill, 240px);
-    justify-content: start;
-    gap: 0;
-  }
-  .pdp-py-pair {
-    min-height: 150px;
-    max-height: 180px;
-  }
-  .pdp-py-shot img {
-    padding: 10px;
-  }
-}
+   C'est ce qui donne sa course au collant : sans contenu a droite, la photo
+   n'a rien a suivre et remonte avec la page. */
 
-/* Entre 640 et 1000 px l'etage reste empile, mais les tuiles ne doivent pas
-   s'etirer non plus. */
-@media (min-width: 641px) and (max-width: 999px) {
-  .pdp-py-strip {
-    grid-template-columns: repeat(auto-fill, minmax(230px, 260px));
-    justify-content: start;
-  }
-}
-
-/* ── « Ce que vous allez sentir » : bandeau sombre ─────────────────────────
-   Trois cartes beiges sur fond blanc, la section se fondait dans le reste de
-   la page et ne pesait rien. Elle passe en bandeau pleine largeur sur fond
-   encre : c'est le seul contraste fort de la fiche, il tombe au moment ou on
-   parle de la sensation. L'or ressort enfin, au lieu de se diluer sur beige.
-
-   `width: 100vw` avec le recentrage : la section est dans un conteneur a
-   largeur maximale, il faut en sortir pour aller bord a bord. */
+/* « Ce que vous allez sentir » : dans la colonne, le bandeau pleine largeur
+   n'a plus de sens. Il devient un panneau sombre. Le contraste reste, c'est
+   lui qui sort la section de la monotonie beige. */
 .pdp-feel {
   --feel-encre: #14120f;
   --feel-creme: #f3ece0;
   --feel-creme-douce: #a9a094;
-  position: relative;
-  width: 100vw;
-  left: 50%;
-  margin-left: -50vw;
-  padding: 88px 0 96px;
+  margin: 40px 0 0;
+  padding: 34px 30px 32px;
+  border-radius: var(--pdp-radius-lg);
   background: var(--feel-encre);
   color: var(--feel-creme);
 }
-/* Un filet d'or en haut du bandeau : la transition depuis le blanc est
-   franche, ce trait la rend voulue. */
-.pdp-feel::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--pdp-gold) 22%, var(--pdp-gold) 78%, transparent);
-  opacity: 0.55;
+.pdp-feel .pdp-container {
+  padding: 0;
+  max-width: none;
+}
+.pdp-feel .pdp-head {
+  margin-bottom: 26px;
+  text-align: left;
 }
 .pdp-feel .pdp-eyebrow {
   color: var(--pdp-gold);
+  justify-content: flex-start;
 }
 .pdp-feel .pdp-title {
   color: var(--feel-creme);
+  font-size: clamp(22px, 2vw, 28px);
 }
+/* Une colonne par mesure, separees d'un filet : dans une colonne de 570 px,
+   trois cartes cote a cote seraient illisibles. */
 .pdp-feel__grid {
-  margin-top: 56px;
+  display: block;
   gap: 0;
 }
-/* Plus de cartes : trois colonnes separees par un filet, comme les colonnes
-   d'une page imprimee. Les boites arrondies faisaient composant, pas fiche. */
 .pdp-feel__card {
-  gap: 14px;
-  padding: 6px 40px 0;
+  gap: 12px;
+  padding: 24px 0 0;
+  margin-top: 24px;
   border: 0;
-  border-left: 1px solid rgba(243, 236, 224, 0.14);
+  border-top: 1px solid rgba(243, 236, 224, 0.14);
   border-radius: 0;
   background: none;
 }
 .pdp-feel__card:first-child {
-  border-left: 0;
-  padding-left: 0;
-}
-.pdp-feel__card:last-child {
-  padding-right: 0;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
 }
 .pdp-feel__icon {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 10px;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 2px;
   border-color: rgba(204, 154, 54, 0.45);
-  font-size: 18px;
+  font-size: 17px;
 }
 .pdp-feel__title {
   color: var(--feel-creme-douce);
 }
 .pdp-feel__label {
-  font-size: clamp(26px, 2.2vw, 34px);
+  font-size: 27px;
   color: var(--feel-creme);
 }
 .pdp-feel__seg {
@@ -1854,12 +1810,10 @@ body[data-page="product"] {
 }
 .pdp-feel__score {
   font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 22px;
+  font-size: 21px;
   color: var(--pdp-gold);
 }
-.pdp-feel__score small {
-  color: var(--feel-creme-douce);
-}
+.pdp-feel__score small,
 .pdp-feel__text,
 .pdp-feel__sub {
   color: var(--feel-creme-douce);
@@ -1873,79 +1827,48 @@ body[data-page="product"] {
   color: var(--pdp-gold);
   background: rgba(204, 154, 54, 0.1);
 }
-@media (max-width: 860px) {
-  .pdp-feel {
-    padding: 64px 0 68px;
-  }
-  .pdp-feel__card {
-    padding: 6px 0 0;
-    border-left: 0;
-    border-top: 1px solid rgba(243, 236, 224, 0.14);
-    padding-top: 28px;
-  }
-  .pdp-feel__card:first-child {
-    border-top: 0;
-    padding-top: 6px;
-  }
-}
 
-/* ── « Famille olfactive » et « Le décant Kōrei » ──────────────────────────
-   Deux boites beiges cote a cote, dont l'une aux trois quarts vide. On enleve
-   les boites : un filet en haut, l'intitule et le titre a gauche sur une
-   colonne etroite, le texte a droite. C'est la mise en page d'un article, et
-   elle supporte un texte court comme un texte long. */
+/* « Famille olfactive » et « Le decant Korei » : deux boites beiges cote a
+   cote dont l'une aux trois quarts vide. Dans la colonne elles s'empilent,
+   sans boite, separees par un filet. Le titre passe en serif : c'est la
+   respiration entre la partie marchande et la FAQ. */
 .pdp-editorial {
-  padding: 96px var(--px) 24px;
+  padding: 8px 0 0;
+  max-width: none;
 }
 .pdp-editorial__grid {
   display: block;
   gap: 0;
 }
 .pdp-editorial__col {
-  display: grid;
-  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
-  column-gap: 72px;
-  padding: 44px 0;
+  padding: 34px 0 0;
+  margin-top: 34px;
   border: 0;
   border-top: 1px solid var(--pdp-line);
   border-radius: 0;
   background: none;
 }
-.pdp-editorial__col .pdp-eyebrow {
-  grid-column: 1;
-}
 .pdp-editorial__title {
-  grid-column: 1;
-  margin: 14px 0 0;
+  margin: 12px 0 16px;
   font-family: "Cormorant Garamond", Georgia, serif;
   font-weight: 400;
-  font-size: clamp(30px, 3vw, 44px);
-  line-height: 1.08;
+  font-size: clamp(26px, 2.4vw, 34px);
+  line-height: 1.1;
   letter-spacing: -0.015em;
 }
 .pdp-editorial__col p {
-  grid-column: 2;
-  grid-row: 1 / span 3;
-  align-self: center;
-  max-width: 62ch;
-  font-size: 16px;
-  line-height: 1.8;
+  max-width: none;
+  font-size: 15px;
+  line-height: 1.78;
 }
-/* Le bloc « histoire » a deux paragraphes : le second se place sous le
-   premier, dans la meme colonne. */
-.pdp-editorial__col p + p {
-  grid-row: auto;
-  align-self: start;
-  margin-top: 18px;
+
+/* `auto-fit` fusionne les colonnes vides : quand un etage n'a qu'une note sur
+   la derniere rangee, sa tuile s'etirait a 501 px de large et 383 px de haut
+   pendant que les autres restaient a 250 x 168. `auto-fill` garde les
+   colonnes vides, et le plafond de hauteur empeche la photo de se dilater. */
+.pdp-py-strip {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
-@media (max-width: 860px) {
-  .pdp-editorial {
-    padding-top: 64px;
-  }
-  .pdp-editorial__col {
-    display: block;
-  }
-  .pdp-editorial__col p {
-    margin-top: 18px;
-  }
+.pdp-py-pair {
+  max-height: 180px;
 }
