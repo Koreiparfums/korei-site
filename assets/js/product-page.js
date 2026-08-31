@@ -415,7 +415,10 @@
     return map;
   })();
 
-  function tierTitle(notes, fallback) {
+  // `deja` : les intitules employes par les etages precedents. Deux etages
+  // gourmands d'affilee donnaient deux fois « Chaudes & Gourmandes », ce qui
+  // se lit comme un bug. Le second reprend alors son intitule neutre.
+  function tierTitle(notes, fallback, deja) {
     const compte = {};
     let classees = 0;
     notes.forEach((n) => {
@@ -430,7 +433,8 @@
     // l'intitule neutre : annoncer « Boisees » un etage moitie floral
     // serait faux.
     if (!ordre.length || compte[ordre[0]] * 2 <= classees) return fallback;
-    return TIER_MOODS[ordre[0]].titre;
+    const titre = TIER_MOODS[ordre[0]].titre;
+    return deja && deja.has(titre) ? fallback : titre;
   }
 
   function noteSlugLocal(note) {
@@ -492,12 +496,15 @@
     const tiers = TIER_META.filter((t) => notesByTier[t.key].length);
     if (!tiers.length) return "";
 
+    const titresPris = new Set();
     return `
       <div class="pdp-pyramid pdp-reveal">
         <ol class="pdp-py">
           ${tiers
             .map((t, i) => {
               const notes = notesByTier[t.key];
+              const titre = tierTitle(notes, t.fallback, titresPris);
+              titresPris.add(titre);
               return `
             <li class="pdp-py-row${i === tiers.length - 1 ? " is-last" : ""}">
               <span class="pdp-py-row__rail" aria-hidden="true">
@@ -506,7 +513,7 @@
               <div class="pdp-py-row__body">
               <div class="pdp-py-row__intro">
                 <span class="pdp-py-row__label">${t.label}</span>
-                <h3 class="pdp-py-row__title">${tierTitle(notes, t.fallback)}</h3>
+                <h3 class="pdp-py-row__title">${titre}</h3>
                 <span class="pdp-py-row__rule" aria-hidden="true"></span>
                 <p class="pdp-py-row__short">${t.court}</p>
                 <details class="pdp-py-row__more">
@@ -644,9 +651,9 @@
 
               ${renderTrustRow()}
             </div>
-            ${renderAccordions(product)}
           </div>
         </div>
+        <div class="pdp-hero__wide">${renderAccordions(product)}</div>
       </section>`;
   }
 

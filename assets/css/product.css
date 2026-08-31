@@ -1726,3 +1726,48 @@ body[data-page="product"] {
   line-height: 1.6;
   color: var(--pdp-ink-soft);
 }
+
+/* ── Pyramide en pleine largeur ────────────────────────────────────────────
+   Les accordeons occupaient le couloir de droite : la colonne de gauche
+   restait vide sur pres de deux mille pixels, et la bande de notes etait
+   comprimee. Ils passent en pleine largeur (.pdp-hero__wide), ce qui oblige
+   a reprendre la mise en page de chaque etage.
+
+   A partir de 1000 px, l'etage se lit en deux temps : a gauche l'intitule et
+   son texte, largeur fixe, a droite le ruban des ingredients. Sans cela le
+   texte s'etirait sur toute la largeur et les photos se dilataient jusqu'a
+   remplir un tiers de l'ecran. */
+@media (min-width: 1000px) {
+  .pdp-py-row__body {
+    display: grid;
+    grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+    column-gap: 56px;
+    align-items: start;
+  }
+  .pdp-py-row__intro {
+    margin-bottom: 0;
+  }
+  /* `auto-fit` etirait trois notes sur cinq colonnes. On fixe la largeur des
+     tuiles et on les tasse a gauche : trois notes occupent trois tuiles. */
+  .pdp-py-strip {
+    grid-template-columns: repeat(auto-fill, 240px);
+    justify-content: start;
+    gap: 0;
+  }
+  .pdp-py-pair {
+    min-height: 150px;
+    max-height: 180px;
+  }
+  .pdp-py-shot img {
+    padding: 10px;
+  }
+}
+
+/* Entre 640 et 1000 px l'etage reste empile, mais les tuiles ne doivent pas
+   s'etirer non plus. */
+@media (min-width: 641px) and (max-width: 999px) {
+  .pdp-py-strip {
+    grid-template-columns: repeat(auto-fill, minmax(230px, 260px));
+    justify-content: start;
+  }
+}
