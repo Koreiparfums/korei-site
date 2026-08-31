@@ -428,6 +428,42 @@
     // Montale s'affichait sous la marque « Korei ».
     { id: "bdk-parfums", name: "BDK Parfums", country: "France", tagline: "Parfumerie parisienne contemporaine" },
     { id: "montale", name: "Montale", country: "France", tagline: "Ouds et fruits, signature orientale" },
+    // Les 40 maisons du catalogue du client figurent désormais ici. Sans fiche,
+    // une maison n'apparaît pas sur la page Maisons et ses parfums restent
+    // rattachés à la marque générique. Le pays vient de la maison elle-même
+    // (site officiel ou mentions légales) ; laissé vide quand il n'est pas sûr.
+    { id: "arte-profumi", name: "Arte Profumi", country: "Italie", tagline: "Le parfum pensé comme une œuvre" },
+    { id: "bohoboco", name: "Bohoboco", country: "Pologne", tagline: "Parfums unisexes bâtis sur le contraste" },
+    { id: "born-to-stand-out", name: "Born to Stand Out", country: "Corée du Sud", tagline: "Parfumerie séoulite volontairement provocante" },
+    { id: "byron", name: "Byron", country: "France", tagline: "Extraits gourmands et orientaux affirmés" },
+    { id: "calisto", name: "Calisto", country: "France", tagline: "Extraits de parfum unisexes parisiens" },
+    { id: "casamorati", name: "Casamorati", country: "Italie", tagline: "Parfumerie italienne classique relancée par Xerjoff" },
+    { id: "castel", name: "Castel", country: "France", tagline: "Jeune maison parisienne d'extraits" },
+    { id: "eau-de-soie", name: "Eau de Soie", country: "France", tagline: "Eaux de parfum françaises et narratives" },
+    // « Esprit Libre » est le nom d'un parfum, pas d'une maison : le releve du
+    // client range ainsi deux flacons signés Nayu et Yuna. Pays laissé vide
+    // tant que le client n'a pas tranché.
+    { id: "esprit-libre", name: "Esprit Libre", country: "", tagline: "" },
+    { id: "fomowa", name: "Fomowa", country: "France", tagline: "Extraits gourmands inspirés de desserts" },
+    { id: "frederic-malle", name: "Frédéric Malle", country: "France", tagline: "Éditions de parfums signées par leurs parfumeurs" },
+    { id: "giardini-di-toscana", name: "Giardini di Toscana", country: "Italie", tagline: "Parfumerie familiale toscane" },
+    { id: "gritti", name: "Gritti", country: "Italie", tagline: "Extraits inspirés de Venise et de son négoce" },
+    { id: "kajal", name: "Kajal", country: "France", tagline: "Extraits luxueux d'inspiration orientale" },
+    { id: "kys", name: "KYS", country: "France", tagline: "Extraits de parfum fabriqués en France" },
+    { id: "laboya", name: "Laboya", country: "France", tagline: "Petite maison familiale, extraits gourmands" },
+    { id: "les-eaux-primordiales", name: "Les Eaux Primordiales", country: "France", tagline: "Parfums conceptuels d'une manufacture indépendante" },
+    { id: "majestic-mist", name: "Majestic Mist", country: "Royaume-Uni", tagline: "Extraits de parfum d'inspiration londonienne" },
+    { id: "marc-antoine-barrois", name: "Marc-Antoine Barrois", country: "France", tagline: "Maison de couture devenue parfumeur" },
+    { id: "matiere-premiere", name: "Matière Première", country: "France", tagline: "Un parfum bâti sur une seule matière naturelle" },
+    { id: "mes-bisous", name: "Mes Bisous", country: "Turquie", tagline: "Extraits unisexes en coffrets brodés" },
+    { id: "nishane", name: "Nishane", country: "Turquie", tagline: "Premiere maison de niche d'Istanbul" },
+    { id: "noeme", name: "Noème", country: "France", tagline: "Parfumerie de luxe parisienne" },
+    { id: "reinvented", name: "Reinvented", country: "Italie", tagline: "Extraits de parfum véganes" },
+    { id: "rosendo-mateu", name: "Rosendo Mateu", country: "Espagne", tagline: "Parfums unisexes numérotés par leur parfumeur" },
+    { id: "scentologia", name: "Scentologia", country: "France", tagline: "Maison de niche française, parfumeurs invités" },
+    { id: "sospiro", name: "Sospiro", country: "Italie", tagline: "Parfums opulents inspirés de la musique" },
+    { id: "stephanie-de-bruijn", name: "Stéphanie de Bruijn", country: "France", tagline: "Parfum sur mesure, atelier parisien" },
+    { id: "tiziana-terenzi", name: "Tiziana Terenzi", country: "Italie", tagline: "Extraits et bougies faits main" },
   ];
 
   function formatNotes(notes) {
