@@ -262,7 +262,7 @@
       brandId: "kilian",
       name: "Black Phantom",
       notesTop: ["Rhum", "Bergamote"],
-      notesHeart: ["Café", "Cyanide"],
+      notesHeart: ["Café"],
       notesBase: ["Chocolat", "Vanille"],
       family: "gourmand",
       gender: "unisexe",

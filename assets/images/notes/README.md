@@ -36,7 +36,6 @@ s'affichent aujourd'hui en pastille de famille :
 | Ciste | résine |
 | Cognac | gourmand |
 | Coing | fruit |
-| Cyanide | aucune |
 | Encens | résine |
 | Fumée | résine |
 | Gaïac | bois |
@@ -76,8 +75,8 @@ cliché de cèdre sous un libellé « bois de gaïac ».
 ## État actuel
 
 46 photos fournies par le client, déclinées en 67 slugs.
-Sur les 51 notes du catalogue, 39 ont une photo.
+Sur les 50 notes du catalogue, 39 ont une photo.
 
 Notes encore sans visuel :
-`bois-de-gaiac`, `cannelle`, `cognac`, `cyanide`, `encens`, `fumee`,
+`bois-de-gaiac`, `cannelle`, `cognac`, `encens`, `fumee`,
 `gaiac`, `litchi`, `oliban`, `praline`, `rhum`, `tabac`.
