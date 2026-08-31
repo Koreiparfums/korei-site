@@ -1771,3 +1771,181 @@ body[data-page="product"] {
     justify-content: start;
   }
 }
+
+/* ── « Ce que vous allez sentir » : bandeau sombre ─────────────────────────
+   Trois cartes beiges sur fond blanc, la section se fondait dans le reste de
+   la page et ne pesait rien. Elle passe en bandeau pleine largeur sur fond
+   encre : c'est le seul contraste fort de la fiche, il tombe au moment ou on
+   parle de la sensation. L'or ressort enfin, au lieu de se diluer sur beige.
+
+   `width: 100vw` avec le recentrage : la section est dans un conteneur a
+   largeur maximale, il faut en sortir pour aller bord a bord. */
+.pdp-feel {
+  --feel-encre: #14120f;
+  --feel-creme: #f3ece0;
+  --feel-creme-douce: #a9a094;
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  margin-left: -50vw;
+  padding: 88px 0 96px;
+  background: var(--feel-encre);
+  color: var(--feel-creme);
+}
+/* Un filet d'or en haut du bandeau : la transition depuis le blanc est
+   franche, ce trait la rend voulue. */
+.pdp-feel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--pdp-gold) 22%, var(--pdp-gold) 78%, transparent);
+  opacity: 0.55;
+}
+.pdp-feel .pdp-eyebrow {
+  color: var(--pdp-gold);
+}
+.pdp-feel .pdp-title {
+  color: var(--feel-creme);
+}
+.pdp-feel__grid {
+  margin-top: 56px;
+  gap: 0;
+}
+/* Plus de cartes : trois colonnes separees par un filet, comme les colonnes
+   d'une page imprimee. Les boites arrondies faisaient composant, pas fiche. */
+.pdp-feel__card {
+  gap: 14px;
+  padding: 6px 40px 0;
+  border: 0;
+  border-left: 1px solid rgba(243, 236, 224, 0.14);
+  border-radius: 0;
+  background: none;
+}
+.pdp-feel__card:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+.pdp-feel__card:last-child {
+  padding-right: 0;
+}
+.pdp-feel__icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+  border-color: rgba(204, 154, 54, 0.45);
+  font-size: 18px;
+}
+.pdp-feel__title {
+  color: var(--feel-creme-douce);
+}
+.pdp-feel__label {
+  font-size: clamp(26px, 2.2vw, 34px);
+  color: var(--feel-creme);
+}
+.pdp-feel__seg {
+  height: 3px;
+  border-radius: 0;
+  background: rgba(243, 236, 224, 0.18);
+  opacity: 1;
+}
+.pdp-feel__seg.is-on {
+  background: var(--pdp-gold);
+}
+.pdp-feel__score {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 22px;
+  color: var(--pdp-gold);
+}
+.pdp-feel__score small {
+  color: var(--feel-creme-douce);
+}
+.pdp-feel__text,
+.pdp-feel__sub {
+  color: var(--feel-creme-douce);
+}
+.pdp-feel__chip {
+  border-color: rgba(243, 236, 224, 0.2);
+  color: var(--feel-creme-douce);
+}
+.pdp-feel__chip.is-on {
+  border-color: var(--pdp-gold);
+  color: var(--pdp-gold);
+  background: rgba(204, 154, 54, 0.1);
+}
+@media (max-width: 860px) {
+  .pdp-feel {
+    padding: 64px 0 68px;
+  }
+  .pdp-feel__card {
+    padding: 6px 0 0;
+    border-left: 0;
+    border-top: 1px solid rgba(243, 236, 224, 0.14);
+    padding-top: 28px;
+  }
+  .pdp-feel__card:first-child {
+    border-top: 0;
+    padding-top: 6px;
+  }
+}
+
+/* ── « Famille olfactive » et « Le décant Kōrei » ──────────────────────────
+   Deux boites beiges cote a cote, dont l'une aux trois quarts vide. On enleve
+   les boites : un filet en haut, l'intitule et le titre a gauche sur une
+   colonne etroite, le texte a droite. C'est la mise en page d'un article, et
+   elle supporte un texte court comme un texte long. */
+.pdp-editorial {
+  padding: 96px var(--px) 24px;
+}
+.pdp-editorial__grid {
+  display: block;
+  gap: 0;
+}
+.pdp-editorial__col {
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  column-gap: 72px;
+  padding: 44px 0;
+  border: 0;
+  border-top: 1px solid var(--pdp-line);
+  border-radius: 0;
+  background: none;
+}
+.pdp-editorial__col .pdp-eyebrow {
+  grid-column: 1;
+}
+.pdp-editorial__title {
+  grid-column: 1;
+  margin: 14px 0 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(30px, 3vw, 44px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+.pdp-editorial__col p {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  align-self: center;
+  max-width: 62ch;
+  font-size: 16px;
+  line-height: 1.8;
+}
+/* Le bloc « histoire » a deux paragraphes : le second se place sous le
+   premier, dans la meme colonne. */
+.pdp-editorial__col p + p {
+  grid-row: auto;
+  align-self: start;
+  margin-top: 18px;
+}
+@media (max-width: 860px) {
+  .pdp-editorial {
+    padding-top: 64px;
+  }
+  .pdp-editorial__col {
+    display: block;
+  }
+  .pdp-editorial__col p {
+    margin-top: 18px;
+  }
+}
