@@ -9,9 +9,16 @@
   // Les seize maisons du catalogue ont desormais leur logo dans
   // assets/images/brands (voir scripts/logos_marques.py).
   const LOGOS = new Set([
-    "amouage", "byredo", "chanel", "creed", "dior", "ella-k", "guerlain",
-    "initio", "kilian", "louis-vuitton", "maison-margiela", "mancera",
-    "memo-paris", "montale", "parfums-de-marly", "tom-ford", "xerjoff",
+    "amouage", "arte-profumi", "bdk-parfums", "bohoboco",
+    "born-to-stand-out", "byredo", "byron", "calisto", "casamorati",
+    "castel", "chanel", "creed", "dior", "eau-de-soie", "ella-k", "fomowa",
+    "frederic-malle", "giardini-di-toscana", "gritti", "guerlain", "initio",
+    "kajal", "kilian", "kys", "laboya", "les-eaux-primordiales",
+    "louis-vuitton", "maison-margiela", "majestic-mist", "mancera",
+    "marc-antoine-barrois", "matiere-premiere", "memo-paris", "mes-bisous",
+    "montale", "nishane", "noeme", "parfums-de-marly", "reinvented",
+    "rosendo-mateu", "scentologia", "sospiro", "stephanie-de-bruijn",
+    "tiziana-terenzi", "tom-ford", "xerjoff",
   ]);
 
   const FAMILY_LABELS = {
