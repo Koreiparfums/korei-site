@@ -89,7 +89,7 @@ Variables (toutes optionnelles) :
 
 ## Catalogue Shopify
 
-Le catalogue est chargé via `/api/products`, une Netlify Function qui utilise la Storefront API côté serveur. Le front ne reçoit jamais de jeton Shopify et conserve les produits locaux en repli si Shopify est indisponible.
+Le catalogue est chargé via `/api/products`, une Netlify Function qui utilise la Storefront API côté serveur. La fonction pagine les produits Shopify par curseur jusqu'à la fin du catalogue (100 produits par page). Le front ne reçoit jamais de jeton Shopify et conserve les produits locaux en repli si Shopify est indisponible.
 
 Variables Netlify requises :
 

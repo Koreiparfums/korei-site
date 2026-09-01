@@ -41,6 +41,10 @@ Les tags `bestseller`, `new`, `family:...`, `gender:...`, `season:...` et `occas
 
 Après tout changement de variable Netlify, redéployer `develop`, puis ouvrir `https://develop--tranquil-kitten-97123e.netlify.app/api/products`. La réponse doit contenir `"source":"shopify"` et la liste des produits, sans jamais exposer le jeton.
 
+### Catalogue de plus de 100 produits
+
+`/api/products` charge le catalogue par pages de 100 produits et suit le curseur Shopify jusqu'à la fin (`hasNextPage` / `endCursor`). Il n'y a donc pas de plafond fonctionnel à 100 produits côté site. Le champ `count` de la réponse permet de contrôler le nombre total reçu après chaque déploiement.
+
 ## Panier & checkout — variantes par format
 
 Le panier (`pages/panier.html`) appelle `/api/cart`, une Netlify Function qui pilote le Storefront Cart API (`cartCreate`, `cartLinesAdd`, `cartLinesUpdate`, `cartLinesRemove`) avec les mêmes variables `SHOPIFY_STORE_DOMAIN` / `SHOPIFY_STOREFRONT_PUBLIC_TOKEN` que `/api/products`.

@@ -64,7 +64,7 @@
 - [x] Activer la Storefront API et générer le Storefront access token
 - [x] Créer 2–3 produits tests dans Shopify
 - [ ] Mapper les champs Korei vers Shopify (variants, collections, tags, metafields)
-- [x] Catalogue dynamique via Shopify Storefront API (avec repli local)
+- [x] Catalogue dynamique via Shopify Storefront API (pagination complète par curseur, avec repli local)
 - [x] Fiche produit dynamique via Shopify Storefront API (avec repli local)
 - [x] Panier fonctionnel via Shopify Cart API — panier hybride : `localStorage` reste l'état local, `/api/cart` synchronise les lignes qui ont une vraie variante Shopify (voir `docs/SHOPIFY_SETUP.md`)
 - [x] Checkout via Shopify Checkout — "Passer la commande" redirige vers le `checkoutUrl` Shopify dès qu'un panier réel existe
