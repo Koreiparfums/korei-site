@@ -359,7 +359,12 @@
       intensity: "modéré",
       occasions: ["soirée", "date"],
       seasons: ["automne", "hiver"],
-      price: 15,
+      // Le client vend ce parfum : ce sont ses prix, releves dans son tableur.
+      // Cette fiche-ci est gardee plutot que celle du catalogue importe parce
+      // qu'elle porte une description et une photo en 750 px que l'autre n'a
+      // pas ; l'autre n'apportait que le prix, qui est desormais ici.
+      price: 11.9,
+      prices: { "2ml": 11.9, "5ml": 22.9, "10ml": 44.9 },
       rating: 3.7,
       badge: "best",
       badgeLabel: "Best-seller",
