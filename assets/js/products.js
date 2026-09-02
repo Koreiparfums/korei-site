@@ -27,6 +27,18 @@
       supplierAvailable: raw.supplierAvailable ?? true,
       affiliateUrl: raw.affiliateUrl ?? null,
       shopifyHandle: raw.shopifyHandle ?? raw.id,
+      // « pas de photo » et « pas vendable » etaient portes par le meme
+      // drapeau. Une fois les visuels poses, la phrase « sa photo est en
+      // cours de preparation » devenait fausse alors que le parfum devait
+      // rester non vendable. Les deux sont maintenant separes :
+      //   photoManquante — deduit du fichier reel, jamais pose a la main
+      //   bientot        — annonce, pas en stock
+      photoManquante: !raw.image,
+      bientot: raw.bientot ?? false,
+      // Largeur reelle du visuel. Les sources n'ont pas toutes la meme
+      // definition : annoncer 750 partout ferait choisir au navigateur une
+      // image qu'on n'a pas.
+      imageWidth: raw.imageWidth ?? (raw.image ? 750 : 0),
     };
   }
 
@@ -357,20 +369,39 @@
     }),
   ];
 
-  // Parfums en attente de la photo du flacon fournie par le client. Ils restent
-  // au catalogue mais ne sont pas vendables : la carte affiche un cadre neutre
-  // et « Bientot disponible » au lieu du prix. Les retirer completement vidait
-  // la page Maisons ; leur inventer une photo n'etait pas envisageable.
-  // Une fois le visuel pose dans assets/images/products, il suffit de retirer
-  // l'identifiant de cette liste.
-  const SANS_PHOTO = new Set([
+  // Maisons que le client ne distribue pas. Ces parfums restent au catalogue
+  // — les retirer vidait la page Maisons — mais ne sont pas vendables : la
+  // carte affiche « Bientot disponible » au lieu du prix.
+  //
+  // Ce n'est PAS une liste de parfums sans photo, contrairement a ce que son
+  // ancien nom laissait croire. Poser un visuel sur l'un d'eux ne le rend pas
+  // vendable pour autant : il faut le sortir de cette liste, et c'est une
+  // decision commerciale, pas une consequence technique.
+  const NON_DISTRIBUES = new Set([
     "replica-jazz-club", "bal-dafrique", "oud-for-greatness", "irish-leather",
     "layton", "angels-share", "black-phantom", "sauvage-elixir",
   ]);
 
-  const PRODUCT_CATALOG = CATALOGUE_COMPLET.map((p) =>
-    SANS_PHOTO.has(p.id) ? { ...p, photoManquante: true, supplierAvailable: false } : p
-  );
+  // Sept de ces huit n'ont aucune photo : leur fiche le dit. Layton en a une,
+  // relevee puis reconnue a l'oeil ; elle plafonne a 444 px de large, d'ou la
+  // largeur declaree ici plutot que le 750 par defaut.
+  const PHOTOS_NON_DISTRIBUES = {
+    layton: { image: "assets/images/products/layton.webp", imageWidth: 444 },
+  };
+
+  // createProduct a deja tourne sur les fiches ci-dessus : il y a pose
+  // photoManquante d'apres l'absence d'image. Poser une photo ici doit donc
+  // le recalculer, sinon la fiche garde la phrase « photo en cours de
+  // preparation » alors que la photo est la.
+  const PRODUCT_CATALOG = CATALOGUE_COMPLET.map((p) => {
+    if (!NON_DISTRIBUES.has(p.id)) return p;
+    const complete = {
+      ...p, bientot: true, supplierAvailable: false,
+      ...(PHOTOS_NON_DISTRIBUES[p.id] || {}),
+    };
+    complete.photoManquante = !complete.image;
+    return complete;
+  });
 
   // Tenue et projection, notees sur 10, affichees dans le bloc « Ressenti »
   // de la fiche produit.
@@ -492,7 +523,7 @@
     PRODUCTS: PRODUCT_CATALOG,
     // Catalogue complet, parfums sans photo compris : sert au back-office.
     CATALOGUE_COMPLET,
-    SANS_PHOTO,
+    NON_DISTRIBUES,
     SENSORIEL,
     BRANDS,
     formatNotes,

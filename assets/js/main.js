@@ -25,14 +25,20 @@
     if (!src) return "";
     const esc = site?.escapeHtml || ((v) => v);
     const alt = `${esc(product.brand)} ${esc(product.name)}`;
-    // Dimensions intrinseques des visuels produit : 750x1000. Les porter en
-    // attribut reserve la place avant le chargement (aucun saut de page).
+    // Les visuels n'ont pas tous la meme definition : les plus anciens font
+    // 750 px de large, ceux qui viennent du releve descendent parfois a 375.
+    // On annonce la largeur reelle, sinon le navigateur choisit une image
+    // qu'on n'a pas et l'affiche floue en croyant l'avoir en grand.
+    const grande = product.imageWidth || 750;
+    const petite = Math.min(400, grande);
     const small = src.replace(/\.webp$/, "-sm.webp");
-    const srcset = src.endsWith(".webp") ? ` srcset="${small} 400w, ${src} 750w" sizes="(max-width: 640px) 45vw, 220px"` : "";
+    const srcset = src.endsWith(".webp")
+      ? ` srcset="${small} ${petite}w, ${src} ${grande}w" sizes="(max-width: 640px) 45vw, 220px"`
+      : "";
     // Pas d'attribut `hidden` ici : une image a la fois masquee et differee
     // n'est jamais telechargee par le navigateur, donc jamais affichee. Le
     // fondu est gere en CSS par la classe media-slot--loaded.
-    return `<img class="${className} media-slot__image" src="${src}"${srcset} alt="${alt}" width="750" height="1000" loading="lazy" decoding="async" />`;
+    return `<img class="${className} media-slot__image" src="${src}"${srcset} alt="${alt}" width="${grande}" height="${Math.round((grande * 4) / 3)}" loading="lazy" decoding="async" />`;
   }
 
   function renderProductGlowHtml(product, basePath = "") {
@@ -277,7 +283,7 @@
     const esc = site?.escapeHtml || ((v) => v);
     const url = `${basePath}pages/product.html?id=${product.id}`;
     const prix = formatPrice ? formatPrice(product.price) : `À partir de ${product.price}€`;
-    const indispo = product.photoManquante === true;
+    const indispo = product.bientot === true;
     return `
       <a class="search-hit" href="${url}">
         <span class="search-hit__media">${
@@ -492,8 +498,8 @@
 
     // Parfum en attente de sa photo : la carte reste visible, mais le prix
     // laisse la place a « Bientot disponible ». On ne propose pas a l'achat
-    // un parfum qu'on ne peut pas montrer.
-    const bientot = product.photoManquante === true;
+    // un parfum que le client n'a pas en stock.
+    const bientot = product.bientot === true;
     const actionHtml = bientot
       ? `<span class="card-add card-add--bientot">Bientôt disponible</span>`
       : `<button class="card-add" type="button" aria-label="Voir ${product.name}">${price}</button>`;

@@ -617,8 +617,10 @@
   function renderHero(product, basePath) {
     const formats = getFormats(product);
     const selected = firstSelectable(formats);
-    // Parfum en attente de la photo du flacon : on l'affiche, on ne le vend pas.
-    const bientot = product.photoManquante === true;
+    // Parfum annonce mais pas en stock : on l'affiche, on ne le vend pas.
+    // « bientot » parle de la vente, « photoManquante » du visuel : depuis
+    // qu'on pose de vraies photos, les deux ne vont plus ensemble.
+    const bientot = product.bientot === true;
     return `
       <section class="pdp-hero">
         <div class="pdp-hero__grid">
@@ -638,7 +640,7 @@
               ${renderCoffretRail(product, selected)}
 
               <div class="pdp-actions">
-                ${bientot ? `<p class="pdp-bientot">Ce parfum arrive bientôt en boutique. Sa photo est en cours de préparation.</p>` : ""}
+                ${bientot ? `<p class="pdp-bientot">Ce parfum arrive bientôt en boutique.${product.photoManquante ? " Sa photo est en cours de préparation." : ""}</p>` : ""}
                 <div class="pdp-actions__row">
                   <button class="pdp-btn pdp-btn--primary" id="pdp-cta" type="button"${selected.available && !bientot ? "" : " disabled"}>
                     ${bientot ? "Bientôt disponible" : selected.available ? `Ajouter au panier — ${prix(selected.price)}` : "Format indisponible"}
@@ -707,8 +709,8 @@
     let current = byKey.get(main.querySelector(".pdp-format.is-active")?.dataset.vol) || firstSelectable(formats);
 
     function label() {
-      // Parfum en attente de photo : pas d'achat possible, quel que soit le format.
-      if (product.photoManquante) return "Bientôt disponible";
+      // Parfum annonce : pas d'achat possible, quel que soit le format.
+      if (product.bientot) return "Bientôt disponible";
       if (!current) return "Format indisponible";
       if (!current.available) return "Format indisponible";
       if (coffret?.hasItem(product.id, current.key)) return "Déjà dans le panier";
@@ -746,7 +748,7 @@
     function syncButtons() {
       const text = label();
       const disabled =
-        product.photoManquante || !current?.available || coffret?.hasItem(product.id, current.key);
+        product.bientot || !current?.available || coffret?.hasItem(product.id, current.key);
       [cta, stickyCta].forEach((btn) => {
         if (!btn) return;
         btn.textContent = text;
@@ -774,7 +776,7 @@
 
     // KOR-B1 — l'ajout crée une vraie ligne, avec la variante Shopify quand elle existe.
     function addToCart() {
-      if (product.photoManquante) return;
+      if (product.bientot) return;
       if (!current?.available || coffret?.hasItem(product.id, current.key)) return;
       const added = coffret?.addItem({
         productId: product.id,
