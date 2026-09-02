@@ -147,6 +147,15 @@
     // ── KOR-E5 : maisons phares, pilotees par la donnee et non codees en dur.
     // On retient les maisons les mieux fournies, et pour chacune son parfum le
     // mieux note : le clic mene a la fiche produit, pas a la page marque.
+    // Le parfum mis en avant se choisissait sur une note sur 5 posee au juge,
+    // qui n'existait que pour treize fiches. On prend la tenue, qui est
+    // mesuree, et le nom pour departager : deux maisons sans mesure ne
+    // doivent pas changer de place d'un chargement a l'autre.
+    function tenue(produit) {
+      const mesures = window.KoreiProducts?.SENSORIEL || {};
+      return mesures[produit?.id]?.tenue ?? -1;
+    }
+
     function renderPhares() {
       const section = document.getElementById("maisons-phares");
       const row = document.getElementById("maisons-phares-row");
@@ -154,10 +163,10 @@
       const phares = vendues
         .map((b) => ({
           brand: b,
-          hero: [...b.products].sort((a, c) => (c.rating || 0) - (a.rating || 0))[0],
+          hero: [...b.products].sort((a, c) => tenue(c) - tenue(a) || a.name.localeCompare(c.name, "fr"))[0],
         }))
         .filter((x) => x.hero && x.hero.image)
-        .sort((a, c) => (c.hero.rating || 0) - (a.hero.rating || 0))
+        .sort((a, c) => tenue(c.hero) - tenue(a.hero) || a.brand.name.localeCompare(c.brand.name, "fr"))
         .slice(0, 6);
       if (phares.length < 3) {
         section.hidden = true;

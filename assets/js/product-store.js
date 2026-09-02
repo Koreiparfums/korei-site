@@ -84,12 +84,20 @@
     return catalog().filter((p) => productSearchText(p).includes(q));
   }
 
+  function tenue(produit) {
+    const mesures = global.KoreiProducts?.SENSORIEL || {};
+    return mesures[produit.id]?.tenue ?? -1;
+  }
+
   function sortProducts(list, sort = "popular") {
     const sorted = [...list];
     if (sort === "price-asc") sorted.sort((a, b) => a.price - b.price);
     else if (sort === "price-desc") sorted.sort((a, b) => b.price - a.price);
-    else if (sort === "rating") sorted.sort((a, b) => b.rating - a.rating);
-    else sorted.sort((a, b) => (b.bestseller ? 1 : 0) - (a.bestseller ? 1 : 0) || b.rating - a.rating);
+    // La tenue est mesuree, contrairement a la note sur 5 qui trainait ici
+    // et que personne n'avait jamais relevee. Un parfum sans mesure passe
+    // derriere ceux qui en ont une, plutot que de valoir zero.
+    else if (sort === "tenue") sorted.sort((a, b) => tenue(b) - tenue(a));
+    else sorted.sort((a, b) => (b.bestseller ? 1 : 0) - (a.bestseller ? 1 : 0) || tenue(b) - tenue(a));
     return sorted;
   }
 
