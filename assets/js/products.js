@@ -396,7 +396,7 @@
   // declarees une par une parce qu'elles varient : la source ne donne pas
   // toujours de quoi tenir le 750 px du reste du site, et on n'agrandit pas.
   const PHOTOS_NON_DISTRIBUES = {
-    layton: { image: "assets/images/products/layton.webp", imageWidth: 444 },
+    layton: { image: "assets/images/products/layton.webp", imageWidth: 540 },
     "replica-jazz-club": { image: "assets/images/products/replica-jazz-club.webp", imageWidth: 540 },
     "bal-dafrique": { image: "assets/images/products/bal-dafrique.webp", imageWidth: 540 },
     "oud-for-greatness": { image: "assets/images/products/oud-for-greatness.webp", imageWidth: 750 },
@@ -454,9 +454,7 @@
     { id: "parfums-de-marly", name: "Parfums de Marly", country: "France", tagline: "Élégance royale" },
     { id: "maison-margiela", name: "Maison Margiela", country: "France", tagline: "Replica — souvenirs en flacon" },
     { id: "dior", name: "Dior", country: "France", tagline: "Haute parfumerie française" },
-    { id: "chanel", name: "Chanel", country: "France", tagline: "L'essence du luxe" },
     { id: "guerlain", name: "Guerlain", country: "France", tagline: "Tradition et innovation" },
-    { id: "louis-vuitton", name: "Louis Vuitton", country: "France", tagline: "Le luxe parisien en flacon" },
     { id: "ella-k", name: "Ella K Parfums", country: "France", tagline: "Récits de voyage olfactifs" },
     { id: "mancera", name: "Mancera", country: "France", tagline: "Parfumerie gourmande et opulente" },
     // Deux maisons deja vendues sur la boutique en ligne, qui manquaient ici :
