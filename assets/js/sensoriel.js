@@ -133,7 +133,7 @@
     "matiere-premiere-encens-suave": { tenue: 8, projection: 8 },
     "matiere-premiere-falcon-leather": { tenue: 9, projection: 8 },
     "matiere-premiere-parisian-musc": { tenue: 8, projection: 7 },
-    "matiere-premiere-vanilla-powder-edp-sans-blister": { tenue: 9, projection: 8 },
+    "matiere-premiere-vanilla-powder": { tenue: 9, projection: 8 },
     "memo-paris-abu-dhabi": { tenue: 8, projection: 8 },
     "memo-paris-african-leather": { tenue: 8, projection: 8 },
     "memo-paris-lalibela": { tenue: 8, projection: 7 },
