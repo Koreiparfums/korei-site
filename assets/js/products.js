@@ -417,36 +417,16 @@
   // Tenue et projection, notees sur 10, affichees dans le bloc « Ressenti »
   // de la fiche produit.
   //
-  // ATTENTION — VALEURS PROVISOIRES. Elles ont ete posees en interne pour que
-  // le bloc existe, en attendant que le client donne ses propres notes. Elles
-  // n'ont aucune source affichee sur le site et doivent etre relues une par
-  // une avant la mise en vente. Un parfum absent de cette liste n'affiche
-  // simplement pas les deux jauges : rien n'est invente a l'affichage.
-  const SENSORIEL = {
-    "interlude-man": { tenue: 9, projection: 9 },
-    "oud-wood": { tenue: 7, projection: 6 },
-    aventus: { tenue: 7, projection: 8 },
-    "rose-centifolia": { tenue: 6, projection: 5 },
-    "lettre-de-pushkar": { tenue: 7, projection: 6 },
-    // parfums en attente de photo, prets a revenir
-    "replica-jazz-club": { tenue: 6, projection: 6 },
-    "bal-dafrique": { tenue: 6, projection: 6 },
-    "oud-for-greatness": { tenue: 9, projection: 9 },
-    "irish-leather": { tenue: 8, projection: 7 },
-    layton: { tenue: 8, projection: 8 },
-    "angels-share": { tenue: 7, projection: 7 },
-    "black-phantom": { tenue: 7, projection: 7 },
-    "sauvage-elixir": { tenue: 8, projection: 8 },
-    // produits venant de Shopify
-    "test-poc-bdk-parfums-312-saint-honore": { tenue: 7, projection: 6 },
-    "test-poc-bdk-parfums-pas-ce-soir": { tenue: 7, projection: 7 },
-    "test-poc-bdk-parfums-rouge-smoking": { tenue: 8, projection: 7 },
-    "test-poc-initio-atomic-rose": { tenue: 8, projection: 8 },
-    "test-poc-initio-psychedelic-love": { tenue: 8, projection: 8 },
-    "test-poc-initio-rehab": { tenue: 7, projection: 7 },
-    "louis-vuitton-imagination": { tenue: 7, projection: 7 },
-    "montale-arabian-tonka": { tenue: 8, projection: 8 },
-  };
+  // La table est desormais posee par assets/js/sensoriel.js, qui se charge
+  // apres ce fichier et remplace cette valeur. Elle contenait avant vingt et
+  // une notes que j'avais mises au jugé, sans mesure derriere ; sept d'entre
+  // elles ne designaient meme plus un parfum existant depuis l'import du
+  // catalogue du client. Elles sont parties.
+  //
+  // Ce {} vide reste pour que SENSORIEL existe toujours quand sensoriel.js
+  // n'est pas charge : la fiche produit n'affiche alors aucune jauge, ce qui
+  // est le comportement voulu.
+  const SENSORIEL = {};
 
   const BRANDS = [
     { id: "armani-prive", name: "Armani Privé", country: "Italie", tagline: "La collection privée de Giorgio Armani" },
