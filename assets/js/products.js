@@ -56,7 +56,6 @@
       intensity: "intense",
       occasions: ["soirée", "bureau"],
       seasons: ["automne", "hiver"],
-      price: 14,
       rating: 3.4,
       fragrantica: {
         rating: 4.12,
@@ -108,7 +107,6 @@
       intensity: "modéré",
       occasions: ["bureau", "soirée"],
       seasons: ["automne", "hiver"],
-      price: 12,
       rating: 3.5,
       badge: "best",
       badgeLabel: "Best-seller",
@@ -132,7 +130,6 @@
       intensity: "modéré",
       occasions: ["bureau", "quotidien"],
       seasons: ["printemps", "été"],
-      price: 18,
       priceRange: "premium",
       rating: 3.1,
       badge: "exclusive",
@@ -335,7 +332,6 @@
       intensity: "modéré",
       occasions: ["quotidien", "bureau"],
       seasons: ["printemps", "été"],
-      price: 13,
       rating: 3.8,
       badge: "best",
       badgeLabel: "Best-seller",
@@ -388,6 +384,11 @@
   const NON_DISTRIBUES = new Set([
     "replica-jazz-club", "bal-dafrique", "oud-for-greatness", "irish-leather",
     "layton", "angels-share", "black-phantom", "sauvage-elixir",
+    // Ces quatre-la etaient vendables, a des prix que j'avais poses au juge.
+    // Ils ne figurent pas au tableau de prix du client : il ne les a pas
+    // achetes, donc il ne peut pas les vendre. Ils rejoignent les annonces,
+    // et leur prix invente disparait avec.
+    "interlude-man", "oud-wood", "aventus", "rose-centifolia",
   ]);
 
   // Les huit ont desormais leur photo. Sept d'entre elles ont ete relevees
