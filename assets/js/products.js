@@ -438,6 +438,14 @@
   };
 
   const BRANDS = [
+    { id: "armani-prive", name: "Armani Privé", country: "Italie", tagline: "La collection privée de Giorgio Armani" },
+    { id: "bvlgari", name: "Bvlgari", country: "Italie", tagline: "Joaillier romain, parfumeur depuis 1992" },
+    { id: "carmer", name: "Carmer", country: "Espagne", tagline: "Parfumerie de niche barcelonaise" },
+    { id: "essential-parfums", name: "Essential Parfums", country: "France", tagline: "Le parfum de qualité à prix juste" },
+    { id: "ex-nihilo", name: "Ex Nihilo", country: "France", tagline: "Sur-mesure parisien, rue Saint-Honoré" },
+    { id: "lancome", name: "Lancome", country: "France", tagline: "Maison française depuis 1935" },
+    { id: "room-1015", name: "Room 1015", country: "France", tagline: "Parfums inspirés du rock" },
+    { id: "stephane-humbert-lucas", name: "Stéphane Humbert Lucas", country: "France", tagline: "Parfumeur-createur, collection 777" },
     { id: "amouage", name: "Amouage", country: "Oman", tagline: "L'art de la parfumerie orientale" },
     { id: "tom-ford", name: "Tom Ford", country: "USA", tagline: "Luxe et audace olfactive" },
     { id: "xerjoff", name: "Xerjoff", country: "Italie", tagline: "Haute parfumerie italienne" },

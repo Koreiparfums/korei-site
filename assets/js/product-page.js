@@ -557,7 +557,11 @@
   // dans le libelle du bouton (11 px, en capitales). Plus petit que deux
   // titres de section. C'est la deuxieme information lue d'une fiche produit.
   function renderPriceBlock(sel) {
-    if (!sel) return "";
+    // Un parfum annonce mais pas encore reference chez le fournisseur n'a
+    // aucun prix : le client ne l'a pas achete, donc il ne l'a pas tarife.
+    // Afficher « 0 € », ou pire un prix pose au jugé, serait un mensonge sur
+    // une page qui vend. On n'affiche rien.
+    if (!sel || !sel.price) return "";
     return `
       <div class="pdp-price" data-price-block>
         <span class="pdp-price__amount" data-price-amount>${prix(sel.price)}</span>
@@ -578,7 +582,10 @@
   // etait vide, donc invisible pour tout nouveau visiteur.
   // Ici : une seule ligne, toujours visible, qui suit le format selectionne.
   function renderCoffretRail(product, sel) {
-    if (!global.KoreiCoffret || !sel) return "";
+    // Sans prix, la ligne de progression annonce « 0 € economises ». Un
+    // parfum non tarife n'entre de toute facon pas dans un coffret : il n'est
+    // pas vendable. On ne montre pas le rail.
+    if (!global.KoreiCoffret || !sel || !sel.price) return "";
     const t = COFFRET_TIERS.find((x) => x.format === sel.key);
     if (!t) return "";
     return `
@@ -636,7 +643,7 @@
               <h1 class="pdp-name">${esc(product.name)}</h1>
               ${product.description ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
               ${renderPriceBlock(selected)}
-              ${renderFormats(formats)}
+              ${formats.some((f) => f.price > 0) ? renderFormats(formats) : ""}
               ${renderCoffretRail(product, selected)}
 
               <div class="pdp-actions">

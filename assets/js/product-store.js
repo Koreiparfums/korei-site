@@ -311,6 +311,16 @@
   function getFormatPrice(product, format) {
     const variant = getVariantForFormat(product, format);
     if (variant) return Number(variant.price);
+
+    // Le bareme du client : un prix par parfum ET par format, releve dans son
+    // tableur. Il ne se deduit d'aucun coefficient — deux parfums a 8,90 EUR
+    // le 2 ml peuvent valoir 18,90 et 21,90 EUR le 5 ml, parce que le prix
+    // d'achat au flacon n'est pas le meme. Quand il est la, il fait foi.
+    const reel = product?.prices?.[format];
+    if (typeof reel === "number" && reel > 0) return reel;
+
+    // Les multiplicateurs ne servent plus qu'aux quelques fiches de
+    // demonstration ecrites a la main, qui n'ont ni variante ni bareme.
     const multiplier = DEMO_MULTIPLIERS[format];
     if (!multiplier || !product?.price) return 0;
     return Math.round(product.price * multiplier);
