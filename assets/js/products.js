@@ -274,7 +274,10 @@
       brandId: "kilian",
       name: "Black Phantom",
       notesTop: ["Rhum", "Bergamote"],
-      notesHeart: ["Café"],
+      // « Cyanure » est une note que Kilian revendique sur ce parfum, bati
+      // autour du Memento Mori. Elle avait ete retiree par prudence ; le
+      // client a confirme qu'elle fait partie du propos de la maison.
+      notesHeart: ["Café", "Cyanure"],
       notesBase: ["Chocolat", "Vanille"],
       family: "gourmand",
       gender: "unisexe",
