@@ -9494,7 +9494,11 @@ body.has-cookie-banner .chatbot-widget {
    Les photos d'ingredients n'existent que pour 5 des 51 notes du catalogue.
    En attendant les vraies photos, la vignette dit la famille de la note :
    une couleur et un picto, au lieu d'une initiale qui n'apprend rien. */
-.note-image--family {
+/* Les deux classes plutot qu'une : la regle du monogramme juste au-dessus
+   porte un :has(img) qui la rend plus specifique qu'un simple .note-image--
+   family. Sans ce doublage, les huit familles heritaient toutes du meme fond
+   dore et seule l'encre du picto changeait. */
+.note-image.note-image--family {
   background: var(--note-bg, var(--accent-light));
   border-color: var(--note-line, var(--border));
   color: var(--note-ink, var(--accent));
@@ -9543,6 +9547,19 @@ body.has-cookie-banner .chatbot-widget {
   --note-bg: #f4f4f2;
   --note-line: #ddddd8;
   --note-ink: #7d7d74;
+}
+/* Deux familles ajoutees le 03/09/2026 : les notes vertes et aromatiques
+   d'un cote, les notes marines et minerales de l'autre. Elles portaient
+   jusque-la une initiale grise faute de case ou aller. */
+.note-image--family[data-family="herbe"] {
+  --note-bg: #eff5ec;
+  --note-line: #cfe0c7;
+  --note-ink: #5d7f4e;
+}
+.note-image--family[data-family="marin"] {
+  --note-bg: #edf3f6;
+  --note-line: #cadde5;
+  --note-ink: #4d7787;
 }
 /* Dans la pyramide, la vignette est plus grande : le picto suit. */
 .pdp-py-note .note-image--family i {

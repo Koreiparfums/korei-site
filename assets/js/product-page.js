@@ -449,14 +449,17 @@
     return deja && deja.has(titre) ? fallback : titre;
   }
 
-  function noteSlugLocal(note) {
-    return String(note || "")
-      .normalize("NFD")
-      .replace(/[̀-ͯ]/g, "")
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
-  }
+  // Le slug d'une note vient de KoreiUI : la fiche en gardait sa propre
+  // copie, restee sans le traitement des ligatures. « Œillet » y perdait sa
+  // photo pendant que le catalogue la trouvait.
+  const noteSlugLocal = ui.noteSlug || ((note) => String(note || "")
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/œ/g, "oe")
+    .replace(/æ/g, "ae")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, ""));
 
   // Une note = une tuile du bandeau. Avec sa photo d'ingredient quand elle
   // existe, sinon la couleur de sa famille olfactive : jamais un cadre vide.

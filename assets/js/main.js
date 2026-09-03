@@ -52,6 +52,10 @@
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase()
+      // Les ligatures n'ont pas de decomposition NFD : sans cette ligne,
+      // « Œillet » devient « illet » et ne retrouve ni sa photo ni sa famille.
+      .replace(/\u0153/g, "oe")
+      .replace(/\u00e6/g, "ae")
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
   }
@@ -78,14 +82,16 @@
   // olfactive, pastille coloree et picto. Une information vraie et lisible,
   // la ou une simple lettre grise ne disait rien. La photo passe devant.
   const NOTE_FAMILIES = {
-    agrume: { icon: "ti-lemon-2", notes: ["bergamote", "citron", "pamplemousse", "orange", "mandarine", "yuzu", "neroli", "petit-grain"] },
-    fruit: { icon: "ti-apple", notes: ["ananas", "pomme", "litchi", "peche", "poire", "fruits-rouges", "cassis", "framboise", "figue", "cerise", "coing", "mangue", "abricot", "prune", "fruits"] },
-    fleur: { icon: "ti-flower", notes: ["rose", "rose-centifolia", "jasmin", "pivoine", "violette", "violet", "iris", "muguet", "tubereuse", "ylang-ylang", "fleur-d-oranger", "lavande", "heliotrope", "hedione", "gardenia", "narcisse", "magnolia", "freesia"] },
-    bois: { icon: "ti-tree", notes: ["bois", "bois-de-cedre", "cedre", "santal", "bois-de-santal", "gaiac", "bois-de-gaiac", "vetiver", "patchouli", "bouleau", "oud", "chene", "oak", "mousse", "mousse-de-chene"] },
-    epice: { icon: "ti-flame", notes: ["poivre", "poivre-rose", "pink-pepper", "cardamome", "cannelle", "safran", "anis", "anis-etoile", "star-anise", "noix-de-muscade", "nutmeg", "epices", "gingembre", "racine-d-angelique", "clou-de-girofle", "sauge", "sauge-sclaree"] },
-    gourmand: { icon: "ti-candy", notes: ["vanille", "tonka", "feve-de-tonka", "praline", "chocolat", "cacao", "cafe", "caramel", "miel", "rhum", "cognac", "canne-a-sucre", "amande", "noix-de-coco", "lait", "creme-fouettee"] },
-    resine: { icon: "ti-droplet", notes: ["ambre", "resine", "encens", "oliban", "styrax", "benjoin", "labdanum", "fumee", "tabac", "cuir", "myrrhe", "ciste", "resines", "baume-de-tolu", "baume-du-perou"] },
-    musc: { icon: "ti-wind", notes: ["musc", "musc-blanc", "ambroxan", "ambrostar", "cashmeran", "bois-de-cachemire"] },
+    agrume: { icon: "ti-lemon-2", notes: ["bergamote", "citron", "pamplemousse", "orange", "mandarine", "yuzu", "neroli", "petit-grain", "agrumes", "cedrat", "kumquat", "litsea-cubeba", "feuille-de-mandarinier"] },
+    fruit: { icon: "ti-apple", notes: ["ananas", "pomme", "litchi", "peche", "poire", "fruits-rouges", "cassis", "framboise", "figue", "cerise", "coing", "mangue", "abricot", "prune", "fruits", "banane", "fraise", "fraise-des-bois", "fruit-de-la-passion", "fruits-exotiques", "fruits-secs", "goyave", "melon", "mure", "peche-blanche", "rhubarbe", "notes-fruitees", "dattes", "coco-de-mer", "grenade", "kiwi", "nectarine", "pasteque", "raisin", "sapote"] },
+    fleur: { icon: "ti-flower", notes: ["rose", "rose-centifolia", "jasmin", "pivoine", "violette", "violet", "iris", "muguet", "tubereuse", "ylang-ylang", "fleur-d-oranger", "lavande", "heliotrope", "hedione", "gardenia", "narcisse", "magnolia", "freesia", "cyclamen", "fleur-d-abricotier", "fleur-de-poirier", "fleur-de-tiare", "fleurs", "fleurs-blanches", "frangipanier", "hibiscus", "heliotrope-blanc", "lys", "notes-fleuries", "notes-florales-exotiques", "orchidee", "orchidee-noire", "osmanthus", "osmanthus-de-chine", "pavot", "souci", "oeillet", "angelique", "geranium", "amaryllis", "aubepine", "boronia", "cananga", "fleur-d-oranger-amere", "fleur-d-oranger-d-afrique", "fleur-de-framboisier", "fleur-de-pecher", "fleur-de-soie", "fleur-de-tabac", "jacinthe", "lilas", "lotus", "mahonia", "reine-de-la-nuit", "arbre-a-soie", "camomille", "nympheal", "petalia", "pomarose", "mahonial"] },
+    bois: { icon: "ti-tree", notes: ["bois", "bois-de-cedre", "cedre", "santal", "bois-de-santal", "gaiac", "bois-de-gaiac", "vetiver", "patchouli", "bouleau", "oud", "chene", "oak", "mousse", "mousse-de-chene", "acajou", "bois-de-poirier", "cabreuva", "cypres", "genevrier", "lentisque", "palissandre", "pin", "thuya", "ebene", "ecorce", "akigalawood", "amyris", "bois-blancs", "bois-d-akigala", "bois-de-copaiba", "bois-de-teck", "bois-exotiques", "clearwood", "georgywood", "palissandre-du-bresil", "papyrus", "rhus", "sapin-baumier", "palo-santo-d-equateur", "evernyl", "iso-e-super", "pepperwood"] },
+    epice: { icon: "ti-flame", notes: ["poivre", "poivre-rose", "pink-pepper", "cardamome", "cannelle", "safran", "anis", "anis-etoile", "star-anise", "noix-de-muscade", "nutmeg", "epices", "gingembre", "racine-d-angelique", "clou-de-girofle", "sauge", "sauge-sclaree", "cannelle-de-ceylan", "coriandre", "curcuma", "baies-de-genievre", "baies-de-genevrier", "piment-rouge", "poivron-vert", "notes-epicees", "laurier", "badiane", "carvi", "clou-de-girofle-de-madagascar", "cumin", "feuille-de-cannelier", "feuille-de-laurier", "graines-de-celeri", "piment", "reglisse"] },
+    gourmand: { icon: "ti-candy", notes: ["vanille", "tonka", "feve-de-tonka", "praline", "chocolat", "cacao", "cafe", "caramel", "miel", "rhum", "cognac", "canne-a-sucre", "amande", "noix-de-coco", "lait", "creme-fouettee", "accord-gourmand", "amande-amere", "amaretto", "barbe-a-papa", "beurre-de-cacahuete", "caramel-au-beurre", "caramel-sale", "cassonade", "chataigne", "creme-glacee", "fruits-a-coque", "lait-de-coco", "noisette", "panacotta", "pistache", "riz", "sorbet", "sucre", "sucre-roux", "sesame", "truffe", "whisky", "coumarine", "ble", "notes-sucrees", "gelee", "amande-caramelisee", "cookie", "cotton-candy", "creme-irlandaise", "gelato", "glace", "liqueur", "malt", "noix", "sorbet-a-la-noix-de-coco", "toffee", "vin-rouge", "vodka", "notes-lactees"] },
+    resine: { icon: "ti-droplet", notes: ["ambre", "resine", "encens", "oliban", "styrax", "benjoin", "labdanum", "fumee", "tabac", "cuir", "myrrhe", "ciste", "resines", "baume-de-tolu", "baume-du-perou", "baume-de-gurjun", "castoreum", "cigare-cubain", "feuille-de-tabac", "ferule-gommeuse", "huile-de-cade", "heliantheme", "immortelle", "notes-animales", "poudre-a-canon", "resine-oliban", "concrete", "daim", "elemi", "cypriol", "huile-essentielle-de-cypriol", "absolue-de-ciste", "absolue-de-tabac", "ciste-d-espagne", "ciste-de-france", "ciste-incanus", "civette", "cire-d-abeille", "daim-blanc", "daim-blond", "opoponax", "resine-d-elemi", "notes-balsamiques", "baumier-du-perou", "tabac-sylvestre"] },
+    musc: { icon: "ti-wind", notes: ["musc", "musc-blanc", "ambroxan", "ambrostar", "cashmeran", "bois-de-cachemire", "ambrette", "ambrettolide", "ambrofix", "jasmolactone", "notes-poudrees", "aldehydes", "amberwood", "ambrox", "lorenox", "nirvanolide", "serenolide"] },
+    herbe: { icon: "ti-leaf", notes: ["armoise", "basilic", "cannabis", "davana", "fougere", "foin", "herbe", "menthe", "notes-vertes", "accord-vert", "romarin", "thym", "estragon", "epilobe-en-epi", "graines-de-carotte", "buchu", "champignon", "feuilles-vertes", "mate", "the-noir", "the-rouge", "celeri", "absinthe", "basilic-thai", "citronnelle", "eucalyptus", "feuille-de-the", "menthe-poivree", "the", "the-oolong", "the-vert", "notes-terreuses", "teinture-de-terre", "betterave", "carotte", "pomme-de-terre"] },
+    marin: { icon: "ti-ripple", notes: ["notes-aquatiques", "notes-marines", "notes-minerales", "notes-metalliques", "notes-ozoniques", "sel-de-mer", "sable", "notes-solaires", "herbier-marin", "note-solaire", "sel"] },
   };
 
   const NOTE_FAMILY_BY_SLUG = (() => {
@@ -1622,6 +1628,7 @@
     // en gardait une copie figee, qui se desynchronisait a chaque ajout.
     NOTE_IMAGES,
     slugDeRepli,
+    noteSlug,
     initBrandChips,
     initHomePage,
     initCataloguePage,
