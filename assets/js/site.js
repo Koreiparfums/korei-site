@@ -41,7 +41,7 @@
 
   const IMAGES = {
     favicon: "assets/images/favicon.svg",
-    ogDefault: "assets/images/og/og-default.svg",
+    ogDefault: "assets/images/og/og-default.jpg",
     hero: "assets/images/hero/hero-main.webp",
     productPlaceholder: "assets/images/products/placeholder.svg",
     lifestyle: [

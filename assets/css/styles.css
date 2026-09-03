@@ -9590,3 +9590,351 @@ body.has-cookie-banner .chatbot-widget {
   outline: 1.6px solid var(--accent);
   outline-offset: 3.2px;
 }
+
+/* ==========================================================================
+   DIRECTION VISUELLE — « le comptoir », page d'accueil (03/09/2026)
+
+   Meme direction que la fiche produit : la serif porte les noms, une chasse
+   fixe porte les chiffres, le dore redevient un sceau et non un aplat, les
+   angles s'aplatissent. S'y ajoute ici ce qui manquait le plus : une mise en
+   scene a l'ouverture, et des sections qui se revelent au defilement.
+
+   Bloc pose en fin de fichier, a specificite egale : il se retire d'un seul
+   tenant pour revenir a l'etat d'avant.
+   ========================================================================== */
+
+:root {
+  /* Le dore de marque tombe a 2,9:1 sur blanc. Ce ton-ci passe la barre et
+     reste le meme dore : on ne s'en sert que pour du texte. */
+  --sceau: #8a6a2f;
+  --mesure: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --pose: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ─── 1 · Le hero respire ─────────────────────────────────────────────── */
+
+.hero {
+  min-height: 88vh;
+  min-height: 88dvh;
+}
+/* Le voile s'arrete plus tot : la photo du client est belle, on la montre. */
+.hero::before {
+  background: linear-gradient(
+    100deg,
+    rgba(250, 247, 242, 0.96) 0%,
+    rgba(250, 247, 242, 0.9) 26%,
+    rgba(250, 247, 242, 0.38) 50%,
+    rgba(250, 247, 242, 0) 68%
+  );
+}
+/* La photo laisse un tiers de vide a gauche, pas la moitie : le texte doit
+   tenir dedans, sinon les boutons se posent sur un flacon. */
+.hero__content {
+  max-width: 33rem;
+  gap: 22px;
+}
+/* Et on repousse un peu les flacons vers la droite pour gagner ce qu'il
+   manque. */
+.hero__media img {
+  object-position: 76% center;
+}
+.hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--mesure);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  color: var(--sceau);
+}
+.hero__eyebrow::after {
+  content: "";
+  width: 58px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+.hero__title {
+  font-size: clamp(2.6rem, 1rem + 5.2vw, 4.9rem);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+/* Les deux chiffres de l'accroche sont des donnees, pas de la prose : ils
+   passent en chasse fixe, comme les prix de la fiche produit.
+
+   Pas de tabular-nums ici, contrairement au reste du site : la chasse fixe
+   donne alors a la virgule et a l'espace la largeur d'un chiffre, et
+   « 5,90 € » se lit « 5 , 90 € ». Les colonnes de prix en ont besoin, une
+   accroche non. */
+#hero-count {
+  font-family: var(--mesure);
+  font-weight: 400;
+  font-size: 0.74em;
+  font-variant-numeric: lining-nums;
+  letter-spacing: -0.03em;
+}
+/* Le prix reste dans la serif, lui. Une chasse fixe donne a la virgule, a
+   l'espace et a l'euro la largeur d'un chiffre — c'est ce qui fait une chasse
+   fixe — et « 5,90 € » se lit alors « 5 , 90 € ». Un entier seul le supporte,
+   un prix non. */
+#hero-from {
+  white-space: nowrap;
+}
+.hero__sub {
+  max-width: 38ch;
+  font-size: var(--text-17);
+  line-height: 1.7;
+}
+/* La ligne de preuves passait derriere les flacons : la photo commence au
+   milieu, elle doit s'arreter avant. Elle tient sur deux lignes plutot que
+   d'aller se perdre dans l'image. */
+.hero__proof--facts {
+  max-width: 30rem;
+  padding-top: 4px;
+  gap: 8px 18px;
+  font-family: var(--mesure);
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.hero__proof--facts .hero__proof-sep {
+  display: none;
+}
+.hero__proof--facts .hero__proof-orders {
+  align-items: flex-start;
+}
+.hero__proof-orders i {
+  color: var(--sceau);
+}
+
+/* ─── 2 · Les boutons perdent leurs coins ─────────────────────────────── */
+
+.hero__cta {
+  min-height: 60px;
+  padding: 0 34px;
+  border-radius: 0;
+  font-family: var(--mesure);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+.hero__cta:hover {
+  transform: none;
+  background: var(--sceau);
+}
+/* Le bouton secondaire tombe sur la photo : un simple contour y flotte sans
+   se rattacher a rien. Un fond a peine teinte, et un flou derriere, suffisent
+   a le poser comme une commande sans masquer le flacon. */
+.hero__cta--ghost {
+  border-width: 1px;
+  border-color: rgba(31, 31, 31, 0.28);
+  background: rgba(250, 247, 242, 0.55);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+.hero__cta--ghost:hover {
+  background: var(--text);
+  border-color: var(--text);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* ─── 3 · Les titres de section prennent de la hauteur ────────────────── */
+
+.dose-title,
+.favorites-title,
+.section-title,
+.quiz-title,
+.newsletter-title {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  font-size: clamp(2.1rem, 1rem + 3.2vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.022em;
+}
+.dose-title em,
+.favorites-title em,
+.section-title em,
+.quiz-title em {
+  font-style: italic;
+  color: var(--sceau);
+}
+.dose-eyebrow,
+.section-eyebrow,
+.favorites-eyebrow {
+  font-family: var(--mesure);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--sceau);
+}
+
+/* Les chiffres du site s'alignent : prix, volumes, compteurs. */
+.card-price,
+.dose-price,
+.pack-price {
+  font-family: var(--mesure);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ─── 4 · L'ouverture de page ─────────────────────────────────────────── */
+
+@keyframes koreiPose {
+  from {
+    opacity: 0;
+    transform: scale(1.045);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes koreiMonte {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* La photo se pose la premiere, lentement. Le texte monte ensuite, ligne a
+   ligne. C'est la seule mise en scene de la page : tout le reste se revele
+   au defilement, plus discretement. */
+.hero__media img {
+  animation: koreiPose 1400ms var(--pose) both;
+}
+.hero__content > * {
+  animation: koreiMonte 760ms var(--pose) both;
+}
+.hero__content > *:nth-child(1) { animation-delay: 260ms; }
+.hero__content > *:nth-child(2) { animation-delay: 360ms; }
+.hero__content > *:nth-child(3) { animation-delay: 450ms; }
+.hero__content > *:nth-child(4) { animation-delay: 530ms; }
+.hero__content > *:nth-child(5) { animation-delay: 600ms; }
+.hero__content > *:nth-child(6) { animation-delay: 660ms; }
+
+/* ─── 5 · La revelation au defilement ─────────────────────────────────── */
+
+/* Pilote par main.js : la classe n'est posee que si l'observateur existe,
+   pour qu'un navigateur sans JavaScript affiche tout, tout de suite. */
+/* La transition ne porte QUE sur l'arrivee. Si on la met sur .js-reveal, le
+   bloc part de son opacite normale et s'efface sous les yeux pendant une
+   seconde avant de revenir : on voit le contenu disparaitre, puis reapparaitre.
+   Masquer doit etre instantane, reveler seul s'anime. */
+.js-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  will-change: opacity, transform;
+}
+.js-reveal.est-visible {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 900ms var(--pose),
+    transform 900ms var(--pose);
+}
+
+/* ─── 6 · Les images vivent au survol ─────────────────────────────────── */
+
+.product-card .card-img,
+.collection-card-media,
+.pack-card__media {
+  overflow: hidden;
+}
+.product-card .card-img img,
+.collection-card-media img,
+.pack-card__media img {
+  transition: transform 1200ms var(--pose);
+}
+.product-card:hover .card-img img,
+.collection-card:hover .collection-card-media img,
+.pack-card:hover .pack-card__media img {
+  transform: scale(1.045);
+}
+
+/* ─── 7 · Ce que demande le systeme ───────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__media img,
+  .hero__content > * {
+    animation: none;
+  }
+  .js-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .product-card:hover .card-img img,
+  .collection-card:hover .collection-card-media img,
+  .pack-card:hover .pack-card__media img {
+    transform: none;
+  }
+}
+
+@media (max-width: 860px) {
+  /* Sur telephone, la photo passe derriere le texte et non a cote : le voile
+     du haut de fichier est horizontal, il ne couvre rien ici. On reprend donc
+     le degrade vertical, plus dense, et on rend au bloc sa pleine largeur que
+     la regle de bureau lui avait reprise. */
+  .hero {
+    min-height: 82vh;
+    min-height: 82dvh;
+    align-items: flex-end;
+  }
+  .hero__media img {
+    /* 62 % cadre sur la partie calme de la photo. La valeur de bureau, elle,
+       va chercher les flacons a droite : illisible sur 375 px de large. */
+    object-position: 62% center;
+  }
+  .hero::before {
+    background: linear-gradient(
+      180deg,
+      rgba(250, 247, 242, 0.1) 0%,
+      rgba(250, 247, 242, 0.62) 30%,
+      rgba(250, 247, 242, 0.95) 46%,
+      rgba(250, 247, 242, 1) 58%
+    );
+  }
+  .hero__content {
+    max-width: none;
+    gap: 16px;
+  }
+  .hero__title {
+    font-size: clamp(2.3rem, 1rem + 8vw, 3.4rem);
+    line-height: 1;
+  }
+  .hero__sub {
+    max-width: none;
+    font-size: var(--text-16);
+  }
+  .hero__proof--facts {
+    max-width: none;
+  }
+  .hero__eyebrow::after {
+    width: 34px;
+  }
+  /* Le bouton secondaire tombe sur la zone opaque : le flou n'a plus rien a
+     flouter et grise le fond pour rien. */
+  .hero__cta--ghost {
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  /* La barre d'onglets est fixe au bas de l'ecran et recouvrait le second
+     bouton. Elever le rembourrage du bas ne suffit pas : le contenu est plus
+     haut que le hero, il est donc cale par le HAUT. C'est la marge du haut
+     qu'il faut reprendre pour que tout remonte au-dessus de la barre. */
+  .hero__inner {
+    padding-top: 168px;
+    padding-bottom: calc(32px + var(--tabbar-h, 56px) + env(safe-area-inset-bottom, 0px));
+  }
+}

@@ -805,8 +805,73 @@
       .join("");
   }
 
+  /**
+   * KOR-D9 — les sections se revelent au defilement.
+   *
+   * La classe qui masque est posee ICI, en JavaScript, et jamais dans le
+   * HTML : un navigateur sans script, ou un observateur indisponible, doit
+   * afficher la page entiere tout de suite. Une page blanche vaut toujours
+   * moins qu'une page sans animation.
+   *
+   * Le hero est exclu : il a sa propre mise en scene a l'ouverture, en CSS.
+   * Chaque bloc ne se revele qu'une fois, puis on cesse de l'observer.
+   */
+  function initReveal() {
+    if (!("IntersectionObserver" in global)) return;
+    if (global.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+
+    const blocs = document.querySelectorAll(
+      "main > section:not(.hero), .favorites-section, .formats-section, " +
+        ".packs-section, .collections-section, .brands-section, .quiz-cta, " +
+        ".faq, .newsletter",
+    );
+    if (!blocs.length) return;
+
+    let aRepondu = false;
+    const observateur = new IntersectionObserver(
+      (entrees) => {
+        aRepondu = true;
+        entrees.forEach((entree) => {
+          if (!entree.isIntersecting) return;
+          entree.target.classList.add("est-visible");
+          observateur.unobserve(entree.target);
+        });
+      },
+      // 12 % de hauteur de fenetre en avance : le bloc a fini de monter
+      // quand le regard arrive dessus, il ne s'anime pas sous les yeux.
+      { rootMargin: "0px 0px -12% 0px", threshold: 0.06 },
+    );
+
+    const suivis = [];
+    blocs.forEach((bloc) => {
+      // Ce qui est deja a l'ecran au chargement ne s'anime pas : sinon la
+      // premiere section clignote juste apres le hero.
+      if (bloc.getBoundingClientRect().top < global.innerHeight * 0.9) return;
+      bloc.classList.add("js-reveal");
+      observateur.observe(bloc);
+      suivis.push(bloc);
+    });
+    if (!suivis.length) return;
+
+    // Filet de securite. L'observateur ne rend la main que si le navigateur
+    // dessine : onglet ouvert en arriere-plan, fenetre masquee, moteur qui
+    // met le rendu en pause. Dans ces cas-la il ne repond jamais, et la page
+    // reste blanche sous le hero.
+    //
+    // Deux secondes apres le chargement, si l'observateur n'a pas emis une
+    // seule fois, on considere qu'il ne le fera pas : on montre tout et on
+    // s'arrete. Une section sans animation vaut toujours mieux qu'une
+    // section invisible.
+    global.setTimeout(() => {
+      if (aRepondu) return;
+      observateur.disconnect();
+      suivis.forEach((bloc) => bloc.classList.add("est-visible"));
+    }, 2000);
+  }
+
   function initHomePage() {
     initHeroProof();
+    initReveal();
     const store = global.KoreiProductStore;
 
     const bestsellers = store.getBestsellers();
