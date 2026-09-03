@@ -396,6 +396,18 @@
     },
   ];
 
+  // Quinze fiches du client n'ont qu'un seul etage renseigne : leur pyramide
+  // arrive a plat. Les annoncer en « notes de tete » dirait au client que
+  // le musc et le miel s'evaporent en trente minutes, ce qui est faux. Un
+  // etage seul est donc presente pour ce qu'il est : la liste des notes.
+  const TIER_SEUL = {
+    num: "",
+    label: "Notes",
+    fallback: "Les notes du parfum",
+    court: "Les notes annoncées par la maison, sans le détail de leur évolution.",
+    desc: "La maison n'a pas publié le détail par étage pour ce parfum. Nous affichons la liste telle qu'elle nous a été transmise, sans deviner quelle note s'évapore la première.",
+  };
+
   // Intitule de l'etage, deduit de la famille dominante de ses notes. Il n'est
   // pas ecrit en dur produit par produit : un etage boise ne peut pas
   // s'intituler « Florales & Raffinees ».
@@ -493,8 +505,9 @@
       heart: product.notesHeart || [],
       base: product.notesBase || [],
     };
-    const tiers = TIER_META.filter((t) => notesByTier[t.key].length);
+    let tiers = TIER_META.filter((t) => notesByTier[t.key].length);
     if (!tiers.length) return "";
+    if (tiers.length === 1) tiers = [{ ...tiers[0], ...TIER_SEUL }];
 
     const titresPris = new Set();
     return `
@@ -508,7 +521,7 @@
               return `
             <li class="pdp-py-row${i === tiers.length - 1 ? " is-last" : ""}">
               <span class="pdp-py-row__rail" aria-hidden="true">
-                <span class="pdp-py-row__num">${t.num}</span>
+                ${t.num ? `<span class="pdp-py-row__num">${t.num}</span>` : ""}
               </span>
               <div class="pdp-py-row__body">
               <div class="pdp-py-row__intro">
