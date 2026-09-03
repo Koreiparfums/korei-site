@@ -593,7 +593,13 @@
   function initHeroProof() {
     const store = global.KoreiProductStore;
     if (!store) return;
-    const products = store.getAllProducts?.() || [];
+    // « Testez X parfums des Y € » est une promesse de vente : elle ne peut
+    // porter que sur ce qui est reellement achetable. Les fiches annoncees en
+    // « bientot disponible » sont au catalogue mais pas au panier, elles ne
+    // comptent donc pas ici.
+    const products = (store.getAllProducts?.() || []).filter(
+      (p) => p.supplierAvailable !== false,
+    );
 
     // Nombre de parfums et prix d'entree, calcules sur le catalogue reel.
     const countEl = document.getElementById("hero-count");
