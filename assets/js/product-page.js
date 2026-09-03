@@ -660,11 +660,11 @@
 
               ${renderTrustRow()}
             </div>
+            ${renderAccordions(product)}
             ${renderRessenti(product)}
             ${renderStory(product)}
           </div>
         </div>
-        ${renderAccordions(product)}
       </section>`;
   }
 
@@ -1140,12 +1140,7 @@
       accordionItem("avis", "Avis", reviewsMeta(), renderReviewsBody(), true),
     ].join("");
     if (!items.trim()) return "";
-    // Hors des deux colonnes, en pleine largeur. Dans le couloir de droite la
-    // pyramide n'avait que 557 px : ses vignettes de notes tombaient a 122 px
-    // pour une source de 400, et le panneau ouvert etirait les deux colonnes
-    // a 4 397 px pour une photo de 800. Le ressenti et l'histoire restent, eux,
-    // dans la colonne : c'est ce qui donne sa course a la photo collante.
-    return `<div class="pdp-hero__wide"><div class="pdp-acc pdp-container">${items}</div></div>`;
+    return `<div class="pdp-acc pdp-container">${items}</div>`;
   }
 
   function initAccordions(main) {
