@@ -7245,9 +7245,20 @@ body[data-page="favoris"] .favoris-hero {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+/* Les deux reponses tiennent cote a cote, meme gabarit. « Refuser » est
+   dessine en contour et non en plein : il reste lisible et cliquable du
+   premier coup, sans passer devant « J'accepte ». */
+.cookie-banner__actions {
+  display: flex;
+  align-items: center;
+  gap: 9.6px;
+  flex-shrink: 0;
+}
 .cookie-banner__btn {
   flex-shrink: 0;
-  border: none;
+  /* Bordure transparente plutot que « none » : les deux boutons font alors
+     exactement la meme hauteur, contour compris. */
+  border: 1px solid transparent;
   background: var(--accent);
   color: var(--text);
   font: inherit;
@@ -7257,12 +7268,33 @@ body[data-page="favoris"] .favoris-hero {
   border-radius: var(--radius-pill);
   cursor: pointer;
 }
+.cookie-banner__btn--ghost {
+  background: transparent;
+  color: var(--bg);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  font-weight: 500;
+}
+.cookie-banner__btn--ghost:hover {
+  border-color: var(--bg);
+}
+.cookie-banner__btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 @media (max-width: 640px) {
   .cookie-banner {
     justify-content: flex-start;
     padding: 14.4px 72px 14.4px 19.2px;
     padding-right: calc(72px + env(safe-area-inset-right, 0px));
     padding-bottom: calc(14.4px + env(safe-area-inset-bottom, 0px));
+  }
+  .cookie-banner__actions {
+    width: 100%;
+  }
+  .cookie-banner__actions .cookie-banner__btn {
+    flex: 1;
+    padding-left: 12.8px;
+    padding-right: 12.8px;
   }
 }
 body.has-cookie-banner .chatbot-widget {

@@ -311,20 +311,43 @@
         Nous utilisons des cookies pour assurer le bon fonctionnement du site et mesurer sa fréquentation.
         <a href="${base}pages/mentions-legales.html">En savoir plus</a>
       </p>
-      <button type="button" class="cookie-banner__btn">J'accepte</button>
+      <span class="cookie-banner__actions">
+        <button type="button" class="cookie-banner__btn cookie-banner__btn--ghost" data-consent="0">Refuser</button>
+        <button type="button" class="cookie-banner__btn" data-consent="1">J'accepte</button>
+      </span>
     `;
     document.body.appendChild(banner);
     document.body.classList.add("has-cookie-banner");
 
-    banner.querySelector(".cookie-banner__btn").addEventListener("click", () => {
-      try {
-        localStorage.setItem(COOKIE_CONSENT_KEY, "1");
-      } catch (error) {
-        // stockage indisponible — le bandeau réapparaîtra à la prochaine visite
-      }
-      banner.remove();
-      document.body.classList.remove("has-cookie-banner");
+    // Refuser doit etre aussi simple qu'accepter : meme taille, meme place,
+    // un seul clic, et le choix se retient de la meme facon. C'est la regle
+    // de la CNIL, et c'est aussi la seule lecture honnete du bandeau.
+    banner.querySelectorAll("[data-consent]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        try {
+          localStorage.setItem(COOKIE_CONSENT_KEY, btn.getAttribute("data-consent"));
+        } catch (error) {
+          // stockage indisponible — le bandeau réapparaîtra à la prochaine visite
+        }
+        banner.remove();
+        document.body.classList.remove("has-cookie-banner");
+      });
     });
+  }
+
+  /**
+   * Le choix du visiteur, pour le jour ou un outil de mesure sera pose :
+   * true accepte, false refuse, null pas encore repondu. Tant qu'aucun outil
+   * n'est installe, personne n'appelle cette fonction — et c'est normal.
+   */
+  function cookieConsent() {
+    try {
+      const value = localStorage.getItem(COOKIE_CONSENT_KEY);
+      if (value === null) return null;
+      return value === "1";
+    } catch (error) {
+      return null;
+    }
   }
 
   global.KoreiSite = {
@@ -344,6 +367,7 @@
     initLifestyleSlots,
     initHeaderScroll,
     initCookieBanner,
+    cookieConsent,
   };
 
   if (document.readyState === "loading") {
