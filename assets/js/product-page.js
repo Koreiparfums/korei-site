@@ -638,6 +638,28 @@
     return `Plus que <strong>${rest} parfum${rest > 1 ? "s" : ""}</strong> en ${sel.vol}.`;
   }
 
+  // Trois cent vingt-cinq fiches sur trois cent trente-huit n'ont pas de
+  // description redigee : la balise annoncait « undefined Decant des 10.9EUR »
+  // a Google. On compose donc la phrase avec ce que la fiche porte vraiment,
+  // et le prix est ecrit comme partout ailleurs sur le site.
+  function metaDescription(product) {
+    const debut = String(product.description || "").trim();
+    if (debut) return `${debut} Décant dès ${prix(product.price)}.`;
+
+    const notes = [...(product.notesTop || []), ...(product.notesHeart || [])]
+      .filter(Boolean)
+      .slice(0, 3);
+    const famille = product.family ? `, parfum ${product.family}` : "";
+    const nez = notes.length ? ` Notes de ${notes.join(", ").toLowerCase()}.` : "";
+    // « de Amouage » : la maison commence par une voyelle, la particule s'elide.
+    const maison = /^[aeiouyàâéèêëîïôöûü]/i.test(product.brand || "")
+      ? `d'${product.brand}`
+      : `de ${product.brand}`;
+    // Vingt fiches annoncees n'ont pas encore de prix : on ne promet rien.
+    const depuis = product.price > 0 ? ` Décant authentique dès ${prix(product.price)}.` : " Décant authentique.";
+    return `${product.name} ${maison}${famille}.${nez}${depuis}`;
+  }
+
   // ── Section 1 : Hero
   // ── Fiche produit en deux colonnes, structure du concurrent de reference :
   //    a gauche la photo, collante, avec sous elle les notes phares ;
@@ -1247,7 +1269,7 @@
 
     site?.setPageMeta({
       title: `${product.name} — ${product.brand} | Kōrei`,
-      description: `${product.description} Décant dès ${product.price}€.`,
+      description: metaDescription(product),
       image: ui.productMetaImage ? ui.productMetaImage(product, "../") : undefined,
       path: `pages/product?id=${product.id}`,
       type: "product",
