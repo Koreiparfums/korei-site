@@ -1872,3 +1872,258 @@ body[data-page="product"] {
 .pdp-py-pair {
   max-height: 180px;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DIRECTION VISUELLE — « le comptoir »            (validee le 03/09/2026)
+
+   Trois constats mesures sur la fiche avant reprise :
+   — la hierarchie etait a l'envers. Le nom du parfum etait en DM Sans
+     46 px poids 400 sans resserrement, pendant que le serif etait depense
+     sur des sous-titres de 23 px ;
+   — le dore servait de fond de panneau (accent-light sur la carte de
+     format choisie). Une couleur d'accent en aplat, c'est ce qui fait
+     « gabarit » ;
+   — les angles : 80 px sur le bouton, 16 px sur les cartes. C'est du
+     logiciel, pas de la parfumerie.
+
+   Ce bloc vit en fin de fichier et ne fait que surcharger : meme
+   specificite, plus bas, donc il gagne sans lutte. Pour revenir en
+   arriere il suffit de le retirer d'un bloc.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --pdp-mesure: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* ── 1. Le serif remonte sur le nom ──────────────────────────────────── */
+.pdp-name {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  font-size: clamp(52px, 5.4vw, 84px);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  margin: 0 0 18px;
+}
+.pdp-brand {
+  font-family: var(--pdp-mesure);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  margin-bottom: 14px;
+}
+
+/* ── 2. Les mesures ont leur police ──────────────────────────────────────
+   Cette boutique vend des millilitres. Les quantites sont le motif de la
+   page, pas une note de bas de page : elles passent toutes en chasse fixe,
+   chiffres tabulaires, pour s'aligner d'une ligne a l'autre. */
+.pdp-price__amount,
+.pdp-price__unit,
+.pdp-format__vol,
+.pdp-format__price,
+.pdp-format__detail,
+.pdp-sticky__vol {
+  font-family: var(--pdp-mesure);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.pdp-price__amount {
+  font-size: clamp(26px, 2.4vw, 32px);
+  letter-spacing: -0.02em;
+}
+.pdp-price__unit {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.pdp-format__vol {
+  font-size: 21px;
+  letter-spacing: -0.03em;
+}
+.pdp-format__price {
+  margin-top: 9px;
+  font-size: 13px;
+}
+.pdp-format__detail {
+  margin-top: 6px;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+/* ── 3. Le dore quitte les aplats ────────────────────────────────────────
+   Le format choisi n'est plus un panneau colore mais un filet plein au-
+   dessus de la colonne, comme une carte de comptoir. Les cartes perdent
+   leur cadre : il ne reste que le filet du haut. */
+.pdp-format {
+  align-items: flex-start;
+  padding: 22px 20px 24px 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+}
+.pdp-format:hover {
+  transform: none;
+  border-top-color: var(--pdp-ink-soft);
+}
+.pdp-format.is-active {
+  border-top: 2px solid var(--pdp-ink);
+  box-shadow: none;
+  background: transparent;
+}
+.pdp-format.is-active::before {
+  content: none;
+}
+.pdp-format:not(.is-active) .pdp-format__vol,
+.pdp-format:not(.is-active) .pdp-format__price {
+  color: var(--pdp-ink-soft);
+}
+.pdp-formats {
+  gap: 0;
+}
+.pdp-format + .pdp-format {
+  padding-left: 20px;
+}
+
+/* ── 4. Les angles ───────────────────────────────────────────────────── */
+.pdp-btn,
+.pdp-rail,
+.pdp-badge,
+.pdp-acc,
+.pdp-sticky__cta {
+  border-radius: 0;
+}
+.pdp-rail {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 18px 0;
+}
+.pdp-rail.is-complete {
+  background: transparent;
+  border-color: var(--pdp-gold);
+}
+.pdp-badge {
+  border-radius: 0;
+  font-family: var(--pdp-mesure);
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+}
+
+/* ── 5. Le bouton d'achat prend sa place ─────────────────────────────────
+   39,6 px de haut pour l'action principale d'une page de 1440, c'etait
+   sous-dimensionne. Le prix passe a droite, en chasse fixe. */
+.pdp-btn--primary {
+  height: 60px;
+  padding: 0 26px;
+  font-size: 11.5px;
+  letter-spacing: 0.19em;
+  justify-content: center;
+}
+.pdp-btn--primary:hover:not(:disabled) {
+  background: var(--pdp-ink);
+  transform: none;
+  opacity: 0.86;
+}
+.pdp-btn--ghost,
+.pdp-btn--outline {
+  border-radius: 0;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+}
+
+/* ── 6. Une seule entree, orchestree ─────────────────────────────────────
+   Le flacon se pose, puis chaque bloc de la colonne de droite s'installe a
+   son tour. Une sequence tenue vaut mieux que des effets disperses. Coupee
+   si le visiteur a demande moins d'animation. */
+@keyframes pdpPose {
+  from { opacity: 0; transform: translateY(30px) scale(1.012); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes pdpMonte {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+.pdp-sticky-media {
+  animation: pdpPose 1000ms var(--pdp-ease, cubic-bezier(.22,.61,.36,1)) both;
+}
+.pdp-info > * {
+  animation: pdpMonte 700ms var(--pdp-ease, cubic-bezier(.22,.61,.36,1)) both;
+}
+.pdp-info > *:nth-child(1) { animation-delay: 120ms; }
+.pdp-info > *:nth-child(2) { animation-delay: 200ms; }
+.pdp-info > *:nth-child(3) { animation-delay: 290ms; }
+.pdp-info > *:nth-child(4) { animation-delay: 380ms; }
+.pdp-info > *:nth-child(5) { animation-delay: 470ms; }
+.pdp-info > *:nth-child(6) { animation-delay: 560ms; }
+.pdp-info > *:nth-child(7) { animation-delay: 650ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pdp-sticky-media,
+  .pdp-info > * {
+    animation: none;
+  }
+}
+
+/* ── 7. Les reperes « Populaire » et « Meilleur prix » ───────────────────
+   C'etaient les dernieres pastilles pleines : un aplat dore a coins ronds,
+   pose a cheval sur le bord de la carte. Dans un bandeau a filets elles
+   n'ont plus de bord ou se poser. Elles deviennent une ligne de texte, en
+   chasse fixe, alignee sur le filet du haut. */
+.pdp-format__flag,
+.pdp-format__badge {
+  position: static;
+  transform: none;
+  display: block;
+  padding: 0;
+  margin-bottom: 12px;
+  border-radius: 0;
+  background: transparent;
+  color: var(--pdp-gold);
+  font-family: var(--pdp-mesure);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-align: left;
+}
+/* Les colonnes sans repere gardent la meme hauteur de depart. */
+.pdp-format:not(:has(.pdp-format__flag)):not(:has(.pdp-format__badge))
+  .pdp-format__vial {
+  margin-top: 21px;
+}
+
+/* Le dore de la marque (#cc9a36) tombe a 2,9:1 sur blanc : illisible a
+   9 px. Les petits reperes prennent donc le dore foncé du sceau, 4,7:1,
+   tout en restant la meme couleur de famille. */
+:root {
+  --pdp-sceau: #8a6a2f;
+}
+.pdp-format__flag,
+.pdp-format__badge {
+  color: var(--pdp-sceau);
+}
+
+/* ── 8. Deux reprises apres controle a 375 px ────────────────────────────
+   « Meilleur prix » debordait de sa colonne : a 112 px de large, neuf
+   pixels de chasse fixe a 0,22 em ne tiennent pas sur une ligne. Le
+   repere se coupe donc en deux lignes plutot que de sortir du cadre.
+   Et le cadre de la photo gardait ses angles arrondis, seul reste de
+   l'ancien langage sur cette moitie de page. */
+.pdp-format__flag,
+.pdp-format__badge {
+  white-space: normal;
+  line-height: 1.35;
+}
+.pdp-gallery__main,
+.pdp-gallery__thumbs img,
+.pdp-gallery__main-img {
+  border-radius: 0;
+}
+
+@media (max-width: 860px) {
+  .pdp-format__flag,
+  .pdp-format__badge {
+    letter-spacing: 0.12em;
+  }
+}
