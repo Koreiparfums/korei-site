@@ -237,6 +237,21 @@
       });
     });
 
+    // Le tarif du client fait foi, pas la boutique. Ses prix Shopify sont des
+    // valeurs de test, l'audit du 16 juillet le dit, et un parfum absent de son
+    // tableur n'a pas de prix du tout. La fusion plus haut recopie l'etat de la
+    // boutique par-dessus le notre : le jour ou les 338 produits sont passes en
+    // vente pour les essais, 21 parfums sans prix se sont retrouves achetables.
+    //
+    // D'ou cette regle, en dernier et sans exception : sans prix au tarif du
+    // client, un parfum ne se vend pas. Il reste « bientot disponible », quoi
+    // que dise la boutique.
+    merged.forEach((produit) => {
+      if (produit.price > 0) return;
+      produit.bientot = true;
+      produit.supplierAvailable = false;
+    });
+
     global.KoreiProducts.PRODUCTS = merged;
     return merged;
   }
