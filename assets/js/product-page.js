@@ -248,7 +248,8 @@
   /**
    * KOR-B12 — chaque format annonce quatre choses : prix, prix au ml, nombre
    * de pulverisations estime et mention d'usage. Reperes du brief §3.3.
-   * Le 5 ml porte l'etiquette « Populaire ».
+   * Le 5 ml porte l'etiquette « Notre conseil » : un avis de la maison,
+   * la ou « Populaire » annoncait des ventes qui n'existent pas.
    */
   const FORMAT_INFO = {
     "2ml": { sprays: 30, usage: "Idéal pour découvrir" },
@@ -274,7 +275,7 @@
                   ${f.available ? "" : "disabled"}
                   data-price="${f.price}" data-vol="${f.key}" data-available="${f.available}"
                   aria-label="${f.vol} — ${f.available ? `${formatPriceLabel(f.price)} euros` : "indisponible"}">
-            ${f.best ? '<span class="pdp-format__flag">Meilleur prix</span>' : info.popular ? '<span class="pdp-format__badge">Populaire</span>' : ""}
+            ${f.best ? '<span class="pdp-format__flag">Meilleur prix</span>' : info.popular ? '<span class="pdp-format__badge">Notre conseil</span>' : ""}
             ${
               vial
                 ? `<span class="pdp-format__vial"><img src="../assets/images/hero/${vial}.webp" alt="" width="112" height="851" loading="lazy" decoding="async"></span>`
