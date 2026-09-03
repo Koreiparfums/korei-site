@@ -408,7 +408,7 @@
   const BRANDS = [
     { id: "armani-prive", name: "Armani Privé", country: "Italie", tagline: "La collection privée de Giorgio Armani" },
     { id: "bvlgari", name: "Bvlgari", country: "Italie", tagline: "Joaillier romain, parfumeur depuis 1992" },
-    { id: "carmer", name: "Carmer", country: "Espagne", tagline: "Parfumerie de niche barcelonaise" },
+    { id: "carner-barcelona", name: "Carner Barcelona", country: "Espagne", tagline: "Parfumerie de niche barcelonaise" },
     { id: "essential-parfums", name: "Essential Parfums", country: "France", tagline: "Le parfum de qualité à prix juste" },
     { id: "ex-nihilo", name: "Ex Nihilo", country: "France", tagline: "Sur-mesure parisien, rue Saint-Honoré" },
     { id: "lancome", name: "Lancome", country: "France", tagline: "Maison française depuis 1935" },
@@ -463,6 +463,7 @@
     { id: "mes-bisous", name: "Mes Bisous", country: "Turquie", tagline: "Extraits unisexes en coffrets brodés" },
     { id: "nishane", name: "Nishane", country: "Turquie", tagline: "Premiere maison de niche d'Istanbul" },
     { id: "noeme", name: "Noème", country: "France", tagline: "Parfumerie de luxe parisienne" },
+    { id: "pause-coreenne", name: "Pause Coréenne", country: "France", tagline: "Parfumerie française d'inspiration coréenne" },
     { id: "reinvented", name: "Reinvented", country: "Italie", tagline: "Extraits de parfum véganes" },
     { id: "rosendo-mateu", name: "Rosendo Mateu", country: "Espagne", tagline: "Parfums unisexes numérotés par leur parfumeur" },
     { id: "scentologia", name: "Scentologia", country: "France", tagline: "Maison de niche française, parfumeurs invités" },
