@@ -367,14 +367,14 @@
   // declarees une par une parce qu'elles varient : la source ne donne pas
   // toujours de quoi tenir le 750 px du reste du site, et on n'agrandit pas.
   const PHOTOS_NON_DISTRIBUES = {
-    layton: { image: "assets/images/products/layton.webp", imageWidth: 540 },
-    "replica-jazz-club": { image: "assets/images/products/replica-jazz-club.webp", imageWidth: 540 },
-    "bal-dafrique": { image: "assets/images/products/bal-dafrique.webp", imageWidth: 540 },
+    layton: { image: "assets/images/products/layton.webp", imageWidth: 750 },
+    "replica-jazz-club": { image: "assets/images/products/replica-jazz-club.webp", imageWidth: 750 },
+    "bal-dafrique": { image: "assets/images/products/bal-dafrique.webp", imageWidth: 750 },
     "oud-for-greatness": { image: "assets/images/products/oud-for-greatness.webp", imageWidth: 750 },
     "irish-leather": { image: "assets/images/products/irish-leather.webp", imageWidth: 750 },
-    "angels-share": { image: "assets/images/products/angels-share.webp", imageWidth: 540 },
-    "black-phantom": { image: "assets/images/products/black-phantom.webp", imageWidth: 540 },
-    "sauvage-elixir": { image: "assets/images/products/sauvage-elixir.webp", imageWidth: 540 },
+    "angels-share": { image: "assets/images/products/angels-share.webp", imageWidth: 750 },
+    "black-phantom": { image: "assets/images/products/black-phantom.webp", imageWidth: 750 },
+    "sauvage-elixir": { image: "assets/images/products/sauvage-elixir.webp", imageWidth: 750 },
   };
 
   // createProduct a deja tourne sur les fiches ci-dessus : il y a pose
