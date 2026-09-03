@@ -607,6 +607,16 @@
           <span class="pdp-rail__name" data-rail-name>Coffret ${t.label}</span>
           <span class="pdp-rail__count" data-rail-count>0/${t.capacity}</span>
         </div>
+        <div class="pdp-rail__offre">
+          <div class="pdp-rail__gain">
+            <span class="pdp-rail__chiffre">−10 %</span>
+            <span class="pdp-rail__quoi">sur chaque flacon</span>
+          </div>
+          <div class="pdp-rail__gain">
+            <span class="pdp-rail__chiffre">0 €</span>
+            <span class="pdp-rail__quoi">de livraison</span>
+          </div>
+        </div>
         <div class="pdp-rail__track" role="presentation">
           <span class="pdp-rail__fill" data-rail-fill style="width:0%"></span>
         </div>
@@ -619,14 +629,13 @@
   function railMessage(sel, count, tier) {
     const saved = sel.price * tier.capacity * 0.1;
     if (count === 0) {
-      return `${tier.capacity} parfums en ${sel.vol} = <strong>−10 % sur chaque flacon</strong> (${prix(saved)} economises) et livraison offerte.`
-        .replace("economises", "économisés");
+      return `Composez ${tier.capacity} parfums en ${sel.vol} : <strong>${prix(saved)} économisés</strong>.`;
     }
     const rest = tier.capacity - (count % tier.capacity);
     if (count % tier.capacity === 0) {
-      return `Coffret complet. <strong>−10 % sur chaque flacon</strong> et livraison offerte.`;
+      return `Coffret complet. <strong>${prix(saved)} économisés</strong> et livraison offerte.`;
     }
-    return `Plus que <strong>${rest} parfum${rest > 1 ? "s" : ""}</strong> en ${sel.vol} pour −10 % sur chaque flacon et la livraison offerte.`;
+    return `Plus que <strong>${rest} parfum${rest > 1 ? "s" : ""}</strong> en ${sel.vol}.`;
   }
 
   // ── Section 1 : Hero
