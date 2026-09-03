@@ -773,9 +773,42 @@
       message.hidden = false;
     };
 
-    cta.addEventListener("click", () => {
+    // KOR-P1 — le panier annonce un total que Shopify ne facture pas toujours.
+    // La remise coffret et la livraison offerte sont calculees ici, dans le
+    // navigateur ; le panier Shopify, lui, ne recoit que les lignes. Tant que
+    // la remise n'est pas posee cote Shopify, un client pouvait lire 194,13 €
+    // puis arriver sur une page de paiement a 215,70 €.
+    //
+    // On compare donc les deux totaux juste avant de partir. Un ecart arrete
+    // le depart et le dit. Une panne reseau, elle, ne bloque rien : elle ne
+    // prouve aucun ecart, et le comportement d'avant reprend la main.
+    async function ecartAvecShopify() {
+      const panier = loadShopifyCart();
+      if (!panier?.id) return null;
+      const { cart, error } = await cartRequest("get", { cartId: panier.id });
+      if (error || !cart) return null;
+      const facture = Number(cart.cost?.totalAmount?.amount);
+      const annonce = Number(getCartState().total);
+      if (!Number.isFinite(facture) || !Number.isFinite(annonce)) return null;
+      return Math.abs(facture - annonce) > 0.01 ? { annonce, facture } : null;
+    }
+
+    cta.addEventListener("click", async () => {
       const url = getCheckoutUrl();
-      if (url) window.location.href = url;
+      if (!url) return;
+      cta.disabled = true;
+      const ecart = await ecartAvecShopify();
+      cta.disabled = false;
+      if (ecart) {
+        message.textContent =
+          `Le paiement afficherait ${money(ecart.facture)} au lieu de ` +
+          `${money(ecart.annonce)}. La remise coffret n'est pas encore posée ` +
+          `sur la boutique. Nous préférons vous arrêter ici plutôt que de vous ` +
+          `faire payer plus que le prix annoncé.`;
+        message.hidden = false;
+        return;
+      }
+      window.location.href = url;
     });
 
     sync();
