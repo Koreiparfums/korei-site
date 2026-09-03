@@ -9635,19 +9635,25 @@ body.has-cookie-banner .chatbot-widget {
   min-height: 88dvh;
 }
 /* Le voile s'arrete plus tot : la photo du client est belle, on la montre. */
+/* Le voile suit la colonne de texte. Elle est passee de 33 a 36rem pour le
+   titre en deux lignes : les paliers se decalent d'autant, sinon la fin de
+   « Le parfum d'abord. » se pose sur le premier flacon. */
 .hero::before {
   background: linear-gradient(
     100deg,
     rgba(250, 247, 242, 0.96) 0%,
-    rgba(250, 247, 242, 0.9) 26%,
-    rgba(250, 247, 242, 0.38) 50%,
-    rgba(250, 247, 242, 0) 68%
+    rgba(250, 247, 242, 0.92) 30%,
+    rgba(250, 247, 242, 0.42) 54%,
+    rgba(250, 247, 242, 0) 72%
   );
 }
 /* La photo laisse un tiers de vide a gauche, pas la moitie : le texte doit
    tenir dedans, sinon les boutons se posent sur un flacon. */
 .hero__content {
-  max-width: 33rem;
+  /* 36rem et non 33 : « Le parfum d'abord. » demande 540 px a la taille du
+     titre, la colonne n'en offrait que 528. Douze pixels manquants, et la
+     phrase se cassait en trois lignes au lieu de deux. */
+  max-width: 36rem;
   gap: 22px;
 }
 /* Et on repousse un peu les flacons vers la droite pour gagner ce qu'il

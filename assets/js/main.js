@@ -656,25 +656,23 @@
       (p) => p.supplierAvailable !== false,
     );
 
-    // Nombre de parfums et prix d'entree, calcules sur le catalogue reel.
-    const countEl = document.getElementById("hero-count");
-    if (countEl && products.length) countEl.textContent = `${products.length}`;
-
-    const fromEl = document.getElementById("hero-from");
-    if (fromEl && products.length) {
-      const prices = products
-        .map((p) => store.getFormatPrice(p, "2ml"))
-        .filter((v) => Number.isFinite(v) && v > 0);
-      if (prices.length) {
-        const min = Math.min(...prices);
-        fromEl.textContent = formatPrix(min);
-      }
-    }
-
+    // Le titre ne porte plus ni compteur ni prix d'appel : « Essayez 163
+    // parfums des 5,90 € » se perimait au premier parfum ajoute, et ouvrir
+    // sur son prix plancher n'est pas une facon de vendre du parfum de niche.
+    //
+    // Reste ce chiffre-ci, en petites capitales sous le sous-titre. On
+    // l'arrondit vers le bas au multiple de cinq pour qu'il tienne quand le
+    // catalogue bouge : « plus de 45 maisons » reste vrai a 46 comme a 49.
     const brandEl = document.getElementById("hero-brand-count");
     if (brandEl && products.length) {
       const brands = new Set(products.map((p) => p.brandId || p.brand)).size;
-      brandEl.textContent = `${brands} maisons de niche sélectionnées`;
+      let seuil = Math.floor(brands / 5) * 5;
+      // A 45 pile, « plus de 45 » serait faux : on descend d'un cran.
+      if (seuil >= brands) seuil -= 5;
+      brandEl.textContent =
+        seuil >= 10
+          ? `Plus de ${seuil} maisons de niche`
+          : `${brands} maisons de niche sélectionnées`;
     }
 
     // Preuve sociale : uniquement si les chiffres existent vraiment.
