@@ -139,16 +139,29 @@
     if (filters.priceMin != null) list = list.filter((p) => p.price >= filters.priceMin);
     if (filters.priceMax) list = list.filter((p) => p.price <= filters.priceMax);
     if (filters.supplierAvailable === true) list = list.filter((p) => p.supplierAvailable);
+    // Saisons et occasions n'existent que sur les 13 fiches ecrites a la main.
+    // Le releve du client ne les porte pas, et on a choisi de ne pas les
+    // deviner : une saison inventee fausse le filtre sans que ca se voie.
+    // Un parfum sans la donnee ne repond donc pas au filtre — il n'y a pas
+    // d'autre reponse honnete — mais il ne fait plus tomber la page.
     const seasons = toArray(filters.season);
-    if (seasons.length) list = list.filter((p) => p.seasons.some((s) => seasons.includes(s)));
+    if (seasons.length) {
+      list = list.filter((p) => (p.seasons || []).some((s) => seasons.includes(s)));
+    }
     const occasions = toArray(filters.occasion);
-    if (occasions.length) list = list.filter((p) => p.occasions.some((o) => occasions.includes(o)));
+    if (occasions.length) {
+      list = list.filter((p) => (p.occasions || []).some((o) => occasions.includes(o)));
+    }
     if (filters.isNew) list = list.filter((p) => p.new);
     if (filters.bestseller) list = list.filter((p) => p.bestseller);
     const notes = toArray(filters.note).map(normalizeQuery);
     if (notes.length) {
       list = list.filter((p) => {
-        const productNotes = [...p.notesTop, ...p.notesHeart, ...p.notesBase].map(normalizeQuery);
+        const productNotes = [
+          ...(p.notesTop || []),
+          ...(p.notesHeart || []),
+          ...(p.notesBase || []),
+        ].map(normalizeQuery);
         return notes.some((n) => productNotes.some((pn) => pn.includes(n)));
       });
     }
@@ -164,7 +177,15 @@
     const q = normalizeQuery(query);
     let score = 0;
 
-    const allNotes = [...product.notesTop, ...product.notesHeart, ...product.notesBase];
+    const allNotes = [
+      ...(product.notesTop || []),
+      ...(product.notesHeart || []),
+      ...(product.notesBase || []),
+    ];
+    // Seules les 13 fiches ecrites a la main portent une saison et une
+    // occasion. Le releve du client ne les a pas, et on ne les devine pas.
+    const saisons = product.seasons || [];
+    const occasions = product.occasions || [];
     allNotes.forEach((note) => {
       const n = normalizeQuery(note);
       if (q.includes(n)) score += 6;
@@ -191,25 +212,25 @@
       if (allNotes.some((n) => /santal|cedre|vetiver|bois/i.test(normalizeQuery(n)))) score += 3;
     }
     if (q.includes("ete")) {
-      if (product.seasons.includes("été")) score += 5;
+      if (saisons.includes("été")) score += 5;
     }
     if (q.includes("hiver")) {
-      if (product.seasons.includes("hiver")) score += 5;
+      if (saisons.includes("hiver")) score += 5;
     }
     if (q.includes("printemps")) {
-      if (product.seasons.includes("printemps")) score += 4;
+      if (saisons.includes("printemps")) score += 4;
     }
     if (q.includes("automne")) {
-      if (product.seasons.includes("automne")) score += 4;
+      if (saisons.includes("automne")) score += 4;
     }
     if (q.includes("bureau") || q.includes("travail") || q.includes("office")) {
-      if (product.occasions.includes("bureau")) score += 5;
+      if (occasions.includes("bureau")) score += 5;
     }
     if (q.includes("soiree")) {
-      if (product.occasions.includes("soirée")) score += 5;
+      if (occasions.includes("soirée")) score += 5;
     }
     if (q.includes("date") || q.includes("romantique")) {
-      if (product.occasions.includes("date")) score += 4;
+      if (occasions.includes("date")) score += 4;
     }
     if (q.includes("homme") || q.includes("masculin")) {
       if (product.gender === "homme") score += 4;

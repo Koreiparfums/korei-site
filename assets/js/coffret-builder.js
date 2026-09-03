@@ -171,7 +171,12 @@
   function saveShopifyCart(cart) {
     try {
       if (!cart) localStorage.removeItem(CART_STORAGE_KEY);
-      else localStorage.setItem(CART_STORAGE_KEY, JSON.stringify({ id: cart.id, checkoutUrl: cart.checkoutUrl }));
+      else localStorage.setItem(
+        CART_STORAGE_KEY,
+        // `remise` est le montant que Shopify a accepte de retirer. Il voyage
+        // avec le panier : c'est lui, et pas le calcul local, qui fait le total.
+        JSON.stringify({ id: cart.id, checkoutUrl: cart.checkoutUrl, remise: Number(cart.remise) || 0 }),
+      );
     } catch {
       // stockage indisponible : le lien de checkout sera simplement recréé au prochain ajout
     }
@@ -179,6 +184,40 @@
 
   function getCheckoutUrl() {
     return loadShopifyCart()?.checkoutUrl || null;
+  }
+
+  // Le montant que Shopify a accepte de retirer, et lui seul.
+  function remiseAccordee() {
+    const valeur = Number(loadShopifyCart()?.remise);
+    return Number.isFinite(valeur) && valeur > 0 ? valeur : 0;
+  }
+
+  // Les codes de la boutique, un par format de coffret. Ils n'existent pas
+  // encore cote Shopify : la mutation repond alors « applicable: false », le
+  // site n'affiche aucune remise, et le prix annonce reste celui facture.
+  // Le jour ou le client les cree dans son back-office, la remise apparait
+  // sans qu'une ligne de code change.
+  const CODES_COFFRET = { "2ml": "COFFRET-2ML", "5ml": "COFFRET-5ML", "10ml": "COFFRET-10ML" };
+
+  // Apres chaque changement de panier, on demande a Shopify d'appliquer les
+  // codes des coffrets complets, puis on enregistre ce qu'il a reellement
+  // accorde. C'est ce montant que l'ecran affiche.
+  async function synchroniserRemise() {
+    const panier = loadShopifyCart();
+    if (!panier?.id) return;
+    const codes = [];
+    for (const groupe of getCartState().groups) {
+      if (groupe.boxes > 0 && CODES_COFFRET[groupe.format]) {
+        codes.push(CODES_COFFRET[groupe.format]);
+      }
+    }
+    const { cart } = await cartRequest("discount", { cartId: panier.id, codes });
+    if (!cart) return;
+    const applique = (cart.discountCodes || []).some((c) => c.applicable);
+    const remise = applique ? Number(cart.discountApplied) || 0 : 0;
+    saveShopifyCart({ ...panier, id: cart.id || panier.id,
+                      checkoutUrl: cart.checkoutUrl || panier.checkoutUrl, remise });
+    notify();
   }
 
   async function cartRequest(action, payload) {
@@ -238,6 +277,7 @@
     }
     if (!result.cart) return;
     saveShopifyCart(result.cart);
+    synchroniserRemise();
     const line = findRemoteLine(result.cart, item.variantId);
     if (line) patchItem(item.productId, item.format, { shopifyLineId: line.id });
     notify();
@@ -256,6 +296,7 @@
     }
     if (result.cart) {
       saveShopifyCart(result.cart);
+      synchroniserRemise();
       notify();
     }
   }
@@ -266,6 +307,7 @@
     const result = await cartRequest("remove", { cartId: cached.id, lineId: item.shopifyLineId });
     if (result.cart) {
       saveShopifyCart(result.cart);
+      synchroniserRemise();
       notify();
     }
   }
@@ -548,15 +590,24 @@
     const boxes = groups.reduce((sum, g) => sum + g.boxes, 0);
     const qty = groups.reduce((sum, g) => sum + g.count, 0);
 
+    // `discount` ci-dessus est la remise que la regle du coffret appelle.
+    // Elle ne devient un vrai rabais que si Shopify l'a acceptee : c'est
+    // Shopify qui encaisse, et une remise affichee mais non facturee fait
+    // payer au client plus que le prix annonce. On garde donc les deux.
+    const accorde = remiseAccordee();
     return {
       groups,
       qty,
       gross,
-      discount,
-      total: gross - discount,
+      // Remise due au titre du coffret, avant confirmation de la boutique.
+      discountAttendu: discount,
+      discount: accorde,
+      total: gross - accorde,
       boxes,
-      // KOR-C6 : la livraison est offerte dès qu'un coffret est complet.
-      freeShipping: boxes > 0,
+      // La livraison offerte suit la meme regle : tant que la boutique ne la
+      // pose pas, on ne l'annonce pas.
+      freeShipping: accorde > 0 && boxes > 0,
+      remiseEnAttente: discount > 0.01 && accorde < 0.01,
     };
   }
 
@@ -827,6 +878,7 @@
     hasItem,
     getProgress,
     getCheckoutUrl,
+    synchroniserRemise,
     onChange,
     notice: showStockNotice,
     getCartState,

@@ -65,12 +65,28 @@
     },
   ];
 
+  // Une collection qui ouvre sur trois parfums n'est pas une collection.
+  // Les saisons et les occasions ne sont renseignees que sur les 13 fiches
+  // ecrites a la main : « Parfums d'ete » n'en trouvait que trois, et
+  // « Nouveautes » aucun. On masque celles qui n'ont pas de quoi remplir un
+  // ecran, plutot que d'envoyer le visiteur sur une page vide. Elles
+  // reapparaissent d'elles-memes le jour ou la donnee arrive.
+  const MINIMUM_PAR_COLLECTION = 8;
+
   function initCollectionsPage() {
     const grid = document.getElementById("collections-grid");
     const store = global.KoreiProductStore;
     if (!grid || !store) return;
 
-    grid.innerHTML = COLLECTIONS.map((col) => {
+    const remplies = COLLECTIONS.filter(
+      (col) => store.filterProducts(col.params).length >= MINIMUM_PAR_COLLECTION,
+    );
+    // Repli : si le catalogue n'est pas encore charge, aucune collection ne
+    // passerait le seuil et la page resterait blanche. Mieux vaut tout
+    // montrer que rien.
+    const visibles = remplies.length ? remplies : COLLECTIONS;
+
+    grid.innerHTML = visibles.map((col) => {
       const count = store.filterProducts(col.params).length;
       const query = new URLSearchParams(col.params).toString();
       const hasPhoto = Boolean(col.image);

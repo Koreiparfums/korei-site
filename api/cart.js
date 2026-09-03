@@ -24,6 +24,10 @@ const CART_FIELDS = `
     subtotalAmount { amount currencyCode }
     totalAmount { amount currencyCode }
   }
+  discountCodes { code applicable }
+  discountAllocations {
+    discountedAmount { amount currencyCode }
+  }
   lines(first: 50) {
     nodes {
       id
@@ -76,6 +80,20 @@ const CART_LINES_REMOVE_MUTATION = `
   }
 `;
 
+// Poser un code de reduction sur le panier. C'est le seul moyen, avec les
+// autorisations de l'application, de faire porter la remise coffret par
+// Shopify plutot que par le navigateur. Shopify repond « applicable: false »
+// quand le code n'existe pas : le site le lit et n'annonce alors aucune
+// remise, au lieu d'en promettre une qui ne sera pas facturee.
+const CART_DISCOUNT_MUTATION = `
+  mutation KoreiCartDiscount($cartId: ID!, $codes: [String!]!) {
+    cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $codes) {
+      cart { ${CART_FIELDS} }
+      userErrors { field message }
+    }
+  }
+`;
+
 const CART_QUERY = `
   query KoreiCart($cartId: ID!) {
     cart(id: $cartId) { ${CART_FIELDS} }
@@ -104,6 +122,13 @@ function normalizeCart(cart) {
     checkoutUrl: cart.checkoutUrl,
     totalQuantity: cart.totalQuantity,
     cost: cart.cost,
+    // Ce que Shopify a reellement accepte de remiser. Le site n'affiche que
+    // ca : une remise annoncee et non facturee est un prix trompeur.
+    discountCodes: cart.discountCodes || [],
+    discountApplied: (cart.discountAllocations || []).reduce(
+      (total, a) => total + Number(a.discountedAmount?.amount || 0),
+      0,
+    ),
     lines: (cart.lines?.nodes || []).map((line) => ({
       id: line.id,
       quantity: line.quantity,
@@ -184,6 +209,17 @@ async function handler(req, res) {
     );
     if (!result.ok) return sendJson(res, result.status, { error: result.error, message: result.message });
     return sendJson(res, 200, { cart: result.cart });
+  }
+
+  if (action === "discount") {
+    if (!cartId) return sendJson(res, 400, { error: "cart_id_requis" });
+    const codes = Array.isArray(body.codes) ? body.codes.filter(Boolean) : [];
+    const result = await runCartMutation(
+      CART_DISCOUNT_MUTATION,
+      { cartId, codes },
+      "cartDiscountCodesUpdate",
+    );
+    return sendJson(res, result.status, result.payload);
   }
 
   if (action === "get") {
