@@ -2217,3 +2217,13 @@ body[data-page="product"] {
     padding-top: 14px;
   }
 }
+
+/* Le deuxieme avantage porte un mot, pas un chiffre. « Offerte » garde la
+   chasse fixe pour rester dans le meme registre que le « -10 % » a cote,
+   mais perd le resserrement des chiffres et descend d'un cran : un mot de
+   sept lettres a 36 px ecraserait le nombre. */
+.pdp-rail__chiffre--mot {
+  font-size: clamp(24px, 2.2vw, 31px);
+  letter-spacing: 0;
+  text-transform: uppercase;
+}

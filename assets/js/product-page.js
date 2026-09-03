@@ -613,8 +613,8 @@
             <span class="pdp-rail__quoi">sur chaque flacon</span>
           </div>
           <div class="pdp-rail__gain">
-            <span class="pdp-rail__chiffre">0 €</span>
-            <span class="pdp-rail__quoi">de livraison</span>
+            <span class="pdp-rail__chiffre pdp-rail__chiffre--mot">Offerte</span>
+            <span class="pdp-rail__quoi">la livraison</span>
           </div>
         </div>
         <div class="pdp-rail__track" role="presentation">
