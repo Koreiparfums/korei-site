@@ -441,7 +441,7 @@
     { id: "bohoboco", name: "Bohoboco", country: "Pologne", tagline: "Parfums unisexes bâtis sur le contraste" },
     { id: "born-to-stand-out", name: "Born to Stand Out", country: "Corée du Sud", tagline: "Parfumerie séoulite volontairement provocante" },
     { id: "byron", name: "Byron", country: "France", tagline: "Extraits gourmands et orientaux affirmés" },
-    { id: "calisto", name: "Calisto", country: "France", tagline: "Extraits de parfum unisexes parisiens" },
+    { id: "calisto", name: "Callisto Paris", country: "France", tagline: "Extraits de parfum unisexes parisiens" },
     { id: "casamorati", name: "Casamorati", country: "Italie", tagline: "Parfumerie italienne classique relancée par Xerjoff" },
     { id: "castel", name: "Castel", country: "France", tagline: "Jeune maison parisienne d'extraits" },
     { id: "eau-de-soie", name: "Eau de Soie", country: "France", tagline: "Eaux de parfum françaises et narratives" },
