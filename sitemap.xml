@@ -49,6 +49,18 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://korei-parfum.com/pages/faq.html</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://korei-parfum.com/pages/livraison-retours.html</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://korei-parfum.com/pages/cgv.html</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>yearly</changefreq>
@@ -56,6 +68,12 @@
   </url>
   <url>
     <loc>https://korei-parfum.com/pages/mentions-legales.html</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://korei-parfum.com/pages/confidentialite.html</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>

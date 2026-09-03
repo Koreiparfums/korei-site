@@ -17,7 +17,12 @@ const STATIC_PAGES = [
   { path: "pages/collections.html", changefreq: "monthly", priority: "0.8" },
   { path: "pages/about.html", changefreq: "monthly", priority: "0.5" },
   { path: "pages/contact.html", changefreq: "monthly", priority: "0.5" },
+  // Pages d'aide : elles repondent a de vraies questions d'acheteur.
+  { path: "pages/faq.html", changefreq: "monthly", priority: "0.6" },
+  { path: "pages/livraison-retours.html", changefreq: "monthly", priority: "0.6" },
   { path: "pages/cgv.html", changefreq: "yearly", priority: "0.3" },
+  { path: "pages/mentions-legales.html", changefreq: "yearly", priority: "0.3" },
+  { path: "pages/confidentialite.html", changefreq: "yearly", priority: "0.3" },
 ];
 
 function escapeXml(value) {

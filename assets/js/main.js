@@ -118,7 +118,53 @@
     "gingembre", "cardamome", "geranium", "neroli", "tubereuse", "ylang-ylang",
   ];
 
+  // Toutes les notes ne portent pas la racine de leur photo dans leur nom :
+  // « Sandal » est du santal, « Bois d'agar du Laos » est de l'oud, « Bigarade »
+  // est une orange. Celles-la sont nommees une par une, en clair. Le
+  // rapprochement reste une decision prise note par note, jamais le hasard
+  // d'un morceau de texte commun : « Bois de gaiac » n'est pas « Bois ».
+  const NOTES_ALIAS = {
+    // le meme ingredient, ecrit en anglais ou en italien
+    "indian-jasmine": "jasmin",
+    "italian-lemon": "citron",
+    "italian-mandarin": "mandarine",
+    "limone-costa-d-amalfi": "citron",
+    "sandal": "santal",
+    "sicilian-bergamot": "bergamote",
+    "sugarloaf-pineapple": "ananas",
+    // le meme ingredient sous un autre nom
+    "bigarade": "orange",
+    "bois-d-agar-du-cambodge": "oud",
+    "bois-d-agar-du-laos": "oud",
+    "vetyver": "vetiver",
+    // l'ingredient precise par sa variete, sa partie ou son procede
+    "bourgeon-de-cassis": "cassis",
+    "chocolat-noir": "chocolat",
+    "feuille-de-cassissier": "cassis",
+    "feuille-de-violette": "violette",
+    "fleur-d-oranger-de-tunisie": "fleur-d-oranger",
+    "goudron-de-bouleau-de-finlande": "bouleau",
+    "mousse-blanche": "mousse",
+    "pomme-granny-smith": "pomme",
+    "pomme-verte": "pomme",
+    // libelles generiques : la photo generique dit exactement la meme chose
+    "bois-precieux": "bois",
+    "bois-sec": "bois",
+    "notes-boisees": "bois",
+    "notes-boisees-sombres": "bois",
+    "resines": "resine",
+  };
+
+  // Pieges de la recherche par morceaux de texte. « Rock rose » est le nom
+  // anglais du ciste : ce n'est pas une rose et sa photo mentirait sur ce
+  // qu'on achete. Ces libelles gardent leur pastille.
+  const NOTES_SANS_REPLI = new Set(["rock-rose"]);
+
   function slugDeRepli(slug) {
+    if (NOTES_SANS_REPLI.has(slug)) return "";
+    // « sandal » -> « santal » : rattachement decide a la main.
+    const alias = NOTES_ALIAS[slug];
+    if (alias) return NOTE_IMAGES.has(alias) ? alias : "";
     // « rose-de-bulgarie » -> « rose », « poivre-noir » -> « poivre ».
     const candidats = NOTES_DE_BASE.filter(
       (base) => slug === base || slug.startsWith(`${base}-`),
@@ -500,9 +546,17 @@
     // laisse la place a « Bientot disponible ». On ne propose pas a l'achat
     // un parfum que le client n'a pas en stock.
     const bientot = product.bientot === true;
+    // Le prix n'est plus un bouton. Un gros bouton noir portant un prix se
+    // lit « acheter », alors que le clic ouvre la fiche : le visiteur croit
+    // commander et se retrouve ailleurs. Desormais le prix est du texte, et
+    // l'action porte son nom. Ni <button> ni <a> ici : la carte entiere est
+    // deja un lien, un element interactif imbrique serait du HTML invalide.
     const actionHtml = bientot
       ? `<span class="card-add card-add--bientot">Bientôt disponible</span>`
-      : `<button class="card-add" type="button" aria-label="Voir ${product.name}">${price}</button>`;
+      : `<div class="card-actions">
+          <span class="card-price">${price}</span>
+          <span class="card-cta">Voir le parfum</span>
+        </div>`;
 
     return `
       <a href="${productUrl}" class="product-card${bientot ? " is-bientot" : ""}" ${minWidth} data-product-id="${product.id}">
@@ -542,16 +596,11 @@
   }
 
   function initProductCardInteractions(container) {
+    // Le coeur favoris reste le seul element interactif de la carte : il
+    // arrete le clic pour ne pas ouvrir la fiche (voir favorites.js).
+    // Le prix et le bouton « Voir le parfum » ne sont plus que du texte ;
+    // c'est le lien de la carte qui ouvre la fiche, sans JavaScript.
     global.KoreiFavorites?.initHeartButtons(container);
-
-    container.querySelectorAll(".card-add").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const card = btn.closest(".product-card");
-        if (card?.href) window.location.href = card.href;
-      });
-    });
   }
 
   // ── Filtres marques (chips)

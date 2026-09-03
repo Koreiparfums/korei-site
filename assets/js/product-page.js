@@ -549,11 +549,14 @@
   // ── KOR-B10 : reassurance juste sous le bouton d'achat.
   // Les quatre promesses sont exactement celles du bandeau du site : une
   // promesse affichee ici et nulle part ailleurs serait une promesse inventee.
+  // « Cadeau mystere offert » a ete retire : rien dans le site ni dans la
+  // boutique ne le met en oeuvre. La livraison offerte des un coffret, elle,
+  // est bien appliquee (voir assets/js/coffret-builder.js).
   const TRUST_ROW = [
     { icon: "ti-shield-check", label: "Décants 100 % authentiques" },
     { icon: "ti-rotate", label: "Satisfait ou remboursé 30 jours" },
     { icon: "ti-truck-delivery", label: "Expédition sous 24 h" },
-    { icon: "ti-gift", label: "Cadeau mystère offert" },
+    { icon: "ti-package", label: "Livraison offerte dès un coffret" },
   ];
 
   function renderTrustRow() {

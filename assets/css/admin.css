@@ -420,6 +420,13 @@ h2 {
 .admin-tags:focus-within {
   border-color: var(--accent);
 }
+/* Le champ interne enleve son contour de focus (outline: none plus bas). La
+   bordure doree ci-dessus change aussi au clic de souris et se voit a peine :
+   au clavier, on pose un vrai anneau, comme sur le reste du site. */
+.admin-tags:has(input:focus-visible) {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3px;
+}
 
 .admin-tag {
   display: inline-flex;

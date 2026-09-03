@@ -1567,7 +1567,47 @@ body[data-page="home"] .hero {
   opacity: 0.4;
 }
 
-/* ─── CARD QUICK-ADD ─── */
+/* ─── CARD — PRIX ET ACTION ───
+   Le prix etait un gros bouton noir pleine largeur. Un bouton qui porte un
+   prix se lit « acheter », alors que le clic ouvrait la fiche : le visiteur
+   croyait commander. Le prix redevient du texte, et l'action porte son nom.
+   Reste ci-dessous .card-add, qui ne sert plus qu'a « Bientot disponible ». */
+.card-actions {
+  /* .card-body est un flex centre : sans largeur imposee, le bloc se
+     retrecirait a la taille du texte et le bouton ne ferait plus la largeur
+     de la carte, contrairement a « Bientot disponible » juste a cote. */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8.42px;
+  margin-top: 11.22px;
+}
+.card-actions .card-price {
+  text-align: center;
+  letter-spacing: var(--tracking-tight);
+}
+.card-cta {
+  display: block;
+  padding: 10.53px;
+  border: 0.8px solid var(--text);
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--text);
+  font-family: "DM Sans", sans-serif;
+  font-size: var(--text-13);
+  font-weight: 500;
+  text-align: center;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.product-card:hover .card-cta,
+.product-card:focus-visible .card-cta {
+  background: var(--text);
+  color: var(--bg);
+}
+
 .card-add {
   width: 100%;
   background: var(--text);
@@ -1652,6 +1692,14 @@ body[data-page="home"] .card-add {
   padding: 11.82px;
   font-size: var(--text-12);
   margin-top: 10.49px;
+}
+body[data-page="home"] .card-actions {
+  gap: 7.87px;
+  margin-top: 10.49px;
+}
+body[data-page="home"] .card-cta {
+  padding: 9.84px;
+  font-size: var(--text-12);
 }
 
 /* ─── WHY ─── */
@@ -1856,7 +1904,8 @@ body[data-page="coffret"] .coffret-hero {
 }
 
 #coffrets,
-#personnaliser {
+#personnaliser,
+#le-decant {
   scroll-margin-top: 96px;
 }
 .coffret-collections {
@@ -3525,6 +3574,14 @@ body[data-page="coffret"] .coffret-hero {
 .faq-item.open .faq-answer {
   max-height: 160px;
   padding-bottom: 17.6px;
+}
+/* Page FAQ dediee : les reponses y sont plus longues que les trois de
+   l'accueil, et le plafond de 160 px les coupait en plein milieu. */
+.faq--page {
+  padding-top: 12.8px;
+}
+.faq--page .faq-item.open .faq-answer {
+  max-height: 32rem;
 }
 
 /* ─── QUIZ CTA ─── */
@@ -8465,6 +8522,25 @@ body.has-cookie-banner .chatbot-widget {
   outline: 1.6px solid var(--accent);
   outline-offset: 3.2px;
 }
+/* Deux boutons cote a cote : « Decouvrir les parfums » vers le catalogue,
+   « Pourquoi un decant ? » vers l'explication, plus bas sur la page. Le
+   second est secondaire — meme gabarit, simple contour — pour que l'oeil
+   sache lequel est l'action principale. */
+.hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.hero__cta--ghost {
+  background: none;
+  border: 0.8px solid var(--text);
+  color: var(--text);
+}
+.hero__cta--ghost:hover {
+  background: var(--text);
+  color: var(--bg);
+}
 
 @media (max-width: 860px) {
   .hero {
@@ -8491,6 +8567,7 @@ body.has-cookie-banner .chatbot-widget {
     max-width: none;
     gap: 16px;
   }
+  .hero__ctas,
   .hero__cta {
     width: 100%;
   }
@@ -9487,4 +9564,29 @@ body.has-cookie-banner .chatbot-widget {
 .is-rangee-simple {
   justify-content: flex-start;
   overflow-x: auto;
+}
+
+/* ==========================================================================
+   Contour au clavier
+   Neuf champs de cette feuille enlevent leur contour de focus (outline: none).
+   Ils le remplacent au mieux par un changement de couleur de bordure, qui se
+   declenche aussi au clic de souris et ne se voit presque pas : au clavier,
+   plus rien n'indiquait vraiment ou on se trouvait.
+
+   On pose donc un anneau dore discret, a la couleur --accent de la charte,
+   uniquement en :focus-visible : le navigateur ne l'allume qu'au clavier, la
+   souris n'y touche pas. L'anneau est porte par le conteneur du champ, sinon
+   il dessinerait un rectangle a l'interieur d'une pastille arrondie.
+   ========================================================================== */
+.search:has(input:focus-visible),
+.search-overlay-head:has(.search-overlay-input:focus-visible),
+.cb2-search:has(input:focus-visible),
+.cb2-message-card:has(.cb2-message:focus-visible),
+.mini-search:has(input:focus-visible),
+.brands-search:has(input:focus-visible),
+.newsletter-input:focus-visible,
+.catalogue-topbar select:focus-visible,
+.chatbot-input:focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3.2px;
 }

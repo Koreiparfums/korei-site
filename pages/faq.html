@@ -3,24 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Mon espace Kōrei : mes favoris, mon panier, mes commandes et mes informations." />
-    <title>Mon espace — Kōrei</title>
+    <meta name="description" content="Questions fréquentes Kōrei — le décant, les trois formats, l'authenticité, la livraison et les retours." />
+    <title>FAQ — Kōrei</title>
     <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="../manifest.webmanifest" />
     <meta name="theme-color" content="#1a1a18" />
     <link rel="apple-touch-icon" href="/assets/images/app/icon-192.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Kōrei" />
-    <link rel="canonical" href="https://korei-parfum.com/pages/compte" />
+    <link rel="canonical" href="https://korei-parfum.com/pages/faq" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Kōrei" />
-    <meta property="og:title" content="Mon espace — Kōrei" />
-    <meta property="og:description" content="Mon espace Kōrei : favoris, panier, commandes." />
-    <meta property="og:url" content="https://korei-parfum.com/pages/compte" />
+    <meta property="og:title" content="FAQ — Kōrei" />
+    <meta property="og:description" content="Questions fréquentes Kōrei — le décant, les trois formats, l'authenticité, la livraison et les retours." />
+    <meta property="og:url" content="https://korei-parfum.com/pages/faq" />
     <meta property="og:image" content="https://korei-parfum.com/assets/images/og/og-default.svg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Mon espace — Kōrei" />
-    <meta name="twitter:description" content="Mon espace Kōrei : favoris, panier, commandes." />
+    <meta name="twitter:title" content="FAQ — Kōrei" />
+    <meta name="twitter:description" content="Questions fréquentes Kōrei — le décant, les trois formats, l'authenticité, la livraison et les retours." />
     <meta name="twitter:image" content="https://korei-parfum.com/assets/images/og/og-default.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" />
     <link rel="stylesheet" href="../assets/css/styles.css" />
   </head>
-  <body data-page="compte">
+  <body data-page="static">
     <header class="header">
       <div class="header-left">
         <button class="hamburger" data-toggle-menu aria-label="Menu" type="button">
@@ -97,68 +97,146 @@
     </div>
 
     <main>
-      <section class="compte">
-        <div class="compte-head">
-          <p class="page-hero-eyebrow">Mon espace</p>
-          <h1 class="compte-title">Bonjour</h1>
-          <p class="compte-lede">
-            Retrouvez ici vos parfums mis de côté, votre coffret en cours et vos commandes.
-          </p>
+
+    <section class="page-hero">
+      <div class="page-hero-eyebrow">Aide</div>
+      <h1 class="page-hero-title">Questions <em>fréquentes</em></h1>
+      <p class="page-hero-sub">Le décant, les formats, l'authenticité, la livraison et les retours.</p>
+    </section>
+
+    <section class="faq faq--page">
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question" data-toggle-faq type="button">
+            <span>C'est quoi un décant ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Un décant est un petit flacon rempli directement depuis le flacon original de la maison.
+            C'est le même parfum, dans un contenant plus petit : vous payez le jus, pas le flacon de la
+            marque. C'est le moyen le plus simple de porter un parfum plusieurs jours avant de décider
+            s'il mérite un flacon entier.
+          </div>
         </div>
-
-        <div class="compte-grid">
-          <a class="compte-card" href="favoris.html">
-            <span class="compte-card__icon"><i class="ti ti-heart"></i></span>
-            <span class="compte-card__body">
-              <span class="compte-card__title">Mes favoris</span>
-              <span class="compte-card__sub"><span id="compte-fav-count">0</span> parfum(s) mis de côté</span>
-            </span>
-            <i class="ti ti-chevron-right compte-card__go"></i>
-          </a>
-
-          <a class="compte-card" href="panier.html">
-            <span class="compte-card__icon"><i class="ti ti-shopping-bag"></i></span>
-            <span class="compte-card__body">
-              <span class="compte-card__title">Mon panier</span>
-              <span class="compte-card__sub"><span id="compte-cart-count">0</span> flacon(s) · <span id="compte-cart-total">0€</span></span>
-            </span>
-            <i class="ti ti-chevron-right compte-card__go"></i>
-          </a>
-
-          <a class="compte-card" href="coffret.html">
-            <span class="compte-card__icon"><i class="ti ti-gift"></i></span>
-            <span class="compte-card__body">
-              <span class="compte-card__title">Mon coffret</span>
-              <span class="compte-card__sub" id="compte-coffret-sub">Composez un coffret et gagnez 10 %</span>
-            </span>
-            <i class="ti ti-chevron-right compte-card__go"></i>
-          </a>
-
-          <a class="compte-card" href="contact.html">
-            <span class="compte-card__icon"><i class="ti ti-help-circle"></i></span>
-            <span class="compte-card__body">
-              <span class="compte-card__title">Aide et contact</span>
-              <span class="compte-card__sub">Une question sur une commande</span>
-            </span>
-            <i class="ti ti-chevron-right compte-card__go"></i>
-          </a>
+        <div class="faq-item">
+          <button class="faq-question" data-toggle-faq type="button">
+            <span>Quels formats proposez-vous ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Trois formats. Le 2 ml, environ 30 pulvérisations, pour découvrir. Le 5 ml, environ 75
+            pulvérisations, pour se décider. Le 10 ml, environ 150 pulvérisations, pour un parfum qu'on
+            aime déjà.
+          </div>
         </div>
-
-        <div class="compte-orders">
-          <h2 class="compte-h2">Mes commandes</h2>
-          <p class="compte-empty">
-            Le suivi de commande se fait depuis votre compte client, à la fin de votre
-            première commande. Le lien vous est envoyé par e-mail.
-          </p>
+        <div class="faq-item">
+          <button class="faq-question" data-toggle-faq type="button">
+            <span>Les parfums sont-ils authentiques ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Oui, sans exception. Tous les parfums sont approvisionnés via des distributeurs officiels,
+            et les décants sont préparés à partir des flacons originaux. Aucune reproduction, aucun
+            équivalent.
+          </div>
         </div>
-
-        <div class="compte-links">
-          <a href="cgv.html">Conditions générales</a>
-          <a href="mentions-legales.html">Mentions légales</a>
-          <a href="about.html">À propos de Kōrei</a>
+        <div class="faq-item">
+          <button class="faq-question" data-toggle-faq type="button">
+            <span>Comment fonctionne un coffret ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Vous choisissez un format, puis vous remplissez les places : 10 décants de 2 ml pour le
+            coffret Découverte, 5 décants de 5 ml pour le Voyage, 3 décants de 10 ml pour l'Iconique.
+            Dès que le coffret est complet, vous obtenez −10 % sur chacun de ses flacons et la
+            livraison offerte.
+          </div>
         </div>
-      </section>
-    </main>
+        <div class="faq-item">
+          <button class="faq-question" data-toggle-faq type="button">
+            <span>La livraison est-elle offerte ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Elle est offerte dès qu'un coffret est complet, en France métropolitaine. La règle est le
+            coffret, pas un montant : il n'y a pas de seuil en euros à atteindre. Le détail est sur la
+            page Livraison &amp; retours.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" data-toggle-faq type="button">
+            <span>Sous combien de temps ma commande part-elle ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Sous 24 heures, jours ouvrés. Une commande passée le vendredi soir ou le week-end part le
+            lundi. Le délai d'acheminement du transporteur s'ajoute ensuite.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" data-toggle-faq type="button">
+            <span>Puis-je retourner ma commande ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Oui, vous avez 30 jours pour nous dire que la commande ne vous convient pas. Écrivez-nous
+            depuis la page Contact, avec votre numéro de commande : nous vous répondons avec la marche à
+            suivre avant tout renvoi.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" data-toggle-faq type="button">
+            <span>Où livrez-vous ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            En France métropolitaine. Les conditions hors métropole sont précisées sur la page
+            Livraison &amp; retours.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" data-toggle-faq type="button">
+            <span>Comment fonctionne le conseiller olfactif ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Vous décrivez ce que vous cherchez — une note, une occasion, un budget — et il propose des
+            parfums du catalogue. Il est pour l'instant en mode démonstration.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" data-toggle-faq type="button">
+            <span>Le site suit-il ma navigation ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Non. Aucun outil de mesure d'audience n'est installé, et aucun traceur publicitaire. Seules
+            quelques informations restent dans votre navigateur, comme vos favoris et le coffret en
+            cours. Le détail est sur la page Confidentialité.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" data-toggle-faq type="button">
+            <span>Comment vous joindre ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </button>
+          <div class="faq-answer">
+            Par la page Contact, ou par courriel à contact@korei-parfum.com. Nous répondons aux
+            questions sur une commande, un retour ou un choix de parfum.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <article class="static-content">
+      <p>
+        Une question qui n'est pas ici ? Écrivez-nous depuis la <a href="contact.html">page Contact</a>.
+        Voir aussi la page <a href="livraison-retours.html">Livraison &amp; retours</a>, les
+        <a href="cgv.html">conditions générales de vente</a> et la
+        <a href="confidentialite.html">politique de confidentialité</a>.
+      </p>
+    </article>
+
     </main>
 
     <footer>
@@ -214,7 +292,6 @@
     <script src="../assets/js/coffret-builder.js"></script>
     <script src="../assets/js/tabbar.js"></script>
     <script src="../assets/js/chatbot.js"></script>
-    <script src="../assets/js/compte.js"></script>
 
     <div id="chatbot-widget" class="chatbot-widget">
       <div id="chatbot-panel" class="chatbot-panel" role="dialog" aria-label="Conseiller olfactif Kōrei">

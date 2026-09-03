@@ -34,3 +34,9 @@ research/
 output/
 scripts/generate_*.py
 tmp/
+
+# Exports de donnees : tout ce qui est ici part en ligne et devient
+# telechargeable par n'importe qui. L'export de catalogue vit a la racine du
+# projet, a cote de scripts/, et le serveur de developpement le sert sous
+# /dev/export-catalogue.csv.
+*.csv

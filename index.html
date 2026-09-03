@@ -50,7 +50,7 @@
     />
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"
     />
     <link rel="stylesheet" href="assets/css/styles.css" />
   </head>
@@ -63,10 +63,6 @@
         <span class="banner-sep"></span>
         <span class="banner-item">Expédition sous 24h</span>
         <span class="banner-sep"></span>
-        <span class="banner-item">Maisons de niche sélectionnées</span>
-        <span class="banner-sep"></span>
-        <span class="banner-item">Cadeau mystère offert</span>
-        <span class="banner-sep"></span>
         <span class="banner-item">Satisfaction 30 jours</span>
         <span class="banner-sep"></span>
         <span class="banner-item">Livraison offerte dès un coffret</span>
@@ -74,10 +70,6 @@
         <span class="banner-item">Décants 100% authentiques</span>
         <span class="banner-sep"></span>
         <span class="banner-item">Expédition sous 24h</span>
-        <span class="banner-sep"></span>
-        <span class="banner-item">Maisons de niche sélectionnées</span>
-        <span class="banner-sep"></span>
-        <span class="banner-item">Cadeau mystère offert</span>
         <span class="banner-sep"></span>
         <span class="banner-item">Satisfaction 30 jours</span>
       </div>
@@ -228,8 +220,13 @@
             </span>
           </div>
 
-          <!-- Un seul bouton principal (brief §1). -->
-          <a href="pages/catalogue.html" class="hero__cta">Découvrir les parfums</a>
+          <!-- Deux boutons (devis §1) : explorer le catalogue, et comprendre
+               ce qu'est un decant avant d'acheter. Le second pointe sur la
+               section « Le principe du decant », plus bas sur cette page. -->
+          <div class="hero__ctas">
+            <a href="pages/catalogue.html" class="hero__cta">Découvrir les parfums</a>
+            <a href="#le-decant" class="hero__cta hero__cta--ghost">Pourquoi un décant ?</a>
+          </div>
         </div>
       </div>
     </section>
@@ -273,7 +270,7 @@
     <!-- KOR-D2 — carrousel « Nos formats ». Les prix de depart sont calcules
          sur le catalogue reel (main.js), jamais ecrits en dur : un prix affiche
          doit toujours etre un prix vendable. -->
-    <section class="formats-section">
+    <section class="formats-section" id="le-decant">
       <div class="dose-head">
         <div class="dose-eyebrow">Le principe du décant</div>
         <h2 class="dose-title">Nos <em>formats</em></h2>
@@ -857,8 +854,11 @@
         <div class="footer-col">
           <div class="footer-col-title">Aide</div>
           <a href="pages/contact.html">Contact</a>
+          <a href="pages/faq.html">FAQ</a>
+          <a href="pages/livraison-retours.html">Livraison &amp; retours</a>
           <a href="pages/cgv.html">CGV</a>
           <a href="pages/mentions-legales.html">Mentions légales</a>
+          <a href="pages/confidentialite.html">Confidentialité</a>
         </div>
       </div>
       <div class="footer-bottom">

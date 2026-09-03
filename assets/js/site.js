@@ -13,6 +13,24 @@
 (function (global) {
   const SITE_URL = "https://korei-parfum.com";
 
+  /**
+   * Un outil de mesure d'audience est-il installe sur le site ?
+   *
+   * Aujourd'hui : NON. Aucun Google Analytics, aucun Matomo, aucun pixel
+   * publicitaire, aucun traceur tiers. Le site ne depose que des donnees
+   * techniques dans le localStorage du navigateur : le choix cookies, les
+   * favoris, le coffret en cours. Rien de tout cela n'exige un consentement.
+   *
+   * Un bandeau cookies affiche alors qu'il n'y a rien a consentir n'est pas
+   * une precaution : c'est une gene inutile, et il habitue le visiteur a
+   * cliquer sans lire. Tant que ce drapeau vaut false, le bandeau ne
+   * s'affiche pas.
+   *
+   * Le jour ou un outil de mesure sera pose : passer cette ligne a true, et
+   * le bandeau revient tel quel, avec « Refuser » et « J'accepte ».
+   */
+  const MESURE_INSTALLEE = false;
+
   const SITE = {
     name: "Kōrei",
     tagline: "Parfumerie de niche",
@@ -293,6 +311,10 @@
   }
 
   function initCookieBanner() {
+    // Rien a mesurer, donc rien a demander : voir MESURE_INSTALLEE en haut
+    // du fichier. Une seule ligne a changer le jour venu.
+    if (!MESURE_INSTALLEE) return;
+
     let consent;
     try {
       consent = localStorage.getItem(COOKIE_CONSENT_KEY);
