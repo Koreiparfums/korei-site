@@ -10160,14 +10160,33 @@ textarea:focus-visible {
    texte, puis tombe d'un coup. La photo garde plus de la moitie de la
    largeur, la ou sont les flacons. Et le sous-titre quitte le gris pour
    le brun chaud de la charte : c'est le meme texte, il se lit. */
-.hero::before {
-  background: linear-gradient(
-    100deg,
-    rgb(250, 247, 242) 0%,
-    rgb(250, 247, 242) 42%,
-    rgba(250, 247, 242, 0.45) 62%,
-    rgba(250, 247, 242, 0) 78%
-  );
+@media (min-width: 861px) {
+  .hero::before {
+    background: linear-gradient(
+      100deg,
+      rgb(250, 247, 242) 0%,
+      rgb(250, 247, 242) 42%,
+      rgba(250, 247, 242, 0.45) 62%,
+      rgba(250, 247, 242, 0) 78%
+    );
+  }
+}
+/* Sur telephone le texte occupe toute la largeur : le voile ne peut pas
+   suivre une colonne, il suit la hauteur. Il montait a 0,95 seulement a
+   46 % de la hauteur, or le texte commence a 26 % — le nom d'un flacon se
+   lisait au travers du titre et du sous-titre. La photo garde le tiers du
+   haut, le texte a l'ivoire plein. */
+@media (max-width: 860px) {
+  .hero::before {
+    background: linear-gradient(
+      180deg,
+      rgba(250, 247, 242, 0.05) 0%,
+      rgba(250, 247, 242, 0.35) 16%,
+      rgba(250, 247, 242, 0.92) 27%,
+      rgb(250, 247, 242) 32%,
+      rgb(250, 247, 242) 100%
+    );
+  }
 }
 .hero__sub {
   color: var(--text-warm);

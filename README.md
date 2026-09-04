@@ -27,28 +27,24 @@ korei-site/
 
 ## Lancer en local
 
-Pas de dépendances ni build requis.
+```bash
+npm install
+npm run dev
+```
+
+Le serveur local fournit les pages et les routes `/api/*`. Ouvrir directement les fichiers HTML ne permet pas de tester Shopify, le conseiller ou les contrôles de panier.
+
+Avant toute livraison :
 
 ```bash
-npx serve .
-# ou ouvrir index.html avec Live Server (VS Code)
+npm run build
 ```
 
 ## Déploiement
 
-Site statique — compatible Vercel ou Netlify (sans build).
+Le projet cible Netlify : pages statiques, Functions et Netlify Forms. Ne pas publier directement avec un simple serveur de fichiers, car les routes API et les formulaires seraient alors inopérants.
 
-```bash
-# Vercel
-vercel deploy
-
-# Netlify CLI
-netlify deploy --prod --dir=.
-```
-
-Avant la mise en production, mettre à jour `SITE_URL` dans `assets/js/site.js` et les URLs dans `robots.txt` / `sitemap.xml`.
-
-La newsletter et le formulaire contact sont prêts pour Netlify Forms. Si le site est déployé sur Vercel, prévoir Mailchimp, Brevo ou une serverless function dédiée pour collecter les messages.
+Avant le déploiement public, suivre [la checklist de lancement](docs/LANCEMENT.md). Elle contient volontairement des blocages tant que remises, stock, prix, checkout et mentions légales ne sont pas validés.
 
 Voir `docs/PROJECT_SCOPE.md` pour le détail.
 
@@ -94,7 +90,8 @@ Le catalogue est chargé via `/api/products`, une Netlify Function qui utilise l
 Variables Netlify requises :
 
 - `SHOPIFY_STORE_DOMAIN` — domaine `votre-boutique.myshopify.com`
-- `SHOPIFY_STOREFRONT_PUBLIC_TOKEN` — jeton Storefront API public
+- `SHOPIFY_STOREFRONT_PRIVATE_TOKEN` — jeton Storefront côté serveur, requis tant que la boutique est protégée
+- `SHOPIFY_STOREFRONT_PUBLIC_TOKEN` — repli possible après ouverture de la boutique
 
 Pour enrichir une fiche produit, créer les metafields produit de namespace `korei` : `notes_top`, `notes_heart`, `notes_base`, `family`, `gender`, `intensity`, `seasons`, `occasions` et `badge`. Les valeurs de listes peuvent être configurées comme listes Shopify ou comme texte séparé par des virgules. Les tags `bestseller`, `new`, `family:...`, `gender:...`, `season:...` et `occasion:...` sont aussi pris en charge.
 
@@ -109,3 +106,4 @@ PORT=3000 node dev-server.js
 - [Scope MVP & architecture](docs/PROJECT_SCOPE.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Raccordement Shopify](docs/SHOPIFY_SETUP.md)
+- [Checklist de lancement](docs/LANCEMENT.md)

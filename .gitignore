@@ -30,6 +30,9 @@ research/
 # Claude Code
 .claude/
 
+# Recettes navigateur locales
+.playwright-cli/
+
 # Travail prestataire (propositions, scripts PDF, temporaires)
 output/
 scripts/generate_*.py

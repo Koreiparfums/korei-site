@@ -66,15 +66,16 @@
 - [ ] Mapper les champs Korei vers Shopify (variants, collections, tags, metafields)
 - [x] Catalogue dynamique via Shopify Storefront API (pagination complète par curseur, avec repli local)
 - [x] Fiche produit dynamique via Shopify Storefront API (avec repli local)
-- [x] Panier fonctionnel via Shopify Cart API — panier hybride : `localStorage` reste l'état local, `/api/cart` synchronise les lignes qui ont une vraie variante Shopify (voir `docs/SHOPIFY_SETUP.md`)
-- [x] Checkout via Shopify Checkout — "Passer la commande" redirige vers le `checkoutUrl` Shopify dès qu'un panier réel existe
-- [x] Gestion stocks par variant Shopify — `isVariantAvailable()` grise le format en rupture (carte favoris, tiers coffret fiche produit, sélecteur panier) ; un rejet Shopify (`cart_user_error`) annule l'ajout local et prévient l'utilisateur au lieu de désynchroniser silencieusement le panier
+- [x] Panier Shopify atomique — chaque changement recrée un panier distant complet et le checkout vérifie lignes, quantités et total
+- [ ] Promotions Shopify — Discount Function, codes coffret combinables et livraison offerte à créer puis recetter
+- [ ] Checkout public — l'URL existe, mais le mot de passe Shopify doit rester en place jusqu'à validation paiement/taxes/livraison
+- [ ] Stock de production — les variantes sont actuellement vendables sans stock (`CONTINUE`) ; définir le stock partagé entre formats avant ouverture
 - [ ] Compte client (Shopify Customer API)
 
 ### Prérequis production
 
 - [ ] Netlify : créer le compte / projet de production
-- [x] Netlify : configurer les variables d'environnement (`GROQ_API_KEY`, `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_PUBLIC_TOKEN`)
+- [ ] Netlify : vérifier les variables de production (`GROQ_API_KEY`, `SHOPIFY_STORE_DOMAIN`, jeton Storefront privé/public, `ADMIN_TOKEN`)
 - [x] DNS : domaine officiel acheté — `korei-parfum.com` (registrar Squarespace)
 - [ ] DNS : pointer le domaine principal et `www` vers Netlify
 - [ ] Email pro : créer au minimum `contact@...` et `support@...`
