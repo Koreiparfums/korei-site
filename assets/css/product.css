@@ -2341,3 +2341,43 @@ body[data-page="product"] {
 .pdp-sticky__cta {
   font-size: 11.5px;
 }
+
+/* ── 11. Le sur-titre de la fiche rejoint les autres ─────────────────────
+   Il gardait DM Sans a 11,8 px et l'or de la marque, qui tombe a 2,9:1
+   sur blanc. Les huit autres sections du site ont le meme sur-titre :
+   chasse fixe, 10 px, interlettre 0,26 em, or du sceau a 4,7:1. */
+.pdp-eyebrow {
+  font-family: var(--pdp-mesure, var(--mesure));
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  color: var(--sceau);
+}
+
+/* ── 12. Les reperes de la fiche prennent le cartouche de la maison ──────
+   « Authentique » etait blanc a filet gris, « Grand classique » un aplat
+   noir a texte blanc, et la carte du meme parfum dans le catalogue portait
+   le meme mot en creme a filet dore. Trois dessins pour un seul repere.
+
+   Tout prend le cartouche : fond creme, filet d'un demi-pixel, encre d'or
+   sombre. L'icone du repere « Authentique » garde l'or de la marque : elle
+   est dessin, pas texte, et n'a pas de contraste a tenir. */
+.pdp-badge--authentic,
+.pdp-badge--best,
+.pdp-badge--new,
+.pdp-badge--exclusive {
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  border: 0.8px solid var(--badge-border);
+}
+.pdp-badge {
+  padding: 4px 9px;
+}
+
+/* ── 13. La puce du bloc « Ressenti » ────────────────────────────────────
+   13 px la, 11,4 px partout ailleurs. Le bloc est sur fond sombre : il
+   garde ses couleurs, qui tiennent le contraste sur du noir. Seule la
+   taille rejoint celle des autres puces du site. */
+.pdp-feel__chip {
+  font-size: 11.4px;
+}

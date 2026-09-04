@@ -10707,3 +10707,20 @@ body[data-page="home"] .card-cta {
   background: var(--surface);
   color: var(--text);
 }
+
+/* Le sur-titre : deux blocs manquaient a l'appel. Le conseiller et
+   l'inscription gardaient DM Sans a 11 px pendant que les sept autres
+   sections etaient deja passees en chasse fixe a 10 px. Ce sont des
+   sur-titres comme les autres. */
+.quiz-eyebrow,
+.newsletter-eyebrow,
+.sub-eyebrow,
+.pack-choice-card__eyebrow,
+.placeholder-premium__eyebrow {
+  font-family: var(--mesure);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--sceau);
+}
