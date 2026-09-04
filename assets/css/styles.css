@@ -10665,3 +10665,45 @@ body[data-page="home"] .card-cta {
 .box-card__discount {
   font-variant-numeric: tabular-nums;
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   DIRECTION — une seule puce (04/09/2026)
+   ════════════════════════════════════════════════════════════════════════
+
+   Une puce porte un nom propre : « Memo Paris », « Vanille », « Boisé ».
+   Elle se coche, elle ne commande rien. Elle reste donc en DM Sans, en
+   casse ordinaire, la ou les boutons passent en chasse fixe.
+
+   Trois dessins circulaient : 11 px dans le catalogue et 11,4 px dans le
+   meme panneau lateral, 11,8 px chez le coffret, 10 px en capitales dorees
+   sur l'accueil. Les capitales de l'accueil faisaient crier des noms de
+   notes qui devraient se lire.
+
+   Une seule puce : 11,4 px, DM Sans, casse ordinaire, fond blanc, filet.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.chip,
+.cb2-filter-chip,
+.quiz-note-chip {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.4px;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+/* L'accueil habillait ses notes en creme et or. Une puce a cocher est un
+   fond blanc et un filet, partout. */
+.quiz-note-chip {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0 16px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+}
+.quiz-note-chip:hover {
+  border-color: var(--text);
+  background: var(--surface);
+  color: var(--text);
+}
