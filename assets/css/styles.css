@@ -9255,6 +9255,12 @@ body.has-cookie-banner .chatbot-widget {
 .home-maison:focus-visible {
   background: var(--surface);
 }
+/* Dix maisons sur cinq colonnes, douze sur quatre ou trois : la grille ne
+   laisse jamais de case vide. Le script en rend douze ; on cache les deux
+   dernieres la ou elles ne rempliraient pas une rangee entiere. */
+.home-maison:nth-child(n + 11) {
+  display: none;
+}
 .home-maison__logo {
   max-width: 108px;
   max-height: 34px;
@@ -9280,6 +9286,11 @@ body.has-cookie-banner .chatbot-widget {
   .home-maisons {
     grid-template-columns: repeat(4, 1fr);
   }
+  /* Quatre colonnes (et trois en dessous de 860 px) : douze maisons font
+     des rangees pleines. */
+  .home-maison:nth-child(n + 11) {
+    display: flex;
+  }
 }
 @media (max-width: 860px) {
   .home-maisons {
@@ -9290,6 +9301,10 @@ body.has-cookie-banner .chatbot-widget {
   /* Sur telephone : deux colonnes (brief §2) et balayage plutot que fleches. */
   .home-maisons {
     grid-template-columns: repeat(2, 1fr);
+  }
+  /* Deux colonnes : dix maisons, cinq rangees, pas de case vide. */
+  .home-maison:nth-child(n + 11) {
+    display: none;
   }
   .formats-arrow {
     display: none;

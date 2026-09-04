@@ -788,7 +788,10 @@
       .map((b) => ({ ...b, count: (store.getProductsByBrand(b.id) || []).length }))
       .filter((b) => b.count > 0)
       .sort((a, b) => b.count - a.count)
-      .slice(0, 10);
+      // Douze maisons, pas dix : sur quatre ou trois colonnes, dix laissaient
+      // deux cases vides en bas de grille. La feuille de style cache les deux
+      // dernieres quand la grille a cinq colonnes (ou deux, sur telephone).
+      .slice(0, 12);
 
     if (!maisons.length) {
       grid.closest("section")?.setAttribute("hidden", "");
