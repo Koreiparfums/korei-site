@@ -9961,3 +9961,41 @@ body.has-cookie-banner .chatbot-widget {
     padding-bottom: calc(32px + var(--tabbar-h, 56px) + env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* ==========================================================================
+   ANNEAU AU CLAVIER — partout (04/09/2026)
+
+   Le bloc precedent n'habillait que les champs de recherche. Releve sur la
+   page Catalogue : 457 boutons, dont « Passer la commande », « S'abonner »
+   et chaque carte produit, n'avaient aucun repere visible au clavier. On
+   voyait ou on ecrivait, jamais ou on allait cliquer.
+
+   Meme anneau que les champs, meme dore de la charte, toujours en
+   :focus-visible : le navigateur ne l'allume qu'au clavier, la souris n'y
+   touche pas. L'anneau epouse tout seul les coins arrondis de l'element.
+   ========================================================================== */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3.2px;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3.2px;
+}
+
+/* Sauf ceux dont le conteneur porte deja l'anneau : sans cette exception,
+   un rectangle se dessinerait a l'interieur de la pastille arrondie. */
+.search input:focus-visible,
+.search-overlay-head .search-overlay-input:focus-visible,
+.cb2-search input:focus-visible,
+.mini-search input:focus-visible,
+.brands-search input:focus-visible {
+  outline: none;
+}
