@@ -69,7 +69,7 @@
 - [x] Panier Shopify atomique — chaque changement recrée un panier distant complet et le checkout vérifie lignes, quantités et total
 - [ ] Promotions Shopify — paliers natifs combinables et livraison offerte à créer avec `scripts/configure-shopify-discounts.js`, puis recetter
 - [ ] Checkout public — l'URL existe, mais le mot de passe Shopify doit rester en place jusqu'à validation paiement/taxes/livraison
-- [ ] Stock de production — les variantes sont actuellement vendables sans stock (`CONTINUE`) ; définir le stock partagé entre formats avant ouverture
+- [x] Stock Shopify — 100 unités sur les 489 variantes vendables et survente désactivée (`DENY`), reproductible via `scripts/configure-shopify-inventory.js`
 - [ ] Compte client (Shopify Customer API)
 
 ### Prérequis production

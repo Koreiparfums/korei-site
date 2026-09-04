@@ -7799,10 +7799,10 @@ body.has-cookie-banner .chatbot-widget {
     /* --bottom-chrome = barre d'onglets + bandeau cookies, mesures en JS.
        Le tiroir s'arrete au-dessus des deux : le bouton Appliquer reste
        toujours atteignable. */
-    bottom: var(--bottom-chrome, 0px);
+    bottom: var(--bottom-bars, 0px);
     width: 100%;
-    max-height: calc(90vh - var(--bottom-chrome, 0px));
-    max-height: calc(90dvh - var(--bottom-chrome, 0px));
+    max-height: calc(90vh - var(--bottom-bars, 0px));
+    max-height: calc(90dvh - var(--bottom-bars, 0px));
     transform: translateY(100%);
     transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
     will-change: transform;
@@ -7818,9 +7818,9 @@ body.has-cookie-banner .chatbot-widget {
     display: flex;
     flex-direction: column;
     height: 100%;
-    max-height: calc(90vh - var(--bottom-chrome, 0px));
-    max-height: calc(90dvh - var(--bottom-chrome, 0px));
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    max-height: calc(90vh - var(--bottom-bars, 0px));
+    max-height: calc(90dvh - var(--bottom-bars, 0px));
+    border-radius: 0;
     box-shadow: 0 -8px 32px rgba(26, 26, 24, 0.18);
     overflow: hidden;
   }
@@ -8364,7 +8364,7 @@ body.has-cookie-banner .chatbot-widget {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: var(--bottom-chrome, 0px);
+    bottom: var(--bottom-bars, 0px);
     top: auto;
     z-index: 500;
     display: flex;
@@ -8372,7 +8372,7 @@ body.has-cookie-banner .chatbot-widget {
     background: var(--surface);
     border-top: 0.8px solid var(--border);
     box-shadow: 0 -8px 28px -18px rgba(26, 26, 24, 0.5);
-    max-height: calc(88dvh - var(--bottom-chrome, 0px));
+    max-height: calc(88dvh - var(--bottom-bars, 0px));
   }
   .cb2-dock {
     display: flex;
@@ -10333,4 +10333,101 @@ textarea:focus-visible {
 .korei-ask__btn--oui:hover {
   background: var(--text-hover);
   color: var(--bg);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   DIRECTION — l'angle droit, partout (04/09/2026)
+   ════════════════════════════════════════════════════════════════════════
+
+   La passe precedente avait aplati les cartes, les panneaux et les boutons,
+   mais laissait des pastilles et des pastilles rondes un peu partout :
+   fleches de carrousel, medaillons de notes, compteurs du panier, bouton du
+   conseiller, etiquettes du catalogue. Une carte carree posee a cote d'un
+   bouton rond, c'est deux epoques sur le meme ecran.
+
+   La regle est simple et sans exception utile : ce site n'a pas d'angle
+   arrondi. Une maison de parfum vend des flacons, des etuis et des
+   coffrets ; ce sont des objets a aretes. Le rectangle est notre forme.
+
+   Restent rondes les seules choses qui ne sont pas des surfaces : les
+   points. Puce de separation, point de pagination, point d'un bouton radio,
+   points d'attente du conseiller, curseur du reglage de prix. Un point n'a
+   pas de coins a arrondir, il EST rond — et le rond d'un bouton radio est
+   une convention que le visiteur lit sans y penser.
+   ════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius-pill: 0px;
+}
+
+/* Vignettes et photos : un cadre, pas un hublot. */
+.note-image,
+.cb2-slot,
+.cb2-slot--empty::after,
+.cb2-list-thumb,
+.cb2-result__thumb,
+.cb2-card__thumb,
+.chatbot-avatar,
+.testimonial-avatar,
+.favoris-explore__tile::before,
+/* Fleches, bascules et petits boutons d'action. */
+.favorites-nav-btn,
+.formats-arrow,
+.chatbot-toggle,
+.chatbot-send,
+.coffret-toggle,
+.coffret-items li button,
+.fav-card__heart,
+.fav-card__add,
+.panier-item__qty button,
+.panier-item__remove,
+.cb2-result__add,
+.cb2-result__check,
+.cb2-card__action,
+.ugc-play,
+.social-btn,
+/* Numeros d'etape et medaillons d'icone. */
+.step-num,
+.cb2-timeline__num,
+.cb2-card__step,
+.cb2-perk__icon,
+/* Compteurs, etiquettes et champs. */
+.cart-count,
+.tabbar__badge,
+.search-hit,
+.chip,
+.quiz-note-chip,
+.chatbot-suggestion,
+.chatbot-input,
+.newsletter-input,
+.filters-count-pill,
+.active-filter-pill,
+.brands-filter-pill,
+.brands-popular-pill,
+.cb2-filter-chip,
+.payment-chip,
+.fav-card__tag,
+.box-card__badge,
+.box-card__discount,
+.boxes-feature__flag,
+.box-theme,
+.admin-usage-badge,
+.admin-pill,
+.admin-tag,
+.admin-chip {
+  border-radius: 0;
+}
+
+/* Les points restent des points. Liste fermee, tenue a la main : tout ce
+   qui n'y figure pas est carre. */
+.banner-sep,
+.ticker-dot,
+.formats-dot,
+.chip .chip-dot,
+.option-card .radio-dot,
+.option-card .radio-dot::after,
+.chatbot-typing span,
+.price-slider input[type="range"]::-webkit-slider-thumb,
+.price-slider input[type="range"]::-moz-range-thumb {
+  border-radius: 50%;
 }

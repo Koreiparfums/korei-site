@@ -110,4 +110,11 @@ complets, puis une adresse située hors de la zone de livraison offerte.
 
 Le champ `availableForSale` pilote les états de rupture du site. Ne jamais laisser les variantes en politique `CONTINUE` en production sans décision explicite : cela autorise la survente.
 
-Comme les trois formats consomment le même flacon source, il faut soit une application de stock partagé, soit une réserve opérationnelle conservatrice par variante. Le script de test `scripts/boutique_test.py` exige désormais `--autoriser-survente` avant d'activer volontairement `CONTINUE`.
+L'inventaire courant utilise une réserve opérationnelle de 100 unités par variante vendable sur l'emplacement actif. Toutes ces variantes sont en politique `DENY`. La configuration est reproductible et contrôlable sans écriture avant application :
+
+```bash
+npm run shopify:inventory
+npm run shopify:inventory:apply
+```
+
+Le script de test historique `scripts/boutique_test.py` exige toujours `--autoriser-survente` avant d'activer volontairement `CONTINUE`.

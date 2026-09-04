@@ -73,6 +73,21 @@
     return FAMILY_INFO[product.family] || DEFAULT_FAMILY;
   }
 
+  /**
+   * Trente-neuf parfums du catalogue n'ont pas de famille olfactive : le
+   * releve du client ne la donne pas. Leur fiche annonçait « Signature —
+   * une composition a la classification singuliere, pensee pour se
+   * distinguer », ce qui laisse croire a un parti pris alors qu'il s'agit
+   * d'une donnee manquante. Et la phrase d'a cote donnait « a rejoint notre
+   * selection pour sa signature signature ».
+   *
+   * Quand la famille est inconnue, la colonne disparait et la phrase se
+   * passe du mot. On ne dit rien plutot que dire a peu pres.
+   */
+  function familleConnue(product) {
+    return Boolean(FAMILY_INFO[product.family]);
+  }
+
 
   // ── Galerie (KOR-B6)
   // Une seule photo existe pour la plupart des parfums. On ne la duplique plus
@@ -1019,18 +1034,26 @@
     return `
       <section class="pdp-editorial">
         <div class="pdp-editorial__grid pdp-reveal">
-          <div class="pdp-editorial__col">
+          ${
+            familleConnue(product)
+              ? `<div class="pdp-editorial__col">
             <div class="pdp-eyebrow">Famille olfactive</div>
             <h2 class="pdp-editorial__title">${familyInfo(product).label}</h2>
             <p>${familyInfo(product).desc}</p>
-          </div>
+          </div>`
+              : ""
+          }
           <div class="pdp-editorial__col">
             <div class="pdp-eyebrow">L'histoire</div>
             <h2 class="pdp-editorial__title">Le décant Kōrei</h2>
             <p>
               Chez Kōrei, chaque flacon est choisi avec la même exigence : celle de maisons de
               parfumerie de niche qui refusent le compromis. <em>${esc(product.name)}</em> a rejoint
-              notre sélection pour sa signature ${familyInfo(product).label.toLowerCase()} —
+              notre sélection${
+                familleConnue(product)
+                  ? ` pour sa signature ${familyInfo(product).label.toLowerCase()}`
+                  : ""
+              } —
               une composition que nous avons voulu rendre accessible dès quelques millilitres,
               sans jamais transiger sur l'authenticité.
             </p>

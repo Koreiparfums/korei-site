@@ -953,7 +953,7 @@ body[data-page="product"] {
   /* Au-dessus de la barre d'onglets et du bandeau cookies, jamais dessous.
      --bottom-chrome est mesuré par tabbar.js, jamais deviné. */
   .pdp-sticky {
-    bottom: calc(var(--bottom-chrome, 56px) + 8px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(var(--bottom-bars, 56px) + 8px + env(safe-area-inset-bottom, 0px));
     padding-bottom: 11.2px;
   }
   .pdp-sticky__info {
@@ -2305,4 +2305,20 @@ body[data-page="product"] {
   :root {
     --pdp-repere-h: 24px;
   }
+}
+
+/* ── 9. L'angle droit gagne aussi la fiche ───────────────────────────────
+   Meme regle que le reste du site : ce site n'a pas d'angle arrondi. Ne
+   restent ronds que les points, et la fiche n'en a pas. */
+.pdp-carousel-nav button,
+.pdp-py-row__num,
+.pdp-py-row__plus,
+.pdp-feel__icon,
+.pdp-feel__seg,
+.pdp-feel__chip,
+.pdp-gallery__counter,
+.pdp-format__badge,
+.pdp-format__flag,
+.pdp-back:focus-visible {
+  border-radius: 0;
 }

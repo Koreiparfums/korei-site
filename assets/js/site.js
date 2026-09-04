@@ -483,11 +483,24 @@
 
   /**
    * Enregistrement du service worker (KOR-A7).
-   * Uniquement en HTTPS ou sur localhost : ailleurs le navigateur refuse.
+   *
+   * En HTTPS seulement. Le navigateur l'accepte aussi sur localhost, et on
+   * s'en servait — mais en developpement il ne rend aucun service et cache
+   * un piege : il sert l'ancien fichier apres modification. On a corrige
+   * deux fois de suite un bug deja corrige, et valide une fois un correctif
+   * que le serveur n'avait pas encore charge.
+   *
+   * Sur localhost, on desinstalle donc celui qui traine et on vide ses
+   * caches, pour que la page ouverte soit toujours celle du disque.
    */
   if ("serviceWorker" in navigator) {
     const local = ["localhost", "127.0.0.1"].includes(global.location.hostname);
-    if (global.location.protocol === "https:" || local) {
+    if (local) {
+      navigator.serviceWorker.getRegistrations?.().then((liste) => {
+        liste.forEach((enregistrement) => enregistrement.unregister());
+      });
+      global.caches?.keys().then((cles) => cles.forEach((cle) => global.caches.delete(cle)));
+    } else if (global.location.protocol === "https:") {
       global.addEventListener("load", () => {
         navigator.serviceWorker.register("/sw.js").catch(() => {
           // Un echec d'enregistrement ne doit jamais casser la page.
