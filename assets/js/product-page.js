@@ -532,6 +532,21 @@
     return global.KoreiUI?.slugDeRepli?.(slug) || "";
   }
 
+  function renderPyramidSection(product) {
+    const pyramide = renderPyramid(product);
+    if (!pyramide) return "";
+    return `
+      <section class="pdp-pyramid-section" aria-labelledby="pdp-pyramid-title">
+        <div class="pdp-container">
+          <div class="pdp-head pdp-reveal">
+            <div class="pdp-eyebrow">Pyramide olfactive</div>
+            <h2 class="pdp-title pdp-title--serif" id="pdp-pyramid-title">${esc(product.brand)} <em>${esc(product.name)}</em></h2>
+          </div>
+          ${pyramide}
+        </div>
+      </section>`;
+  }
+
   function renderPyramid(product) {
     const notesByTier = {
       top: product.notesTop || [],
@@ -631,31 +646,24 @@
   // etait vide, donc invisible pour tout nouveau visiteur.
   // Ici : une seule ligne, toujours visible, qui suit le format selectionne.
   function renderCoffretRail(product, sel) {
-    // Sans prix, la ligne de progression annonce « 0 € economises ». Un
-    // parfum non tarife n'entre de toute facon pas dans un coffret : il n'est
-    // pas vendable. On ne montre pas le rail.
+    // Sans prix, pas de coffret : un parfum non tarife n'est pas vendable.
     if (!global.KoreiCoffret || !sel || !sel.price) return "";
-    const t = COFFRET_TIERS.find((x) => x.format === sel.key);
-    if (!t) return "";
+    // Les deux coffrets sont toujours visibles ; celui du format choisi est
+    // mis en avant, le 2 ml explique qu'il se commande a l'unite.
     return `
       <div class="pdp-rail" data-coffret-rail>
         <div class="pdp-rail__head">
-          <span class="pdp-rail__name" data-rail-name>Coffret ${t.label}</span>
+          <span class="pdp-rail__name">Composer un coffret</span>
+          <span class="pdp-rail__gain-line">−10 % par flacon · livraison offerte</span>
+        </div>
+        ${COFFRET_TIERS.map(
+          (t) => `
+        <div class="pdp-rail__tier" data-rail-tier="${t.format}">
+          <span class="pdp-rail__tier-name">${t.label}<em>${t.capacity} × ${t.format.replace("ml", " ml")}</em></span>
+          <span class="pdp-rail__track" role="presentation"><span class="pdp-rail__fill" data-rail-fill style="width:0%"></span></span>
           <span class="pdp-rail__count" data-rail-count>0/${t.capacity}</span>
-        </div>
-        <div class="pdp-rail__offre">
-          <div class="pdp-rail__gain">
-            <span class="pdp-rail__chiffre">−10 %</span>
-            <span class="pdp-rail__quoi">sur chaque flacon</span>
-          </div>
-          <div class="pdp-rail__gain">
-            <span class="pdp-rail__chiffre pdp-rail__chiffre--mot">Offerte*</span>
-            <span class="pdp-rail__quoi">si le coffret est éligible</span>
-          </div>
-        </div>
-        <div class="pdp-rail__track" role="presentation">
-          <span class="pdp-rail__fill" data-rail-fill style="width:0%"></span>
-        </div>
+        </div>`
+        ).join("")}
         <p class="pdp-rail__msg" data-rail-msg></p>
       </div>`;
   }
@@ -737,6 +745,11 @@
               <div class="pdp-actions">
                 ${bientot ? `<p class="pdp-bientot">Ce parfum arrive bientôt en boutique.${product.photoManquante ? " Sa photo est en cours de préparation." : ""}</p>` : ""}
                 <div class="pdp-actions__row">
+                  <div class="pdp-qty" data-qty>
+                    <button class="pdp-qty__btn" type="button" data-qty-dec aria-label="Un flacon de moins" disabled>−</button>
+                    <input class="pdp-qty__val" type="number" inputmode="numeric" min="1" max="${QTY_MAX}" value="1" aria-label="Nombre de flacons" data-qty-val />
+                    <button class="pdp-qty__btn" type="button" data-qty-inc aria-label="Un flacon de plus">+</button>
+                  </div>
                   <button class="pdp-btn pdp-btn--primary" id="pdp-cta" type="button"${selected.available && !bientot ? "" : " disabled"}>
                     ${bientot ? "Bientôt disponible" : selected.available ? `Ajouter au panier — ${prix(selected.price)}` : "Format indisponible"}
                   </button>
@@ -752,7 +765,6 @@
               ${descriptionRedigee(product) ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
             </div>
             ${renderAccordions(product)}
-            ${renderRessenti(product)}
             ${renderStory(product)}
           </div>
         </div>
@@ -806,13 +818,35 @@
 
     let current = byKey.get(main.querySelector(".pdp-format.is-active")?.dataset.vol) || firstSelectable(formats);
 
+    // Nombre de flacons a ajouter d'un coup : le client en veut 1, 2 ou plus.
+    const qtyInput = main.querySelector("[data-qty-val]");
+    const qtyDec = main.querySelector("[data-qty-dec]");
+    const qtyInc = main.querySelector("[data-qty-inc]");
+    function qty() {
+      const n = parseInt(qtyInput?.value, 10);
+      return Number.isFinite(n) ? Math.min(QTY_MAX, Math.max(1, n)) : 1;
+    }
+    function setQtyValue(n) {
+      if (!qtyInput) return;
+      qtyInput.value = String(Math.min(QTY_MAX, Math.max(1, n)));
+      if (qtyDec) qtyDec.disabled = qty() <= 1;
+      if (qtyInc) qtyInc.disabled = qty() >= QTY_MAX;
+      syncButtons();
+    }
+    qtyDec?.addEventListener("click", () => setQtyValue(qty() - 1));
+    qtyInc?.addEventListener("click", () => setQtyValue(qty() + 1));
+    qtyInput?.addEventListener("change", () => setQtyValue(qty()));
+
     function label() {
       // Parfum annonce : pas d'achat possible, quel que soit le format.
       if (product.bientot) return "Bientôt disponible";
       if (!current) return "Format indisponible";
       if (!current.available) return "Format indisponible";
-      if (coffret?.hasItem(product.id, current.key)) return "Déjà dans le panier";
-      return `Ajouter au panier — ${prix(current.price)}`;
+      const n = qty();
+      const total = prix(Math.round(current.price * n * 100) / 100);
+      const deja = coffret?.itemQty ? coffret.itemQty(product.id, current.key) : 0;
+      if (deja > 0) return n > 1 ? `En ajouter ${n} — ${total}` : `En ajouter un — ${total}`;
+      return n > 1 ? `Ajouter ${n} flacons — ${total}` : `Ajouter au panier — ${total}`;
     }
 
     const priceAmount = main.querySelector("[data-price-amount]");
@@ -820,33 +854,38 @@
     const rail = main.querySelector("[data-coffret-rail]");
 
     // La ligne de progression suit le format selectionne : changer de format
-    // change de coffret (10x2ml, 5x5ml, 3x10ml), donc de quota et d'economie.
+    // change de coffret (5x5ml, 3x10ml), donc de quota et d'economie.
     function syncRail() {
       if (!rail || !current) return;
-      const tier = COFFRET_TIERS.find((t) => t.format === current.key);
-      if (!tier) {
-        rail.hidden = true;
-        return;
-      }
-      rail.hidden = false;
-      const count = coffret?.countFor ? coffret.countFor(current.key) : 0;
-      const inBox = count % tier.capacity;
-      const done = count > 0 && inBox === 0;
-      rail.classList.toggle("is-complete", done);
-      const nameEl = rail.querySelector("[data-rail-name]");
-      const countEl = rail.querySelector("[data-rail-count]");
-      const fillEl = rail.querySelector("[data-rail-fill]");
+      const active = COFFRET_TIERS.find((t) => t.format === current.key);
+      rail.classList.remove("is-complete");
+      COFFRET_TIERS.forEach((tier) => {
+        const row = rail.querySelector(`[data-rail-tier="${tier.format}"]`);
+        if (!row) return;
+        const count = coffret?.countFor ? coffret.countFor(tier.format) : 0;
+        const inBox = count % tier.capacity;
+        const done = count > 0 && inBox === 0;
+        row.classList.toggle("is-active", tier === active);
+        row.classList.toggle("is-complete", done);
+        if (tier === active && done) rail.classList.add("is-complete");
+        const countEl = row.querySelector("[data-rail-count]");
+        const fillEl = row.querySelector("[data-rail-fill]");
+        if (countEl) countEl.textContent = `${done ? tier.capacity : inBox}/${tier.capacity}`;
+        if (fillEl) fillEl.style.width = `${((done ? tier.capacity : inBox) / tier.capacity) * 100}%`;
+      });
       const msgEl = rail.querySelector("[data-rail-msg]");
-      if (nameEl) nameEl.textContent = `Coffret ${tier.label}`;
-      if (countEl) countEl.textContent = `${done ? tier.capacity : inBox}/${tier.capacity}`;
-      if (fillEl) fillEl.style.width = `${((done ? tier.capacity : inBox) / tier.capacity) * 100}%`;
-      if (msgEl) msgEl.innerHTML = railMessage(current, count, tier);
+      if (!msgEl) return;
+      if (active) {
+        msgEl.innerHTML = railMessage(current, coffret?.countFor ? coffret.countFor(current.key) : 0, active);
+      } else {
+        msgEl.textContent = "Le 2 ml se commande à l'unité. Les coffrets se composent en 5 ml ou en 10 ml.";
+      }
     }
 
     function syncButtons() {
       const text = label();
-      const disabled =
-        product.bientot || !current?.available || coffret?.hasItem(product.id, current.key);
+      // Deja dans le panier n'empeche plus rien : on ajoute a la ligne.
+      const disabled = product.bientot || !current?.available;
       [cta, stickyCta].forEach((btn) => {
         if (!btn) return;
         btn.textContent = text;
@@ -874,19 +913,28 @@
 
     // KOR-B1 — l'ajout crée une vraie ligne, avec la variante Shopify quand elle existe.
     function addToCart() {
-      if (product.bientot) return;
-      if (!current?.available || coffret?.hasItem(product.id, current.key)) return;
-      const added = coffret?.addItem({
-        productId: product.id,
-        name: product.name,
-        brand: product.brand,
-        format: current.key,
-        price: current.price,
-        variantId: current.variantId || undefined,
-      });
-      if (added) {
-        coffret?.notice?.(`${product.name} · ${current.vol} ajouté au panier`);
-        syncButtons();
+      if (product.bientot || !current?.available || !coffret) return;
+      const n = qty();
+      const deja = coffret.itemQty ? coffret.itemQty(product.id, current.key) : 0;
+      let ok;
+      if (deja > 0) {
+        // Deja dans le panier : la quantite s'ajoute a la ligne existante.
+        coffret.setQty(product.id, current.key, deja + n);
+        ok = coffret.itemQty(product.id, current.key) > deja;
+      } else {
+        ok = coffret.addItem({
+          productId: product.id,
+          name: product.name,
+          brand: product.brand,
+          format: current.key,
+          price: current.price,
+          qty: n,
+          variantId: current.variantId || undefined,
+        });
+      }
+      if (ok) {
+        coffret.notice?.(`${product.name} · ${current.vol}${n > 1 ? ` × ${n}` : ""} ajouté au panier`);
+        setQtyValue(1);
       }
     }
 
@@ -934,11 +982,14 @@
   // chacun remisé de 10 % une fois le coffret complet. Le prix affiché ici est
   // donc une estimation basée sur CE parfum, annoncée comme telle.
   // Noms arretes par le brief du 24 aout 2026 (KOR-C11).
+  // Deux coffrets. Le Découverte (10 x 2 ml) a ete retire le 4 septembre 2026 :
+  // le 2 ml se commande a l'unite.
   const COFFRET_TIERS = [
-    { format: "2ml", label: "Découverte", capacity: 10 },
     { format: "5ml", label: "Voyage", capacity: 5 },
     { format: "10ml", label: "Iconique", capacity: 3 },
   ];
+  // Nombre maximal de flacons ajoutes d'un coup depuis la fiche.
+  const QTY_MAX = 10;
 
   // ── Section 2 : Histoire
   // ── Ressenti : tenue, projection, quand le porter
@@ -977,22 +1028,103 @@
     return table[product.id] || null;
   }
 
-  function feelGauge(icone, titre, note, palier) {
-    const segments = Array.from(
-      { length: 10 },
-      (_, i) => `<span class="pdp-feel__seg${i < note ? " is-on" : ""}"></span>`
-    ).join("");
+
+  // ── Icones du Ressenti, dessinees au trait d'or et animees en CSS
+  //    (maquette « Section Ressenti redesignee ») : le sablier dont le sable
+  //    s'ecoule, la goutte qui tombe dans son onde, les quatre saisons.
+  function iconeSablier() {
+    return `
+      <svg class="pdp-feel__svg pdp-feel__svg--sablier" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+        <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M28 10 H72 M28 90 H72"></path>
+          <path d="M33 10 C33 30 47 40 50 50 C53 60 67 70 67 90 M67 10 C67 30 53 40 50 50 C47 60 33 70 33 90"></path>
+        </g>
+        <path class="pdp-feel__sable-haut" d="M38 20 L62 20 L50 42 Z" fill="currentColor" fill-opacity="0.45"></path>
+        <line class="pdp-feel__sable-filet" x1="50" y1="46" x2="50" y2="82" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 3"></line>
+        <path class="pdp-feel__sable-bas" d="M36 86 L64 86 L50 64 Z" fill="currentColor" fill-opacity="0.45"></path>
+      </svg>`;
+  }
+
+  function iconeGoutte() {
+    return `
+      <svg class="pdp-feel__svg pdp-feel__svg--goutte" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+        <g class="pdp-feel__ondes" fill="none" stroke="currentColor" stroke-width="1.3">
+          <ellipse class="pdp-feel__onde" cx="50" cy="72" rx="9" ry="3"></ellipse>
+          <ellipse class="pdp-feel__onde" cx="50" cy="72" rx="19" ry="6.5"></ellipse>
+          <ellipse class="pdp-feel__onde" cx="50" cy="72" rx="9" ry="3"></ellipse>
+        </g>
+        <path class="pdp-feel__goutte" d="M50 18 C50 18 41 30 41 36 A9 9 0 0 0 59 36 C59 30 50 18 50 18 Z" fill="currentColor" fill-opacity="0.35" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path>
+      </svg>`;
+  }
+
+  const ICONES_SAISONS = {
+    printemps: `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false" class="pdp-feel__saison-svg pdp-feel__saison-svg--printemps">
+        <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 35 C20 24 24 14 32 7"></path>
+          <path d="M20 26 C14 26 10 22 9 16 C15 16 19 20 20 26 Z"></path>
+          <path d="M24 17 C24 11 28 7 34 6 C34 12 30 16 24 17 Z"></path>
+          <path d="M17 31 C13 31 10 29 8 25 C12 25 15 27 17 31 Z"></path>
+        </g>
+      </svg>`,
+    "été": `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false" class="pdp-feel__saison-svg pdp-feel__saison-svg--ete">
+        <circle cx="20" cy="20" r="6.5" fill="currentColor" fill-opacity="0.35" stroke="currentColor" stroke-width="1.4"></circle>
+        <g class="pdp-feel__rayons" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+          <path d="M20 4 V9 M20 31 V36 M4 20 H9 M31 20 H36 M8.7 8.7 L12.2 12.2 M27.8 27.8 L31.3 31.3 M8.7 31.3 L12.2 27.8 M27.8 12.2 L31.3 8.7"></path>
+        </g>
+      </svg>`,
+    automne: `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false" class="pdp-feel__saison-svg pdp-feel__saison-svg--automne">
+        <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 36 V22"></path>
+          <path d="M20 22 C13 24 9 21 6 15 C10 15 12 13 12 9 C15 11 18 10 20 4 C22 10 25 11 28 9 C28 13 30 15 34 15 C31 21 27 24 20 22 Z" fill="currentColor" fill-opacity="0.18"></path>
+        </g>
+      </svg>`,
+    hiver: `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false" class="pdp-feel__saison-svg pdp-feel__saison-svg--hiver">
+        <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+          <path d="M20 5 V35 M7 12.5 L33 27.5 M7 27.5 L33 12.5"></path>
+          <path d="M20 9 L16.5 12 M20 9 L23.5 12 M20 31 L16.5 28 M20 31 L23.5 28 M10.5 14.5 L10 19 M10.5 14.5 L14.5 13 M29.5 25.5 L30 21 M29.5 25.5 L25.5 27 M10.5 25.5 L14.5 27 M10.5 25.5 L10 21 M29.5 14.5 L25.5 13 M29.5 14.5 L30 19"></path>
+        </g>
+      </svg>`,
+  };
+
+  function iconeSaisons(actives) {
+    return `
+      <span class="pdp-feel__saisons" aria-hidden="true">
+        ${SAISONS.map(([cle, libelle]) => `<span class="pdp-feel__saison${actives.has(cle) ? " is-on" : ""}" title="${libelle}">${ICONES_SAISONS[cle]}</span>`).join("")}
+      </span>`;
+  }
+
+  function feelGauge(icone, titre, sousTitre, note, palier) {
+    const pct = Math.max(0, Math.min(100, Math.round((Number(note) / 10) * 100)));
     return `
       <article class="pdp-feel__card">
-        <span class="pdp-feel__icon" aria-hidden="true"><i class="ti ti-${icone}"></i></span>
+        <span class="pdp-feel__icon" aria-hidden="true">${icone === "hourglass" ? iconeSablier() : iconeGoutte()}</span>
         <h3 class="pdp-feel__title">${titre}</h3>
-        <p class="pdp-feel__label">${palier.label}</p>
+        <p class="pdp-feel__sous">${sousTitre}</p>
         <div class="pdp-feel__gauge" role="img" aria-label="${titre} : ${note} sur 10">
-          <span class="pdp-feel__segs">${segments}</span>
-          <span class="pdp-feel__score">${note}<small>/10</small></span>
+          <span class="pdp-feel__bar"><span class="pdp-feel__fill" style="width:${pct}%"></span></span>
+          <span class="pdp-feel__score">${note}<small> / 10</small></span>
         </div>
         <p class="pdp-feel__text">${palier.texte}</p>
+        <ul class="pdp-feel__chips"><li class="pdp-feel__chip is-on">${palier.label}</li></ul>
       </article>`;
+  }
+
+  // Une enumeration se lit mal : « Printemps et Automne » n'est pas une
+  // phrase. Les deux autres cartes du Ressenti disent la meme chose en
+  // francais — « Une bonne partie de la journee sans avoir a en remettre ».
+  // Celle-ci s'aligne. Rien n'est ajoute : la phrase ne dit que les saisons
+  // et les occasions reellement renseignees.
+  function phraseSaisons(saisons, occasions) {
+    const liste = (mots) =>
+      mots.length < 2 ? mots[0] || "" : `${mots.slice(0, -1).join(", ")} et ${mots[mots.length - 1]}`;
+    const quand = liste(saisons.map((s) => s.toLowerCase()));
+    const pour = liste(occasions.map((o) => o.toLowerCase()));
+    if (saisons.length === 4) {
+      return pour ? `À porter toute l'année, particulièrement pour ${pour}.` : "À porter toute l'année.";
+    }
+    const debut = quand ? `À porter ${saisons.length > 1 ? "au" : "en"} ${quand}` : "";
+    if (!debut) return pour ? `À porter pour ${pour}.` : "";
+    return pour ? `${debut}, pour ${pour}.` : `${debut}.`;
   }
 
   function feelSeasons(product) {
@@ -1000,17 +1132,21 @@
     const chips = SAISONS.map(
       ([cle, libelle]) => `<li class="pdp-feel__chip${actives.has(cle) ? " is-on" : ""}">${libelle}</li>`
     ).join("");
-    const occasions = (product.occasions || [])
-      .map((o) => `<li class="pdp-feel__chip is-on">${esc(capitalize(o))}</li>`)
-      .join("");
-    const libelle = (product.seasons || []).map(capitalize).join(" et ");
+    const occasions = (product.occasions || []).map(capitalize);
+    const saisons = (product.seasons || []).map(capitalize);
+    const phrase = phraseSaisons(saisons, occasions);
     return `
       <article class="pdp-feel__card">
-        <span class="pdp-feel__icon" aria-hidden="true"><i class="ti ti-sun"></i></span>
-        <h3 class="pdp-feel__title">Quand le porter</h3>
-        <p class="pdp-feel__label">${esc(libelle)}</p>
-        <ul class="pdp-feel__chips">${chips}</ul>
-        ${occasions ? `<p class="pdp-feel__sub">Occasions</p><ul class="pdp-feel__chips">${occasions}</ul>` : ""}
+        <span class="pdp-feel__icon pdp-feel__icon--saisons">${iconeSaisons(actives)}</span>
+        <h3 class="pdp-feel__title">Saisons</h3>
+        <p class="pdp-feel__sous">Quand le porter</p>
+        <ul class="pdp-feel__chips pdp-feel__chips--saisons">${chips}</ul>
+        ${phrase ? `<p class="pdp-feel__text">${esc(phrase)}</p>` : ""}
+        ${
+          occasions.length
+            ? `<ul class="pdp-feel__chips">${occasions.map((o) => `<li class="pdp-feel__chip is-on">${esc(o)}</li>`).join("")}</ul>`
+            : ""
+        }
       </article>`;
   }
 
@@ -1018,11 +1154,11 @@
     const notes = sensorielDe(product);
     const cartes = [];
     if (notes && notes.tenue) {
-      cartes.push(feelGauge("hourglass", "Tenue", notes.tenue, palierDe(TENUE_PALIERS, notes.tenue)));
+      cartes.push(feelGauge("hourglass", "Longévité", "Tenue sur la peau", notes.tenue, palierDe(TENUE_PALIERS, notes.tenue)));
     }
     if (notes && notes.projection) {
       cartes.push(
-        feelGauge("wave-sine", "Projection", notes.projection, palierDe(PROJECTION_PALIERS, notes.projection))
+        feelGauge("ripple", "Projection", "Sillage et diffusion", notes.projection, palierDe(PROJECTION_PALIERS, notes.projection))
       );
     }
     if ((product.seasons || []).length) cartes.push(feelSeasons(product));
@@ -1030,11 +1166,12 @@
     // le tableau des details, juste en plus gros.
     if (cartes.length < 2) return "";
     return `
-      <section class="pdp-feel">
+      <section class="pdp-feel" aria-labelledby="pdp-feel-title">
         <div class="pdp-container">
-          <div class="pdp-head">
-            <div class="pdp-eyebrow">Ressenti</div>
-            <h2 class="pdp-title">Ce que vous allez <em>sentir</em></h2>
+          <div class="pdp-head pdp-head--ressenti pdp-reveal">
+            <h2 class="pdp-title pdp-title--serif" id="pdp-feel-title">Ressenti</h2>
+            <span class="pdp-head__rule" aria-hidden="true"></span>
+            <p class="pdp-head__sub">L'expérience olfactive de <em>${esc(product.name)}</em></p>
           </div>
           <div class="pdp-feel__grid pdp-reveal">${cartes.join("")}</div>
         </div>
@@ -1233,7 +1370,8 @@
 
   function renderAccordions(product) {
     const items = [
-      accordionItem("notes", "Notes olfactives", "", renderPyramid(product), true),
+      // La pyramide olfactive n'est plus un tiroir de la colonne : elle a sa
+      // section pleine largeur sous le hero (retour client du 4 septembre 2026).
       accordionItem("details", "Détails", "", renderDetails(product), true),
       // Pas de tiroir « Avis » tant qu'il n'y a aucun avis : un tiroir vide
       // dit surtout que personne n'a encore achete. renderReviewsBody() et
@@ -1348,6 +1486,8 @@
         <span>${esc(product.name)}</span>
       </nav>
       ${renderHero(product, "../")}
+      ${renderPyramidSection(product)}
+      ${renderRessenti(product)}
       ${renderCarouselSection("pdp-similar", "Sélection", "Parfums similaires")}
       ${renderCarouselSection("pdp-suggested", "La maison", `Autres créations ${esc(product.brand)}`)}
       ${renderFaq(product)}
@@ -1374,17 +1514,19 @@
     // Les parfums achetables d'abord. Une rangee de « Bientot disponible »
     // finit la fiche sur des portes fermees : sous trois achetables, la
     // section disparait, meme si les « bientot » sont nombreux.
-    function achetablesDabord(list) {
+    function achetablesDabord(list, avecBientot) {
       const autres = (list || []).filter((p) => p.id !== product.id);
       const dispo = autres.filter((p) => p.bientot !== true);
       if (dispo.length < 3) return [];
-      const bientot = autres.filter((p) => p.bientot === true);
+      const bientot = avecBientot ? autres.filter((p) => p.bientot === true) : [];
       return [...dispo, ...bientot].slice(0, 8);
     }
-    fillCarousel("pdp-similar", achetablesDabord(store.getProductsByFamily(product.family)));
+    // « Parfums similaires » : jamais de « bientot disponible ».
+    fillCarousel("pdp-similar", achetablesDabord(store.getProductsByFamily(product.family), false));
 
-    // Autres creations de la maison : la marque du parfum, pas les best-sellers.
-    fillCarousel("pdp-suggested", achetablesDabord(store.getProductsByBrand(product.brandId)));
+    // Autres creations de la maison : les achetables d'abord, les « bientot »
+    // ferment la rangee, comme dans la liste des parfums.
+    fillCarousel("pdp-suggested", achetablesDabord(store.getProductsByBrand(product.brandId), true));
 
     site?.initMediaSlots();
   }

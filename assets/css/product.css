@@ -1736,97 +1736,8 @@ body[data-page="product"] {
    C'est ce qui donne sa course au collant : sans contenu a droite, la photo
    n'a rien a suivre et remonte avec la page. */
 
-/* « Ce que vous allez sentir » : dans la colonne, le bandeau pleine largeur
-   n'a plus de sens. Il devient un panneau sombre. Le contraste reste, c'est
-   lui qui sort la section de la monotonie beige. */
-.pdp-feel {
-  --feel-encre: #14120f;
-  --feel-creme: #f3ece0;
-  --feel-creme-douce: #a9a094;
-  margin: 40px 0 0;
-  padding: 34px 30px 32px;
-  border-radius: var(--pdp-radius-lg);
-  background: var(--feel-encre);
-  color: var(--feel-creme);
-}
-.pdp-feel .pdp-container {
-  padding: 0;
-  max-width: none;
-}
-.pdp-feel .pdp-head {
-  margin-bottom: 26px;
-  text-align: left;
-}
-.pdp-feel .pdp-eyebrow {
-  color: var(--pdp-gold);
-  justify-content: flex-start;
-}
-.pdp-feel .pdp-title {
-  color: var(--feel-creme);
-  font-size: clamp(22px, 2vw, 28px);
-}
-/* Une colonne par mesure, separees d'un filet : dans une colonne de 570 px,
-   trois cartes cote a cote seraient illisibles. */
-.pdp-feel__grid {
-  display: block;
-  gap: 0;
-}
-.pdp-feel__card {
-  gap: 12px;
-  padding: 24px 0 0;
-  margin-top: 24px;
-  border: 0;
-  border-top: 1px solid rgba(243, 236, 224, 0.14);
-  border-radius: 0;
-  background: none;
-}
-.pdp-feel__card:first-child {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: 0;
-}
-.pdp-feel__icon {
-  width: 38px;
-  height: 38px;
-  margin-bottom: 2px;
-  border-color: rgba(204, 154, 54, 0.45);
-  font-size: 17px;
-}
-.pdp-feel__title {
-  color: var(--feel-creme-douce);
-}
-.pdp-feel__label {
-  font-size: 27px;
-  color: var(--feel-creme);
-}
-.pdp-feel__seg {
-  height: 3px;
-  border-radius: 0;
-  background: rgba(243, 236, 224, 0.18);
-  opacity: 1;
-}
-.pdp-feel__seg.is-on {
-  background: var(--pdp-gold);
-}
-.pdp-feel__score {
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 21px;
-  color: var(--pdp-gold);
-}
-.pdp-feel__score small,
-.pdp-feel__text,
-.pdp-feel__sub {
-  color: var(--feel-creme-douce);
-}
-.pdp-feel__chip {
-  border-color: rgba(243, 236, 224, 0.2);
-  color: var(--feel-creme-douce);
-}
-.pdp-feel__chip.is-on {
-  border-color: var(--pdp-gold);
-  color: var(--pdp-gold);
-  background: rgba(204, 154, 54, 0.1);
-}
+/* Le ressenti est revenu en pleine largeur sous la pyramide (4 septembre
+   2026) : ses styles sont en fin de fichier. */
 
 /* « Famille olfactive » et « Le decant Korei » : deux boites beiges cote a
    cote dont l'une aux trois quarts vide. Dans la colonne elles s'empilent,
@@ -2382,4 +2293,603 @@ body[data-page="product"] {
    taille rejoint celle des autres puces du site. */
 .pdp-feel__chip {
   font-size: 11.4px;
+}
+
+/* ── 4 septembre 2026 : la photo prend moins de place ─────────────────── */
+@media (min-width: 861px) {
+  .pdp-hero__grid {
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  }
+}
+.pdp-gallery__main {
+  max-width: 420px;
+}
+@media (max-width: 860px) {
+  .pdp-gallery__main {
+    max-width: 240px;
+    max-height: none;
+    margin: 0 auto;
+  }
+}
+
+/* ── Le nombre de flacons a ajouter ──────────────────────────────────── */
+.pdp-qty {
+  display: inline-flex;
+  align-items: stretch;
+  flex-shrink: 0;
+  border: 1px solid var(--pdp-line, var(--border-dark));
+  background: var(--pdp-white, #fff);
+}
+.pdp-qty__btn {
+  width: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--pdp-ink, var(--text));
+  font-family: var(--pdp-mesure, var(--mesure));
+  font-size: 18px;
+  cursor: pointer;
+}
+.pdp-qty__btn:hover {
+  background: var(--surface);
+}
+.pdp-qty__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.pdp-qty__val {
+  width: 48px;
+  border: 0;
+  border-left: 1px solid var(--pdp-line, var(--border-dark));
+  border-right: 1px solid var(--pdp-line, var(--border-dark));
+  text-align: center;
+  font-family: var(--pdp-mesure, var(--mesure));
+  font-size: 16px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: inherit;
+  background: transparent;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.pdp-qty__val::-webkit-outer-spin-button,
+.pdp-qty__val::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+@media (max-width: 860px) {
+  .pdp-actions__row {
+    flex-wrap: wrap;
+  }
+  .pdp-actions__row .pdp-btn--primary {
+    order: -1;
+    flex: 1 1 100%;
+  }
+  .pdp-qty {
+    flex: 1 1 auto;
+    justify-content: space-between;
+  }
+}
+
+/* ── Le rail montre les deux coffrets, celui du format choisi en avant ── */
+.pdp-rail__gain-line {
+  font-family: var(--pdp-mesure, var(--mesure));
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pdp-sceau, var(--sceau));
+}
+.pdp-rail__tier {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px 48px;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  border-top: 1px solid var(--pdp-line, var(--border));
+}
+.pdp-rail__tier:first-of-type {
+  border-top: 0;
+}
+.pdp-rail__tier-name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  line-height: 1.1;
+  color: var(--pdp-ink-soft, var(--text-muted));
+}
+.pdp-rail__tier-name em {
+  font-style: normal;
+  font-family: var(--pdp-mesure, var(--mesure));
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  margin-left: 8px;
+}
+.pdp-rail__tier.is-active .pdp-rail__tier-name {
+  color: var(--pdp-ink, var(--text));
+}
+.pdp-rail__tier .pdp-rail__track {
+  margin: 0;
+  width: 100%;
+}
+.pdp-rail__tier .pdp-rail__count {
+  text-align: right;
+}
+.pdp-rail__tier-name em {
+  white-space: nowrap;
+}
+@media (max-width: 860px) {
+  .pdp-rail__tier {
+    grid-template-columns: minmax(0, 1fr) 48px;
+    row-gap: 8px;
+  }
+  .pdp-rail__tier .pdp-rail__track {
+    grid-column: 1 / -1;
+  }
+  .pdp-rail__tier-name em {
+    display: block;
+    margin: 4px 0 0;
+  }
+}
+
+/* ── Pyramide olfactive, pleine largeur (retour client du 4 septembre 2026,
+   maquette « Pyramide olfactive couleurs fond blanc ») ─────────────────
+   Chaque etage : rail numerote, colonne d'intitule a gauche, ruban de
+   photos et de noms latins a droite, comme la maquette. */
+.pdp-title--serif {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(30px, 3vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.pdp-title--serif em {
+  font-style: italic;
+  color: var(--badge-text, #8a6825);
+}
+.pdp-pyramid-section {
+  padding: 72px 0 32px;
+  border-top: 1px solid var(--pdp-line);
+}
+.pdp-pyramid-section .pdp-head {
+  margin-bottom: 40px;
+}
+.pdp-pyramid-section .pdp-py-row {
+  grid-template-columns: 64px minmax(0, 1fr);
+  column-gap: 28px;
+  padding: 40px 0 44px;
+}
+.pdp-pyramid-section .pdp-py-row:first-child {
+  padding-top: 8px;
+}
+.pdp-pyramid-section .pdp-py-row__rail::after {
+  bottom: -44px;
+}
+.pdp-pyramid-section .pdp-py-row__title {
+  font-size: clamp(24px, 2.2vw, 32px);
+}
+.pdp-pyramid-section .pdp-py-pair {
+  min-height: 220px;
+  grid-template-columns: minmax(0, 1fr) minmax(130px, 170px);
+}
+.pdp-pyramid-section .pdp-py-pair:nth-child(even) {
+  grid-template-columns: minmax(130px, 170px) minmax(0, 1fr);
+}
+.pdp-pyramid-section .pdp-py-cap__name {
+  font-size: 19px;
+}
+.pdp-pyramid-section .pdp-py-cap__latin {
+  font-size: 15px;
+}
+@media (min-width: 861px) {
+  .pdp-pyramid-section .pdp-py-row__body {
+    display: grid;
+    grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+    column-gap: 48px;
+    align-items: center;
+  }
+  .pdp-pyramid-section .pdp-py-row__intro {
+    margin-bottom: 0;
+  }
+  .pdp-pyramid-section .pdp-py-strip {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .pdp-pyramid-section {
+    padding: 48px 0 16px;
+  }
+  .pdp-pyramid-section .pdp-py-row {
+    grid-template-columns: 42px minmax(0, 1fr);
+    column-gap: 14px;
+    padding: 28px 0 32px;
+  }
+  .pdp-pyramid-section .pdp-py-row__rail::after {
+    bottom: -32px;
+  }
+  .pdp-pyramid-section .pdp-py-pair,
+  .pdp-pyramid-section .pdp-py-pair:nth-child(even) {
+    grid-template-columns: minmax(0, 140px) minmax(0, 1fr);
+    min-height: 140px;
+  }
+}
+
+/* ── Ressenti, pleine largeur (maquette « Section Ressenti redesignee »)
+   Trois cartes cote a cote, fond clair : icone or, titre, sous-titre, barre
+   continue, note sous la barre, phrase, puis les saisons en pastilles.
+   Coins carres et filet fin : la maquette est arrondie, la marque ne l'est
+   pas. Pas de note de communaute : il n'y a aucun avis. */
+.pdp-feel {
+  margin: 0;
+  padding: 72px 0 40px;
+  border-top: 1px solid var(--pdp-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--pdp-ink);
+}
+.pdp-feel .pdp-container {
+  max-width: var(--pdp-max);
+  padding: 0 var(--px);
+}
+.pdp-feel .pdp-head {
+  margin: 0 auto 44px;
+  text-align: center;
+}
+.pdp-feel .pdp-eyebrow {
+  justify-content: center;
+  color: var(--pdp-gold);
+}
+.pdp-feel .pdp-title {
+  color: var(--pdp-ink);
+}
+.pdp-feel__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+.pdp-feel__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 40px 32px 36px;
+  border: 1px solid var(--pdp-line);
+  border-radius: 0;
+  background: var(--surface, #faf7f2);
+  text-align: center;
+}
+.pdp-feel__card:first-child {
+  margin-top: 0;
+  padding-top: 40px;
+  border-top: 1px solid var(--pdp-line);
+}
+.pdp-feel__icon {
+  width: auto;
+  height: auto;
+  margin-bottom: 10px;
+  border: 0;
+  color: var(--pdp-gold);
+  font-size: 44px;
+  line-height: 1;
+}
+.pdp-feel__title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.1;
+  color: var(--pdp-ink);
+}
+.pdp-feel__sous {
+  margin: 0;
+  font-size: 15px;
+  color: var(--pdp-ink-soft);
+}
+.pdp-feel__gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 16px;
+}
+.pdp-feel__bar {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: 6px;
+  background: var(--accent-light, #f4ecda);
+  overflow: hidden;
+}
+.pdp-feel__fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #b8862f, var(--pdp-gold));
+}
+.pdp-feel__score {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--badge-text, #8a6825);
+}
+.pdp-feel__score small {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--pdp-ink-soft);
+}
+.pdp-feel__label {
+  margin: 6px 0 0;
+  font-family: "DM Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--pdp-ink);
+}
+.pdp-feel__text {
+  margin: 0;
+  max-width: 34ch;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--pdp-ink-soft);
+}
+.pdp-feel__sub {
+  margin: 10px 0 0;
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--pdp-ink-soft);
+}
+.pdp-feel__chips {
+  justify-content: center;
+}
+.pdp-feel__chips--saisons {
+  margin-top: 16px;
+}
+.pdp-feel__chip {
+  padding: 7px 14px;
+  border: 1px solid var(--pdp-line);
+  border-radius: 0;
+  font-size: 13px;
+  color: var(--pdp-ink-soft);
+  background: transparent;
+}
+.pdp-feel__chip.is-on {
+  border-color: var(--pdp-gold);
+  background: var(--accent-light, #f4ecda);
+  color: var(--badge-text, #8a6825);
+}
+@media (max-width: 960px) {
+  .pdp-feel__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+@media (max-width: 640px) {
+  .pdp-feel {
+    padding: 48px 0 24px;
+  }
+  .pdp-feel__card,
+  .pdp-feel__card:first-child {
+    padding: 28px 20px 26px;
+  }
+}
+/* Note sans photo dans la pyramide pleine largeur : la pastille de famille
+   prend la place d'une photo, pas celle d'une icone de 30 px. */
+.pdp-pyramid-section .pdp-py-shot .pdp-py-tile__fallback {
+  font-size: 48px;
+  color: var(--pdp-gold);
+}
+/* Sous le tableau « Details », le premier bloc editorial n'ouvre plus par un
+   second filet : le tableau vient d'en poser un. */
+.pdp-col .pdp-editorial {
+  padding-top: 0;
+}
+.pdp-col .pdp-editorial__col:first-child {
+  border-top: 0;
+  padding-top: 6px;
+}
+
+
+/* ── Icones animees du Ressenti ─────────────────────────────────────────
+   Trait d'or fin, mouvement lent et discret. Immobiles quand la personne
+   demande moins de mouvement. */
+.pdp-feel__icon {
+  display: grid;
+  place-items: center;
+  height: 96px;
+  margin-bottom: 6px;
+  color: var(--pdp-gold);
+}
+.pdp-feel__svg {
+  display: block;
+  width: 96px;
+  height: 96px;
+  overflow: visible;
+}
+/* Le sablier : le sable du haut se vide, celui du bas se remplit, un filet
+   coule entre les deux ; puis le sablier se retourne et recommence. */
+.pdp-feel__svg--sablier {
+  transform-origin: 50% 50%;
+  animation: pdp-sablier-tour 9s ease-in-out infinite;
+}
+.pdp-feel__sable-haut {
+  transform-origin: 50px 42px;
+  animation: pdp-sable-haut 9s linear infinite;
+}
+.pdp-feel__sable-bas {
+  transform-origin: 50px 86px;
+  animation: pdp-sable-bas 9s linear infinite;
+}
+.pdp-feel__sable-filet {
+  animation: pdp-sable-filet 0.6s linear infinite, pdp-sable-filet-vie 9s linear infinite;
+}
+@keyframes pdp-sable-haut {
+  0% { transform: scaleY(1); }
+  80% { transform: scaleY(0.04); }
+  100% { transform: scaleY(0.04); }
+}
+@keyframes pdp-sable-bas {
+  0% { transform: scaleY(0.04); }
+  80% { transform: scaleY(1); }
+  100% { transform: scaleY(1); }
+}
+@keyframes pdp-sable-filet {
+  to { stroke-dashoffset: -5; }
+}
+@keyframes pdp-sable-filet-vie {
+  0%, 78% { opacity: 1; }
+  82%, 100% { opacity: 0; }
+}
+@keyframes pdp-sablier-tour {
+  0%, 84% { transform: rotate(0deg); }
+  100% { transform: rotate(180deg); }
+}
+/* La goutte reste suspendue au-dessus de son onde la plupart du temps,
+   comme sur la maquette ; toutes les six secondes elle tombe, disparait dans
+   la surface, deux ondes s'elargissent, et une nouvelle goutte se forme. */
+.pdp-feel__goutte {
+  transform-origin: 50px 36px;
+  animation: pdp-goutte 6s ease-in infinite;
+}
+.pdp-feel__onde {
+  transform-origin: 50px 72px;
+}
+.pdp-feel__onde:nth-child(1) {
+  opacity: 0.75;
+  animation: pdp-onde-base 6s ease-in-out infinite;
+}
+/* Deuxieme anneau fixe, comme les cercles concentriques de la maquette ;
+   le troisieme part de la surface et s'elargit quand la goutte tombe. */
+.pdp-feel__onde:nth-child(2) {
+  opacity: 0.4;
+  animation: pdp-onde-base 6s ease-in-out infinite;
+}
+.pdp-feel__onde:nth-child(3) {
+  opacity: 0;
+  animation: pdp-onde 6s ease-out infinite;
+}
+@keyframes pdp-goutte {
+  0%, 58% { transform: translateY(0) scale(1); opacity: 1; }
+  66% { transform: translateY(24px) scale(1); opacity: 1; }
+  69% { transform: translateY(30px) scale(0.5, 0.25); opacity: 0; }
+  84% { transform: translateY(-5px) scale(0.7); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes pdp-onde-base {
+  0%, 66% { transform: scale(1); }
+  70% { transform: scale(0.75); }
+  80%, 100% { transform: scale(1); }
+}
+@keyframes pdp-onde {
+  0%, 68% { transform: scale(0.4); opacity: 0; }
+  72% { opacity: 0.8; }
+  96%, 100% { transform: scale(2.8); opacity: 0; }
+}
+/* Les saisons : quatre motifs separes d'un filet ; les saisons retenues sont
+   en or, les autres en gris. */
+.pdp-feel__saisons {
+  display: flex;
+  align-items: center;
+}
+.pdp-feel__saison {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 60px;
+  color: var(--border-dark, #c9c2b6);
+  border-left: 1px solid var(--pdp-line);
+}
+.pdp-feel__saison:first-child {
+  border-left: 0;
+}
+.pdp-feel__saison.is-on {
+  color: var(--pdp-gold);
+}
+.pdp-feel__saison-svg {
+  width: 42px;
+  height: 42px;
+  overflow: visible;
+}
+.pdp-feel__saison.is-on .pdp-feel__saison-svg--printemps,
+.pdp-feel__saison.is-on .pdp-feel__saison-svg--automne {
+  transform-origin: 50% 90%;
+  animation: pdp-saison-balance 5s ease-in-out infinite;
+}
+.pdp-feel__saison.is-on .pdp-feel__rayons {
+  transform-origin: 20px 20px;
+  animation: pdp-saison-rayons 28s linear infinite;
+}
+.pdp-feel__saison.is-on .pdp-feel__saison-svg--hiver {
+  transform-origin: 50% 50%;
+  animation: pdp-saison-rayons 36s linear infinite;
+}
+@keyframes pdp-saison-balance {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+@keyframes pdp-saison-rayons {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pdp-feel__svg--sablier,
+  .pdp-feel__sable-haut,
+  .pdp-feel__sable-bas,
+  .pdp-feel__sable-filet,
+  .pdp-feel__goutte,
+  .pdp-feel__onde,
+  .pdp-feel__saison.is-on .pdp-feel__saison-svg--printemps,
+  .pdp-feel__saison.is-on .pdp-feel__saison-svg--automne,
+  .pdp-feel__saison.is-on .pdp-feel__rayons,
+  .pdp-feel__saison.is-on .pdp-feel__saison-svg--hiver {
+    animation: none;
+  }
+  .pdp-feel__sable-haut { transform: scaleY(0.5); }
+  .pdp-feel__sable-bas { transform: scaleY(0.5); }
+  .pdp-feel__goutte { transform: none; opacity: 1; }
+  .pdp-feel__onde:nth-child(1) { opacity: 0.75; transform: scale(1); }
+  .pdp-feel__onde:nth-child(2) { opacity: 0.4; transform: scale(1); }
+}
+@media (max-width: 640px) {
+  .pdp-feel__saison {
+    width: 50px;
+    height: 46px;
+  }
+}
+
+/* En-tete du Ressenti, comme la maquette : le mot seul, un filet d'or, puis
+   une ligne qui nomme le parfum. */
+.pdp-head--ressenti .pdp-title--serif {
+  font-size: clamp(36px, 3.6vw, 52px);
+}
+.pdp-head__rule {
+  display: block;
+  width: 56px;
+  height: 2px;
+  margin: 18px auto 16px;
+  background: var(--pdp-gold);
+}
+.pdp-head__sub {
+  margin: 0;
+  font-size: 17px;
+  color: var(--pdp-ink-soft);
+}
+.pdp-head__sub em {
+  font-style: normal;
+  color: var(--badge-text, #8a6825);
+}
+.pdp-feel__card .pdp-feel__chips {
+  margin-top: 10px;
+}
+
+/* ── 14. La grille du Ressenti suit le nombre de cartes ──────────────────
+   Elle etait figee a trois colonnes. Or la carte « Saisons » n'existe que
+   sur 13 fiches sur 338 : partout ailleurs, deux cartes occupaient les
+   deux tiers de la page et laissaient un vide a droite. La grille compte
+   donc ses cartes. */
+@media (min-width: 961px) {
+  .pdp-feel__grid:has(.pdp-feel__card:nth-child(2):last-child) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .pdp-feel__grid:has(.pdp-feel__card:only-child) {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
