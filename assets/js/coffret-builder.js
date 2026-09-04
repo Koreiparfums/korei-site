@@ -290,7 +290,7 @@
           saveShopifyCart(result.cart);
           remoteSyncState.error = null;
         } else {
-          remoteSyncState.error = result.message || result.error || "Synchronisation Shopify indisponible.";
+          remoteSyncState.error = result.message || result.error || "La caisse est momentanément indisponible.";
         }
         remoteSyncState.pending = false;
         notify();
@@ -362,7 +362,7 @@
         </div>
         ${state.discount > 0 ? `<div class="coffret-summary__saved">−10 % confirmé · vous économisez ${money(state.discount)}</div>` : ""}
         ${state.freeShipping ? `<div class="coffret-summary__saved">Livraison offerte</div>` : ""}
-        ${state.synchronisationEnCours ? `<div class="coffret-summary__next">Validation Shopify en cours…</div>` : ""}
+        ${state.synchronisationEnCours ? `<div class="coffret-summary__next">Vérification du panier…</div>` : ""}
         ${state.erreurSynchronisation ? `<div class="coffret-summary__next">${esc(state.erreurSynchronisation)}</div>` : ""}
         ${nextStep ? `<p class="coffret-summary__next">Plus que <strong>${nextStep.missing} parfum${nextStep.missing > 1 ? "s" : ""}</strong> en ${nextStep.format.replace("ml", " ml")} pour −10 % et la livraison offerte</p>` : ""}
       </div>` +
@@ -688,11 +688,11 @@
       if (state.synchronisationEnCours) {
         hintEl.hidden = false;
         hintEl.classList.remove("is-won");
-        hintEl.textContent = "Shopify vérifie les lignes, la remise et la livraison…";
+        hintEl.textContent = "Nous vérifions les flacons, la remise et la livraison…";
       } else if (state.erreurSynchronisation) {
         hintEl.hidden = false;
         hintEl.classList.remove("is-won");
-        hintEl.textContent = "Le panier Shopify n'a pas pu être synchronisé. Réessayez avant de commander.";
+        hintEl.textContent = "Le panier n'a pas pu être vérifié. Réessayez avant de commander.";
       } else if (state.freeShipping && !next) {
         hintEl.hidden = false;
         hintEl.classList.add("is-won");
@@ -705,7 +705,7 @@
       } else if (state.boxes > 0) {
         hintEl.hidden = false;
         hintEl.classList.remove("is-won");
-        hintEl.textContent = "Les avantages du coffret ne sont pas encore acceptés par Shopify.";
+        hintEl.textContent = "La remise coffret n'est pas encore active en caisse.";
       } else {
         hintEl.hidden = true;
       }
@@ -857,12 +857,12 @@
       cta.title = "";
 
       if (state.synchronisationEnCours) {
-        message.textContent = "Validation du panier par Shopify en cours…";
+        message.textContent = "Vérification du panier en cours…";
         message.hidden = false;
         return;
       }
       if (state.erreurSynchronisation) {
-        message.textContent = "Le panier Shopify n'a pas pu être synchronisé. Modifiez le panier pour réessayer.";
+        message.textContent = "Le panier n'a pas pu être vérifié. Modifiez-le pour réessayer.";
         message.hidden = false;
         return;
       }
@@ -878,7 +878,7 @@
         return;
       }
       if (avantageManquant) {
-        message.textContent = "La remise de 10 % ou la livraison offerte n'a pas été confirmée par Shopify. La commande reste bloquée pour éviter un mauvais montant.";
+        message.textContent = "La remise de 10 % ou la livraison offerte n'est pas encore active en caisse. Nous ne prenons pas la commande tant que le prix affiché n'est pas celui qui sera facturé.";
         message.hidden = false;
         return;
       }
@@ -925,13 +925,13 @@
       cta.disabled = false;
       if (ecart) {
         if (ecart.kind === "lines") {
-          message.textContent = "Le panier Shopify ne contient pas exactement les mêmes flacons. La commande a été bloquée ; modifiez le panier pour relancer la synchronisation.";
+          message.textContent = "Le panier en caisse ne contient pas exactement les mêmes flacons. La commande est bloquée ; modifiez le panier pour relancer la vérification.";
         } else if (ecart.kind === "total") {
           message.textContent = `Le paiement afficherait ${money(ecart.facture)} au lieu de ${money(ecart.annonce)}. La commande est bloquée pour éviter un mauvais montant.`;
         } else if (ecart.kind === "promotion") {
-          message.textContent = "La remise de 10 % ou la livraison offerte n'est pas confirmée par Shopify. La commande reste bloquée.";
+          message.textContent = "La remise de 10 % ou la livraison offerte n'est pas confirmée en caisse. La commande reste bloquée.";
         } else {
-          message.textContent = "Impossible de vérifier le panier Shopify. La commande reste bloquée par sécurité.";
+          message.textContent = "Impossible de vérifier le panier. La commande reste bloquée par sécurité.";
         }
         message.hidden = false;
         return;

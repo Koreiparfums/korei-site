@@ -437,7 +437,7 @@
       }
       if (shipEl) {
         const complete0 = total() === cap;
-        shipEl.textContent = complete0 ? "À confirmer par Shopify" : "Selon le panier";
+        shipEl.textContent = complete0 ? "À confirmer en caisse" : "Selon le panier";
         shipEl.classList.remove("is-won");
       }
 
