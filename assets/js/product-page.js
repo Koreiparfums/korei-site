@@ -284,10 +284,16 @@
             <span class="pdp-format__vol">${f.vol}</span>
             <span class="pdp-format__price">${f.available ? `${prix(f.price)}` : "Indisponible"}</span>
             ${
+              f.available && f.pricePerMl
+                ? `<span class="pdp-format__ml">${unitPriceLabel(f)}</span>`
+                : ""
+            }
+            ${
               info.sprays
                 ? `<span class="pdp-format__detail">~${info.sprays} pulvérisations</span>`
                 : ""
             }
+            ${info.usage ? `<span class="pdp-format__usage">${info.usage}</span>` : ""}
           </button>`;
           })
           .join("")}

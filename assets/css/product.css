@@ -2227,3 +2227,82 @@ body[data-page="product"] {
   letter-spacing: 0;
   text-transform: uppercase;
 }
+
+/* ── 8. Le format dit ce qu'il coute et a quoi il sert ───────────────────
+   Deux lignes demandees par la maquette du 24 aout et jamais affichees :
+   le prix au millilitre, seul chiffre qui rend les trois formats
+   comparables, et la phrase d'usage qui dit a qui s'adresse le flacon.
+   Elles s'empilent sous le prix dans l'ordre de lecture : combien, puis
+   combien de fois, puis pour qui. */
+.pdp-format__ml {
+  margin-top: 3px;
+  font-family: var(--pdp-mesure);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+}
+.pdp-format.is-best .pdp-format__ml {
+  color: var(--pdp-gold);
+}
+.pdp-format__usage {
+  margin-top: 2px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-muted);
+  text-wrap: balance;
+}
+.pdp-format.is-active .pdp-format__usage,
+.pdp-format.is-active .pdp-format__ml {
+  color: var(--pdp-ink-soft);
+}
+
+@media (max-width: 640px) {
+  /* Trois colonnes etroites : la phrase d'usage tiendrait sur quatre
+     lignes et ferait grandir la carte d'un tiers. Le prix au ml reste,
+     c'est lui qui sert a comparer. */
+  .pdp-format__usage {
+    display: none;
+  }
+  .pdp-format__ml {
+    font-size: 10px;
+  }
+}
+
+/* Le flacon de decant est un tube : haut de 494 px pour 94 de large. Cale
+   a 72 px de haut il ne mesurait plus que 8 px de large et se lisait comme
+   une rayure. Porte a 96 px il redevient un objet, sans deformer l'echelle
+   entre les trois formats. */
+.pdp-format__vial {
+  height: 96px;
+}
+@media (max-width: 640px) {
+  .pdp-format__vial {
+    height: 78px;
+  }
+}
+
+/* Le repere « Notre conseil » tient sur une ligne en large et sur deux a
+   375 px. La colonne sans repere compensait par une marge fixe de 21 px,
+   calee sur la ligne unique : sur telephone les trois flacons partaient
+   donc de trois hauteurs differentes. La reserve devient une variable,
+   et les trois colonnes repartent du meme trait. */
+:root {
+  --pdp-repere-h: 12px;
+}
+.pdp-format__flag,
+.pdp-format__badge {
+  min-height: var(--pdp-repere-h);
+}
+.pdp-format:not(:has(.pdp-format__flag)):not(:has(.pdp-format__badge))
+  .pdp-format__vial {
+  margin-top: calc(var(--pdp-repere-h) + 12px);
+}
+@media (max-width: 860px) {
+  :root {
+    --pdp-repere-h: 24px;
+  }
+}
