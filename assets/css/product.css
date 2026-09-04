@@ -2322,3 +2322,22 @@ body[data-page="product"] {
 .pdp-back:focus-visible {
   border-radius: 0;
 }
+
+/* ── 10. Le bouton de la fiche parle la meme langue que les autres ───────
+   La regle commune est posee en fin de styles.css. product.css se charge
+   apres : sans ce rappel, la fiche garderait son DM Sans pendant que le
+   reste de la boutique passe en chasse fixe. */
+.pdp-btn,
+.pdp-btn--primary,
+.pdp-sticky__cta {
+  font-family: var(--pdp-mesure, var(--mesure));
+  font-weight: 500;
+  letter-spacing: 0.19em;
+}
+.pdp-btn {
+  font-size: 11px;
+}
+.pdp-btn--primary,
+.pdp-sticky__cta {
+  font-size: 11.5px;
+}

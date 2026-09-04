@@ -10506,3 +10506,96 @@ textarea:focus-visible {
   background: currentColor;
   opacity: 0.5;
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   DIRECTION — un seul bouton (04/09/2026)
+   ════════════════════════════════════════════════════════════════════════
+
+   Releve sur cinq pages : la meme action, « acheter », portait six
+   typographies. DM Sans 11 px interlettre a 0,10 em au panier, 11,5 px a
+   0,19 em sur la fiche, 12 px en gras a 0,12 em sur le coffret, 13 px a
+   0,13 em sur l'accueil, 11,4 px en 400 dans les filtres, et IBM Plex Mono
+   dans le bandeau. Six fois le meme geste, six dessins.
+
+   Le site a trois voix, une par role. Le Cormorant porte les titres. La
+   chasse fixe porte les mesures : sur-titres, millilitres, prix, nombres de
+   pulverisations. DM Sans porte le texte courant.
+
+   Un libelle de bouton n'est pas du texte courant : c'est une etiquette,
+   au meme titre qu'un sur-titre ou qu'un prix. Il passe donc en chasse
+   fixe, comme le bouton du bandeau le faisait deja seul dans son coin.
+   Cette boutique vend des millilitres ; ses commandes se lisent comme ses
+   quantites.
+
+   Une seule mesure, deux tailles : la courante, et celle des grands appels
+   du bandeau et de la fiche.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.btn-dark,
+.btn-white,
+.btn-outline,
+.btn-text,
+.card-cta,
+.btn-filters-apply,
+.btn-filters-clear,
+.btn-filters-open,
+.cb2-cta,
+.pdp-btn,
+.pdp-sticky__cta,
+.korei-ask__btn,
+.hero__cta {
+  font-family: var(--mesure);
+  font-weight: 500;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+.btn-dark,
+.btn-white,
+.btn-outline,
+.btn-text,
+.card-cta,
+.btn-filters-apply,
+.btn-filters-clear,
+.btn-filters-open,
+.korei-ask__btn {
+  font-size: 11px;
+}
+/* Les grands appels : bandeau, fiche produit, coffret. */
+.hero__cta,
+.pdp-btn,
+.pdp-sticky__cta,
+.cb2-cta {
+  font-size: 11.5px;
+}
+
+/* La grande taille. Un seul dessin, celui du bandeau : 60 px de haut,
+   34 px de marge laterale. Sert aux appels qui portent une section
+   entiere. Un bouton du bandeau et un bouton de bas de page se
+   ressemblent maintenant assez pour qu'on les reconnaisse. */
+.btn-lg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 0 34px;
+  font-size: 11.5px;
+}
+/* Le lien de la carte format soulignait son mot avec sa propre mesure. */
+.format-card__cta {
+  font-family: var(--mesure);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.19em;
+}
+/* L'accueil reduisait le bouton de carte de son cote. Une carte reste une
+   carte, qu'elle soit sur l'accueil ou dans le catalogue. */
+body[data-page="home"] .card-cta {
+  font-size: 11px;
+}
+/* Les titres de groupe du filtre sont des etiquettes, pas des phrases :
+   ils rejoignent la chasse fixe comme les sur-titres et les prix. */
+.filter-group-head {
+  font-family: var(--mesure);
+  letter-spacing: 0.19em;
+}
