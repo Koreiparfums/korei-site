@@ -10800,3 +10800,44 @@ body[data-page="home"] .card-cta {
   padding: 0 34px;
   font-size: 11.5px;
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   Un champ de saisie ne fait jamais zoomer le telephone (04/09/2026)
+   ════════════════════════════════════════════════════════════════════════
+
+   Safari sur iPhone agrandit la page des qu'on touche un champ dont le
+   texte fait moins de 16 px. La page saute, se recadre, et ne revient pas
+   toute seule. Sept champs du site etaient dans ce cas :
+
+     recherche du catalogue      11 px
+     recherche du coffret        15 px
+     conseiller                  12 px
+     inscription a la lettre     13 px
+     recherche des maisons       13 px
+     formulaire de contact       13 px
+     champs du compte            13 px
+
+   Les champs gardent leur taille sur grand ecran, ou elle s'accorde au
+   reste. Sous 860 px ils passent tous a 16 px : c'est le seuil du systeme,
+   pas un choix de dessin. */
+@media (max-width: 860px) {
+  input[type="text"],
+  input[type="search"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+/* Deux angles arrondis avaient survecu au passage au rectiligne : la ligne
+   de resultat de la recherche, et la pastille active du carrousel de
+   formats, qui s'etire en batonnet. Un batonnet est un filet, pas une
+   gelule. */
+.search-hit,
+.formats-dot.is-active {
+  border-radius: 0;
+}
