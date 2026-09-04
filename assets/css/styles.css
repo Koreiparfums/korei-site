@@ -10599,3 +10599,69 @@ body[data-page="home"] .card-cta {
   font-family: var(--mesure);
   letter-spacing: 0.19em;
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   DIRECTION — un seul repere (04/09/2026)
+   ════════════════════════════════════════════════════════════════════════
+
+   Sur la seule page d'accueil, quatre facons de poser une etiquette :
+
+     « Grand classique »  creme, filet dore, DM Sans 10,5 px
+     « Notre conseil »    dore sur transparent, sans filet, 11 px  (formats)
+     « Notre conseil »    aplat dore, texte blanc, 11 px          (coffrets)
+     « −10 % »            aplat noir, texte blanc
+
+   Les deux « Notre conseil » sont le meme mot, a dix centimetres l'un de
+   l'autre, dessines differemment.
+
+   Un repere ne crie pas : il indique. Il prend donc partout le meme
+   cartouche — fond creme, filet d'un demi-pixel, encre d'or sombre, chasse
+   fixe a 9,5 px. C'est deja le dessin des reperes de la fiche produit ;
+   le reste de la boutique s'y range.
+
+   L'or plein disparait : sur un aplat dore le texte blanc tombe a 2,4:1,
+   illisible sous 11 px. L'aplat noir du « −10 % » disparait aussi. Une
+   remise n'a pas besoin d'un autocollant : le chiffre suffit.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.card-badge,
+.badge-best,
+.badge-new,
+.badge-exclusive,
+.box-card__badge,
+.box-card__discount,
+.format-card__flag,
+.boxes-feature__flag,
+.coffret-card__badge,
+.fav-card__tag,
+.chatbot-mock-badge {
+  font-family: var(--mesure);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  border: 0.8px solid var(--badge-border);
+  border-radius: 0;
+}
+/* Le repere garde sa place et son air : quelques pixels de respiration,
+   jamais plus que le mot qu'il porte. */
+.card-badge,
+.box-card__badge,
+.box-card__discount,
+.boxes-feature__flag,
+.coffret-card__badge,
+.fav-card__tag,
+.chatbot-mock-badge {
+  padding: 4px 9px;
+}
+/* Le drapeau des cartes format flottait sans fond au-dessus du flacon :
+   il prend le cartouche comme les autres. */
+.format-card__flag {
+  padding: 4px 9px;
+}
+/* Le chiffre de la remise s'aligne comme les autres chiffres du site. */
+.box-card__discount {
+  font-variant-numeric: tabular-nums;
+}
