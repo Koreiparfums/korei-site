@@ -10724,3 +10724,21 @@ body[data-page="home"] .card-cta {
   text-transform: uppercase;
   color: var(--sceau);
 }
+
+/* La pastille du conseiller s'efface tant que le bandeau est a l'ecran :
+   sur mobile elle recouvrait le coin droit du second bouton. Elle reste
+   dans le flux, elle ne fait que disparaitre — le lecteur d'ecran la
+   retrouve des qu'elle revient. */
+.chatbot-widget.est-efface {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s;
+}
+.chatbot-widget {
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s;
+}

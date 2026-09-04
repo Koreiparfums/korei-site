@@ -509,4 +509,35 @@
     }
   }
 
+  /**
+   * Le conseiller ne se pose pas sur le bandeau.
+   *
+   * Sur mobile, la pastille du conseiller est fixee en bas a droite. Les
+   * deux boutons du bandeau, eux, prennent toute la largeur : la pastille
+   * recouvrait le coin droit de « Pourquoi un decant ? » des l'ouverture.
+   * La premiere image de la boutique montrait un bouton mange.
+   *
+   * On l'efface donc tant que le bandeau est a l'ecran, et on la fait
+   * paraitre des que le visiteur l'a passe. Sans bandeau — toutes les
+   * autres pages — elle reste visible depuis le debut.
+   */
+  const conseiller = document.getElementById("chatbot-widget");
+  const banniere = document.querySelector(".hero");
+  if (conseiller && banniere) {
+    let enAttente = false;
+    const mesurer = () => {
+      enAttente = false;
+      const bas = banniere.getBoundingClientRect().bottom;
+      conseiller.classList.toggle("est-efface", bas > 0);
+    };
+    const demander = () => {
+      if (enAttente) return;
+      enAttente = true;
+      global.requestAnimationFrame(mesurer);
+    };
+    mesurer();
+    global.addEventListener("scroll", demander, { passive: true });
+    global.addEventListener("resize", demander);
+  }
+
 })(window);
