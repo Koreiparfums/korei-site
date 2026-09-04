@@ -62,12 +62,19 @@
     return [...marques, ...candidats.filter((p) => !vus.has(p.id)).sort(ordre)].slice(0, VITRINE_MAX);
   }
 
+  // Le repere editorial passe devant, mais il ne dispense pas de la date.
+  // « Lettre de Pushkar » etait marque « bestseller » depuis les produits
+  // de demonstration de juillet et paraissait donc parmi les grands
+  // classiques sans qu'on sache de quand il date. Une vitrine qui promet
+  // un classique doit pouvoir le prouver : sans annee, le parfum n'y entre
+  // pas. Il reste au catalogue, ou il se cherche par son nom.
   function getBestsellers() {
     const vendables = catalog().filter(enVente);
     const seuil = new Date().getFullYear() - ANS_CLASSIQUE;
+    const classique = (p) => annee(p) > 0 && annee(p) <= seuil;
     return vitrine(
-      vendables.filter((p) => p.bestseller),
-      vendables.filter((p) => annee(p) > 0 && annee(p) <= seuil),
+      vendables.filter((p) => p.bestseller && classique(p)),
+      vendables.filter(classique),
       (a, b) => annee(a) - annee(b),
     );
   }
@@ -75,9 +82,10 @@
   function getNewProducts() {
     const vendables = catalog().filter(enVente);
     const seuil = new Date().getFullYear() - ANS_NOUVEAUTE;
+    const nouveau = (p) => annee(p) >= seuil;
     return vitrine(
-      vendables.filter((p) => p.new),
-      vendables.filter((p) => annee(p) >= seuil),
+      vendables.filter((p) => p.new && nouveau(p)),
+      vendables.filter(nouveau),
       (a, b) => annee(b) - annee(a),
     );
   }
