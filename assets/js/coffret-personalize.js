@@ -195,6 +195,7 @@
     });
     if (messageInput) messageInput.value = coffret.message;
     if (messageCount) messageCount.textContent = String(coffret.message.length);
+    let wasComplete = total() === capacity();
 
     function capacity() {
       return FORMATS[coffret.format].capacity;
@@ -443,7 +444,7 @@
 
       // Barre fixe du telephone : elle reprend le nom, l'avancement et le total.
       if (dockName) dockName.textContent = `Coffret ${FORMATS[coffret.format].label}`;
-      if (dockCount) dockCount.textContent = `${t} / ${cap} flacons`;
+      if (dockCount) dockCount.textContent = t === cap ? `Créé · −10 % par flacon` : `${t} / ${cap} flacons`;
       if (dockTotal) dockTotal.textContent = priceText;
       if (ctaPriceEl) ctaPriceEl.textContent = priceText;
       if (coffret.price !== lastPrice) {
@@ -458,21 +459,26 @@
       const complete = t === cap;
       addBtn.disabled = !complete;
       addBtn.classList.toggle("is-ready", complete);
-      if (ctaLabel) ctaLabel.textContent = complete ? "✓ Coffret prêt — Ajouter au panier" : "Ajouter le coffret au panier";
+      if (ctaLabel) ctaLabel.textContent = complete ? "✓ Coffret créé — Ajouter au panier" : "Ajouter le coffret au panier";
 
       // KOR-C2 — ce qu'il reste à faire pour gagner la remise, en clair.
       const missing = cap - t;
       hint.hidden = false;
       if (complete) {
         hint.classList.add("is-won");
-        hint.textContent = `Avantage estimé : −10 % (${money(coffret.saved)}) et livraison offerte, à confirmer dans le panier`;
+        hint.textContent = `Coffret créé automatiquement · −10 % par flacon (${money(coffret.saved)} économisés) et livraison offerte, à confirmer dans le panier`;
       } else if (t === 0) {
         hint.classList.remove("is-won");
         hint.textContent = `Choisissez ${cap} parfums pour −10 % sur chaque flacon et la livraison offerte`;
       } else {
         hint.classList.remove("is-won");
-        hint.textContent = `Plus que ${missing} parfum${missing > 1 ? "s" : ""} pour −10 % et la livraison offerte`;
+        hint.textContent = `Plus que ${missing} parfum${missing > 1 ? "s" : ""} : le coffret sera créé automatiquement avec −10 % par flacon et la livraison offerte`;
       }
+
+      if (complete && !wasComplete) {
+        window.KoreiCoffret?.notice?.(`Coffret ${FORMATS[coffret.format].label} créé automatiquement · −10 % par flacon`);
+      }
+      wasComplete = complete;
 
       updateTimeline();
       saveDraft();
@@ -626,7 +632,7 @@
 
         const originalLabel = ctaLabel ? ctaLabel.textContent : "";
         if (ctaLabel) ctaLabel.textContent = "Coffret ajouté au panier";
-        cart.notice?.(`Coffret ${FORMATS[coffret.format].label} ajouté · validation Shopify en cours`);
+        cart.notice?.(`Coffret ${FORMATS[coffret.format].label} ajouté · −10 % par flacon en validation Shopify`);
         render();
         setTimeout(() => {
           if (ctaLabel) ctaLabel.textContent = originalLabel;

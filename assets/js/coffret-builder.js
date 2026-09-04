@@ -106,7 +106,9 @@
   // KOR-C3 — le coffret se forme tout seul quand le compte est atteint.
   function announceCoffret(format, total, slots) {
     if (!slots || total % slots !== 0) return;
-    showStockNotice(`Coffret ${PACK_LABELS[format]} complet. Validation des avantages par Shopify…`);
+    const boxes = total / slots;
+    const label = boxes > 1 ? `${boxes} coffrets ${PACK_LABELS[format]}` : `Coffret ${PACK_LABELS[format]}`;
+    showStockNotice(`${label} créé${boxes > 1 ? "s" : ""} automatiquement · −10 % par flacon en validation`);
   }
 
   function removeItem(productId, format) {
@@ -143,6 +145,7 @@
     save(items);
     notify();
     synchroniserPanier();
+    announceCoffret(format, autres + qty, SLOT_COUNTS[format]);
   }
 
   // Le configurateur ajoute tout un coffret en une seule opération locale,
@@ -343,6 +346,8 @@
       el = document.createElement("div");
       el.id = "korei-stock-toast";
       el.className = "korei-toast";
+      el.setAttribute("role", "status");
+      el.setAttribute("aria-live", "polite");
       document.body.appendChild(el);
     }
     el.textContent = message;
@@ -378,7 +383,8 @@
           <span>${state.qty} flacon${state.qty > 1 ? "s" : ""}</span>
           <strong>${money(state.total)}</strong>
         </div>
-        ${state.discount > 0 ? `<div class="coffret-summary__saved">−10 % confirmé · vous économisez ${money(state.discount)}</div>` : ""}
+        ${state.boxes > 0 ? `<div class="coffret-summary__auto"><i class="ti ti-package" aria-hidden="true"></i> ${state.boxes} coffret${state.boxes > 1 ? "s" : ""} créé${state.boxes > 1 ? "s" : ""} automatiquement</div>` : ""}
+        ${state.discount > 0 ? `<div class="coffret-summary__saved">−10 % par flacon confirmé · vous économisez ${money(state.discount)}</div>` : state.boxes > 0 ? `<div class="coffret-summary__pending">−10 % par flacon en validation Shopify</div>` : ""}
         ${state.freeShipping ? `<div class="coffret-summary__saved">Livraison offerte</div>` : ""}
         ${state.synchronisationEnCours ? `<div class="coffret-summary__next">Vérification du panier…</div>` : ""}
         ${state.erreurSynchronisation ? `<div class="coffret-summary__next">${esc(state.erreurSynchronisation)}</div>` : ""}
@@ -393,12 +399,15 @@
         const inBox = totalQty % slots === 0 ? slots : totalQty % slots;
         const pct = Math.min(100, (inBox / slots) * 100);
         const complete = totalQty >= slots;
+        const boxes = Math.floor(totalQty / slots);
+        const singles = totalQty % slots;
         return `
           <div class="coffret-group${complete ? " is-complete" : ""}">
             <div class="coffret-group__head">
               <span>${PACK_LABELS[format]} · ${format.replace("ml", " ml")}</span>
-              <span>${totalQty > slots ? `${Math.floor(totalQty / slots)} coffret${Math.floor(totalQty / slots) > 1 ? "s" : ""} + ${totalQty % slots}` : `${totalQty}/${slots}`}</span>
+              <span>${totalQty > slots ? `${boxes} coffret${boxes > 1 ? "s" : ""}${singles ? ` + ${singles}` : ""}` : `${totalQty}/${slots}`}</span>
             </div>
+            ${complete ? `<p class="coffret-group__benefit">Créé automatiquement · ${boxes * slots} flacon${boxes * slots > 1 ? "s" : ""} à −10 % chacun${singles ? ` · ${singles} seul${singles > 1 ? "s" : ""} au prix normal` : ""}</p>` : ""}
             <span class="coffret-group__bar"><span style="width:${pct}%"></span></span>
             <ul class="coffret-items">
               ${groupItems
@@ -520,27 +529,31 @@
           : 0;
         const remiseConfirmee = group.discount * ratioConfirme;
         const net = group.gross - remiseConfirmee;
+        const singles = group.count - group.inBoxes;
         const title = group.boxes > 1
-          ? `${group.boxes} coffrets ${group.label}`
+          ? `${group.boxes} coffrets ${group.label}${singles ? ` + ${singles} flacon${singles > 1 ? "s" : ""} seul${singles > 1 ? "s" : ""}` : ""}`
           : complete
-            ? `Coffret ${group.label}`
+            ? `Coffret ${group.label}${singles ? ` + ${singles} flacon${singles > 1 ? "s" : ""} seul${singles > 1 ? "s" : ""}` : ""}`
             : `Coffret ${group.label} en cours`;
+        const status = group.boxes > 1
+          ? `${group.boxes} coffrets créés automatiquement`
+          : "Coffret créé automatiquement";
         return `
           <li class="panier-group${complete ? " is-complete" : ""}">
             <div class="panier-group__head">
               <div class="panier-group__id">
                 <span class="panier-group__name">${title}</span>
-                <span class="panier-group__meta">${group.count}/${group.slots} · ${group.format.replace("ml", " ml")}</span>
+                <span class="panier-group__meta">${complete ? `${group.inBoxes} flacon${group.inBoxes > 1 ? "s" : ""} dans ${group.boxes > 1 ? "les coffrets" : "le coffret"}${singles ? ` · ${singles} seul au prix normal` : ""}` : `${group.count}/${group.slots}`} · ${group.format.replace("ml", " ml")}</span>
               </div>
               <div class="panier-group__money">
                 <span class="panier-group__total">${money(net)}</span>
-                ${remiseConfirmee > 0 ? `<span class="panier-group__saved">−10 % confirmé · ${money(remiseConfirmee)} économisés</span>` : ""}
+                ${remiseConfirmee > 0 ? `<span class="panier-group__saved">−10 % par flacon confirmé · ${money(remiseConfirmee)} économisés</span>` : ""}
               </div>
             </div>
             ${
               complete
-                ? ""
-                : `<p class="panier-group__next">Plus que ${group.missing} parfum${group.missing > 1 ? "s" : ""} pour ${state.freeShipping ? "−10 % sur ces flacons" : "−10 % et la livraison offerte"}</p>`
+                ? `<div class="panier-group__created" role="status"><span><i class="ti ti-package" aria-hidden="true"></i>${status}</span><strong>${group.inBoxes} flacon${group.inBoxes > 1 ? "s" : ""} à −10 % chacun</strong>${singles ? `<em>${singles} flacon${singles > 1 ? "s" : ""} seul${singles > 1 ? "s" : ""} · prix normal</em>` : ""}</div>`
+                : `<p class="panier-group__next">Plus que ${group.missing} parfum${group.missing > 1 ? "s" : ""} pour créer automatiquement le coffret, obtenir −10 % par flacon et la livraison offerte</p>`
             }
             <ul class="panier-group__items">
               ${groupItems.map(renderPanierItem).join("")}
@@ -688,7 +701,7 @@
       discountRow.hidden = state.discount <= 0;
       const boxLabel = state.boxes > 1 ? `${state.boxes} coffrets` : "Coffret complet";
       const label = discountRow.querySelector("[data-discount-label]");
-      if (label) label.textContent = `${boxLabel} · −10 %`;
+      if (label) label.textContent = `${boxLabel} · −10 % par flacon`;
       if (discountEl) discountEl.textContent = `−${money(state.discount)}`;
     }
 
@@ -714,11 +727,11 @@
       } else if (state.freeShipping && !next) {
         hintEl.hidden = false;
         hintEl.classList.add("is-won");
-        hintEl.textContent = "−10 % confirmé · Livraison offerte confirmée";
+        hintEl.textContent = "Coffret créé automatiquement · −10 % par flacon confirmé · Livraison offerte";
       } else if (next) {
         hintEl.hidden = false;
         hintEl.classList.toggle("is-won", false);
-        const gain = state.freeShipping ? "−10 % sur ces flacons" : "−10 % et la livraison offerte";
+        const gain = state.freeShipping ? "−10 % par flacon" : "−10 % par flacon et la livraison offerte";
         hintEl.textContent = `Plus que ${next.missing} parfum${next.missing > 1 ? "s" : ""} en ${next.format.replace("ml", " ml")} pour ${gain}`;
       } else if (state.boxes > 0) {
         hintEl.hidden = false;
