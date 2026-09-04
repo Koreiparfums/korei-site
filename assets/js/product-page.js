@@ -678,9 +678,20 @@
   // description redigee : la balise annoncait « undefined Decant des 10.9EUR »
   // a Google. On compose donc la phrase avec ce que la fiche porte vraiment,
   // et le prix est ecrit comme partout ailleurs sur le site.
+  // La description importee est un gabarit (« Maison — Parfum, en decant
+  // Korei, formats 2 ml, 5 ml et 10 ml. Notes de tete : ... ») : elle repete
+  // la pyramide et, sur les parfums sans prix, une note de travail (« Les prix
+  // des trois formats restent a fixer »). On ne l'affiche, et on ne l'envoie a
+  // Google, que si quelqu'un l'a vraiment ecrite.
+  const GABARIT_DESCRIPTION = /en décant Kōrei, formats/i;
+  function descriptionRedigee(product) {
+    const d = String(product.description || "").trim();
+    return Boolean(d) && !GABARIT_DESCRIPTION.test(d);
+  }
+
   function metaDescription(product) {
     const debut = String(product.description || "").trim();
-    if (debut) return `${debut} Décant dès ${prix(product.price)}.`;
+    if (descriptionRedigee(product)) return `${debut} Décant dès ${prix(product.price)}.`;
 
     const notes = [...(product.notesTop || []), ...(product.notesHeart || [])]
       .filter(Boolean)
@@ -723,8 +734,6 @@
               <h1 class="pdp-name">${esc(product.name)}</h1>
               ${renderPriceBlock(selected)}
               ${formats.some((f) => f.price > 0) ? renderFormats(formats) : ""}
-              ${renderCoffretRail(product, selected)}
-
               <div class="pdp-actions">
                 ${bientot ? `<p class="pdp-bientot">Ce parfum arrive bientôt en boutique.${product.photoManquante ? " Sa photo est en cours de préparation." : ""}</p>` : ""}
                 <div class="pdp-actions__row">
@@ -737,8 +746,10 @@
                 </div>
               </div>
 
+              ${renderCoffretRail(product, selected)}
+
               ${renderTrustRow()}
-              ${product.description ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
+              ${descriptionRedigee(product) ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
             </div>
             ${renderAccordions(product)}
             ${renderRessenti(product)}
@@ -1224,7 +1235,9 @@
     const items = [
       accordionItem("notes", "Notes olfactives", "", renderPyramid(product), true),
       accordionItem("details", "Détails", "", renderDetails(product), true),
-      accordionItem("avis", "Avis", reviewsMeta(), renderReviewsBody(), true),
+      // Pas de tiroir « Avis » tant qu'il n'y a aucun avis : un tiroir vide
+      // dit surtout que personne n'a encore achete. renderReviewsBody() et
+      // reviewsMeta() attendent le premier avis reel.
     ].join("");
     if (!items.trim()) return "";
     return `<div class="pdp-acc pdp-container">${items}</div>`;
@@ -1358,18 +1371,20 @@
       }
     }
 
-    const similar = store
-      .getProductsByFamily(product.family)
-      .filter((p) => p.id !== product.id)
-      .slice(0, 8);
-    fillCarousel("pdp-similar", similar);
+    // Les parfums achetables d'abord. Une rangee de « Bientot disponible »
+    // finit la fiche sur des portes fermees : sous trois achetables, la
+    // section disparait, meme si les « bientot » sont nombreux.
+    function achetablesDabord(list) {
+      const autres = (list || []).filter((p) => p.id !== product.id);
+      const dispo = autres.filter((p) => p.bientot !== true);
+      if (dispo.length < 3) return [];
+      const bientot = autres.filter((p) => p.bientot === true);
+      return [...dispo, ...bientot].slice(0, 8);
+    }
+    fillCarousel("pdp-similar", achetablesDabord(store.getProductsByFamily(product.family)));
 
     // Autres creations de la maison : la marque du parfum, pas les best-sellers.
-    const sameHouse = store
-      .getProductsByBrand(product.brandId)
-      .filter((p) => p.id !== product.id)
-      .slice(0, 8);
-    fillCarousel("pdp-suggested", sameHouse);
+    fillCarousel("pdp-suggested", achetablesDabord(store.getProductsByBrand(product.brandId)));
 
     site?.initMediaSlots();
   }

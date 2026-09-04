@@ -2172,7 +2172,9 @@ body[data-page="product"] {
 }
 .pdp-rail__chiffre {
   font-family: var(--pdp-mesure);
-  font-size: clamp(28px, 2.6vw, 36px);
+  /* 36 px faisait la remise plus grosse que le prix (32 px). Le rail passe
+     sous le bouton d'achat et parle a mi-voix. */
+  font-size: 20px;
   font-weight: 500;
   line-height: 1;
   letter-spacing: -0.03em;

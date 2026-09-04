@@ -1,5 +1,31 @@
 #!/usr/bin/env node
 /**
+ * ⚠ CE SCRIPT NE PASSE PAS EN L'ETAT — releve du 4 septembre 2026.
+ *
+ * Trois murs de l'API Shopify, verifies un par un sur la boutique reelle :
+ *
+ *   1. « discountOnQuantity field is only permitted with bxgy discounts ».
+ *      Une remise en pourcentage ne sait pas s'arreter apres N articles.
+ *      Elle s'applique a tout ce qui correspond, ou a rien.
+ *
+ *   2. Le seul type qui sait plafonner, « Achetez X, obtenez Y », reclame
+ *      X + Y articles. Pour remiser 3 flacons il en exige 6 dans le panier.
+ *      Verifie : un panier de 3 x 10 ml n'a rien eu, un panier de 6 a eu la
+ *      remise sur 3.
+ *
+ *   3. « You've selected 200 variants, but the limit is 100. » Une remise
+ *      ne vise pas plus de 100 variantes. La boutique en a 338 par format.
+ *      Contournement : viser une collection, qui n'a pas cette limite.
+ *
+ * Autrement dit, Shopify ne sait pas exprimer « −10 % sur chaque flacon
+ * d'un coffret COMPLET, les flacons en trop au plein tarif ». Il sait faire
+ * « −10 % sur tout des qu'il y a au moins N articles » — teste, exact, un
+ * seul code — ou il faut une Shopify Function, donc une application a
+ * deployer.
+ *
+ * La decision revient au client. Tant qu'elle n'est pas prise, ce script
+ * reste ici pour l'historique de ce qui a ete tente.
+ *
  * Configure les remises natives des coffrets Kōrei dans Shopify.
  *
  * Par defaut, le script est en simulation. Il lit le catalogue et montre les
@@ -260,8 +286,10 @@ function productDiscountInput(format, quantity, variantIds, startsAt) {
       items: {
         products: { productVariantsToAdd: variantIds },
       },
-      appliesOnOneTimePurchase: true,
-      appliesOnSubscription: false,
+      // Shopify refuse ces deux champs tant que la boutique n'a pas
+      // d'abonnements : « applies_on_subscription field is not permitted
+      // without the shop using subscriptions ». Sans eux, une remise porte
+      // de toute facon sur les achats simples, qui sont les seuls ici.
     },
     combinesWith: {
       productDiscounts: true,
@@ -284,8 +312,6 @@ function shippingDiscountInput(startsAt) {
     },
     destination: { countries: { add: ["FR"] } },
     appliesOncePerCustomer: false,
-    appliesOnOneTimePurchase: true,
-    appliesOnSubscription: false,
     combinesWith: {
       productDiscounts: true,
       orderDiscounts: true,

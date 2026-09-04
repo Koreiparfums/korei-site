@@ -368,6 +368,10 @@
       countEl.textContent = String(totalQty);
       countEl.hidden = totalQty === 0;
     }
+    // Coffret vide : pas de bulle. Deux pastilles noires (coffret, conseiller)
+    // encadraient chaque page des le chargement, avant le moindre choix.
+    const widget = document.getElementById("coffret-widget");
+    if (widget) widget.hidden = !items.length;
 
     if (!items.length) {
       body.innerHTML = `<p class="coffret-empty">Votre coffret est vide. Choisissez un format de décant sur une fiche parfum pour commencer votre sélection.</p>`;

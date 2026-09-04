@@ -244,11 +244,13 @@ textarea {
 .nav a:hover {
   color: var(--accent);
 }
+/* Le lien actif prend l'or du sceau (4,7:1), pas l'or de marque (2,55:1 a
+   13 px) : le visiteur doit pouvoir lire ou il est. */
 .nav a.active {
-  color: var(--accent);
+  color: var(--sceau);
 }
 .mobile-drawer a[aria-current="page"] {
-  color: var(--accent);
+  color: var(--sceau);
 }
 .header-right {
   display: flex;
@@ -3802,9 +3804,10 @@ footer {
   align-items: center;
   justify-content: space-between;
   padding-top: 22.4px;
-  /* Dégagement à gauche : le widget flottant "Mon coffret" (fixed, bottom-left)
-     peut se retrouver au même endroit que ce texte quand on arrive en bas de page. */
-  padding-left: 72px;
+  /* Le copyright s'aligne sur la marge, comme le reste du pied de page. La
+     bulle « Mon coffret » (fixe, en bas a gauche) ne s'affiche plus quand le
+     coffret est vide ; quand elle est la, ce degagement bas la tient a l'ecart. */
+  padding-bottom: 44px;
   border-top: 0.8px solid rgba(255, 255, 255, 0.1);
   flex-wrap: wrap;
   gap: 12.8px;
@@ -5559,6 +5562,9 @@ body[data-page="catalogue"] .page-hero {
   bottom: calc(19.2px + env(safe-area-inset-bottom, 0px));
   left: calc(19.2px + env(safe-area-inset-left, 0px));
   z-index: 500;
+}
+.coffret-widget[hidden] {
+  display: none;
 }
 .coffret-toggle {
   position: relative;
@@ -10670,6 +10676,14 @@ body[data-page="home"] .card-cta {
 .fav-card__tag,
 .chatbot-mock-badge {
   padding: 4px 9px;
+}
+/* Sur une carte etroite (155 px dans les carrousels du telephone), « Grand
+   classique » courait jusque sous le coeur. Le repere garde la place du
+   coeur et passe sur deux lignes plutot que dessous. */
+.card-badge {
+  max-width: calc(100% - 52px);
+  white-space: normal;
+  line-height: 1.35;
 }
 /* Le drapeau des cartes format flottait sans fond au-dessus du flacon :
    il prend le cartouche comme les autres. */
