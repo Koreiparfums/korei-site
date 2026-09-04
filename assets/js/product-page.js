@@ -1161,8 +1161,20 @@
     '<path d="M12 2.4l2.95 5.98 6.6.96-4.78 4.66 1.13 6.57L12 17.47l-5.9 3.1 1.13-6.57L2.45 9.34l6.6-.96z"/>' +
     "</svg>";
 
+  // Le medaillon : trois silhouettes, pour dire d'un coup d'oeil que la note
+  // vient de plusieurs centaines de personnes et non de la maison.
+  const MEDAILLON = `
+    <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+      <circle cx="24" cy="17" r="6.2"></circle>
+      <path d="M13 35.5c0-6 4.9-9.2 11-9.2s11 3.2 11 9.2"></path>
+      <circle cx="9.5" cy="20.5" r="4.2"></circle>
+      <path d="M2.5 33.5c0-4 2.9-6.2 7-6.2"></path>
+      <circle cx="38.5" cy="20.5" r="4.2"></circle>
+      <path d="M45.5 33.5c0-4-2.9-6.2-7-6.2"></path>
+    </svg>`;
+
   // Le francais separe les milliers par une espace fine insecable, et met une
-  // virgule aux decimales. « 8559 » et « 4.3 » se lisent comme de l'anglais.
+  // virgule aux decimales. « 724 » et « 4.1 » se lisent comme de l'anglais.
   function nombreFr(n) {
     return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "\u202f");
   }
@@ -1178,14 +1190,19 @@
     const part = (sur5 / 5) * 100;
     const avis = `${nombreFr(mesure.votes)} avis`;
     return `
-      <div class="pdp-note" role="img" aria-label="Note moyenne : ${noteFr(sur5)} sur 5, sur ${avis}">
-        <p class="pdp-eyebrow pdp-note__eyebrow">Note de la communauté</p>
-        <p class="pdp-note__chiffre">${noteFr(sur5)}<small> / 5</small></p>
-        <span class="pdp-note__etoiles" aria-hidden="true">
-          <span class="pdp-note__etoiles-vide">${ETOILE.repeat(5)}</span>
-          <span class="pdp-note__etoiles-plein" style="width:${part}%">${ETOILE.repeat(5)}</span>
-        </span>
-        <p class="pdp-note__avis">Sur ${avis}</p>
+      <div class="pdp-note" role="img" aria-label="Note de la communauté : ${noteFr(sur5)} sur 5, basée sur ${avis}">
+        <span class="pdp-note__medaillon" aria-hidden="true">${MEDAILLON}</span>
+        <div class="pdp-note__bloc">
+          <p class="pdp-note__label">Note de la communauté</p>
+          <div class="pdp-note__mesure">
+            <p class="pdp-note__chiffre">${noteFr(sur5)}<span class="pdp-note__sur">/ 5</span></p>
+            <span class="pdp-note__etoiles" aria-hidden="true">
+              <span class="pdp-note__etoiles-vide">${ETOILE.repeat(5)}</span>
+              <span class="pdp-note__etoiles-plein" style="width:${part}%">${ETOILE.repeat(5)}</span>
+            </span>
+            <p class="pdp-note__avis">Basée sur ${avis}</p>
+          </div>
+        </div>
       </div>`;
   }
 
@@ -1212,7 +1229,7 @@
           <div class="pdp-head pdp-head--ressenti pdp-reveal">
             <h2 class="pdp-title pdp-title--serif" id="pdp-feel-title">Ressenti</h2>
             <span class="pdp-head__rule" aria-hidden="true"></span>
-            <p class="pdp-head__sub">L'expérience olfactive de <em>${esc(product.name)}</em></p>
+            <p class="pdp-head__sub">L'expérience olfactive de <em>${esc(product.name)}</em> selon la communauté</p>
           </div>
           ${grille}
           ${note ? `<div class="pdp-reveal">${note}</div>` : ""}

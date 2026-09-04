@@ -2894,44 +2894,73 @@ body[data-page="product"] {
   }
 }
 
-/* ── 15. La note d'ensemble, en etoiles ──────────────────────────────────
-   Un bandeau sous les cartes du Ressenti. Meme cartouche creme que le reste
-   de la section, angle droit, or sombre : les etoiles sont le seul element
-   figuratif de la fiche, donc elles restent petites et le chiffre porte.
-   Le remplissage partiel se fait par largeur, pas par demi-etoile : 4,3 sur 5
-   se lit tel quel, sans arrondi a 4,5. */
+/* ── 15. La note d'ensemble ──────────────────────────────────────────────
+   Un bandeau horizontal sous les cartes du Ressenti : le medaillon, puis le
+   chiffre, les etoiles et le nombre d'avis sur une meme colonne. Meme
+   cartouche creme et meme angle droit que les cartes au-dessus.
+   Le remplissage des etoiles se fait par largeur, pas par demi-etoile : 4,1
+   sur 5 se lit tel quel, sans arrondi a 4,5. */
 .pdp-note {
   margin-top: 24px;
-  padding: 28px 24px;
+  padding: 26px 32px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 26px;
   background: var(--surface, #faf7f2);
   border: 1px solid var(--pdp-border, #ece3d3);
 }
-.pdp-note__eyebrow {
-  margin: 0;
+.pdp-note__medaillon {
+  flex: none;
+  width: 74px;
+  height: 74px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--pdp-gold, #cc9a36);
+  border-radius: 50%;
+}
+.pdp-note__medaillon svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: var(--pdp-gold, #cc9a36);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.pdp-note__label {
+  margin: 0 0 6px;
+  font-family: var(--pdp-mesure, "IBM Plex Mono", monospace);
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--sceau, #8a6a2f);
+}
+/* Le chiffre, les etoiles et le compte d'avis se suivent sur une ligne, et
+   passent l'un sous l'autre des que la place manque. */
+.pdp-note__mesure {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 22px;
 }
 .pdp-note__chiffre {
   margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   font-family: var(--pdp-serif, "Cormorant Garamond", Georgia, serif);
-  font-size: 40px;
+  font-size: 46px;
   line-height: 1;
   font-weight: 400;
-  color: var(--pdp-ink, #1a1a18);
+  color: var(--sceau, #8a6a2f);
   /* Le serif de titrage dessine des chiffres elzeviriens : le « 1 » de 4,1
      descend sous la ligne et le nombre se lit de travers. */
   font-variant-numeric: lining-nums tabular-nums;
 }
-.pdp-note__chiffre small {
-  font-family: var(--pdp-mesure, "IBM Plex Mono", monospace);
-  font-size: 12px;
-  letter-spacing: 0.08em;
+.pdp-note__sur {
+  font-size: 22px;
   color: var(--pdp-ink-soft, #6b6862);
 }
-/* Les deux rangees se superposent : la grise dessine les cinq etoiles, la
-   doree est coupee a la largeur exacte de la note. */
 .pdp-note__etoiles {
   position: relative;
   display: inline-block;
@@ -2953,12 +2982,12 @@ body[data-page="product"] {
   color: var(--pdp-border, #ece3d3);
 }
 .pdp-note__etoiles svg {
-  width: 17px;
-  height: 17px;
+  width: 19px;
+  height: 19px;
   fill: currentColor;
 }
 .pdp-note__etoiles svg + svg {
-  margin-left: 4px;
+  margin-left: 5px;
 }
 .pdp-note__avis {
   margin: 0;
@@ -2968,4 +2997,19 @@ body[data-page="product"] {
   text-transform: uppercase;
   color: var(--pdp-ink-soft, #6b6862);
   font-variant-numeric: tabular-nums;
+}
+@media (max-width: 640px) {
+  .pdp-note {
+    flex-direction: column;
+    gap: 16px;
+    padding: 26px 20px;
+    text-align: center;
+  }
+  .pdp-note__mesure {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pdp-note__label {
+    text-align: center;
+  }
 }
