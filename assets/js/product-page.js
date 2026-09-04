@@ -58,6 +58,14 @@
       originality: 50,
       desc: "Juteuse et pétillante, la famille fruitée met en avant des notes de fruits mûrs pour une ouverture gourmande et vitaminée.",
     },
+    // Dix-neuf parfums du catalogue portent cette famille. Sans son entree,
+    // leur fiche affichait « Signature », l'intitule de repli.
+    frais: {
+      label: "Frais",
+      icon: "ti-droplet",
+      originality: 45,
+      desc: "Agrumes, notes marines et accords verts : la famille fraîche ouvre clair et net, celle qu'on porte au réveil et par temps chaud.",
+    },
   };
   const DEFAULT_FAMILY = { label: "Signature", icon: "ti-droplet", originality: 65, desc: "Une composition à la classification singulière, pensée pour se distinguer." };
 

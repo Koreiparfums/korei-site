@@ -994,6 +994,10 @@
     cuir: "Cuir",
     fruity: "Fruité",
     aromatique: "Aromatique",
+    // 19 parfums portent cette famille. Sans son intitule, le filtre du
+    // catalogue affichait « frais » en minuscule entre « Floral » et
+    // « Fruite ».
+    frais: "Frais",
   };
   const OCCASION_LABELS = {
     été: "Été",
@@ -1589,6 +1593,13 @@
     document.querySelectorAll(".footer-socials:empty").forEach((container) => container.remove());
   }
 
+  // Les Boxes sont encore une page d'annonce, sans offre ni lien de commande.
+  // Elles restent accessibles directement pour la préparation éditoriale,
+  // mais ne doivent pas être présentées comme une rubrique achetable.
+  function removeUnavailableBoxesLinks() {
+    document.querySelectorAll('a[href$="boxes.html"]').forEach((link) => link.remove());
+  }
+
   // ── Délégation des actions déclarées en data-attributes (CSP : pas d'onclick inline)
   function initInlineActionDelegation() {
     document.addEventListener("click", (event) => {
@@ -1623,6 +1634,7 @@
     initNewsletterForm();
     initContactForm();
     removeUnavailableSocialLinks();
+    removeUnavailableBoxesLinks();
 
     const page = document.body.dataset.page;
     if (page === "home") initHomePage();

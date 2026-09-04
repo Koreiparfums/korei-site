@@ -29,6 +29,10 @@
     cuir: "Cuir",
     fruity: "Fruité",
     aromatique: "Aromatique",
+    // 19 parfums portent cette famille. Sans son intitule, le filtre du
+    // catalogue affichait « frais » en minuscule entre « Floral » et
+    // « Fruite ».
+    frais: "Frais",
   };
 
   function normalize(str) {
