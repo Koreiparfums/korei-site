@@ -1,22 +1,25 @@
 /**
  * Kōrei — Coffret personnalisé
  * État partagé (localStorage) + widget flottant réutilisable sur toutes les pages.
- * Un coffret est composé exclusivement de décants (2ml/5ml/10ml), sur le modèle
- * des formats vendus sur la page Coffret : Découverte (10×2ml), Voyage (5×5ml),
- * Iconique (3×10ml).
+ * Le panier accepte les trois décants (2ml/5ml/10ml). Seuls deux formats font
+ * un coffret : Voyage (5×5ml) et Iconique (3×10ml). Le 2 ml se commande à
+ * l'unité, sans remise : le coffret Découverte (10×2ml) a été retiré le
+ * 4 septembre 2026 à la demande du client.
  */
 (function (global) {
   const STORAGE_KEY = "korei-coffret";
   const esc = (v) => (global.KoreiSite?.escapeHtml || ((x) => x))(v);
-  const SLOT_COUNTS = { "2ml": 10, "5ml": 5, "10ml": 3 };
-  // Les remises Shopify sont preparees par paliers. Dix coffrets par format
-  // couvrent largement un panier particulier tout en gardant une liste de
-  // codes finie et auditable. Au-dela, la demande releve d'une commande en
-  // volume et ne doit pas partir au checkout avec une remise incomplete.
+  const SLOT_COUNTS = { "5ml": 5, "10ml": 3 };
+  // Formats que le panier accepte, coffret ou non.
+  const CART_FORMATS = ["2ml", "5ml", "10ml"];
+  // Dix coffrets par format couvrent largement un panier particulier.
+  // Au-dela, la demande releve d'une commande en volume et ne doit pas
+  // partir au checkout avec une remise incomplete (le serveur applique le
+  // meme plafond dans api/coffret-remise.js).
   const MAX_BOXES_PER_FORMAT = 10;
-  // Libellés alignés sur les trois coffrets réels : 10x2ml, 5x5ml, 3x10ml.
+  // Libellés alignés sur les deux coffrets réels : 5x5ml et 3x10ml.
   // Noms arretes par le brief du 24 aout 2026 (KOR-C11).
-  const PACK_LABELS = { "2ml": "Découverte", "5ml": "Voyage", "10ml": "Iconique" };
+  const PACK_LABELS = { "5ml": "Voyage", "10ml": "Iconique" };
   // KOR-C1 — un coffret complet donne −10 % sur chaque flacon qu'il contient.
   // KOR-C6 — et la livraison offerte. La règle est le coffret, pas un montant :
   // un seuil en euros rendrait le message d'incitation faux (« plus que 1
@@ -55,11 +58,21 @@
   }
 
   function isEligibleFormat(format) {
+    return CART_FORMATS.includes(format);
+  }
+
+  // Un format sans coffret (le 2 ml) s'achete a l'unite, sans quota.
+  function hasBox(format) {
     return Object.prototype.hasOwnProperty.call(SLOT_COUNTS, format);
   }
 
   function hasItem(productId, format) {
     return load().some((it) => it.productId === productId && it.format === format);
+  }
+
+  function itemQty(productId, format) {
+    const it = load().find((x) => x.productId === productId && x.format === format);
+    return it ? it.qty || 1 : 0;
   }
 
   // Nombre de flacons déjà présents pour un format, toutes lignes confondues.
@@ -69,16 +82,14 @@
       .reduce((sum, it) => sum + (it.qty || 1), 0);
   }
 
-  // KOR-C5 — un coffret ne dépasse jamais sa capacité. Au-delà, on ouvre un
-  // second coffret : la capacité effective est donc un multiple du quota.
-  function capacityFor(format, items) {
+  // Les flacons en trop sont acceptes : sept flacons de 5 ml font un coffret
+  // complet (cinq remises) et deux flacons au prix plein. Le seul plafond est
+  // le nombre de coffrets par commande.
+  function capacityFor(format) {
     const slots = SLOT_COUNTS[format] || 0;
-    if (!slots) return 0;
-    const current = countFor(format, items);
-    return Math.min(
-      (Math.floor(current / slots) + 1) * slots,
-      slots * MAX_BOXES_PER_FORMAT,
-    );
+    // Pas de coffret, pas de plafond : le 2 ml se prend a l'unite.
+    if (!slots) return Infinity;
+    return slots * MAX_BOXES_PER_FORMAT;
   }
 
   function addItem(item) {
@@ -89,8 +100,8 @@
     const slots = SLOT_COUNTS[item.format];
     const current = countFor(item.format, items);
     const qty = item.qty || 1;
-    if (current + qty > capacityFor(item.format, items)) {
-      showStockNotice(`Coffret ${PACK_LABELS[item.format]} complet (${slots} flacons). Retirez-en un pour changer.`);
+    if (current + qty > capacityFor(item.format)) {
+      showStockNotice(`Maximum ${MAX_BOXES_PER_FORMAT} coffrets ${PACK_LABELS[item.format]} par commande.`);
       return false;
     }
 
@@ -222,6 +233,12 @@
         const livraisonOfferte = discountCodes.some(
           (entry) => entry?.applicable && String(entry.code || "").toUpperCase() === CODE_LIVRAISON_COFFRET,
         );
+        // Le code unique cree par le serveur pour ce panier. Une simple
+        // relecture (« get ») ne le renvoie pas : on garde celui du meme panier.
+        const precedent = loadShopifyCart();
+        const discountId = cart.coffretDiscount === undefined && precedent?.id === cart.id
+          ? precedent.discountId || null
+          : cart.coffretDiscount?.id || null;
         localStorage.setItem(
           CART_STORAGE_KEY,
           // Les avantages viennent exclusivement de Shopify. Le navigateur les
@@ -232,6 +249,7 @@
             remise,
             discountCodes,
             livraisonOfferte,
+            discountId,
           }),
         );
       }
@@ -268,17 +286,13 @@
     return [...byVariant.entries()].map(([variantId, quantity]) => ({ variantId, quantity }));
   }
 
+  // Le navigateur ne choisit aucun code de remise produit : le serveur
+  // calcule la remise du coffret sur les lignes et cree un code unique du
+  // montant exact (api/coffret-remise.js). Seule la livraison offerte est un
+  // code fixe, et elle n'a de sens qu'avec un coffret complet.
   function getPromotionCodes(items = load()) {
     const state = getCartState(items);
-    const codes = state.groups
-      .filter((group) => group.boxes > 0)
-      // Un seul code par format, calibre sur le nombre exact de flacons
-      // appartenant aux coffrets complets. Exemple : 4 x 10 ml envoie le
-      // palier 3 ; 6 x 10 ml envoie le palier 6.
-      .map((group) => `COFFRET-${group.format.toUpperCase()}-${group.inBoxes}`)
-      .filter(Boolean);
-    if (state.boxes > 0) codes.push(CODE_LIVRAISON_COFFRET);
-    return [...new Set(codes)];
+    return state.boxes > 0 ? [CODE_LIVRAISON_COFFRET] : [];
   }
 
   // Shopify reçoit toujours un instantané complet du panier. Les changements
@@ -296,7 +310,10 @@
         remoteSyncState.error = null;
         notify();
 
+        const precedent = loadShopifyCart();
         if (!lines.length) {
+          // Panier vide : le code unique de l'ancien panier ne sert plus.
+          if (precedent?.discountId) cartRequest("forget", { previousDiscountId: precedent.discountId });
           saveShopifyCart(null);
           remoteSyncState.pending = false;
           notify();
@@ -305,10 +322,11 @@
 
         const result = await cartRequest("sync", {
           lines,
-          codes: getPromotionCodes(items),
+          previousDiscountId: precedent?.discountId || null,
         });
         if (result.cart) {
-          saveShopifyCart(result.cart);
+          // Le code unique de ce panier voyage a cote du panier, pas dedans.
+          saveShopifyCart({ ...result.cart, coffretDiscount: result.coffretDiscount ?? null });
           remoteSyncState.error = null;
         } else {
           remoteSyncState.error = result.message || result.error || "La caisse est momentanément indisponible.";
@@ -332,7 +350,8 @@
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) return { cart: null, error: data.error, message: data.message };
-      return { cart: data.cart || null, error: null };
+      // coffretDiscount : le code unique cree par le serveur pour ce panier.
+      return { cart: data.cart || null, coffretDiscount: data.coffretDiscount ?? null, error: null };
     } catch {
       return { cart: null, error: "network_error" };
     }
@@ -394,12 +413,37 @@
         ${state.erreurSynchronisation ? `<div class="coffret-summary__next">${esc(state.erreurSynchronisation)}</div>` : ""}
         ${nextStep ? `<p class="coffret-summary__next">Plus que <strong>${nextStep.missing} parfum${nextStep.missing > 1 ? "s" : ""}</strong> en ${nextStep.format.replace("ml", " ml")} pour −10 % et la livraison offerte</p>` : ""}
       </div>` +
-      Object.keys(SLOT_COUNTS)
+      CART_FORMATS
       .map((format) => {
         const groupItems = items.filter((it) => it.format === format);
         if (!groupItems.length) return "";
-        const slots = SLOT_COUNTS[format];
         const totalQty = groupItems.reduce((sum, it) => sum + (it.qty || 1), 0);
+        const itemsHtml = `
+            <ul class="coffret-items">
+              ${groupItems
+                .map(
+                  (it) => `
+                <li>
+                  <span>${esc(it.brand)} — ${esc(it.name)}${it.qty > 1 ? ` ×${it.qty}` : ""}</span>
+                  <button type="button" data-remove="${it.productId}|${it.format}" aria-label="Retirer ${esc(it.name)} du panier">
+                    <i class="ti ti-x"></i>
+                  </button>
+                </li>`
+                )
+                .join("")}
+            </ul>`;
+        // Le 2 ml n'entre dans aucun coffret : il se liste a l'unite.
+        if (!hasBox(format)) {
+          return `
+          <div class="coffret-group">
+            <div class="coffret-group__head">
+              <span>${format.replace("ml", " ml")} · à l'unité</span>
+              <span>${totalQty} flacon${totalQty > 1 ? "s" : ""}</span>
+            </div>
+            ${itemsHtml}
+          </div>`;
+        }
+        const slots = SLOT_COUNTS[format];
         const inBox = totalQty % slots === 0 ? slots : totalQty % slots;
         const pct = Math.min(100, (inBox / slots) * 100);
         const complete = totalQty >= slots;
@@ -413,19 +457,7 @@
             </div>
             ${complete ? `<p class="coffret-group__benefit">Créé automatiquement · ${boxes * slots} flacon${boxes * slots > 1 ? "s" : ""} à −10 % chacun${singles ? ` · ${singles} seul${singles > 1 ? "s" : ""} au prix normal` : ""}</p>` : ""}
             <span class="coffret-group__bar"><span style="width:${pct}%"></span></span>
-            <ul class="coffret-items">
-              ${groupItems
-                .map(
-                  (it) => `
-                <li>
-                  <span>${esc(it.brand)} — ${esc(it.name)}${it.qty > 1 ? ` ×${it.qty}` : ""}</span>
-                  <button type="button" data-remove="${it.productId}|${it.format}" aria-label="Retirer ${esc(it.name)} du coffret">
-                    <i class="ti ti-x"></i>
-                  </button>
-                </li>`
-                )
-                .join("")}
-            </ul>
+            ${itemsHtml}
           </div>`;
       })
       .join("");
@@ -534,7 +566,11 @@
         const remiseConfirmee = group.discount * ratioConfirme;
         const net = group.gross - remiseConfirmee;
         const singles = group.count - group.inBoxes;
-        const title = group.boxes > 1
+        // Le 2 ml n'a pas de coffret : un groupe simple, sans progression.
+        const horsCoffret = !group.slots;
+        const title = horsCoffret
+          ? `${group.format.replace("ml", " ml")} · à l'unité`
+          : group.boxes > 1
           ? `${group.boxes} coffrets ${group.label}${singles ? ` + ${singles} flacon${singles > 1 ? "s" : ""} seul${singles > 1 ? "s" : ""}` : ""}`
           : complete
             ? `Coffret ${group.label}${singles ? ` + ${singles} flacon${singles > 1 ? "s" : ""} seul${singles > 1 ? "s" : ""}` : ""}`
@@ -547,7 +583,7 @@
             <div class="panier-group__head">
               <div class="panier-group__id">
                 <span class="panier-group__name">${title}</span>
-                <span class="panier-group__meta">${complete ? `${group.inBoxes} flacon${group.inBoxes > 1 ? "s" : ""} dans ${group.boxes > 1 ? "les coffrets" : "le coffret"}${singles ? ` · ${singles} seul au prix normal` : ""}` : `${group.count}/${group.slots}`} · ${group.format.replace("ml", " ml")}</span>
+                <span class="panier-group__meta">${horsCoffret ? `${group.count} flacon${group.count > 1 ? "s" : ""} · prix normal` : `${complete ? `${group.inBoxes} flacon${group.inBoxes > 1 ? "s" : ""} dans ${group.boxes > 1 ? "les coffrets" : "le coffret"}${singles ? ` · ${singles} seul au prix normal` : ""}` : `${group.count}/${group.slots}`} · ${group.format.replace("ml", " ml")}`}</span>
               </div>
               <div class="panier-group__money">
                 <span class="panier-group__total">${money(net)}</span>
@@ -555,7 +591,9 @@
               </div>
             </div>
             ${
-              complete
+              horsCoffret
+                ? ""
+                : complete
                 ? `<div class="panier-group__created" role="status"><span><i class="ti ti-package" aria-hidden="true"></i>${status}</span><strong>${group.inBoxes} flacon${group.inBoxes > 1 ? "s" : ""} à −10 % chacun</strong>${singles ? `<em>${singles} flacon${singles > 1 ? "s" : ""} seul${singles > 1 ? "s" : ""} · prix normal</em>` : ""}</div>`
                 : `<p class="panier-group__next">Plus que ${group.missing} parfum${group.missing > 1 ? "s" : ""} pour créer automatiquement le coffret, obtenir −10 % par flacon et la livraison offerte</p>`
             }
@@ -575,7 +613,7 @@
     const qty = item.qty || 1;
     const lineTotal = (Number(item.price) || 0) * qty;
     const available = product ? store?.isVariantAvailable(product, item.format) !== false : true;
-    const optionsHtml = Object.keys(SLOT_COUNTS)
+    const optionsHtml = CART_FORMATS
       .map((f) => {
         const optAvailable = product ? store?.isVariantAvailable(product, f) !== false : true;
         return `<option value="${f}"${f === item.format ? " selected" : ""}${optAvailable ? "" : " disabled"}>${f.replace("ml", " ml")}${optAvailable ? "" : " — rupture"}</option>`;
@@ -617,21 +655,23 @@
   /**
    * KOR-C1/C2/C3 — état commercial du panier.
    *
-   * Un coffret est un lot complet de flacons d'un même format : 10x2ml, 5x5ml
-   * ou 3x10ml. Les flacons qui composent un coffret complet sont remisés de
+   * Un coffret est un lot complet de flacons d'un même format : 5x5ml ou
+   * 3x10ml. Les flacons qui composent un coffret complet sont remisés de
    * 10 % chacun ; ceux du lot en cours restent au prix plein tant que le
    * coffret n'est pas rempli. Le total se recalcule à chaque changement.
    */
   function getCartState(items) {
     const list = items || load();
-    const groups = Object.keys(SLOT_COUNTS).map((format) => {
-      const slots = SLOT_COUNTS[format];
+    const groups = CART_FORMATS.map((format) => {
+      // Un format sans coffret (le 2 ml) compte dans le total, jamais dans
+      // les coffrets : zero boite, zero remise, rien qui manque.
+      const slots = SLOT_COUNTS[format] || 0;
       const groupItems = list.filter((it) => it.format === format);
       const count = groupItems.reduce((sum, it) => sum + (it.qty || 1), 0);
       const gross = groupItems.reduce((sum, it) => sum + (Number(it.price) || 0) * (it.qty || 1), 0);
-      const boxes = Math.floor(count / slots);
+      const boxes = slots ? Math.floor(count / slots) : 0;
       const inBoxes = boxes * slots;
-      const missing = count === 0 ? slots : (slots - (count % slots)) % slots;
+      const missing = !slots ? 0 : count === 0 ? slots : (slots - (count % slots)) % slots;
 
       // Les flacons remisés sont ceux des coffrets complets. On applique la
       // remise au prorata du nombre de flacons concernés, dans l'ordre d'ajout.
@@ -644,7 +684,7 @@
         remaining -= qty;
       }
 
-      return { format, slots, count, gross, boxes, inBoxes, missing, discount, label: PACK_LABELS[format] };
+      return { format, slots, count, gross, boxes, inBoxes, missing, discount, label: PACK_LABELS[format] || null };
     });
 
     const gross = groups.reduce((sum, g) => sum + g.gross, 0);
@@ -1000,6 +1040,9 @@
     incrementQty,
     decrementQty,
     hasItem,
+    itemQty,
+    hasBox,
+    CART_FORMATS,
     getProgress,
     getCheckoutUrl,
     getPromotionCodes,

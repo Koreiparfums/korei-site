@@ -1113,18 +1113,38 @@
   // phrase. Les deux autres cartes du Ressenti disent la meme chose en
   // francais — « Une bonne partie de la journee sans avoir a en remettre ».
   // Celle-ci s'aligne. Rien n'est ajoute : la phrase ne dit que les saisons
-  // et les occasions reellement renseignees.
+  // et les occasions reellement posees sur la fiche.
+  //
+  // Chaque saison porte sa propre preposition. « au automne » se lisait tout
+  // seul des que la carte annoncait trois saisons.
+  const QUAND = {
+    printemps: "au printemps",
+    été: "en été",
+    automne: "en automne",
+    hiver: "en hiver",
+  };
+
+  const POUR = {
+    soirée: "les soirées",
+    date: "les rendez-vous",
+    bureau: "le bureau",
+    quotidien: "le quotidien",
+    sport: "le sport",
+  };
+
+  function enumerer(mots) {
+    if (mots.length < 2) return mots[0] || "";
+    return `${mots.slice(0, -1).join(", ")} et ${mots[mots.length - 1]}`;
+  }
+
   function phraseSaisons(saisons, occasions) {
-    const liste = (mots) =>
-      mots.length < 2 ? mots[0] || "" : `${mots.slice(0, -1).join(", ")} et ${mots[mots.length - 1]}`;
-    const quand = liste(saisons.map((s) => s.toLowerCase()));
-    const pour = liste(occasions.map((o) => o.toLowerCase()));
-    if (saisons.length === 4) {
-      return pour ? `À porter toute l'année, particulièrement pour ${pour}.` : "À porter toute l'année.";
+    const pour = enumerer(occasions.map((o) => POUR[o] || o));
+    if (saisons.length >= 4) {
+      return pour ? `À porter toute l'année, en particulier pour ${pour}.` : "À porter toute l'année.";
     }
-    const debut = quand ? `À porter ${saisons.length > 1 ? "au" : "en"} ${quand}` : "";
-    if (!debut) return pour ? `À porter pour ${pour}.` : "";
-    return pour ? `${debut}, pour ${pour}.` : `${debut}.`;
+    const quand = enumerer(saisons.map((s) => QUAND[s] || s));
+    if (!quand) return pour ? `À porter pour ${pour}.` : "";
+    return pour ? `À porter ${quand}, pour ${pour}.` : `À porter ${quand}.`;
   }
 
   function feelSeasons(product) {
@@ -1132,9 +1152,8 @@
     const chips = SAISONS.map(
       ([cle, libelle]) => `<li class="pdp-feel__chip${actives.has(cle) ? " is-on" : ""}">${libelle}</li>`
     ).join("");
-    const occasions = (product.occasions || []).map(capitalize);
-    const saisons = (product.seasons || []).map(capitalize);
-    const phrase = phraseSaisons(saisons, occasions);
+    const occasions = product.occasions || [];
+    const phrase = phraseSaisons(product.seasons || [], occasions);
     return `
       <article class="pdp-feel__card">
         <span class="pdp-feel__icon pdp-feel__icon--saisons">${iconeSaisons(actives)}</span>
@@ -1144,7 +1163,7 @@
         ${phrase ? `<p class="pdp-feel__text">${esc(phrase)}</p>` : ""}
         ${
           occasions.length
-            ? `<ul class="pdp-feel__chips">${occasions.map((o) => `<li class="pdp-feel__chip is-on">${esc(o)}</li>`).join("")}</ul>`
+            ? `<ul class="pdp-feel__chips">${occasions.map((o) => `<li class="pdp-feel__chip is-on">${esc(capitalize(o))}</li>`).join("")}</ul>`
             : ""
         }
       </article>`;
@@ -1229,7 +1248,7 @@
           <div class="pdp-head pdp-head--ressenti pdp-reveal">
             <h2 class="pdp-title pdp-title--serif" id="pdp-feel-title">Ressenti</h2>
             <span class="pdp-head__rule" aria-hidden="true"></span>
-            <p class="pdp-head__sub">L'expérience olfactive de <em>${esc(product.name)}</em> selon la communauté</p>
+            <p class="pdp-head__sub">L'expérience olfactive de <em>${esc(product.name)}</em></p>
           </div>
           ${grille}
           ${note ? `<div class="pdp-reveal">${note}</div>` : ""}

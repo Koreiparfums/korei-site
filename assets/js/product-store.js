@@ -229,7 +229,10 @@
       list = list.filter((p) => ids.has(p.id));
     }
 
-    return sortProducts(list, filters.sort || "popular");
+    // Les parfums « bientot disponible » ferment la liste, quel que soit le
+    // tri : on ne fait pas passer devant ce qu'on ne peut pas vendre.
+    const triee = sortProducts(list, filters.sort || "popular");
+    return [...triee.filter((p) => p.bientot !== true), ...triee.filter((p) => p.bientot === true)];
   }
 
   function scoreProductForQuery(product, query) {

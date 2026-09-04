@@ -221,6 +221,136 @@
     return "";
   }
 
+  // Couleur dominante d'un packshot : moyenne des pixels ni blancs ni
+  // transparents, ponderee par leur saturation (le flacon pese plus que son
+  // ombre). Ramenee a une teinte pale de meme nuance : un flacon rouge donne
+  // un rose pale, un flacon noir un gris clair, comme un fond de studio.
+  const teintes = new Map();
+  // Lit aussi l'emprise du flacon dans la photo (boite englobante, en
+  // fractions), pour que chaque flacon soit affiche a la meme taille quelle
+  // que soit la marge blanche de son packshot.
+  function couleurDominante(img) {
+    const canvas = document.createElement("canvas");
+    const taille = 48;
+    canvas.width = taille;
+    canvas.height = taille;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(img, 0, 0, taille, taille);
+    const data = ctx.getImageData(0, 0, taille, taille).data;
+    let r = 0, g = 0, b = 0, poids = 0;
+    let x0 = taille, y0 = taille, x1 = -1, y1 = -1;
+    for (let y = 0; y < taille; y += 1) {
+      for (let x = 0; x < taille; x += 1) {
+        const i = (y * taille + x) * 4;
+        const a = data[i + 3];
+        const max = Math.max(data[i], data[i + 1], data[i + 2]);
+        const min = Math.min(data[i], data[i + 1], data[i + 2]);
+        // Pixel du flacon : ni transparent, ni blanc.
+        if (a >= 60 && min <= 240) {
+          if (x < x0) x0 = x;
+          if (x > x1) x1 = x;
+          if (y < y0) y0 = y;
+          if (y > y1) y1 = y;
+        }
+        if (a < 200 || min > 235) continue;
+        const sat = max ? (max - min) / max : 0;
+        const w = 0.08 + sat;
+        r += data[i] * w; g += data[i + 1] * w; b += data[i + 2] * w; poids += w;
+      }
+    }
+    if (!poids || x1 < 0) return null;
+    return {
+      rgb: [r / poids, g / poids, b / poids],
+      boite: {
+        w: (x1 - x0 + 1) / taille,
+        h: (y1 - y0 + 1) / taille,
+        cx: (x0 + x1 + 1) / 2 / taille,
+        cy: (y0 + y1 + 1) / 2 / taille,
+      },
+    };
+  }
+
+  // Le flacon vise 80 % de la hauteur de la zone (et au plus 88 % de sa
+  // largeur) : agrandi si son packshot a de la marge, jamais rogne. Le
+  // resultat est un simple transform CSS, calcule une fois par photo.
+  function cadrage(boite) {
+    // La photo occupe 86 % de la hauteur de la zone et garde ses proportions.
+    const zoneW = 0.86 * 0.75 / 0.88; // largeur de la photo en fraction de la zone (3:4 dans une zone ~0.88)
+    let s = Math.min(0.8 / 0.86 / boite.h, (0.88 / zoneW) / boite.w);
+    s = Math.max(1, Math.min(2.2, s));
+    return {
+      scale: s.toFixed(3),
+      ox: `${(boite.cx * 100).toFixed(1)}% ${(boite.cy * 100).toFixed(1)}%`,
+      tx: `${((0.5 - boite.cx) * 100).toFixed(1)}%`,
+      ty: `${((0.5 - boite.cy) * 100).toFixed(1)}%`,
+    };
+  }
+
+  function teintePale([r, g, b]) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = 0;
+    const d = max - min;
+    if (d) {
+      if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+      else if (max === g) h = ((b - r) / d + 2) / 6;
+      else h = ((r - g) / d + 4) / 6;
+    }
+    const sat = max ? d / max : 0;
+    // Saturation contenue, clarte fixe : toutes les cartes ont la meme force.
+    const s = Math.min(0.55, sat * 1.15);
+    return `hsl(${Math.round(h * 360)} ${Math.round(s * 100)}% 85%)`;
+  }
+
+  function teinterSlot(slot, img) {
+    const cle = img.currentSrc || img.src;
+    if (!cle) return;
+    const poser = (lecture) => {
+      teintes.set(cle, lecture);
+      if (!lecture) return;
+      slot.style.setProperty("--card-tint", lecture.teinte);
+      const photo = slot.querySelector(".card-img-photo");
+      if (photo && lecture.cadre) {
+        photo.style.setProperty("--fit-scale", lecture.cadre.scale);
+        photo.style.setProperty("--fit-origin", lecture.cadre.ox);
+        photo.style.setProperty("--fit-x", lecture.cadre.tx);
+        photo.style.setProperty("--fit-y", lecture.cadre.ty);
+      }
+    };
+    if (teintes.has(cle)) {
+      const connue = teintes.get(cle);
+      if (connue instanceof Promise) connue.then(() => poser(teintes.get(cle)));
+      else poser(connue);
+      return;
+    }
+    const lire = (source) => {
+      try {
+        const lecture = couleurDominante(source);
+        return lecture ? { teinte: teintePale(lecture.rgb), cadre: cadrage(lecture.boite) } : null;
+      } catch (error) {
+        // Pas de CORS : le fond garde sa teinte neutre, la photo sa taille.
+        return null;
+      }
+    };
+    let origine = location.origin;
+    try { origine = new URL(cle, location.href).origin; } catch (error) { /* url relative */ }
+    if (origine === location.origin) {
+      poser(lire(img));
+      return;
+    }
+    // Les photos Shopify viennent d'un autre domaine : sans l'attribut CORS,
+    // le canvas refuse de lire les pixels. On recharge la meme image (petite,
+    // en cache HTTP) avec crossOrigin, puis on lit la couleur.
+    const attente = new Promise((resolve) => {
+      const copie = new Image();
+      copie.crossOrigin = "anonymous";
+      copie.onload = () => resolve(lire(copie));
+      copie.onerror = () => resolve(null);
+      copie.src = cle;
+    }).then((teinte) => poser(teinte));
+    teintes.set(cle, attente);
+  }
+
   function initMediaSlots() {
     document.querySelectorAll(".media-slot:not([data-slot-init])").forEach((slot) => {
       const img = slot.querySelector(".media-slot__image");
@@ -238,6 +368,9 @@
         slot.classList.remove("media-slot--empty");
         slot.classList.add("media-slot--loaded");
         if (placeholder) placeholder.hidden = true;
+        // Carte produit : le fond prend la teinte du flacon (degrade uni du
+        // haut vers le bas, retour du 4 septembre 2026, exemple scento).
+        if (slot.classList.contains("media-slot--card")) teinterSlot(slot, img);
       };
 
       img.addEventListener("error", showPlaceholder);

@@ -10897,3 +10897,252 @@ body[data-page="home"] .card-badge {
   font-size: 9.5px;
   padding: 4px 9px;
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   La carte produit, 4 septembre 2026 — demande du client, d'apres la
+   reference scento : un seul fond, pas de separation entre la photo et le
+   texte, des notes plus grandes sans cartouche, et l'elevation qui remplace
+   le filet. Les angles restent droits, les fontes ne bougent pas.
+   ══════════════════════════════════════════════════════════════════════ */
+.product-card {
+  background: #fff;
+  border: 0;
+  box-shadow:
+    0 1px 2px rgba(26, 26, 24, 0.05),
+    0 10px 28px rgba(26, 26, 24, 0.07);
+  transition:
+    box-shadow 0.25s ease,
+    transform 0.2s ease;
+}
+.product-card:hover,
+.product-card:focus-within {
+  border-color: transparent;
+  box-shadow:
+    0 2px 4px rgba(26, 26, 24, 0.06),
+    0 22px 44px rgba(26, 26, 24, 0.12);
+}
+/* Le fond teinte et le halo colore derriere le flacon restent (retour du
+   4 septembre 2026 : « je ne t'ai pas dit de le retirer »). Ce qui s'en va,
+   c'est le filet entre l'image et le texte : la teinte se fond dans la carte. */
+.card-img,
+.card-img.media-slot {
+  height: 232px;
+  border-bottom: 0;
+}
+.card-body {
+  padding: 6px 16px 18px;
+}
+.card-note-strip {
+  gap: 10px;
+  margin: 4px 0 14px;
+}
+.card-note {
+  gap: 6px;
+  font-size: var(--text-12);
+  color: var(--text);
+}
+.note-image,
+.card-note .note-image {
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: var(--text-20);
+}
+.note-image img {
+  object-fit: contain;
+}
+/* Sans photo, l'initiale garde son medaillon, plus petit. */
+.note-image:not(:has(img)),
+.card-note .note-image:not(:has(img)) {
+  width: 44px;
+  height: 44px;
+  margin: 6px 0;
+  border-radius: 50%;
+}
+/* « Bientot disponible » : la carte reste, en gris, et ferme la liste. */
+.product-card.is-bientot .card-img img:not(.card-img-glow) {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+.product-card.is-bientot .card-brand,
+.product-card.is-bientot .card-name,
+.product-card.is-bientot .card-note {
+  color: var(--text-light);
+}
+.product-card.is-bientot .card-badge {
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border-color: var(--border-dark);
+}
+
+/* Page marques, « Maisons phares » : max-height en pourcentage dans un cadre
+   a aspect-ratio ne se resout pas partout (Safari), la photo sortait a sa
+   taille native et la carte debordait. Le cadre porte la hauteur, l'image
+   se cale dedans. */
+.phare-card__media {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+.phare-card__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+}
+
+/* Deux coffrets au lieu de trois : la grille se centre au lieu d'etirer deux
+   cartes sur toute la largeur. */
+.box-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 360px));
+  justify-content: center;
+}
+.card-note > span:last-child {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  min-height: 0;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+/* Page Maisons : tant que le logo est la, le nom en toutes lettres se tait.
+   Les logos etroits (Stephane Humbert Lucas, Noeme) laissaient depasser le
+   nom de chaque cote. Si l'image manque, data-onerror="remove" la retire et
+   le nom revient de lui-meme. */
+.maison-card__logo:has(.maison-card__mark) .maison-card__wordmark {
+  visibility: hidden;
+}
+/* Carte produit, image (retour du 4 septembre 2026, exemple scento) : la
+   teinte du flacon couvre toute la largeur et fond vers le blanc en bas, le
+   flacon est grand mais entier (contain, jamais rogne). */
+.card-img,
+.card-img.media-slot {
+  height: 272px;
+}
+.card-img-glow,
+.media-slot--loaded .card-img-glow {
+  inset: -25%;
+  width: 150%;
+  height: 150%;
+  object-fit: cover;
+  filter: blur(48px) saturate(1.35);
+  opacity: 0.55;
+  transform: none;
+}
+.card-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.55) 70%, #fff 100%);
+}
+.card-img > :not(.card-img-glow) {
+  z-index: 2;
+}
+.media-slot--card .card-img-photo {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.card-body {
+  padding-top: 2px;
+}
+/* Le flacon garde une marge en haut et en bas : grand, mais jamais colle au
+   bord ni sous le repere. Repere et coeur passent au-dessus du flacon. */
+.media-slot--card .card-img-photo {
+  inset: 7% 4%;
+  width: 92%;
+  height: 86%;
+}
+.card-img > .card-badge,
+.card-img > button,
+.card-img > [class*="wish"],
+.card-img > [class*="fav"] {
+  z-index: 3;
+}
+/* Deux cartes par rangee sur mobile : la zone image et les notes reprennent
+   des dimensions a la mesure d'une carte de 170 px. */
+@media (max-width: 640px) {
+  .card-img,
+  .card-img.media-slot {
+    height: 200px;
+  }
+  .card-note .note-image,
+  .note-image {
+    width: 42px;
+    height: 42px;
+  }
+  .card-note-strip {
+    gap: 6px;
+  }
+  .card-note {
+    font-size: var(--text-11);
+  }
+}
+/* Sur mobile (deux cartes de 170 px), le prix et le bouton tiennent sur une
+   ligne : mono un peu plus petite, marges laterales reduites. */
+@media (max-width: 640px) {
+  .card-body {
+    padding: 4px 10px 16px;
+  }
+  .card-actions .card-price {
+    font-size: 12.5px;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+  }
+  .card-cta {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 10px 4px;
+    white-space: nowrap;
+  }
+}
+
+/* Fond de la zone image : un degrade uni, du haut vers le bas, dans la
+   teinte du flacon (--card-tint posee par site.js). Sans teinte, le fond
+   neutre de la carte. Le halo floute ne sert plus. */
+.card-img,
+.card-img.media-slot,
+.media-slot--card.media-slot--loaded {
+  background: linear-gradient(180deg, var(--card-tint, var(--surface)) 0%, rgba(255, 255, 255, 0) 100%), #fff;
+}
+.card-img-glow,
+.media-slot--loaded .card-img-glow {
+  display: none;
+}
+.card-img::after {
+  display: none;
+}
+
+/* La photo garde ses proportions (3:4), centree, 86 % de haut ; le cadrage
+   calcule par site.js (--fit-*) agrandit le flacon des packshots a grande
+   marge, sans jamais le rogner. Le zoom au survol s'y ajoute. */
+.media-slot--card .card-img-photo {
+  inset: 7% 0;
+  width: auto;
+  height: 86%;
+  max-width: 100%;
+  margin: 0 auto;
+  transform-origin: var(--fit-origin, 50% 50%);
+  transform: translate(var(--fit-x, 0), var(--fit-y, 0)) scale(var(--fit-scale, 1));
+}
+.product-card:hover .card-img .card-img-photo {
+  transform: translate(var(--fit-x, 0), var(--fit-y, 0)) scale(calc(var(--fit-scale, 1) * 1.045));
+}
+/* Le degrade s'arrete avant le bord bas : la ligne de jonction avec le texte
+   est blanche des deux cotes, aucun trait ne peut s'y dessiner. */
+.card-img,
+.card-img.media-slot,
+.media-slot--card.media-slot--loaded {
+  background: linear-gradient(180deg, var(--card-tint, var(--surface)) 0%, rgba(255, 255, 255, 0) 94%), #fff;
+}
+

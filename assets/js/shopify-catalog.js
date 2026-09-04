@@ -226,6 +226,81 @@
     return classement[0][0];
   }
 
+  // ── Quand porter le parfum
+  //
+  // Le client a renseigne les saisons de treize parfums sur trois cent
+  // trente-huit. Pour les autres, la carte « Saisons » ne s'affichait pas.
+  // On la remplit a partir de la composition, avec une regle ecrite : ce
+  // n'est pas une mesure, c'est le conseil qu'un vendeur donne au comptoir,
+  // et le releve du client passe toujours devant.
+  //
+  // Une seule grandeur suffit : la chaleur du parfum. Un ambre vanille se
+  // porte quand il fait froid, un hesperide quand il fait chaud. L'echelle
+  // va de -2 (glacant) a +2 (brulant).
+  const CHALEUR_ACCORD = {
+    // Chaud
+    "épicé chaud": 2, ambre: 2, "balsamique/baumé": 2, oud: 2, cannelle: 2,
+    tabac: 2, fumé: 2, caramel: 2, cacao: 2, chocolat: 2, café: 2, miel: 2,
+    rhum: 2, whisky: 2,
+    "épicé doux": 1.5, vanille: 1.5, sucré: 1.5, amande: 1.5,
+    "fruits à coque": 1.5, gourmand: 1.5, alcool: 1.5, vin: 1.5,
+    cuir: 1.5, animal: 1.5,
+    boisé: 1, terreux: 1, patchouli: 1, sable: 1, lactonique: 1,
+    musqué: 0.5, poudré: 0.5,
+    // Neutre
+    mousse: 0, iris: 0, aldéhydé: 0,
+    // Frais
+    rose: -0.5, violette: -0.5, tubéreuse: -0.5, anis: -0.5, cannabis: -0.5,
+    // La noix de coco est un accord d'ete, malgre sa douceur.
+    "noix de coco": -0.5,
+    floral: -1, "fleurs blanches": -1, "fleurs jaunes": -1, cerise: -1,
+    "épicé frais": -1, camphre: -1,
+    fruité: -1.5, métallique: -1.5, salé: -1.5, minéral: -1.5,
+    savonneux: -1.5, aromatique: -1.5, lavande: -1.5, terpénique: -1.5,
+    agrume: -2, frais: -2, aquatique: -2, ozonique: -2, "odeur marine": -2,
+    tropical: -2, vert: -2, herbacé: -2,
+  };
+
+  // Sans accords, la famille suffit a donner le sens.
+  const CHALEUR_FAMILLE = {
+    oriental: 1.5, gourmand: 1.5, cuir: 1.5, boisé: 1,
+    floral: -1, fruity: -1.5, aromatique: -1.5, frais: -2,
+  };
+
+  function chaleurDe(produit) {
+    const POIDS = [12, 6, 4, 3, 2, 2, 1, 1, 1, 1];
+    let somme = 0;
+    let poids = 0;
+    (produit.accords || []).forEach((accord, rang) => {
+      const valeur = CHALEUR_ACCORD[String(accord).toLowerCase()];
+      if (valeur === undefined) return;
+      const p = POIDS[rang] || 1;
+      somme += valeur * p;
+      poids += p;
+    });
+    if (poids) return somme / poids;
+    const famille = CHALEUR_FAMILLE[produit.family];
+    return famille === undefined ? null : famille;
+  }
+
+  // Quatre paliers plutot que trois : « toute l'annee » tombait sur la moitie
+  // du catalogue, ce qui ne conseille personne. Les tiedes penchent d'un cote
+  // sans exclure le reste.
+  function saisonsDeduites(chaleur) {
+    if (chaleur >= 1) return ["automne", "hiver"];
+    if (chaleur >= 0.25) return ["automne", "hiver", "printemps"];
+    if (chaleur <= -1) return ["printemps", "été"];
+    if (chaleur <= -0.25) return ["printemps", "été", "automne"];
+    return ["printemps", "été", "automne", "hiver"];
+  }
+
+  function occasionsDeduites(chaleur) {
+    if (chaleur >= 1) return ["soirée", "date"];
+    if (chaleur >= 0.25) return ["soirée", "quotidien"];
+    if (chaleur <= -0.25) return ["bureau", "quotidien"];
+    return ["quotidien", "soirée"];
+  }
+
   // Cle de recherche dans le releve : maison + nom, sans accent ni
   // ponctuation. « BDK Parfums » + « 312 Saint-Honore » -> « bdkparfums|312sainthonore ».
   function cleFiche(marque, nom) {
@@ -422,6 +497,17 @@
       if (produit.family) return;
       const famille = familleDeduite(produit);
       if (famille) produit.family = famille;
+    });
+
+    // Les saisons ensuite, puisqu'elles s'appuient sur la famille quand le
+    // parfum n'a pas d'accords.
+    merged.forEach((produit) => {
+      const manque = !(produit.seasons || []).length || !(produit.occasions || []).length;
+      if (!manque) return;
+      const chaleur = chaleurDe(produit);
+      if (chaleur === null) return;
+      if (!(produit.seasons || []).length) produit.seasons = saisonsDeduites(chaleur);
+      if (!(produit.occasions || []).length) produit.occasions = occasionsDeduites(chaleur);
     });
 
     // Le tarif du client fait foi, pas la boutique. Ses prix Shopify sont des

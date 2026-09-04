@@ -347,7 +347,7 @@
           <span class="search-hit__brand">${esc(product.brand || "")}</span>
           <span class="search-hit__name">${esc(product.name)}</span>
         </span>
-        <span class="search-hit__price">${indispo ? "Bientôt" : esc(prix)}</span>
+        <span class="search-hit__price">${indispo ? "Bientôt disponible" : esc(prix)}</span>
       </a>`;
   }
 
@@ -777,6 +777,8 @@
     "montale", "nishane", "noeme", "parfums-de-marly", "reinvented",
     "rosendo-mateu", "scentologia", "sospiro", "stephanie-de-bruijn",
     "tiziana-terenzi", "tom-ford", "xerjoff",
+    // Ajoutes le 4 septembre 2026 (sites officiels et Wikimedia Commons).
+    "bvlgari", "carner-barcelona", "essential-parfums", "ex-nihilo", "lancome", "nayu-parfums", "pause-coreenne", "stephane-humbert-lucas",
   ]);
 
   function initHomeMaisons() {

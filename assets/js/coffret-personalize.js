@@ -10,7 +10,6 @@
   // KOR-C1 — plus de prix fixe. Chaque format renvoie vers sa clé décant, et
   // le prix du coffret est la somme des parfums choisis, chacun à −10 %.
   const FORMATS = {
-    "10x2ml": { label: "Découverte", capacity: 10, key: "2ml" },
     "5x5ml": { label: "Voyage", capacity: 5, key: "5ml" },
     "3x10ml": { label: "Iconique", capacity: 3, key: "10ml" },
   };

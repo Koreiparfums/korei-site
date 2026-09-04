@@ -19,6 +19,8 @@
     "montale", "nishane", "noeme", "parfums-de-marly", "reinvented",
     "rosendo-mateu", "scentologia", "sospiro", "stephanie-de-bruijn",
     "tiziana-terenzi", "tom-ford", "xerjoff",
+    // Ajoutes le 4 septembre 2026 (sites officiels et Wikimedia Commons).
+    "bvlgari", "carner-barcelona", "essential-parfums", "ex-nihilo", "lancome", "nayu-parfums", "pause-coreenne", "stephane-humbert-lucas",
   ]);
 
   const FAMILY_LABELS = {
@@ -60,7 +62,10 @@
     const params = new URLSearchParams(window.location.search);
     const highlightBrand = params.get("brand");
 
-    const brandsData = store.getBrands().map((brand) => {
+    // Retour client du 4 septembre 2026 : une maison sans logo ne figure pas
+    // sur cette page (Armani Prive et Room 1015 n'ont pas de logo publie).
+    // Elle reste au catalogue et dans les filtres par marque.
+    const brandsData = store.getBrands().filter((brand) => LOGOS.has(brand.id)).map((brand) => {
       const products = store.getProductsByBrand(brand.id);
       const families = [...new Set(products.map((p) => p.family))];
       return { ...brand, count: products.length, families, products };
