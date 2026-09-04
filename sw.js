@@ -5,7 +5,7 @@
  * connexion pour ce qui a deja ete vu. On ne met JAMAIS en cache les appels
  * a l'API (prix, stock, panier) : ces donnees doivent rester fraiches.
  */
-const VERSION = "korei-v2";
+const VERSION = "korei-v3";
 const SHELL = [
   "/",
   "/index.html",

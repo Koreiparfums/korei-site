@@ -1644,7 +1644,11 @@
   global.toggleFaq = toggleFaq;
   global.toggleMenu = toggleMenu;
   global.toggleSearch = toggleSearch;
-  global.KoreiUI = {
+  // Fusion et non remplacement : site.js pose deja la demande de
+  // confirmation sur KoreiUI, et il se charge avant main.js. Une
+  // affectation seche la faisait disparaitre, et « Vider le panier »
+  // retombait sur la fenetre grise du navigateur.
+  global.KoreiUI = Object.assign(global.KoreiUI || {}, {
     renderProductCard,
     renderProducts,
     renderStars,
@@ -1665,7 +1669,7 @@
     initHomePage,
     initCataloguePage,
     initProductCarousel,
-  };
+  });
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {

@@ -811,9 +811,19 @@
     }
 
     if (clearBtn) {
-      clearBtn.addEventListener("click", () => {
-        if (!load().length) return;
-        if (!confirm("Vider entièrement votre panier ?")) return;
+      clearBtn.addEventListener("click", async () => {
+        const items = load();
+        if (!items.length) return;
+        const nombre = items.reduce((somme, it) => somme + (it.qty || 1), 0);
+        const demander = global.KoreiUI?.demanderConfirmation;
+        const question = {
+          titre: "Vider le panier ?",
+          texte: `${nombre} flacon${nombre > 1 ? "s" : ""} en sortira${nombre > 1 ? "ient" : ""}. Vos favoris ne bougent pas.`,
+          valider: "Vider le panier",
+          annuler: "Garder ma sélection",
+        };
+        const ok = demander ? await demander(question) : global.confirm(question.titre);
+        if (!ok) return;
         save([]);
         saveShopifyCart(null);
         notify();

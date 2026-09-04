@@ -10205,3 +10205,77 @@ textarea:focus-visible {
 .sort-select {
   border-radius: 0;
 }
+
+/* ── 6. La question, dans la voix de la maison ───────────────────────────
+   « Vider le panier » passait par la fenetre du navigateur, celle qui
+   s'annonce « localhost dit : » sur fond gris systeme. Elle casse en une
+   seconde tout ce que la page a construit.
+
+   Meme ivoire, meme filet, meme Cormorant que le reste. Le bouton qui
+   detruit est plein, celui qui renonce est un contour — et c'est lui qui
+   a le focus a l'ouverture. */
+.korei-ask {
+  /* Le reset du haut de page met margin:0 sur tout. Or c'est « margin:auto »
+     qui centre une <dialog> modale : sans lui, la question s'affichait dans
+     le coin haut gauche de l'ecran. */
+  margin: auto;
+  border: 1px solid var(--border-dark);
+  border-radius: 0;
+  padding: 34px 34px 28px;
+  max-width: 26rem;
+  width: calc(100% - 32px);
+  background: var(--surface);
+  color: var(--text);
+}
+.korei-ask::backdrop {
+  background: rgba(26, 26, 24, 0.45);
+}
+.korei-ask__titre {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 27px;
+  font-weight: 500;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.korei-ask__texte {
+  margin-top: 10px;
+  font-size: var(--text-15);
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 34ch;
+}
+.korei-ask__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+.korei-ask__btn {
+  flex: 1 1 auto;
+  min-width: 8rem;
+  padding: 12px 16px;
+  border: 1px solid var(--text);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: "DM Sans", sans-serif;
+  font-size: var(--text-11);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+.korei-ask__btn:hover {
+  background: var(--accent-light);
+}
+.korei-ask__btn--oui {
+  background: var(--text);
+  color: var(--bg);
+}
+.korei-ask__btn--oui:hover {
+  background: var(--text-hover);
+  color: var(--bg);
+}

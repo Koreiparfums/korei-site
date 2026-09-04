@@ -409,6 +409,79 @@
   }
 
   /**
+   * Demande de confirmation, dans la voix de la maison.
+   *
+   * Le navigateur en propose une toute faite, confirm(), mais elle s'annonce
+   * « localhost dit : » dans une fenetre systeme grise. Sur une parfumerie,
+   * cette fenetre-la casse tout ce que la page a construit.
+   *
+   * On s'appuie sur <dialog>, qui donne gratuitement ce qui compte : le
+   * piege du focus, la fermeture par Echap, l'inertie de la page derriere.
+   * Il ne reste qu'a l'habiller. Le bouton qui detruit n'est jamais celui
+   * qui a le focus a l'ouverture.
+   *
+   * Renvoie une promesse : true si l'on confirme, false sinon.
+   */
+  function demanderConfirmation({ titre, texte = "", valider = "Confirmer", annuler = "Annuler" }) {
+    return new Promise((resoudre) => {
+      if (typeof HTMLDialogElement === "undefined") {
+        resoudre(global.confirm(titre));
+        return;
+      }
+
+      const boite = document.createElement("dialog");
+      boite.className = "korei-ask";
+      boite.innerHTML = `
+        <h2 class="korei-ask__titre"></h2>
+        ${texte ? '<p class="korei-ask__texte"></p>' : ""}
+        <div class="korei-ask__actions">
+          <button type="button" class="korei-ask__btn" data-ask="non"></button>
+          <button type="button" class="korei-ask__btn korei-ask__btn--oui" data-ask="oui"></button>
+        </div>`;
+      boite.querySelector(".korei-ask__titre").textContent = titre;
+      if (texte) boite.querySelector(".korei-ask__texte").textContent = texte;
+      boite.querySelector('[data-ask="non"]').textContent = annuler;
+      boite.querySelector('[data-ask="oui"]').textContent = valider;
+
+      // On ne se repose pas sur l'evenement « close » de <dialog> : certains
+      // moteurs ne l'emettent pas, et la promesse ne se resolvait jamais.
+      // Chaque sortie appelle la meme fonction, une seule fois.
+      let fini = false;
+      const terminer = (reponse) => {
+        if (fini) return;
+        fini = true;
+        if (boite.open) boite.close();
+        boite.remove();
+        resoudre(reponse);
+      };
+
+      boite.addEventListener("click", (event) => {
+        const bouton = event.target.closest("[data-ask]");
+        if (bouton) terminer(bouton.dataset.ask === "oui");
+      });
+      // Echap : « cancel » d'abord, la touche en secours.
+      boite.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        terminer(false);
+      });
+      boite.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          terminer(false);
+        }
+      });
+      boite.addEventListener("close", () => terminer(false));
+
+      document.body.appendChild(boite);
+      boite.showModal();
+      boite.querySelector('[data-ask="non"]').focus();
+    });
+  }
+
+  global.KoreiUI = global.KoreiUI || {};
+  global.KoreiUI.demanderConfirmation = demanderConfirmation;
+
+  /**
    * Enregistrement du service worker (KOR-A7).
    * Uniquement en HTTPS ou sur localhost : ailleurs le navigateur refuse.
    */

@@ -5,7 +5,7 @@ const path = require("path");
 const { spawnSync } = require("child_process");
 
 const ROOT = path.resolve(__dirname, "..");
-const IGNORED = new Set([".git", "node_modules", "output"]);
+const IGNORED = new Set([".git", "dist", "node_modules", "output"]);
 const errors = [];
 
 function walk(directory, files = []) {
