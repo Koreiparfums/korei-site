@@ -10742,3 +10742,61 @@ body[data-page="home"] .card-cta {
     opacity 0.3s ease,
     visibility 0.3s;
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   DIRECTION — les chiffres tiennent la colonne (04/09/2026)
+   ════════════════════════════════════════════════════════════════════════
+
+   La regle etait posee depuis longtemps : dans cette boutique, tout ce qui
+   se mesure se lit en chasse fixe. Prix, millilitres, pulverisations. Elle
+   n'avait ete appliquee qu'a l'accueil et a la fiche produit.
+
+   Le panier et le coffret — les deux pages ou l'on additionne — gardaient
+   DM Sans. Un sous-total, une remise et un total empiles en fonte a chasse
+   variable ne s'alignent pas : la virgule flotte d'une ligne a l'autre.
+   C'est justement la que les chiffres alignes servent.
+
+   Meme chose pour « 10 × 2 ml » : c'est une mesure, pas une phrase.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.panier-summary__row span,
+.panier-summary__total span,
+.panier-item__price,
+.panier-item__unit,
+.cb2-dock__total,
+.cb2-recap__row span,
+.cb2-preview__price,
+.cb2-cta__price,
+.cb2-format__ml,
+.cb2-result__price,
+.box-card__format,
+.fav-card__price {
+  font-family: var(--mesure);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ── Les appels de bandeau ont tous la meme taille ───────────────────────
+   Le bandeau de l'accueil portait des boutons de 60 px ; celui des
+   coffrets, les memes mots dans des boutons de 37. Deux bandeaux, deux
+   echelles. Les appels de bandeau prennent partout la grande taille.
+
+   Et les deux boutons cote a cote ne faisaient pas la meme hauteur : le
+   plein n'a pas de filet, le contour en a un de 1,2 px de chaque cote,
+   soit 2,4 px d'ecart visible. Le plein prend donc un filet transparent
+   de la meme epaisseur : meme boite, meme hauteur. */
+.btn-dark,
+.btn-white {
+  border: 1.2px solid transparent;
+}
+.coffret-hero__ctas .btn-dark,
+.coffret-hero__ctas .btn-outline,
+.boxes-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 0 34px;
+  font-size: 11.5px;
+}
