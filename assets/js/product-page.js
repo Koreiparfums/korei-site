@@ -861,7 +861,9 @@
     coffret?.onChange(syncButtons);
     syncButtons();
 
-    // La barre n'apparaît que lorsque le bouton principal n'est plus visible.
+    // La barre apparaît lorsque le bouton principal n'est pas visible. Sur
+    // mobile, cela inclut son état initial sous la ligne de flottaison : le
+    // client voit ainsi prix et action sans devoir parcourir toute la photo.
     // Calcul au scroll plutôt qu'IntersectionObserver : celui-ci ne se
     // déclenche pas quand l'onglet est en arrière-plan.
     if (stickyBar && cta) {
@@ -869,11 +871,8 @@
       const update = () => {
         ticking = false;
         const rect = cta.getBoundingClientRect();
-        // Uniquement quand le bouton est passe AU-DESSUS de l'ecran. S'il est
-        // encore plus bas, la barre s'afficherait des l'ouverture sur
-        // telephone : on proposerait d'acheter avant d'avoir montre le prix,
-        // et elle masquerait la photo et les notes.
-        stickyBar.classList.toggle("is-visible", rect.bottom < 0);
+        const sousEcranMobile = global.innerWidth <= 860 && rect.top > global.innerHeight;
+        stickyBar.classList.toggle("is-visible", rect.bottom < 0 || sousEcranMobile);
       };
       const onScroll = () => {
         if (ticking) return;

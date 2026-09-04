@@ -17,6 +17,13 @@
  */
 const { shopifyGraphQL } = require("./lib/shopify");
 
+const ALLOWED_PROMOTION_CODES = new Set([
+  "COFFRET-2ML",
+  "COFFRET-5ML",
+  "COFFRET-10ML",
+  "LIVRAISON-COFFRET",
+]);
+
 const CART_FIELDS = `
   id
   checkoutUrl
@@ -159,7 +166,13 @@ function normalizeLines(lines) {
 
 function normalizeCodes(codes) {
   if (!Array.isArray(codes)) return [];
-  return [...new Set(codes.map((code) => String(code || "").trim()).filter(Boolean))].slice(0, 6);
+  return [
+    ...new Set(
+      codes
+        .map((code) => String(code || "").trim().toUpperCase())
+        .filter((code) => ALLOWED_PROMOTION_CODES.has(code)),
+    ),
+  ];
 }
 
 async function runCartMutation(query, variables, mutationName) {
@@ -245,7 +258,7 @@ async function handler(req, res) {
 
   if (action === "discount") {
     if (!cartId) return sendJson(res, 400, { error: "cart_id_requis" });
-    const codes = Array.isArray(body.codes) ? body.codes.filter(Boolean) : [];
+    const codes = normalizeCodes(body.codes);
     const result = await runCartMutation(
       CART_DISCOUNT_MUTATION,
       { cartId, codes },

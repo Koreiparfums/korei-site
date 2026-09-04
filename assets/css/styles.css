@@ -10054,3 +10054,135 @@ textarea:focus-visible {
   font-size: 14.5px;
   line-height: 1.75;
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   DIRECTION — l'angle droit, le filet, l'or en encre
+   ════════════════════════════════════════════════════════════════════════
+
+   La fiche produit a change de langage : angles vifs, filets d'un pixel,
+   or en encre plutot qu'en aplat, chiffres en chasse fixe. Le reste du
+   site parlait encore l'ancien : coins arrondis, ombres portees, pastilles
+   dorees pleines. Deux langages sur un meme site, c'est deux maisons.
+
+   Rien de la charte ne bouge : meme ivoire, meme or, meme Cormorant, meme
+   italique sur le mot accentue. Ce sont les enveloppes qui changent.
+
+   ── 1. L'angle dit ce qu'est l'objet ────────────────────────────────────
+   Ce qui contient le parfum — carte, photo, panneau, bouton — prend
+   l'angle droit du coffret. Ce qui est un regard ou une personne —
+   medaillon de note, avatar, coeur des favoris, bulle du conseiller —
+   reste rond. Les etiquettes que l'on active restent des pastilles : ce
+   sont des mots que l'on coche, pas des surfaces. */
+:root {
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+}
+
+/* Les boutons pleine largeur prenaient la pilule. Un bouton de parfumerie
+   est un cartouche, pas une gelule. */
+.btn-dark,
+.btn-white,
+.btn-outline,
+.card-cta,
+.hero__cta,
+.btn-filters-apply,
+.btn-filters-clear,
+.btn-filters-open {
+  border-radius: 0;
+}
+
+/* ── 2. L'ombre devient un filet ─────────────────────────────────────────
+   Une ombre portee sous une carte imite un objet pose sur une table. Une
+   parfumerie n'a pas d'objets qui flottent : elle a des cartouches, des
+   filets et du blanc. Les surfaces au repos perdent donc leur ombre et
+   gardent leur trait d'un pixel.
+
+   Les ombres restent sur ce qui flotte vraiment — le message qui apparait,
+   l'apercu du conseiller, les panneaux, la barre collante : la elles
+   disent une hauteur reelle, pas un effet. */
+:root {
+  --shadow-sm: none;
+  --shadow-md: none;
+}
+.korei-toast,
+.cb2-preview {
+  box-shadow: 0 16px 40px rgba(26, 26, 24, 0.12);
+}
+/* Sans ombre, le survol n'a plus de relief pour se signaler. Le trait
+   passe a l'or : c'est le meme geste que le format choisi sur la fiche. */
+.product-card:hover,
+.fav-card:hover,
+.brand-card:hover,
+.favoris-explore__tile:hover {
+  border-color: var(--accent);
+}
+
+/* ── 3. L'or passe en encre ──────────────────────────────────────────────
+   « Nouveau » etait un aplat dore plein, seul reste des pastilles pleines.
+   Sur la fiche produit les reperes sont devenus du texte : or fonce sur
+   fond clair, un filet autour. Les cartes du catalogue s'alignent. Le
+   dore de la marque tombe a 2,9:1 sur blanc et devient illisible sous
+   11 px : les petits reperes prennent donc l'or du sceau, 4,7:1. */
+.badge-new {
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  border: 0.8px solid var(--badge-border);
+}
+.badge-best {
+  color: var(--badge-text);
+}
+
+/* ── 4. Le nom de la note ne se coupe plus ───────────────────────────────
+   Sous chaque medaillon, une seule ligne coupee net : « Limone Cos… »,
+   « Ferule gom… », « Orange san… ». Vingt-sept noms sur douze cartes.
+   Deux lignes suffisent a en ecrire la quasi-totalite, et la hauteur
+   reservee garde les cartes d'aplomb. */
+.card-note > span:last-child {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: clip;
+  min-height: calc(2 * 1.2em);
+  text-wrap: balance;
+}
+
+/* ── 5. Le texte du bandeau passe devant la photo ────────────────────────
+   Mesure a 1280 px : le sous-titre court de 10 a 41 % de la largeur, et le
+   voile n'est plus qu'a 69 % d'opacite a son extremite droite. Le nom d'un
+   flacon de la photo se lisait donc au travers d'un texte gris de 15 px.
+
+   Le voile tient maintenant sa pleine opacite sur toute la colonne de
+   texte, puis tombe d'un coup. La photo garde plus de la moitie de la
+   largeur, la ou sont les flacons. Et le sous-titre quitte le gris pour
+   le brun chaud de la charte : c'est le meme texte, il se lit. */
+.hero::before {
+  background: linear-gradient(
+    100deg,
+    rgb(250, 247, 242) 0%,
+    rgb(250, 247, 242) 42%,
+    rgba(250, 247, 242, 0.45) 62%,
+    rgba(250, 247, 242, 0) 78%
+  );
+}
+.hero__sub {
+  color: var(--text-warm);
+}
+
+/* Derniers arrondis : le repere pose sur une carte, les champs de saisie
+   et le menu de tri. Un repere est une etiquette collee sur un coffret, un
+   champ est un cartouche. Restent rondes les seules pastilles que l'on
+   coche — filtres du catalogue, suggestions du conseiller — et les
+   medaillons de notes, qui sont des regards sur un ingredient. */
+.card-badge,
+.search,
+.mini-search,
+.chatbot-input,
+.filters-sort select,
+.sort-select {
+  border-radius: 0;
+}

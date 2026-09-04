@@ -1,0 +1,252 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e3]:
+    - generic [ref=f1e4]: Livraison offerte dès un coffret
+    - generic [ref=f1e6]: Décants 100 % authentiques
+    - generic [ref=f1e8]: Expédition sous 24 h
+    - generic [ref=f1e10]: Satisfaction 30 jours
+    - generic [ref=f1e12]: Livraison offerte dès un coffret
+    - generic [ref=f1e14]: Décants 100 % authentiques
+    - generic [ref=f1e16]: Expédition sous 24 h
+    - generic [ref=f1e18]: Satisfaction 30 jours
+  - banner [ref=f1e19]:
+    - generic [ref=f1e20]:
+      - text: 
+      - navigation [ref=f1e21]:
+        - link "Accueil" [ref=f1e22] [cursor=pointer]:
+          - /url: ../index.html
+        - link "Parfums" [ref=f1e23] [cursor=pointer]:
+          - /url: catalogue.html
+        - link "Coffrets" [ref=f1e24] [cursor=pointer]:
+          - /url: coffret.html
+        - link "Les Boxes" [ref=f1e25] [cursor=pointer]:
+          - /url: boxes.html
+        - link "Marques" [ref=f1e26] [cursor=pointer]:
+          - /url: brands.html
+        - link "Collections" [ref=f1e27] [cursor=pointer]:
+          - /url: collections.html
+    - link "Kōrei" [ref=f1e28] [cursor=pointer]:
+      - /url: ../index.html
+    - generic [ref=f1e29]:
+      - search [ref=f1e30]:
+        - generic [ref=f1e31]: 
+        - searchbox "Rechercher" [ref=f1e33]
+      - generic [ref=f1e34]:
+        - text: 
+        - link "Favoris" [ref=f1e35] [cursor=pointer]:
+          - /url: favoris.html
+          - generic [ref=f1e36]: 
+        - link "Panier" [ref=f1e37] [cursor=pointer]:
+          - /url: panier.html
+          - generic [ref=f1e38]: 
+          - generic [ref=f1e39]: "3"
+        - link "Compte" [ref=f1e40] [cursor=pointer]:
+          - /url: compte.html
+          - generic [ref=f1e41]: 
+  - text:   
+  - main [ref=f1e42]:
+    - generic [ref=f1e43]:
+      - heading "Panier" [level=1] [ref=f1e44]
+      - paragraph [ref=f1e46]: 3 articles dans votre sélection
+    - generic [ref=f1e47]:
+      - generic [ref=f1e48]:
+        - list [ref=f1e49]:
+          - listitem [ref=f1e50]:
+            - generic [ref=f1e51]:
+              - generic [ref=f1e52]:
+                - generic [ref=f1e53]: Coffret Iconique
+                - generic [ref=f1e54]: 3/3 · 10 ml
+              - generic [ref=f1e55]: 215,70 €
+            - list [ref=f1e57]:
+              - listitem [ref=f1e58]:
+                - link [ref=f1e59] [cursor=pointer]:
+                  - /url: ../pages/product.html?id=lettre-de-pushkar
+                - generic [ref=f1e60]:
+                  - link "Ella K Parfums Lettre de Pushkar" [ref=f1e61] [cursor=pointer]:
+                    - /url: ../pages/product.html?id=lettre-de-pushkar
+                    - generic [ref=f1e62]: Ella K Parfums
+                    - generic [ref=f1e63]: Lettre de Pushkar
+                  - combobox "Format" [ref=f1e64] [cursor=pointer]:
+                    - option "2 ml"
+                    - option "5 ml"
+                    - option "10 ml" [selected]
+                - generic [ref=f1e65]:
+                  - button "Diminuer la quantité" [ref=f1e66] [cursor=pointer]: −
+                  - generic [ref=f1e67]: "1"
+                  - button "Augmenter la quantité" [ref=f1e68] [cursor=pointer]: +
+                - generic [ref=f1e69]: 44,90 €
+                - button "Retirer Lettre de Pushkar du panier" [ref=f1e70] [cursor=pointer]:
+                  - generic [ref=f1e71]: 
+              - listitem [ref=f1e72]:
+                - link [ref=f1e73] [cursor=pointer]:
+                  - /url: ../pages/product.html?id=amouage-jubilation-25-woman
+                - generic [ref=f1e74]:
+                  - link "Amouage Jubilation 25 Woman" [ref=f1e75] [cursor=pointer]:
+                    - /url: ../pages/product.html?id=amouage-jubilation-25-woman
+                    - generic [ref=f1e76]: Amouage
+                    - generic [ref=f1e77]: Jubilation 25 Woman
+                  - combobox "Format" [ref=f1e78] [cursor=pointer]:
+                    - option "2 ml"
+                    - option "5 ml"
+                    - option "10 ml" [selected]
+                - generic [ref=f1e79]:
+                  - button "Diminuer la quantité" [ref=f1e80] [cursor=pointer]: −
+                  - generic [ref=f1e81]: "1"
+                  - button "Augmenter la quantité" [ref=f1e82] [cursor=pointer]: +
+                - generic [ref=f1e83]: 72,90 €
+                - button "Retirer Jubilation 25 Woman du panier" [ref=f1e84] [cursor=pointer]:
+                  - generic [ref=f1e85]: 
+              - listitem [ref=f1e86]:
+                - link [ref=f1e87] [cursor=pointer]:
+                  - /url: ../pages/product.html?id=amouage-love-delight-woman
+                - generic [ref=f1e88]:
+                  - link "Amouage Love Delight Woman" [ref=f1e89] [cursor=pointer]:
+                    - /url: ../pages/product.html?id=amouage-love-delight-woman
+                    - generic [ref=f1e90]: Amouage
+                    - generic [ref=f1e91]: Love Delight Woman
+                  - combobox "Format" [ref=f1e92] [cursor=pointer]:
+                    - option "2 ml"
+                    - option "5 ml"
+                    - option "10 ml" [selected]
+                - generic [ref=f1e93]:
+                  - button "Diminuer la quantité" [ref=f1e94] [cursor=pointer]: −
+                  - generic [ref=f1e95]: "1"
+                  - button "Augmenter la quantité" [ref=f1e96] [cursor=pointer]: +
+                - generic [ref=f1e97]: 97,90 €
+                - button "Retirer Love Delight Woman du panier" [ref=f1e98] [cursor=pointer]:
+                  - generic [ref=f1e99]: 
+        - generic [ref=f1e100]:
+          - button "Sauvegarder la sélection" [ref=f1e101] [cursor=pointer]:
+            - generic [aria-hidden] [ref=f1e102]: 
+            - text: Sauvegarder la sélection
+          - button "Vider le panier" [ref=f1e103] [cursor=pointer]:
+            - generic [aria-hidden] [ref=f1e104]: 
+            - text: Vider le panier
+      - complementary [ref=f1e105]:
+        - generic [ref=f1e106]:
+          - heading "Votre commande" [level=2] [ref=f1e107]
+          - generic [ref=f1e109]:
+            - generic [ref=f1e110]: Sous-total
+            - generic [ref=f1e111]: 215,70 €
+          - generic [ref=f1e112]:
+            - generic [ref=f1e113]: Livraison
+            - generic [ref=f1e114]: Validation…
+          - paragraph [ref=f1e115]: Shopify vérifie les lignes, la remise et la livraison…
+          - generic [ref=f1e116]:
+            - generic [ref=f1e117]:
+              - text: Total
+              - emphasis [ref=f1e118]: TTC
+            - generic [ref=f1e119]: 215,70 €
+          - button "Passer la commande" [disabled] [ref=f1e120]:
+            - text: Passer la commande
+            - generic [aria-hidden] [ref=f1e121]: →
+          - paragraph [ref=f1e122]: Validation du panier par Shopify en cours…
+          - paragraph [ref=f1e123]:
+            - generic [aria-hidden] [ref=f1e124]: 
+            - text: Paiement 100 % sécurisé
+        - list [ref=f1e125]:
+          - listitem [ref=f1e126]:
+            - generic [aria-hidden] [ref=f1e127]: 
+            - generic [ref=f1e128]:
+              - strong [ref=f1e129]: Parfums 100 % authentiques
+              - generic [ref=f1e130]: Sélectionnés avec exigence
+          - listitem [ref=f1e131]:
+            - generic [aria-hidden] [ref=f1e132]: 
+            - generic [ref=f1e133]:
+              - strong [ref=f1e134]: Expédition sous 24 h
+              - generic [ref=f1e135]: Colis préparé avec soin
+          - listitem [ref=f1e136]:
+            - generic [aria-hidden] [ref=f1e137]: 
+            - generic [ref=f1e138]:
+              - strong [ref=f1e139]: Livraison offerte dès un coffret
+              - generic [ref=f1e140]: En France métropolitaine
+          - listitem [ref=f1e141]:
+            - generic [aria-hidden] [ref=f1e142]: 
+            - generic [ref=f1e143]:
+              - strong [ref=f1e144]: Retours gratuits
+              - generic [ref=f1e145]: Sous 30 jours
+    - text: 
+    - generic [ref=f1e146]:
+      - generic [ref=f1e147]:
+        - heading "Continuez l'exploration" [level=2] [ref=f1e148]
+        - link "Voir toutes les collections" [ref=f1e149] [cursor=pointer]:
+          - /url: collections.html
+          - text: Voir toutes les collections →
+      - generic [ref=f1e150]:
+        - link "→ Été" [ref=f1e151] [cursor=pointer]:
+          - /url: catalogue.html?season=été
+          - text: →
+          - generic [ref=f1e152]: Été
+        - link "→ Floral" [ref=f1e153] [cursor=pointer]:
+          - /url: catalogue.html?family=floral
+          - text: →
+          - generic [ref=f1e154]: Floral
+        - link "→ Boisé" [ref=f1e155] [cursor=pointer]:
+          - /url: catalogue.html?family=boisé
+          - text: →
+          - generic [ref=f1e156]: Boisé
+        - link "→ Gourmand" [ref=f1e157] [cursor=pointer]:
+          - /url: catalogue.html?family=gourmand
+          - text: →
+          - generic [ref=f1e158]: Gourmand
+        - link "→ Oud" [ref=f1e159] [cursor=pointer]:
+          - /url: catalogue.html?note=oud
+          - text: →
+          - generic [ref=f1e160]: Oud
+    - generic [ref=f1e162]:
+      - generic [ref=f1e163]:
+        - generic [ref=f1e164]: 
+        - generic [ref=f1e165]: Livraison offertedès un coffret
+      - generic [ref=f1e166]:
+        - generic [ref=f1e167]: 
+        - generic [ref=f1e168]: Paiement sécurisé3D Secure
+      - generic [ref=f1e169]:
+        - generic [ref=f1e170]: 
+        - generic [ref=f1e171]: Échantillons offertspour chaque commande
+      - generic [ref=f1e172]:
+        - generic [ref=f1e173]: 
+        - generic [ref=f1e174]: Retours gratuitssous 30 jours
+  - contentinfo [ref=f1e175]:
+    - generic [ref=f1e176]:
+      - generic [ref=f1e177]:
+        - generic [ref=f1e178]: Kōrei
+        - generic [ref=f1e179]: Parfumerie de niche · Paris
+        - generic [ref=f1e180]: Décants remplis à la main, depuis le flacon d'origine.
+      - generic [ref=f1e181]:
+        - generic [ref=f1e182]: Boutique
+        - link "Tous les parfums" [ref=f1e183] [cursor=pointer]:
+          - /url: catalogue.html
+        - link "Coffrets" [ref=f1e184] [cursor=pointer]:
+          - /url: coffret.html
+        - link "Les Boxes" [ref=f1e185] [cursor=pointer]:
+          - /url: boxes.html
+        - link "Marques" [ref=f1e186] [cursor=pointer]:
+          - /url: brands.html
+        - link "Collections" [ref=f1e187] [cursor=pointer]:
+          - /url: collections.html
+      - generic [ref=f1e188]:
+        - generic [ref=f1e189]: Kōrei
+        - link "À propos" [ref=f1e190] [cursor=pointer]:
+          - /url: about.html
+        - link "Conseiller IA" [ref=f1e191] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=f1e192]:
+        - generic [ref=f1e193]: Aide
+        - link "Contact" [ref=f1e194] [cursor=pointer]:
+          - /url: contact.html
+        - link "FAQ" [ref=f1e195] [cursor=pointer]:
+          - /url: faq.html
+        - link "Livraison & retours" [ref=f1e196] [cursor=pointer]:
+          - /url: livraison-retours.html
+        - link "CGV" [ref=f1e197] [cursor=pointer]:
+          - /url: cgv.html
+        - link "Mentions légales" [ref=f1e198] [cursor=pointer]:
+          - /url: mentions-legales.html
+        - link "Confidentialité" [ref=f1e199] [cursor=pointer]:
+          - /url: confidentialite.html
+    - generic [ref=f1e200]: © 2026 Kōrei — Tous droits réservés
+  - button "Ouvrir le conseiller olfactif" [ref=f1e203] [cursor=pointer]:
+    - generic [ref=f1e204]: 
+  - button "Mon coffret" [ref=f1e206] [cursor=pointer]:
+    - generic [ref=f1e207]: 
+    - generic [ref=f1e208]: "3"
+  - text:     

@@ -1,0 +1,343 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]: Livraison offerte dès un coffret
+    - generic [ref=e6]: Décants 100 % authentiques
+    - generic [ref=e8]: Expédition sous 24 h
+    - generic [ref=e10]: Satisfaction 30 jours
+    - generic [ref=e12]: Livraison offerte dès un coffret
+    - generic [ref=e14]: Décants 100 % authentiques
+    - generic [ref=e16]: Expédition sous 24 h
+    - generic [ref=e18]: Satisfaction 30 jours
+  - banner [ref=e19]:
+    - generic [ref=e20]:
+      - text: 
+      - navigation [ref=e21]:
+        - link "Accueil" [ref=e22] [cursor=pointer]:
+          - /url: ../index.html
+        - link "Parfums" [ref=e23] [cursor=pointer]:
+          - /url: catalogue.html
+        - link "Coffrets" [ref=e24] [cursor=pointer]:
+          - /url: coffret.html
+        - link "Les Boxes" [ref=e25] [cursor=pointer]:
+          - /url: boxes.html
+        - link "Marques" [ref=e26] [cursor=pointer]:
+          - /url: brands.html
+        - link "Collections" [ref=e27] [cursor=pointer]:
+          - /url: collections.html
+    - link "Kōrei" [ref=e28] [cursor=pointer]:
+      - /url: ../index.html
+    - generic [ref=e29]:
+      - search [ref=e30]:
+        - generic [ref=e31]: 
+        - searchbox "Rechercher" [ref=e33]
+      - generic [ref=e34]:
+        - text: 
+        - link "Favoris" [ref=e35] [cursor=pointer]:
+          - /url: favoris.html
+          - generic [ref=e36]: 
+        - link "Panier" [ref=e37] [cursor=pointer]:
+          - /url: panier.html
+          - generic [ref=e38]: 
+          - generic [ref=e828]: "3"
+        - link "Compte" [ref=e39] [cursor=pointer]:
+          - /url: compte.html
+          - generic [ref=e40]: 
+  - text:   
+  - main [ref=e41]:
+    - generic [ref=e44]:
+      - generic [ref=e45]: Coffrets Kōrei
+      - heading [level=1] [ref=e46]:
+        - text: Une collection. Une saison.
+        - emphasis [ref=e47]: Une émotion.
+      - paragraph [ref=e49]: Des sets signature composés pour chaque saison — ou une sélection 100 % personnalisée, à votre image.
+      - generic [ref=e50]:
+        - link "Découvrir les coffrets" [ref=e51] [cursor=pointer]:
+          - /url: "#coffrets"
+        - link "Créer mon coffret sur mesure" [ref=e52] [cursor=pointer]:
+          - /url: "#personnaliser"
+          - text: Créer mon coffret sur mesure →
+    - generic [ref=e54]:
+      - generic [ref=e55]: 100 % authentique
+      - generic [ref=e57]: Flacons & décants
+      - generic [ref=e59]: 100+ maisons de niche
+      - generic [ref=e61]: Expédition sous 24 h
+      - generic [ref=e63]: Satisfaction 30 jours
+      - generic [ref=e65]: 100 % authentique
+      - generic [ref=e67]: Flacons & décants
+      - generic [ref=e69]: 100+ maisons de niche
+      - generic [ref=e71]: Expédition sous 24 h
+      - generic [ref=e73]: Satisfaction 30 jours
+    - generic [ref=e75]:
+      - generic [ref=e76]:
+        - generic [ref=e77]: Nos coffrets
+        - heading [level=2] [ref=e78]:
+          - text: Trois formats,
+          - emphasis [ref=e79]: une seule règle
+          - text: ": coffret complet, −10 % sur chaque flacon."
+        - paragraph [ref=e81]: Vous choisissez le format, puis vos parfums. Le prix se met à jour à chaque ajout. Dès que le coffret est complet, chaque flacon perd 10 % et la livraison est offerte.
+      - generic [ref=e82]:
+        - link "−10 % Coffret Découverte Kōrei ouvert, dix décants de 2 ml Coffret Découverte 10 × 2 ml Dix parfums. Pour balayer large avant de choisir. −10 % sur chaque flacon Livraison offerte Composer ce coffret" [ref=e83] [cursor=pointer]:
+          - /url: "#personnaliser"
+          - generic [ref=e84]: −10 %
+          - img "Coffret Découverte Kōrei ouvert, dix décants de 2 ml" [ref=e86]
+          - generic [ref=e87]:
+            - heading "Coffret Découverte" [level=3] [ref=e88]
+            - paragraph [ref=e89]: 10 × 2 ml
+            - paragraph [ref=e90]: Dix parfums. Pour balayer large avant de choisir.
+            - list [ref=e91]:
+              - listitem [ref=e92]:
+                - generic [aria-hidden] [ref=e93]: 
+                - text: −10 % sur chaque flacon
+              - listitem [ref=e94]:
+                - generic [aria-hidden] [ref=e95]: 
+                - text: Livraison offerte
+            - generic [ref=e96]: Composer ce coffret →
+        - link "Notre conseil −10 % Coffret Voyage Kōrei ouvert, cinq décants de 5 ml Coffret Voyage 5 × 5 ml Cinq parfums. Pour départager ceux qui vous ont plu. −10 % sur chaque flacon Livraison offerte Composer ce coffret" [ref=e97] [cursor=pointer]:
+          - /url: "#personnaliser"
+          - generic [ref=e98]: Notre conseil
+          - generic [ref=e99]: −10 %
+          - img "Coffret Voyage Kōrei ouvert, cinq décants de 5 ml" [ref=e101]
+          - generic [ref=e102]:
+            - heading "Coffret Voyage" [level=3] [ref=e103]
+            - paragraph [ref=e104]: 5 × 5 ml
+            - paragraph [ref=e105]: Cinq parfums. Pour départager ceux qui vous ont plu.
+            - list [ref=e106]:
+              - listitem [ref=e107]:
+                - generic [aria-hidden] [ref=e108]: 
+                - text: −10 % sur chaque flacon
+              - listitem [ref=e109]:
+                - generic [aria-hidden] [ref=e110]: 
+                - text: Livraison offerte
+            - generic [ref=e111]: Composer ce coffret →
+        - link "−10 % Coffret Iconique Kōrei ouvert, trois décants de 10 ml Coffret Iconique 3 × 10 ml Trois parfums. Pour ceux que vous portez déjà. −10 % sur chaque flacon Livraison offerte Composer ce coffret" [ref=e112] [cursor=pointer]:
+          - /url: "#personnaliser"
+          - generic [ref=e113]: −10 %
+          - img "Coffret Iconique Kōrei ouvert, trois décants de 10 ml" [ref=e115]
+          - generic [ref=e116]:
+            - heading "Coffret Iconique" [level=3] [ref=e117]
+            - paragraph [ref=e118]: 3 × 10 ml
+            - paragraph [ref=e119]: Trois parfums. Pour ceux que vous portez déjà.
+            - list [ref=e120]:
+              - listitem [ref=e121]:
+                - generic [aria-hidden] [ref=e122]: 
+                - text: −10 % sur chaque flacon
+              - listitem [ref=e123]:
+                - generic [aria-hidden] [ref=e124]: 
+                - text: Livraison offerte
+            - generic [ref=e125]: Composer ce coffret →
+      - generic [ref=e126]:
+        - generic [ref=e127]:
+          - generic [aria-hidden] [ref=e128]: 
+          - generic [ref=e129]:
+            - generic [ref=e130]: Authentique & sécurisé
+            - text: Décants officiels Kōrei
+        - generic [ref=e131]:
+          - generic [aria-hidden] [ref=e132]: 
+          - generic [ref=e133]:
+            - generic [ref=e134]: Flacons en verre premium
+            - text: Préserve l'intégrité des parfums
+        - generic [ref=e135]:
+          - generic [aria-hidden] [ref=e136]: 
+          - generic [ref=e137]:
+            - generic [ref=e138]: Expédition 24 h
+            - text: Emballage soigné & sécurisé
+    - generic [ref=e140]:
+      - generic [ref=e141]:
+        - text: 
+        - generic [ref=e142]:
+          - generic [ref=e143]:
+            - generic [ref=e144]: Votre coffret
+            - generic [ref=e145]: Iconique
+          - generic [ref=e146]: 0 / 3 flacons
+          - list [ref=e148]:
+            - listitem [ref=e832]: Sélectionnez vos parfums pour composer votre coffret.
+          - generic [ref=e150]:
+            - generic [ref=e151]:
+              - generic [ref=e152]: Sous-total
+              - generic [ref=e153]: 0 €
+            - generic [ref=e154]:
+              - generic [ref=e155]: Livraison
+              - generic [ref=e156]: Selon le panier
+          - generic [ref=e157]:
+            - generic [ref=e158]: Total
+            - generic [ref=e159]: 0 €
+      - generic [ref=e160]:
+        - generic [ref=e161]:
+          - heading "Personnalisez votre coffret" [level=2] [ref=e162]
+          - paragraph [ref=e163]: Composez votre sélection parmi nos maisons de niche.
+        - list [ref=e164]:
+          - listitem [ref=e165]:
+            - button "✓ Choisissez votre coffret" [ref=e259] [cursor=pointer]:
+              - generic [ref=e167]: ✓
+              - generic [ref=e168]: Choisissez votre coffret
+          - listitem [ref=e169]:
+            - button "2 Sélectionnez vos parfums" [ref=e833] [cursor=pointer]:
+              - generic [ref=e171]: "2"
+              - generic [ref=e172]: Sélectionnez vos parfums
+          - listitem [ref=e173]:
+            - button "3 Validez votre commande" [disabled] [ref=e174]:
+              - generic [ref=e175]: "3"
+              - generic [ref=e176]: Validez votre commande
+        - generic [ref=e177]:
+          - heading "Choisissez votre format" [level=3] [ref=e178]
+          - radiogroup "Format du coffret" [ref=e179]:
+            - radio "Découverte 10 × 2 ml Idéal pour découvrir plusieurs maisons." [ref=e180] [cursor=pointer]:
+              - generic [ref=e181]: Découverte
+              - generic [ref=e182]: 10 × 2 ml
+              - generic [ref=e183]: Idéal pour découvrir plusieurs maisons.
+            - radio "Voyage 5 × 5 ml Le meilleur équilibre entre découverte et quotidien." [ref=e184] [cursor=pointer]:
+              - generic [ref=e185]: Voyage
+              - generic [ref=e186]: 5 × 5 ml
+              - generic [ref=e187]: Le meilleur équilibre entre découverte et quotidien.
+            - radio "Iconique 3 × 10 ml Pour profiter durablement de vos coups de cœur." [checked] [ref=e188] [cursor=pointer]:
+              - generic [ref=e189]: Iconique
+              - generic [ref=e190]: 3 × 10 ml
+              - generic [ref=e191]: Pour profiter durablement de vos coups de cœur.
+        - generic [ref=e192]:
+          - heading "Ajoutez vos parfums" [level=3] [ref=e193]
+          - generic [ref=e194]:
+            - generic [aria-hidden] [ref=e195]: 
+            - textbox "Rechercher un parfum…" [ref=e196]
+          - generic [ref=e197]:
+            - button "Toutes" [ref=e198] [cursor=pointer]
+            - button "Boisé" [ref=e199] [cursor=pointer]:
+              - generic [aria-hidden] [ref=e200]: 
+              - text: Boisé
+            - button "Floral" [ref=e201] [cursor=pointer]:
+              - generic [aria-hidden] [ref=e202]: 
+              - text: Floral
+            - button "Oriental" [ref=e203] [cursor=pointer]:
+              - generic [aria-hidden] [ref=e204]: 
+              - text: Oriental
+            - button "Frais" [ref=e205] [cursor=pointer]:
+              - generic [aria-hidden] [ref=e206]: 
+              - text: Frais
+            - button "Gourmand" [ref=e207] [cursor=pointer]:
+              - generic [aria-hidden] [ref=e208]: ﶱ
+              - text: Gourmand
+          - paragraph [ref=e260]: 163 parfums disponibles · 8 affichés
+          - generic [ref=e261]:
+            - generic [ref=e834]:
+              - generic [ref=e837]:
+                - generic [ref=e838]: Lettre de Pushkar
+                - generic [ref=e839]: Ella K Parfums
+                - generic [ref=e840]: Safran • Cardamome • Rose
+              - generic [ref=e841]:
+                - button "Retirer un Lettre de Pushkar" [disabled] [ref=e842]: −
+                - generic [ref=e843]: "0"
+                - button "Ajouter un Lettre de Pushkar" [ref=e844] [cursor=pointer]: +
+            - generic [ref=e845]:
+              - generic [ref=e848]:
+                - generic [ref=e849]: Jubilation 25 Woman
+                - generic [ref=e850]: Amouage
+                - generic [ref=e851]: Ylang-ylang • Rose • Estragon
+              - generic [ref=e852]:
+                - button "Retirer un Jubilation 25 Woman" [disabled] [ref=e853]: −
+                - generic [ref=e854]: "0"
+                - button "Ajouter un Jubilation 25 Woman" [ref=e855] [cursor=pointer]: +
+            - generic [ref=e856]:
+              - generic [ref=e859]:
+                - generic [ref=e860]: Love Delight Woman
+                - generic [ref=e861]: Amouage
+                - generic [ref=e862]: Gingembre • Mandarine • Cannelle
+              - generic [ref=e863]:
+                - button "Retirer un Love Delight Woman" [disabled] [ref=e864]: −
+                - generic [ref=e865]: "0"
+                - button "Ajouter un Love Delight Woman" [ref=e866] [cursor=pointer]: +
+            - generic [ref=e867]:
+              - generic [ref=e870]:
+                - generic [ref=e871]: Love Tubéreuse Woman
+                - generic [ref=e872]: Amouage
+                - generic [ref=e873]: Tubéreuse • Gardénia • Jasmin
+              - generic [ref=e874]:
+                - button "Retirer un Love Tubéreuse Woman" [disabled] [ref=e875]: −
+                - generic [ref=e876]: "0"
+                - button "Ajouter un Love Tubéreuse Woman" [ref=e877] [cursor=pointer]: +
+            - generic [ref=e878]:
+              - generic [ref=e881]:
+                - generic [ref=e882]: Sucre Noir
+                - generic [ref=e883]: Arte Profumi
+                - generic [ref=e884]: Gousse de vanille • Canne à sucre • Orchidée
+              - generic [ref=e885]:
+                - button "Retirer un Sucre Noir" [disabled] [ref=e886]: −
+                - generic [ref=e887]: "0"
+                - button "Ajouter un Sucre Noir" [ref=e888] [cursor=pointer]: +
+            - generic [ref=e889]:
+              - generic [ref=e892]:
+                - generic [ref=e893]: Corylus
+                - generic [ref=e894]: Arte Profumi
+                - generic [ref=e895]: Blé • Poire • Anis
+              - generic [ref=e896]:
+                - button "Retirer un Corylus" [disabled] [ref=e897]: −
+                - generic [ref=e898]: "0"
+                - button "Ajouter un Corylus" [ref=e899] [cursor=pointer]: +
+            - generic [ref=e900]:
+              - generic [ref=e903]:
+                - generic [ref=e904]: Magic Mushroom
+                - generic [ref=e905]: Bohoboco
+                - generic [ref=e906]: Cyprès • Pamplemousse • Cardamome
+              - generic [ref=e907]:
+                - button "Retirer un Magic Mushroom" [disabled] [ref=e908]: −
+                - generic [ref=e909]: "0"
+                - button "Ajouter un Magic Mushroom" [ref=e910] [cursor=pointer]: +
+            - generic [ref=e911]:
+              - generic [ref=e914]:
+                - generic [ref=e915]: Sandal Wood
+                - generic [ref=e916]: Bohoboco
+                - generic [ref=e917]: Bois de santal • Néroli • Bergamote
+              - generic [ref=e918]:
+                - button "Retirer un Sandal Wood" [disabled] [ref=e919]: −
+                - generic [ref=e920]: "0"
+                - button "Ajouter un Sandal Wood" [ref=e921] [cursor=pointer]: +
+          - generic [ref=e350]: Sélectionnez vos parfums pour composer votre coffret.
+        - generic [ref=e209]:
+          - button "Ajouter le coffret au panier 0 €" [disabled] [ref=e923]:
+            - generic [ref=e211]: Ajouter le coffret au panier
+            - generic [ref=e212]: 0 €
+          - paragraph [ref=e213]: Choisissez 3 parfums pour −10 % sur chaque flacon et la livraison offerte
+  - contentinfo [ref=e214]:
+    - generic [ref=e215]:
+      - generic [ref=e216]:
+        - generic [ref=e217]: Kōrei
+        - generic [ref=e218]: Parfumerie de niche · Paris
+        - generic [ref=e219]: Décants remplis à la main, depuis le flacon d'origine.
+      - generic [ref=e225]:
+        - generic [ref=e226]: Boutique
+        - link "Tous les parfums" [ref=e227] [cursor=pointer]:
+          - /url: catalogue.html
+        - link "Coffrets" [ref=e228] [cursor=pointer]:
+          - /url: coffret.html
+        - link "Les Boxes" [ref=e229] [cursor=pointer]:
+          - /url: boxes.html
+        - link "Marques" [ref=e230] [cursor=pointer]:
+          - /url: brands.html
+        - link "Collections" [ref=e231] [cursor=pointer]:
+          - /url: collections.html
+      - generic [ref=e232]:
+        - generic [ref=e233]: Kōrei
+        - link "À propos" [ref=e234] [cursor=pointer]:
+          - /url: about.html
+        - link "Conseiller IA" [ref=e235] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=e236]:
+        - generic [ref=e237]: Aide
+        - link "Contact" [ref=e238] [cursor=pointer]:
+          - /url: contact.html
+        - link "FAQ" [ref=e239] [cursor=pointer]:
+          - /url: faq.html
+        - link "Livraison & retours" [ref=e240] [cursor=pointer]:
+          - /url: livraison-retours.html
+        - link "CGV" [ref=e241] [cursor=pointer]:
+          - /url: cgv.html
+        - link "Mentions légales" [ref=e242] [cursor=pointer]:
+          - /url: mentions-legales.html
+        - link "Confidentialité" [ref=e243] [cursor=pointer]:
+          - /url: confidentialite.html
+    - generic [ref=e244]: © 2026 Kōrei — Tous droits réservés
+  - button "Ouvrir le conseiller olfactif" [ref=e247] [cursor=pointer]:
+    - generic [ref=e248]: 
+  - button "Mon coffret" [ref=e250] [cursor=pointer]:
+    - generic [ref=e251]: 
+    - generic [ref=e924]: "3"
+  - text:     
+  - generic: Coffret Iconique ajouté · validation Shopify en cours

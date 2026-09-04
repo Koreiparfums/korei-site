@@ -1,0 +1,789 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e3]:
+    - generic [ref=f3e4]: Livraison offerte dès un coffret
+    - generic [ref=f3e5]: Décants 100 % authentiques
+    - generic [ref=f3e6]: Expédition sous 24 h
+    - generic [ref=f3e7]: Satisfaction 30 jours
+    - generic [ref=f3e8]: Livraison offerte dès un coffret
+    - generic [ref=f3e9]: Décants 100 % authentiques
+    - generic [ref=f3e10]: Expédition sous 24 h
+    - generic [ref=f3e11]: Satisfaction 30 jours
+  - banner [ref=f3e12]:
+    - button "Menu" [ref=f3e14] [cursor=pointer]:
+      - generic [ref=f3e15]: 
+    - link "Kōrei" [ref=f3e16] [cursor=pointer]:
+      - /url: ../index.html
+    - generic [ref=f3e17]:
+      - text: 
+      - generic [ref=f3e18]:
+        - button "Rechercher" [ref=f3e19] [cursor=pointer]:
+          - generic [ref=f3e20]: 
+        - link "Favoris" [ref=f3e21] [cursor=pointer]:
+          - /url: favoris.html
+          - generic [ref=f3e22]: 
+        - link "Panier" [ref=f3e23] [cursor=pointer]:
+          - /url: panier.html
+          - generic [ref=f3e24]: 
+          - generic [ref=f3e25]: "3"
+        - link "Compte" [ref=f3e26] [cursor=pointer]:
+          - /url: compte.html
+          - generic [ref=f3e27]: 
+  - text:   
+  - main [ref=f3e28]:
+    - link "Retour aux parfums" [ref=f3e29] [cursor=pointer]:
+      - /url: catalogue.html
+      - generic [ref=f3e30]: 
+      - generic [ref=f3e31]: Parfums
+    - generic [ref=f3e33]:
+      - generic [ref=f3e38]:
+        - generic [ref=f3e39]:
+          - generic [ref=f3e40]:
+            - generic [ref=f3e41]: 
+            - text: Authentique
+          - generic [ref=f3e42]: Grand classique
+        - img "Ella K Parfums Lettre de Pushkar" [ref=f3e43]
+      - generic [ref=f3e44]:
+        - generic [ref=f3e45]:
+          - generic [ref=f3e46]: Ella K Parfums
+          - heading "Lettre de Pushkar" [level=1] [ref=f3e47]
+          - generic [ref=f3e48]:
+            - generic [ref=f3e49]: 11,90 €
+            - generic [ref=f3e50]: 5,95 € / ml
+          - radiogroup "Format" [ref=f3e51]:
+            - radio "2 ml — 11,90 euros" [checked] [ref=f3e52] [cursor=pointer]:
+              - generic [ref=f3e54]: 2 ml
+              - generic [ref=f3e55]: 11,90 €
+              - generic [ref=f3e56]: 5,95 € / ml
+              - generic [ref=f3e57]: ~30 pulvérisations
+            - radio "5 ml — 22,90 euros" [ref=f3e58] [cursor=pointer]:
+              - generic [ref=f3e59]: Notre conseil
+              - generic [ref=f3e61]: 5 ml
+              - generic [ref=f3e62]: 22,90 €
+              - generic [ref=f3e63]: 4,58 € / ml
+              - generic [ref=f3e64]: ~75 pulvérisations
+            - radio "10 ml — 44,90 euros" [ref=f3e65] [cursor=pointer]:
+              - generic [ref=f3e66]: Meilleur prix
+              - generic [ref=f3e68]: 10 ml
+              - generic [ref=f3e69]: 44,90 €
+              - generic [ref=f3e70]: 4,49 € / ml
+              - generic [ref=f3e71]: ~150 pulvérisations
+          - generic [ref=f3e72]:
+            - generic [ref=f3e73]:
+              - generic [ref=f3e74]: Coffret Découverte
+              - generic [ref=f3e75]: 0/10
+            - generic [ref=f3e76]:
+              - generic [ref=f3e77]:
+                - generic [ref=f3e78]: −10 %
+                - generic [ref=f3e79]: sur chaque flacon
+              - generic [ref=f3e80]:
+                - generic [ref=f3e81]: Offerte*
+                - generic [ref=f3e82]: si le coffret est éligible
+            - paragraph [ref=f3e83]:
+              - text: "Composez 10 parfums en 2 ml :"
+              - strong [ref=f3e84]: 11,90 € économisés
+              - text: .
+          - generic [ref=f3e86]:
+            - button "Ajouter au panier — 11,90 €" [ref=f3e87] [cursor=pointer]
+            - button "Ajouter aux favoris" [ref=f3e88] [cursor=pointer]:
+              - generic [ref=f3e89]: 
+          - list [ref=f3e90]:
+            - listitem [ref=f3e91]:
+              - generic [aria-hidden] [ref=f3e92]: 
+              - text: Décants 100 % authentiques
+            - listitem [ref=f3e93]:
+              - generic [aria-hidden] [ref=f3e94]: 
+              - text: Satisfait ou remboursé 30 jours
+            - listitem [ref=f3e95]:
+              - generic [aria-hidden] [ref=f3e96]: 
+              - text: Expédition sous 24 h
+            - listitem [ref=f3e97]:
+              - generic [aria-hidden] [ref=f3e98]: 
+              - text: Livraison offerte sur coffret éligible
+          - paragraph [ref=f3e99]: "Ella K Parfums — Lettre de Pushkar, en décant Kōrei, formats 2 ml, 5 ml et 10 ml. Notes de tête : Safran, Cardamome Notes de cœur : Rose, Encens Notes de fond : Bois de santal, Ambre Genre : unisexe."
+        - generic [ref=f3e100]:
+          - generic [ref=f3e101]:
+            - heading [level=2] [ref=f3e102]:
+              - button "Notes olfactives" [ref=f3e103] [cursor=pointer]:
+                - generic [aria-hidden] [ref=f3e105]: 
+            - text: 
+          - heading [level=2] [ref=f3e107]:
+            - button "Détails" [ref=f3e108] [cursor=pointer]:
+              - generic [aria-hidden] [ref=f3e110]: 
+          - heading [level=2] [ref=f3e112]:
+            - button "Avis" [ref=f3e113] [cursor=pointer]:
+              - generic [aria-hidden] [ref=f3e115]: 
+        - generic [ref=f3e117]:
+          - generic [ref=f3e118]:
+            - generic [ref=f3e119]: Ressenti
+            - heading [level=2] [ref=f3e120]:
+              - text: Ce que vous allez
+              - emphasis [ref=f3e121]: sentir
+          - generic [ref=f3e122]:
+            - article [ref=f3e123]:
+              - generic [ref=f3e125]: 
+              - heading "Tenue" [level=3] [ref=f3e126]
+              - paragraph [ref=f3e127]: Longue tenue
+              - 'img "Tenue : 8 sur 10" [ref=f3e128]':
+                - generic [ref=f3e140]: 8/10
+              - paragraph [ref=f3e141]: Une bonne partie de la journée sans avoir à en remettre.
+            - article [ref=f3e142]:
+              - generic [ref=f3e144]: 
+              - heading "Projection" [level=3] [ref=f3e145]
+              - paragraph [ref=f3e146]: Sillage présent
+              - 'img "Projection : 8 sur 10" [ref=f3e147]':
+                - generic [ref=f3e159]: 8/10
+              - paragraph [ref=f3e160]: Perceptible à un bras de distance, sans envahir.
+            - article [ref=f3e161]:
+              - generic [ref=f3e163]: 
+              - heading "Quand le porter" [level=3] [ref=f3e164]
+              - paragraph [ref=f3e165]: Automne et Hiver
+              - list [ref=f3e166]:
+                - listitem [ref=f3e167]: Printemps
+                - listitem [ref=f3e168]: Été
+                - listitem [ref=f3e169]: Automne
+                - listitem [ref=f3e170]: Hiver
+              - paragraph [ref=f3e171]: Occasions
+              - list [ref=f3e172]:
+                - listitem [ref=f3e173]: Soirée
+                - listitem [ref=f3e174]: Date
+        - generic [ref=f3e176]:
+          - generic [ref=f3e177]:
+            - generic [ref=f3e178]: Famille olfactive
+            - heading "Oriental" [level=2] [ref=f3e179]
+            - paragraph [ref=f3e180]: Chaleureuse et enveloppante, la famille orientale marie épices, résines et notes ambrées pour une signature sensuelle et intense, souvent portée en soirée.
+          - generic [ref=f3e181]:
+            - generic [ref=f3e182]: L'histoire
+            - heading "Le décant Kōrei" [level=2] [ref=f3e183]
+            - paragraph [ref=f3e184]:
+              - text: "Chez Kōrei, chaque flacon est choisi avec la même exigence : celle de maisons de parfumerie de niche qui refusent le compromis."
+              - emphasis [ref=f3e185]: Lettre de Pushkar
+              - text: a rejoint notre sélection pour sa signature oriental — une composition que nous avons voulu rendre accessible dès quelques millilitres, sans jamais transiger sur l'authenticité.
+            - paragraph [ref=f3e186]: Chaque décant est prélevé à la main depuis un flacon d'origine, dans le respect total du parfum et de la maison qui l'a créé. Vous recevez exactement la même fragrance que le flacon complet — simplement le format qui vous correspond.
+    - generic [ref=f3e187]:
+      - generic [ref=f3e188]:
+        - generic [ref=f3e189]:
+          - generic [ref=f3e190]: Sélection
+          - heading "Parfums similaires" [level=2] [ref=f3e191]
+        - generic [ref=f3e192]:
+          - button "Précédent" [ref=f3e193] [cursor=pointer]:
+            - generic [ref=f3e194]: 
+          - button "Suivant" [ref=f3e195] [cursor=pointer]:
+            - generic [ref=f3e196]: 
+      - generic [ref=f3e197]:
+        - article [aria-hidden] [ref=f3e198] [cursor=pointer]:
+          - link [ref=f3e199]:
+            - /url: ../pages/product.html?id=interlude-man
+            - generic [ref=f3e200]:
+              - generic [ref=f3e201]: Grand classique
+              - generic [ref=f3e205]:
+                - generic [aria-hidden] [ref=f3e206]: 
+                - generic [ref=f3e207]: Amouage
+                - generic [ref=f3e208]: Interlude Man
+            - generic [ref=f3e209]:
+              - generic [ref=f3e210]: Amouage
+              - heading [level=3] [ref=f3e211]: Interlude Man
+              - generic [ref=f3e212]:
+                - generic [ref=f3e213]: Oud
+                - generic [ref=f3e216]: Bergamote
+                - generic [ref=f3e219]: Résine
+              - generic [ref=f3e222]: Bientôt disponible
+          - button [ref=f3e223]:
+            - generic [aria-hidden] [ref=f3e224]: 
+        - article [aria-hidden] [ref=f3e225] [cursor=pointer]:
+          - link [ref=f3e226]:
+            - /url: ../pages/product.html?id=oud-for-greatness
+            - generic [ref=f3e227]:
+              - generic [ref=f3e228]: Nouveauté
+              - generic [ref=f3e232]:
+                - generic [aria-hidden] [ref=f3e233]: 
+                - generic [ref=f3e234]: Initio
+                - generic [ref=f3e235]: Oud for Greatness
+            - generic [ref=f3e236]:
+              - generic [ref=f3e237]: Initio
+              - heading [level=3] [ref=f3e238]: Oud for Greatness
+              - generic [ref=f3e239]:
+                - generic [ref=f3e240]: Safran
+                - generic [ref=f3e243]: Lavande
+                - generic [ref=f3e246]: Oud
+              - generic [ref=f3e249]: Bientôt disponible
+          - button [ref=f3e250]:
+            - generic [aria-hidden] [ref=f3e251]: 
+        - article [aria-hidden] [ref=f3e252] [cursor=pointer]:
+          - link [ref=f3e253]:
+            - /url: ../pages/product.html?id=layton
+            - generic [ref=f3e254]:
+              - generic [ref=f3e255]: Nouveauté
+              - generic [ref=f3e259]:
+                - generic [aria-hidden] [ref=f3e260]: 
+                - generic [ref=f3e261]: Parfums de Marly
+                - generic [ref=f3e262]: Layton
+            - generic [ref=f3e263]:
+              - generic [ref=f3e264]: Parfums de Marly
+              - heading [level=3] [ref=f3e265]: Layton
+              - generic [ref=f3e266]:
+                - generic [ref=f3e267]: Pomme
+                - generic [ref=f3e270]: Bergamote
+                - generic [ref=f3e273]: Vanille
+              - generic [ref=f3e276]: Bientôt disponible
+          - button [ref=f3e277]:
+            - generic [aria-hidden] [ref=f3e278]: 
+        - article [aria-hidden] [ref=f3e279] [cursor=pointer]:
+          - link [ref=f3e280]:
+            - /url: ../pages/product.html?id=amouage-jubilation-xxv-man
+            - generic [ref=f3e281]:
+              - generic [ref=f3e282]: Bientôt
+              - generic [ref=f3e286]:
+                - generic [aria-hidden] [ref=f3e287]: 
+                - generic [ref=f3e288]: Amouage
+                - generic [ref=f3e289]: Jubilation XXV Man
+            - generic [ref=f3e290]:
+              - generic [ref=f3e291]: Amouage
+              - heading [level=3] [ref=f3e292]: Jubilation XXV Man
+              - generic [ref=f3e293]:
+                - generic [ref=f3e294]:
+                  - generic [aria-hidden] [ref=f3e296]: 
+                  - generic [ref=f3e297]: Mûre
+                - generic [ref=f3e298]:
+                  - generic [aria-hidden] [ref=f3e300]: 
+                  - generic [ref=f3e301]: Résine oliban
+                - generic [ref=f3e302]:
+                  - generic [aria-hidden] [ref=f3e304]: 
+                  - generic [ref=f3e305]: Ciste
+              - generic [ref=f3e306]: Bientôt disponible
+          - button [ref=f3e307]:
+            - generic [aria-hidden] [ref=f3e308]: 
+        - article [aria-hidden] [ref=f3e309] [cursor=pointer]:
+          - link [ref=f3e310]:
+            - /url: ../pages/product.html?id=amouage-sunshine-woman
+            - generic [ref=f3e311]:
+              - generic [ref=f3e312]: Bientôt
+              - generic [ref=f3e316]:
+                - generic [aria-hidden] [ref=f3e317]: 
+                - generic [ref=f3e318]: Amouage
+                - generic [ref=f3e319]: Sunshine Woman
+            - generic [ref=f3e320]:
+              - generic [ref=f3e321]: Amouage
+              - heading [level=3] [ref=f3e322]: Sunshine Woman
+              - generic [ref=f3e323]:
+                - generic [ref=f3e324]:
+                  - generic [aria-hidden] [ref=f3e326]: 
+                  - generic [ref=f3e327]: Amande
+                - generic [ref=f3e328]: Cassis
+                - generic [ref=f3e331]:
+                  - generic [aria-hidden] [ref=f3e333]: 
+                  - generic [ref=f3e334]: Davana
+              - generic [ref=f3e335]: Bientôt disponible
+          - button [ref=f3e336]:
+            - generic [aria-hidden] [ref=f3e337]: 
+        - article [aria-hidden] [ref=f3e338] [cursor=pointer]:
+          - link [ref=f3e339]:
+            - /url: ../pages/product.html?id=amouage-honour-woman
+            - generic [ref=f3e340]:
+              - generic [ref=f3e341]: Bientôt
+              - generic [ref=f3e345]:
+                - generic [aria-hidden] [ref=f3e346]: 
+                - generic [ref=f3e347]: Amouage
+                - generic [ref=f3e348]: Honour Woman
+            - generic [ref=f3e349]:
+              - generic [ref=f3e350]: Amouage
+              - heading [level=3] [ref=f3e351]: Honour Woman
+              - generic [ref=f3e352]:
+                - generic [ref=f3e353]:
+                  - generic [aria-hidden] [ref=f3e355]: 
+                  - generic [ref=f3e356]: Rhubarbe
+                - generic [ref=f3e357]: Poivre
+                - generic [ref=f3e360]:
+                  - generic [aria-hidden] [ref=f3e362]: 
+                  - generic [ref=f3e363]: Coriandre
+              - generic [ref=f3e364]: Bientôt disponible
+          - button [ref=f3e365]:
+            - generic [aria-hidden] [ref=f3e366]: 
+        - article [aria-hidden] [ref=f3e367] [cursor=pointer]:
+          - link [ref=f3e368]:
+            - /url: ../pages/product.html?id=amouage-epic-woman
+            - generic [ref=f3e369]:
+              - generic [ref=f3e370]: Bientôt
+              - generic [ref=f3e374]:
+                - generic [aria-hidden] [ref=f3e375]: 
+                - generic [ref=f3e376]: Amouage
+                - generic [ref=f3e377]: Epic Woman
+            - generic [ref=f3e378]:
+              - generic [ref=f3e379]: Amouage
+              - heading [level=3] [ref=f3e380]: Epic Woman
+              - generic [ref=f3e381]:
+                - generic [ref=f3e382]:
+                  - generic [aria-hidden] [ref=f3e384]: 
+                  - generic [ref=f3e385]: Carvi
+                - generic [ref=f3e386]:
+                  - generic [aria-hidden] [ref=f3e388]: 
+                  - generic [ref=f3e389]: Cannelle
+                - generic [ref=f3e390]: Laurier rose
+              - generic [ref=f3e393]: Bientôt disponible
+          - button [ref=f3e394]:
+            - generic [aria-hidden] [ref=f3e395]: 
+        - article [aria-hidden] [ref=f3e396] [cursor=pointer]:
+          - link [ref=f3e397]:
+            - /url: ../pages/product.html?id=bdk-parfums-gris-charnel
+            - generic [ref=f3e398]:
+              - generic [ref=f3e399]: Bientôt
+              - generic [ref=f3e403]:
+                - generic [aria-hidden] [ref=f3e404]: 
+                - generic [ref=f3e405]: BDK Parfums
+                - generic [ref=f3e406]: Gris Charnel
+            - generic [ref=f3e407]:
+              - generic [ref=f3e408]: BDK Parfums
+              - heading [level=3] [ref=f3e409]: Gris Charnel
+              - generic [ref=f3e410]:
+                - generic [ref=f3e411]: Cardamome
+                - generic [ref=f3e414]:
+                  - generic [aria-hidden] [ref=f3e416]: 
+                  - generic [ref=f3e417]: Figue
+                - generic [ref=f3e418]:
+                  - generic [aria-hidden] [ref=f3e420]: 
+                  - generic [ref=f3e421]: Thé noir
+              - generic [ref=f3e422]: Bientôt disponible
+          - button [ref=f3e423]:
+            - generic [aria-hidden] [ref=f3e424]: 
+        - article [ref=f3e425] [cursor=pointer]:
+          - link "Voir Interlude Man par Amouage" [ref=f3e426]:
+            - /url: ../pages/product.html?id=interlude-man
+            - generic [ref=f3e427]:
+              - generic [ref=f3e428]: Grand classique
+              - img "Amouage Interlude Man" [ref=f3e429]
+              - generic [ref=f3e432]:
+                - generic [aria-hidden] [ref=f3e433]: 
+                - generic [ref=f3e434]: Amouage
+                - generic [ref=f3e435]: Interlude Man
+            - generic [ref=f3e436]:
+              - generic [ref=f3e437]: Amouage
+              - heading "Interlude Man" [level=3] [ref=f3e438]
+              - generic "Notes principales" [ref=f3e439]:
+                - generic "Oud" [ref=f3e440]
+                - generic "Bergamote" [ref=f3e443]
+                - generic "Résine" [ref=f3e446]
+              - generic [ref=f3e449]: Bientôt disponible
+          - button "Ajouter aux favoris" [ref=f3e450]:
+            - generic [aria-hidden] [ref=f3e451]: 
+        - article [ref=f3e452] [cursor=pointer]:
+          - link "Voir Oud for Greatness par Initio" [ref=f3e453]:
+            - /url: ../pages/product.html?id=oud-for-greatness
+            - generic [ref=f3e454]:
+              - generic [ref=f3e455]: Nouveauté
+              - img "Initio Oud for Greatness" [ref=f3e456]
+              - generic [ref=f3e459]:
+                - generic [aria-hidden] [ref=f3e460]: 
+                - generic [ref=f3e461]: Initio
+                - generic [ref=f3e462]: Oud for Greatness
+            - generic [ref=f3e463]:
+              - generic [ref=f3e464]: Initio
+              - heading "Oud for Greatness" [level=3] [ref=f3e465]
+              - generic "Notes principales" [ref=f3e466]:
+                - generic "Safran" [ref=f3e467]
+                - generic "Lavande" [ref=f3e470]
+                - generic "Oud" [ref=f3e473]
+              - generic [ref=f3e476]: Bientôt disponible
+          - button "Ajouter aux favoris" [ref=f3e477]:
+            - generic [aria-hidden] [ref=f3e478]: 
+        - article [ref=f3e479] [cursor=pointer]:
+          - link "Voir Layton par Parfums de Marly" [ref=f3e480]:
+            - /url: ../pages/product.html?id=layton
+            - generic [ref=f3e481]:
+              - generic [ref=f3e482]: Nouveauté
+              - img "Parfums de Marly Layton" [ref=f3e483]
+              - generic [ref=f3e486]:
+                - generic [aria-hidden] [ref=f3e487]: 
+                - generic [ref=f3e488]: Parfums de Marly
+                - generic [ref=f3e489]: Layton
+            - generic [ref=f3e490]:
+              - generic [ref=f3e491]: Parfums de Marly
+              - heading "Layton" [level=3] [ref=f3e492]
+              - generic "Notes principales" [ref=f3e493]:
+                - generic "Pomme" [ref=f3e494]
+                - generic "Bergamote" [ref=f3e497]
+                - generic "Vanille" [ref=f3e500]
+              - generic [ref=f3e503]: Bientôt disponible
+          - button "Ajouter aux favoris" [ref=f3e504]:
+            - generic [aria-hidden] [ref=f3e505]: 
+        - article [ref=f3e506] [cursor=pointer]:
+          - link "Voir Jubilation XXV Man par Amouage" [ref=f3e507]:
+            - /url: ../pages/product.html?id=amouage-jubilation-xxv-man
+            - generic [ref=f3e508]:
+              - generic [ref=f3e509]: Bientôt
+              - img "Amouage Jubilation XXV Man" [ref=f3e510]
+              - generic [ref=f3e513]:
+                - generic [aria-hidden] [ref=f3e514]: 
+                - generic [ref=f3e515]: Amouage
+                - generic [ref=f3e516]: Jubilation XXV Man
+            - generic [ref=f3e517]:
+              - generic [ref=f3e518]: Amouage
+              - heading "Jubilation XXV Man" [level=3] [ref=f3e519]
+              - generic "Notes principales" [ref=f3e520]:
+                - generic "Mûre" [ref=f3e521]:
+                  - generic [aria-hidden] [ref=f3e523]: 
+                - generic "Résine oliban" [ref=f3e525]:
+                  - generic [aria-hidden] [ref=f3e527]: 
+                - generic "Ciste" [ref=f3e529]:
+                  - generic [aria-hidden] [ref=f3e531]: 
+              - generic [ref=f3e533]: Bientôt disponible
+          - button "Ajouter aux favoris" [ref=f3e534]:
+            - generic [aria-hidden] [ref=f3e535]: 
+        - article [ref=f3e536] [cursor=pointer]:
+          - link "Voir Sunshine Woman par Amouage" [ref=f3e537]:
+            - /url: ../pages/product.html?id=amouage-sunshine-woman
+            - generic [ref=f3e538]:
+              - generic [ref=f3e539]: Bientôt
+              - img "Amouage Sunshine Woman" [ref=f3e540]
+              - generic [ref=f3e543]:
+                - generic [aria-hidden] [ref=f3e544]: 
+                - generic [ref=f3e545]: Amouage
+                - generic [ref=f3e546]: Sunshine Woman
+            - generic [ref=f3e547]:
+              - generic [ref=f3e548]: Amouage
+              - heading "Sunshine Woman" [level=3] [ref=f3e549]
+              - generic "Notes principales" [ref=f3e550]:
+                - generic "Amande" [ref=f3e551]:
+                  - generic [aria-hidden] [ref=f3e553]: 
+                - generic "Cassis" [ref=f3e555]
+                - generic "Davana" [ref=f3e558]:
+                  - generic [aria-hidden] [ref=f3e560]: 
+              - generic [ref=f3e562]: Bientôt disponible
+          - button "Ajouter aux favoris" [ref=f3e563]:
+            - generic [aria-hidden] [ref=f3e564]: 
+        - article [ref=f3e565] [cursor=pointer]:
+          - link "Voir Honour Woman par Amouage" [ref=f3e566]:
+            - /url: ../pages/product.html?id=amouage-honour-woman
+            - generic [ref=f3e567]:
+              - generic [ref=f3e568]: Bientôt
+              - img "Amouage Honour Woman" [ref=f3e569]
+              - generic [ref=f3e572]:
+                - generic [aria-hidden] [ref=f3e573]: 
+                - generic [ref=f3e574]: Amouage
+                - generic [ref=f3e575]: Honour Woman
+            - generic [ref=f3e576]:
+              - generic [ref=f3e577]: Amouage
+              - heading "Honour Woman" [level=3] [ref=f3e578]
+              - generic "Notes principales" [ref=f3e579]:
+                - generic "Rhubarbe" [ref=f3e580]:
+                  - generic [aria-hidden] [ref=f3e582]: 
+                - generic "Poivre" [ref=f3e584]
+                - generic "Coriandre" [ref=f3e587]:
+                  - generic [aria-hidden] [ref=f3e589]: 
+              - generic [ref=f3e591]: Bientôt disponible
+          - button "Ajouter aux favoris" [ref=f3e592]:
+            - generic [aria-hidden] [ref=f3e593]: 
+        - article [ref=f3e594] [cursor=pointer]:
+          - link "Voir Epic Woman par Amouage" [ref=f3e595]:
+            - /url: ../pages/product.html?id=amouage-epic-woman
+            - generic [ref=f3e596]:
+              - generic [ref=f3e597]: Bientôt
+              - img "Amouage Epic Woman" [ref=f3e598]
+              - generic [ref=f3e601]:
+                - generic [aria-hidden] [ref=f3e602]: 
+                - generic [ref=f3e603]: Amouage
+                - generic [ref=f3e604]: Epic Woman
+            - generic [ref=f3e605]:
+              - generic [ref=f3e606]: Amouage
+              - heading "Epic Woman" [level=3] [ref=f3e607]
+              - generic "Notes principales" [ref=f3e608]:
+                - generic "Carvi" [ref=f3e609]:
+                  - generic [aria-hidden] [ref=f3e611]: 
+                - generic "Cannelle" [ref=f3e613]:
+                  - generic [aria-hidden] [ref=f3e615]: 
+                - generic "Laurier rose" [ref=f3e617]
+              - generic [ref=f3e620]: Bientôt disponible
+          - button "Ajouter aux favoris" [ref=f3e621]:
+            - generic [aria-hidden] [ref=f3e622]: 
+        - article [ref=f3e623] [cursor=pointer]:
+          - link "Voir Gris Charnel par BDK Parfums" [ref=f3e624]:
+            - /url: ../pages/product.html?id=bdk-parfums-gris-charnel
+            - generic [ref=f3e625]:
+              - generic [ref=f3e626]: Bientôt
+              - img "BDK Parfums Gris Charnel" [ref=f3e627]
+              - generic [ref=f3e630]:
+                - generic [aria-hidden] [ref=f3e631]: 
+                - generic [ref=f3e632]: BDK Parfums
+                - generic [ref=f3e633]: Gris Charnel
+            - generic [ref=f3e634]:
+              - generic [ref=f3e635]: BDK Parfums
+              - heading "Gris Charnel" [level=3] [ref=f3e636]
+              - generic "Notes principales" [ref=f3e637]:
+                - generic "Cardamome" [ref=f3e638]
+                - generic "Figue" [ref=f3e641]:
+                  - generic [aria-hidden] [ref=f3e643]: 
+                - generic "Thé noir" [ref=f3e645]:
+                  - generic [aria-hidden] [ref=f3e647]: 
+              - generic [ref=f3e649]: Bientôt disponible
+          - button "Ajouter aux favoris" [ref=f3e650]:
+            - generic [aria-hidden] [ref=f3e651]: 
+        - article [aria-hidden] [ref=f3e652] [cursor=pointer]:
+          - link [ref=f3e653]:
+            - /url: ../pages/product.html?id=interlude-man
+            - generic [ref=f3e654]:
+              - generic [ref=f3e655]: Grand classique
+              - generic [ref=f3e659]:
+                - generic [aria-hidden] [ref=f3e660]: 
+                - generic [ref=f3e661]: Amouage
+                - generic [ref=f3e662]: Interlude Man
+            - generic [ref=f3e663]:
+              - generic [ref=f3e664]: Amouage
+              - heading [level=3] [ref=f3e665]: Interlude Man
+              - generic [ref=f3e666]:
+                - generic [ref=f3e667]: Oud
+                - generic [ref=f3e670]: Bergamote
+                - generic [ref=f3e673]: Résine
+              - generic [ref=f3e676]: Bientôt disponible
+          - button [ref=f3e677]:
+            - generic [aria-hidden] [ref=f3e678]: 
+        - article [aria-hidden] [ref=f3e679] [cursor=pointer]:
+          - link [ref=f3e680]:
+            - /url: ../pages/product.html?id=oud-for-greatness
+            - generic [ref=f3e681]:
+              - generic [ref=f3e682]: Nouveauté
+              - generic [ref=f3e686]:
+                - generic [aria-hidden] [ref=f3e687]: 
+                - generic [ref=f3e688]: Initio
+                - generic [ref=f3e689]: Oud for Greatness
+            - generic [ref=f3e690]:
+              - generic [ref=f3e691]: Initio
+              - heading [level=3] [ref=f3e692]: Oud for Greatness
+              - generic [ref=f3e693]:
+                - generic [ref=f3e694]: Safran
+                - generic [ref=f3e697]: Lavande
+                - generic [ref=f3e700]: Oud
+              - generic [ref=f3e703]: Bientôt disponible
+          - button [ref=f3e704]:
+            - generic [aria-hidden] [ref=f3e705]: 
+        - article [aria-hidden] [ref=f3e706] [cursor=pointer]:
+          - link [ref=f3e707]:
+            - /url: ../pages/product.html?id=layton
+            - generic [ref=f3e708]:
+              - generic [ref=f3e709]: Nouveauté
+              - generic [ref=f3e713]:
+                - generic [aria-hidden] [ref=f3e714]: 
+                - generic [ref=f3e715]: Parfums de Marly
+                - generic [ref=f3e716]: Layton
+            - generic [ref=f3e717]:
+              - generic [ref=f3e718]: Parfums de Marly
+              - heading [level=3] [ref=f3e719]: Layton
+              - generic [ref=f3e720]:
+                - generic [ref=f3e721]: Pomme
+                - generic [ref=f3e724]: Bergamote
+                - generic [ref=f3e727]: Vanille
+              - generic [ref=f3e730]: Bientôt disponible
+          - button [ref=f3e731]:
+            - generic [aria-hidden] [ref=f3e732]: 
+        - article [aria-hidden] [ref=f3e733] [cursor=pointer]:
+          - link [ref=f3e734]:
+            - /url: ../pages/product.html?id=amouage-jubilation-xxv-man
+            - generic [ref=f3e735]:
+              - generic [ref=f3e736]: Bientôt
+              - generic [ref=f3e740]:
+                - generic [aria-hidden] [ref=f3e741]: 
+                - generic [ref=f3e742]: Amouage
+                - generic [ref=f3e743]: Jubilation XXV Man
+            - generic [ref=f3e744]:
+              - generic [ref=f3e745]: Amouage
+              - heading [level=3] [ref=f3e746]: Jubilation XXV Man
+              - generic [ref=f3e747]:
+                - generic [ref=f3e748]:
+                  - generic [aria-hidden] [ref=f3e750]: 
+                  - generic [ref=f3e751]: Mûre
+                - generic [ref=f3e752]:
+                  - generic [aria-hidden] [ref=f3e754]: 
+                  - generic [ref=f3e755]: Résine oliban
+                - generic [ref=f3e756]:
+                  - generic [aria-hidden] [ref=f3e758]: 
+                  - generic [ref=f3e759]: Ciste
+              - generic [ref=f3e760]: Bientôt disponible
+          - button [ref=f3e761]:
+            - generic [aria-hidden] [ref=f3e762]: 
+        - article [aria-hidden] [ref=f3e763] [cursor=pointer]:
+          - link [ref=f3e764]:
+            - /url: ../pages/product.html?id=amouage-sunshine-woman
+            - generic [ref=f3e765]:
+              - generic [ref=f3e766]: Bientôt
+              - generic [ref=f3e770]:
+                - generic [aria-hidden] [ref=f3e771]: 
+                - generic [ref=f3e772]: Amouage
+                - generic [ref=f3e773]: Sunshine Woman
+            - generic [ref=f3e774]:
+              - generic [ref=f3e775]: Amouage
+              - heading [level=3] [ref=f3e776]: Sunshine Woman
+              - generic [ref=f3e777]:
+                - generic [ref=f3e778]:
+                  - generic [aria-hidden] [ref=f3e780]: 
+                  - generic [ref=f3e781]: Amande
+                - generic [ref=f3e782]: Cassis
+                - generic [ref=f3e785]:
+                  - generic [aria-hidden] [ref=f3e787]: 
+                  - generic [ref=f3e788]: Davana
+              - generic [ref=f3e789]: Bientôt disponible
+          - button [ref=f3e790]:
+            - generic [aria-hidden] [ref=f3e791]: 
+        - article [aria-hidden] [ref=f3e792] [cursor=pointer]:
+          - link [ref=f3e793]:
+            - /url: ../pages/product.html?id=amouage-honour-woman
+            - generic [ref=f3e794]:
+              - generic [ref=f3e795]: Bientôt
+              - generic [ref=f3e799]:
+                - generic [aria-hidden] [ref=f3e800]: 
+                - generic [ref=f3e801]: Amouage
+                - generic [ref=f3e802]: Honour Woman
+            - generic [ref=f3e803]:
+              - generic [ref=f3e804]: Amouage
+              - heading [level=3] [ref=f3e805]: Honour Woman
+              - generic [ref=f3e806]:
+                - generic [ref=f3e807]:
+                  - generic [aria-hidden] [ref=f3e809]: 
+                  - generic [ref=f3e810]: Rhubarbe
+                - generic [ref=f3e811]: Poivre
+                - generic [ref=f3e814]:
+                  - generic [aria-hidden] [ref=f3e816]: 
+                  - generic [ref=f3e817]: Coriandre
+              - generic [ref=f3e818]: Bientôt disponible
+          - button [ref=f3e819]:
+            - generic [aria-hidden] [ref=f3e820]: 
+        - article [aria-hidden] [ref=f3e821] [cursor=pointer]:
+          - link [ref=f3e822]:
+            - /url: ../pages/product.html?id=amouage-epic-woman
+            - generic [ref=f3e823]:
+              - generic [ref=f3e824]: Bientôt
+              - generic [ref=f3e828]:
+                - generic [aria-hidden] [ref=f3e829]: 
+                - generic [ref=f3e830]: Amouage
+                - generic [ref=f3e831]: Epic Woman
+            - generic [ref=f3e832]:
+              - generic [ref=f3e833]: Amouage
+              - heading [level=3] [ref=f3e834]: Epic Woman
+              - generic [ref=f3e835]:
+                - generic [ref=f3e836]:
+                  - generic [aria-hidden] [ref=f3e838]: 
+                  - generic [ref=f3e839]: Carvi
+                - generic [ref=f3e840]:
+                  - generic [aria-hidden] [ref=f3e842]: 
+                  - generic [ref=f3e843]: Cannelle
+                - generic [ref=f3e844]: Laurier rose
+              - generic [ref=f3e847]: Bientôt disponible
+          - button [ref=f3e848]:
+            - generic [aria-hidden] [ref=f3e849]: 
+        - article [aria-hidden] [ref=f3e850] [cursor=pointer]:
+          - link [ref=f3e851]:
+            - /url: ../pages/product.html?id=bdk-parfums-gris-charnel
+            - generic [ref=f3e852]:
+              - generic [ref=f3e853]: Bientôt
+              - generic [ref=f3e857]:
+                - generic [aria-hidden] [ref=f3e858]: 
+                - generic [ref=f3e859]: BDK Parfums
+                - generic [ref=f3e860]: Gris Charnel
+            - generic [ref=f3e861]:
+              - generic [ref=f3e862]: BDK Parfums
+              - heading [level=3] [ref=f3e863]: Gris Charnel
+              - generic [ref=f3e864]:
+                - generic [ref=f3e865]: Cardamome
+                - generic [ref=f3e868]:
+                  - generic [aria-hidden] [ref=f3e870]: 
+                  - generic [ref=f3e871]: Figue
+                - generic [ref=f3e872]:
+                  - generic [aria-hidden] [ref=f3e874]: 
+                  - generic [ref=f3e875]: Thé noir
+              - generic [ref=f3e876]: Bientôt disponible
+          - button [ref=f3e877]:
+            - generic [aria-hidden] [ref=f3e878]: 
+    - generic [ref=f3e879]:
+      - generic [ref=f3e880]:
+        - generic [ref=f3e881]: Questions
+        - heading [level=2] [ref=f3e882]:
+          - text: Foire aux
+          - emphasis [ref=f3e883]: questions
+      - generic [ref=f3e884]:
+        - generic [ref=f3e885]:
+          - button "C'est quoi un décant ? " [ref=f3e886] [cursor=pointer]:
+            - generic [ref=f3e887]: C'est quoi un décant ?
+            - generic [ref=f3e888]: 
+          - generic: Un décant est un petit flacon (2ml, 5ml ou 10ml) rempli directement depuis le flacon original. C'est le meilleur moyen de découvrir un parfum avant d'investir dans un flacon complet.
+        - generic [ref=f3e889]:
+          - button "Lettre de Pushkar est-il 100% authentique ? " [ref=f3e890] [cursor=pointer]:
+            - generic [ref=f3e891]: Lettre de Pushkar est-il 100% authentique ?
+            - generic [ref=f3e892]: 
+          - generic: Oui, sans exception. Tous nos parfums proviennent directement des distributeurs officiels ou de maisons agréées — jamais de copies ni de contrefaçons.
+        - generic [ref=f3e893]:
+          - button "Quel format choisir ? " [ref=f3e894] [cursor=pointer]:
+            - generic [ref=f3e895]: Quel format choisir ?
+            - generic [ref=f3e896]: 
+          - generic: Le 2ml convient pour découvrir la fragrance, le 5ml pour un usage régulier sur plusieurs semaines, et le 10ml pour les coups de cœur que vous voulez pouvoir porter durablement.
+        - generic [ref=f3e897]:
+          - button "Quels sont les délais de livraison ? " [ref=f3e898] [cursor=pointer]:
+            - generic [ref=f3e899]: Quels sont les délais de livraison ?
+            - generic [ref=f3e900]: 
+          - generic: Vos décants sont préparés à la commande puis expédiés sous 24 à 48h. Un email de suivi vous est envoyé dès l'expédition.
+        - generic [ref=f3e901]:
+          - button "Une question sur votre commande ? " [ref=f3e902] [cursor=pointer]:
+            - generic [ref=f3e903]: Une question sur votre commande ?
+            - generic [ref=f3e904]: 
+          - generic: Notre service client vous répond sous 48h — via le conseiller olfactif ou par email, pour toute question sur une commande en cours.
+  - contentinfo [ref=f3e905]:
+    - generic [ref=f3e906]:
+      - generic [ref=f3e907]:
+        - generic [ref=f3e908]: Kōrei
+        - generic [ref=f3e909]: Parfumerie de niche · Paris
+        - generic [ref=f3e910]: Décants remplis à la main, depuis le flacon d'origine.
+      - generic [ref=f3e911]:
+        - generic [ref=f3e912]: Boutique
+        - link "Tous les parfums" [ref=f3e913] [cursor=pointer]:
+          - /url: catalogue.html
+        - link "Coffrets" [ref=f3e914] [cursor=pointer]:
+          - /url: coffret.html
+        - link "Les Boxes" [ref=f3e915] [cursor=pointer]:
+          - /url: boxes.html
+        - link "Marques" [ref=f3e916] [cursor=pointer]:
+          - /url: brands.html
+        - link "Collections" [ref=f3e917] [cursor=pointer]:
+          - /url: collections.html
+      - generic [ref=f3e918]:
+        - generic [ref=f3e919]: Kōrei
+        - link "À propos" [ref=f3e920] [cursor=pointer]:
+          - /url: about.html
+        - link "Conseiller IA" [ref=f3e921] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=f3e922]:
+        - generic [ref=f3e923]: Aide
+        - link "Contact" [ref=f3e924] [cursor=pointer]:
+          - /url: contact.html
+        - link "FAQ" [ref=f3e925] [cursor=pointer]:
+          - /url: faq.html
+        - link "Livraison & retours" [ref=f3e926] [cursor=pointer]:
+          - /url: livraison-retours.html
+        - link "CGV" [ref=f3e927] [cursor=pointer]:
+          - /url: cgv.html
+        - link "Mentions légales" [ref=f3e928] [cursor=pointer]:
+          - /url: mentions-legales.html
+        - link "Confidentialité" [ref=f3e929] [cursor=pointer]:
+          - /url: confidentialite.html
+    - generic [ref=f3e930]: © 2026 Kōrei — Tous droits réservés
+  - button "Ouvrir le conseiller olfactif" [ref=f3e933] [cursor=pointer]:
+    - generic [ref=f3e934]: 
+  - text: 
+  - navigation "Navigation principale" [ref=f3e935]:
+    - link " Accueil" [ref=f3e936] [cursor=pointer]:
+      - /url: ../index.html
+      - generic [ref=f3e937]: 
+      - generic [ref=f3e939]: Accueil
+    - button "Rechercher" [ref=f3e940] [cursor=pointer]:
+      - generic [ref=f3e941]: 
+      - generic [ref=f3e943]: Recherche
+    - link " Favoris" [ref=f3e944] [cursor=pointer]:
+      - /url: ../pages/favoris.html
+      - generic [ref=f3e945]: 
+      - generic [ref=f3e947]: Favoris
+    - link " 3 Panier" [ref=f3e948] [cursor=pointer]:
+      - /url: ../pages/panier.html
+      - generic [ref=f3e949]:
+        - generic [ref=f3e950]: 
+        - generic [ref=f3e951]: "3"
+      - generic [ref=f3e952]: Panier
+    - link " Compte" [ref=f3e953] [cursor=pointer]:
+      - /url: ../pages/compte.html
+      - generic [ref=f3e954]: 
+      - generic [ref=f3e956]: Compte
+  - generic:
+    - button "Ajouter au panier — 11,90 €"

@@ -956,6 +956,8 @@
     hasItem,
     getProgress,
     getCheckoutUrl,
+    getPromotionCodes,
+    getRemoteLines,
     synchroniserPanier,
     onChange,
     notice: showStockNotice,
