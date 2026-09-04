@@ -63,3 +63,31 @@
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
     Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+
+# ── La page d'administration ne doit jamais entrer dans un index ──────────
+# robots.txt le demande deja, mais un robot n'est pas oblige de le lire.
+# L'en-tete, lui, s'impose.
+[[headers]]
+  for = "/pages/admin.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
+# ── Aucun deploiement autre que la production n'est indexable ─────────────
+# Point P0.7 de l'audit du 16 juillet. Netlify publie chaque branche et
+# chaque demande de fusion sur une adresse publique en .netlify.app. Ces
+# adresses servaient le meme robots.txt que la production, « Allow: / ».
+# Un lien partage suffit alors a faire entrer dans Google une version de
+# test, avec ses prix provisoires et ses mentions legales a trous — et une
+# fois indexee, elle se retire difficilement.
+#
+# L'en-tete s'applique a tout ce que servent ces contextes, robots.txt
+# compris. La production n'est pas concernee : elle garde ses en-tetes.
+[[context.deploy-preview.headers]]
+  for = "/*"
+  [context.deploy-preview.headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
+[[context.branch-deploy.headers]]
+  for = "/*"
+  [context.branch-deploy.headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
