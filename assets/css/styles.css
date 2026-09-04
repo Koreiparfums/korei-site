@@ -10431,3 +10431,78 @@ textarea:focus-visible {
 .price-slider input[type="range"]::-moz-range-thumb {
   border-radius: 50%;
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   DIRECTION — une seule voix pour les titres de page (04/09/2026)
+   ════════════════════════════════════════════════════════════════════════
+
+   Releve sur les quatorze pages : cinq traitements differents pour le meme
+   objet, le titre de page. Neuf pages en Cormorant 300, quatre en DM Sans
+   400, une en DM Sans 300. Le visiteur qui passe du catalogue au panier
+   change de maison sans changer de site.
+
+   Le Cormorant l'emporte : c'est la voix de l'accueil, celle de la fiche
+   produit, celle des titres de section. Les cinq titres restes en
+   sans-serif la rejoignent, avec le meme corps fluide et le meme mot en
+   italique dore. Aucune mise en page ne bouge — la photo du coffret, le
+   bandeau des boxes, le fil du panier restent ou ils sont. Seule la
+   typographie change.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.coffret-hero__title,
+.boxes-hero__title,
+.collections-head-title,
+.favoris-hero__title,
+.panier-head__title,
+.compte-title,
+.maisons-hero__title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 300;
+  font-size: clamp(2.6rem, 1rem + 4vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.coffret-hero__title em,
+.boxes-hero__title em,
+.collections-head-title em,
+.favoris-hero__title em,
+.panier-head__title em,
+.compte-title em,
+.maisons-hero__title em {
+  font-style: italic;
+  color: var(--sceau, var(--accent));
+}
+
+/* Le sur-titre suit la meme regle partout : chasse fixe, or du sceau,
+   grand interlettrage, prolonge d'un filet. Quatre pages n'en avaient
+   aucun, trois le declinaient a leur maniere. */
+.coffret-hero__eyebrow,
+.boxes-hero__eyebrow,
+.collections-head-eyebrow,
+.favoris-hero__eyebrow,
+.panier-head__eyebrow,
+.maisons-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--mesure);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--sceau, var(--accent));
+  margin-bottom: 16px;
+}
+.coffret-hero__eyebrow::after,
+.boxes-hero__eyebrow::after,
+.collections-head-eyebrow::after,
+.favoris-hero__eyebrow::after,
+.panier-head__eyebrow::after,
+.maisons-hero__eyebrow::after {
+  content: "";
+  width: 58px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
