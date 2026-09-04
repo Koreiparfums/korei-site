@@ -9999,3 +9999,49 @@ textarea:focus-visible {
 .brands-search input:focus-visible {
   outline: none;
 }
+
+/* ==========================================================================
+   LES PAGES INTERIEURES REJOIGNENT LA DIRECTION DE L'ACCUEIL (04/09/2026)
+
+   L'accueil a pris la Cormorant en septembre, les huit pages qui portent un
+   « page-hero » etaient restees en DM Sans. Resultat : la voix de la maison
+   changeait entre la page d'accueil et le catalogue, la page ou le client
+   passe le plus de temps. Meme serif, meme sur-titre en chasse fixe suivi
+   d'un filet, meme dore de sceau.
+   ========================================================================== */
+.page-hero-title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 300;
+  font-size: clamp(2.6rem, 1rem + 4vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.page-hero-title em {
+  font-style: italic;
+  color: var(--sceau, var(--accent));
+}
+.page-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--mesure);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  color: var(--sceau, var(--accent));
+  margin-bottom: 16px;
+}
+/* Le filet qui prolonge le sur-titre, comme sur l'accueil. */
+.page-hero-eyebrow::after {
+  content: "";
+  width: 58px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+.page-hero-sub {
+  max-width: 34rem;
+  font-size: 14.5px;
+  line-height: 1.75;
+}
