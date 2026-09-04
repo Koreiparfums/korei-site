@@ -30,7 +30,7 @@
     {
       name: "Notes d'agrumes",
       tagline: "Bergamote · Citron · Fraîcheur",
-      icon: "ti-droplet",
+      image: "../assets/images/collections/agrume.webp",
       params: { note: "bergamote" },
     },
     // Deux parfums seulement portent la famille « gourmand » au releve du
@@ -48,9 +48,21 @@
       },
     },
     {
+      name: "Parfums d'automne",
+      tagline: "Boisé · Épicé · Feuilles mortes",
+      image: "../assets/images/collections/automne.webp",
+      params: { season: "automne" },
+    },
+    {
+      name: "Parfums de printemps",
+      tagline: "Fleuri · Vert · Léger",
+      image: "../assets/images/collections/printemps.webp",
+      params: { season: "printemps" },
+    },
+    {
       name: "Pour le soir",
       tagline: "Intense · Envoûtant · Sensuel",
-      icon: "ti-moon-stars",
+      image: "../assets/images/collections/soir.webp",
       params: { occasion: "soirée" },
     },
     {
