@@ -52,6 +52,180 @@
     "frais",
   ]);
 
+  // ══════════════════════════════════════════════════════════════════════
+  // La famille olfactive, quand la donnee ne la porte pas
+  // ══════════════════════════════════════════════════════════════════════
+  //
+  // Trente-neuf parfums arrivaient sans famille. Leur fiche sautait la
+  // colonne « Famille olfactive » et le filtre du catalogue ne les
+  // proposait nulle part. Dix-neuf d'entre eux sont en vente aujourd'hui,
+  // chez Byredo, Armani Prive, Bvlgari, Lancome.
+  //
+  // Rien n'est invente ici. Une famille olfactive n'est pas une opinion :
+  // c'est le rangement de la composition. Or la composition, on l'a — les
+  // accords pour les uns, la pyramide pour les autres. On la range donc
+  // avec une regle ecrite, la meme pour tous, que le client peut relire.
+  //
+  // Deux tables. Les soixante-deux accords du catalogue forment un
+  // vocabulaire ferme : chacun est range une fois pour toutes. A defaut
+  // d'accords, les notes, par mot-cle, du plus precis au plus general.
+  //
+  // Le vote est pondere : un accord compte d'autant plus qu'il est cite
+  // tot, une note de fond pese trois fois une note de tete — c'est le fond
+  // qui donne sa famille a un parfum, pas son ouverture.
+  //
+  // En cas d'egalite parfaite, on ne tranche pas : la fiche reste sans
+  // famille, comme avant. Mieux vaut une colonne absente qu'un rangement
+  // au hasard.
+
+  const ACCORD_FAMILLE = {
+    // Boise
+    "boisé": "boisé", "terreux": "boisé", "patchouli": "boisé",
+    "fumé": "boisé", "mousse": "boisé",
+    // Oriental
+    "épicé chaud": "oriental", "ambre": "oriental", "musqué": "oriental",
+    "balsamique/baumé": "oriental", "oud": "oriental", "épicé doux": "oriental",
+    "cannelle": "oriental", "tabac": "oriental", "sable": "oriental",
+    // Floral
+    "poudré": "floral", "floral": "floral", "fleurs blanches": "floral",
+    "rose": "floral", "iris": "floral", "fleurs jaunes": "floral",
+    "violette": "floral", "tubéreuse": "floral", "aldéhydé": "floral",
+    // Gourmand
+    "sucré": "gourmand", "vanille": "gourmand", "caramel": "gourmand",
+    "amande": "gourmand", "fruits à coque": "gourmand", "lactonique": "gourmand",
+    "noix de coco": "gourmand", "cacao": "gourmand", "rhum": "gourmand",
+    "miel": "gourmand", "chocolat": "gourmand", "café": "gourmand",
+    "alcool": "gourmand", "vin": "gourmand", "gourmand": "gourmand",
+    "whisky": "gourmand",
+    // Fruite
+    "fruité": "fruity", "tropical": "fruity", "cerise": "fruity",
+    // Frais
+    "agrume": "frais", "frais": "frais", "métallique": "frais",
+    "aquatique": "frais", "ozonique": "frais", "odeur marine": "frais",
+    "salé": "frais", "minéral": "frais", "savonneux": "frais",
+    // Aromatique
+    "aromatique": "aromatique", "épicé frais": "aromatique", "vert": "aromatique",
+    "lavande": "aromatique", "herbacé": "aromatique", "anis": "aromatique",
+    "cannabis": "aromatique", "terpénique": "aromatique", "camphre": "aromatique",
+    // Cuir
+    "cuir": "cuir", "animal": "cuir",
+  };
+
+  // Mots-cles de notes, du plus precis au plus general : la premiere
+  // correspondance gagne. Le musc n'y figure pas : il traverse toutes les
+  // familles et ne dit rien de celle du parfum. « Fleur d'oranger » doit tomber sur « fleur
+  // d'orang » avant « orange », « Noix de coco » sur « coco » avant « noix ».
+  const NOTE_FAMILLE = [
+    ["fleur d'orang", "floral"], ["fleur de framb", "floral"],
+    ["noix de coco", "gourmand"], ["sorbet", "gourmand"],
+    ["fruits à coque", "gourmand"], ["fève de tonka", "gourmand"],
+    ["cire d'abeille", "gourmand"], ["crème", "gourmand"], ["creme", "gourmand"],
+    ["notes lactées", "gourmand"], ["lacté", "gourmand"], ["lait", "gourmand"],
+    ["vanille", "gourmand"], ["caramel", "gourmand"], ["praliné", "gourmand"],
+    ["cacao", "gourmand"], ["chocolat", "gourmand"], ["café", "gourmand"],
+    ["noisette", "gourmand"], ["amande", "gourmand"], ["miel", "gourmand"],
+    ["sucre", "gourmand"], ["guimauve", "gourmand"], ["barbe à papa", "gourmand"],
+    ["coco", "gourmand"], ["rhum", "gourmand"], ["vodka", "gourmand"],
+    ["blé", "gourmand"], ["riz", "gourmand"],
+
+    ["bois de santal", "boisé"], ["bois de cachemire", "boisé"],
+    ["bois de copaïba", "boisé"], ["palissandre", "boisé"], ["akigalawood", "boisé"],
+    ["amberwood", "boisé"], ["georgywood", "boisé"], ["papyrus", "boisé"],
+    ["santal", "boisé"], ["cèdre", "boisé"], ["vétiver", "boisé"],
+    ["patchouli", "boisé"], ["gaïac", "boisé"], ["mousse", "boisé"],
+    ["bouleau", "boisé"], ["cyprès", "boisé"], ["amyris", "boisé"],
+    ["bois", "boisé"],
+
+    ["cuir de russie", "cuir"], ["cuir", "cuir"], ["daim", "cuir"],
+    ["suède", "cuir"], ["castoréum", "cuir"],
+
+    ["poivre rose", "oriental"], ["absolue de ciste", "oriental"],
+    ["résine", "oriental"], ["oliban", "oriental"], ["opoponax", "oriental"],
+    ["labdanum", "oriental"], ["styrax", "oriental"], ["élémi", "oriental"],
+    ["benjoin", "oriental"], ["encens", "oriental"], ["myrrhe", "oriental"],
+    ["ambrette", "oriental"], ["ambrofix", "oriental"], ["ambrox", "oriental"],
+    ["ambre", "oriental"], ["oud", "oriental"], ["ciste", "oriental"],
+    ["safran", "oriental"], ["cannelle", "oriental"], ["girofle", "oriental"],
+    ["muscade", "oriental"], ["cardamome", "oriental"], ["gingembre", "oriental"],
+    ["cumin", "oriental"], ["poivre", "oriental"],
+    ["immortelle", "oriental"], ["davana", "oriental"],
+
+    ["thé vert", "aromatique"], ["basilic", "aromatique"], ["romarin", "aromatique"],
+    ["camomille", "aromatique"], ["coriandre", "aromatique"], ["lavande", "aromatique"],
+    ["menthe", "aromatique"], ["sauge", "aromatique"], ["estragon", "aromatique"],
+    ["thym", "aromatique"], ["absinthe", "aromatique"], ["laurier", "aromatique"],
+    ["armoise", "aromatique"], ["genévrier", "aromatique"], ["carvi", "aromatique"],
+    ["eucalyptus", "aromatique"], ["anis", "aromatique"], ["thé", "aromatique"],
+    ["herbe", "aromatique"], ["notes vertes", "aromatique"],
+
+    ["rose de", "floral"], ["ylang", "floral"], ["osmanthus", "floral"],
+    ["tubéreuse", "floral"], ["gardénia", "floral"], ["magnolia", "floral"],
+    ["pivoine", "floral"], ["muguet", "floral"], ["jacinthe", "floral"],
+    ["héliotrope", "floral"], ["orchidée", "floral"], ["mimosa", "floral"],
+    ["narcisse", "floral"], ["freesia", "floral"], ["œillet", "floral"],
+    ["petalia", "floral"], ["jasmin", "floral"], ["violette", "floral"],
+    ["iris", "floral"], ["rose", "floral"], ["fleur", "floral"],
+
+    ["bergamote", "frais"], ["pamplemousse", "frais"], ["mandarine", "frais"],
+    ["petit-grain", "frais"], ["verveine", "frais"], ["néroli", "frais"],
+    ["aldéhyde", "frais"], ["note solaire", "frais"], ["notes solaires", "frais"],
+    ["marine", "frais"], ["aquatique", "frais"], ["citron", "frais"],
+    ["lime", "frais"], ["yuzu", "frais"], ["orange", "frais"],
+
+    ["fraise", "fruity"], ["framboi", "fruity"], ["mûre", "fruity"],
+    ["mangue", "fruity"], ["pêche", "fruity"], ["poire", "fruity"],
+    ["cassis", "fruity"], ["figue", "fruity"], ["sapote", "fruity"],
+    ["cerise", "fruity"], ["pomme", "fruity"], ["ananas", "fruity"],
+    ["litchi", "fruity"], ["goyave", "fruity"], ["melon", "fruity"],
+    ["abricot", "fruity"], ["prune", "fruity"], ["rhubarbe", "fruity"],
+    ["kiwi", "fruity"], ["groseille", "fruity"], ["myrtille", "fruity"],
+    ["baie", "fruity"], ["fruit", "fruity"],
+  ];
+
+  function voter(scores, famille, poids) {
+    if (famille) scores[famille] = (scores[famille] || 0) + poids;
+  }
+
+  function familleDeNote(nom) {
+    const cle = sansAccent(nom);
+    const trouve = NOTE_FAMILLE.find(([mot]) => cle.includes(sansAccent(mot)));
+    return trouve ? trouve[1] : "";
+  }
+
+  function familleDeduite(produit) {
+    const scores = {};
+
+    // Les accords sont classes par force. Le premier ne pese pas un cran de
+    // plus que le second, il pese le double : c'est lui qui donne son
+    // caractere au parfum. Sans cela, trois accords secondaires de la meme
+    // famille l'emportaient sur l'accord dominant — « Sherwood » de Memo,
+    // dont l'accord de tete est « boise », sortait oriental.
+    const POIDS_ACCORD = [12, 6, 4, 3, 2, 2, 1, 1, 1, 1];
+    const accords = produit.accords || [];
+    accords.forEach((accord, rang) => {
+      voter(scores, ACCORD_FAMILLE[String(accord).toLowerCase()], POIDS_ACCORD[rang] || 1);
+    });
+
+    // Sans accords, la pyramide. Le fond donne sa famille a un parfum,
+    // pas son ouverture : trois pour le fond, deux pour le coeur, un pour
+    // la tete.
+    if (!Object.keys(scores).length) {
+      const pyramide = [
+        [produit.notesBase, 3],
+        [produit.notesHeart, 2],
+        [produit.notesTop, 1],
+      ];
+      pyramide.forEach(([liste, poids]) => {
+        (liste || []).forEach((note) => voter(scores, familleDeNote(note), poids));
+      });
+    }
+
+    const classement = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+    if (!classement.length) return "";
+    if (classement.length > 1 && classement[0][1] === classement[1][1]) return "";
+    return classement[0][0];
+  }
+
   // Cle de recherche dans le releve : maison + nom, sans accent ni
   // ponctuation. « BDK Parfums » + « 312 Saint-Honore » -> « bdkparfums|312sainthonore ».
   function cleFiche(marque, nom) {
@@ -239,6 +413,15 @@
         type: "decant",
         notes: [...product.notesTop, ...product.notesHeart, ...product.notesBase],
       });
+    });
+
+    // La famille olfactive en dernier, une fois la fusion faite : la
+    // boutique passe devant le releve du client, le releve passe devant la
+    // regle. On ne range que ce qui n'a pas ete range.
+    merged.forEach((produit) => {
+      if (produit.family) return;
+      const famille = familleDeduite(produit);
+      if (famille) produit.family = famille;
     });
 
     // Le tarif du client fait foi, pas la boutique. Ses prix Shopify sont des
