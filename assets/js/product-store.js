@@ -192,8 +192,19 @@
     if (occasions.length) {
       list = list.filter((p) => (p.occasions || []).some((o) => occasions.includes(o)));
     }
-    if (filters.isNew) list = list.filter((p) => p.new);
-    if (filters.bestseller) list = list.filter((p) => p.bestseller);
+    // « Nouveautes » et « Grands classiques » repondent la meme chose ici que
+    // sur l'accueil : la vitrine et le filtre du catalogue ne peuvent pas se
+    // contredire. Sans cela, la collection « Nouveautes » annonçait 148
+    // parfums dont 143 sans prix, et le visiteur arrivait sur une page de
+    // « bientot disponible ».
+    if (filters.isNew) {
+      const nouveaux = new Set(getNewProducts().map((p) => p.id));
+      list = list.filter((p) => nouveaux.has(p.id));
+    }
+    if (filters.bestseller) {
+      const classiques = new Set(getBestsellers().map((p) => p.id));
+      list = list.filter((p) => classiques.has(p.id));
+    }
     const notes = toArray(filters.note).map(normalizeQuery);
     if (notes.length) {
       list = list.filter((p) => {

@@ -62,23 +62,49 @@ Avant de rediriger, le site relit le panier Shopify et contrôle les identifiant
 
 ## Remise coffret et livraison offerte
 
-Le site envoie les codes suivants lorsque le panier contient au moins un coffret complet :
+Le site envoie un code de palier par format lorsque le panier contient au moins
+un coffret complet :
 
-- `COFFRET-2ML` pour chaque lot complet de 10 × 2 ml ;
-- `COFFRET-5ML` pour chaque lot complet de 5 × 5 ml ;
-- `COFFRET-10ML` pour chaque lot complet de 3 × 10 ml ;
+- `COFFRET-2ML-10`, `COFFRET-2ML-20`, etc. pour les lots de 10 × 2 ml ;
+- `COFFRET-5ML-5`, `COFFRET-5ML-10`, etc. pour les lots de 5 × 5 ml ;
+- `COFFRET-10ML-3`, `COFFRET-10ML-6`, etc. pour les lots de 3 × 10 ml ;
 - `LIVRAISON-COFFRET` dès qu'au moins un de ces lots est complet.
 
-Ces noms ne suffisent pas : les remises correspondantes doivent exister dans Shopify, être actives et combinables. Le site n'affiche « confirmé » et n'autorise le checkout que si Shopify renvoie les codes comme applicables et alloue réellement la remise de 10 %.
+Chaque code produit est une remise Shopify native « montant sur produits » : son
+minimum et sa quantité remisée valent tous deux le palier, avec un effet de
+10 %. Ainsi 4 × 10 ml applique le palier 3 : trois flacons sont remisés et le
+quatrième reste au plein tarif. Le script `scripts/configure-shopify-discounts.js`
+crée dix paliers par format et le code de livraison, sans Shopify Function.
 
-Une règle native « quantité minimale » ne garantit pas le besoin Kōrei : elle peut compter ensemble des variantes 2, 5 et 10 ml d'un même produit. La solution de production recommandée est une **Shopify Discount Function** qui :
+Les remises doivent être actives et combinables. Le site n'affiche « confirmé »
+et n'autorise le checkout que si Shopify renvoie les codes comme applicables et
+alloue réellement le montant attendu.
 
-1. groupe les lignes par option de variante (`2 ml`, `5 ml`, `10 ml`) ;
-2. remet exactement les 10, 5 ou 3 flacons appartenant aux lots complets, y compris plusieurs lots ;
-3. accorde la livraison uniquement si au moins un lot est complet ;
-4. autorise la combinaison des classes de remise produit et livraison.
+Les codes produit ciblent directement les identifiants de variantes du format
+concerné. Le minimum ne mélange donc pas les variantes 2, 5 et 10 ml d'un même
+produit. Dix coffrets au maximum sont acceptés par format et par commande.
 
-Après déploiement de la Function, tester les cas 9/10/11 × 2 ml, 4/5/6 × 5 ml, 2/3/4 × 10 ml, les paniers mixtes, deux coffrets complets, puis une adresse située hors de la zone de livraison offerte.
+La livraison gratuite native ne sait pas vérifier le format des articles. Le
+site n'envoie donc `LIVRAISON-COFFRET` qu'après avoir lui-même constaté un lot
+complet ; le code garde aussi un minimum Shopify de trois articles et une
+destination France. Ce contrôle pragmatique n'empêche pas totalement la
+réutilisation manuelle du code hors coffret. Une protection absolue exigerait
+une application publique à base de Shopify Function ou Shopify Plus.
+
+Le script de configuration :
+
+```bash
+node scripts/configure-shopify-discounts.js
+node scripts/configure-shopify-discounts.js --apply
+```
+
+Il demande `read_discounts` et `write_discounts` à l'application Admin, cible
+les variantes par leur option `Format`, et peut être relancé sans créer de code
+en double.
+
+Après synchronisation des remises, tester les cas 9/10/11 × 2 ml,
+4/5/6 × 5 ml, 2/3/4 × 10 ml, les paniers mixtes, deux coffrets
+complets, puis une adresse située hors de la zone de livraison offerte.
 
 ## Stock par variante
 

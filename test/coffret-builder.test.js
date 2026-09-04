@@ -138,6 +138,28 @@ test("un ajout groupé produit une seule synchronisation de panier complète", a
   assert.equal(calls[0].lines.length, 3);
   assert.deepEqual(
     [...calls[0].codes].sort(),
-    ["COFFRET-10ML", "LIVRAISON-COFFRET"].sort(),
+    ["COFFRET-10ML-3", "LIVRAISON-COFFRET"].sort(),
   );
+});
+
+test("quatre flacons de 10 ml utilisent le palier trois et laissent une unité au plein tarif", () => {
+  const { api } = loadCoffret();
+  const items = [
+    item("1", "10ml", 10),
+    item("2", "10ml", 20),
+    item("3", "10ml", 30),
+    item("4", "10ml", 40),
+  ];
+
+  const state = api.getCartState(items);
+  assert.equal(state.groups.find((group) => group.format === "10ml").inBoxes, 3);
+  assert.deepEqual(Array.from(api.getPromotionCodes(items)), ["COFFRET-10ML-3", "LIVRAISON-COFFRET"]);
+});
+
+test("six flacons de 10 ml utilisent le palier six", () => {
+  const { api } = loadCoffret();
+  const items = [item("1", "10ml", 10, 6)];
+
+  assert.equal(api.getCartState(items).boxes, 2);
+  assert.deepEqual(Array.from(api.getPromotionCodes(items)), ["COFFRET-10ML-6", "LIVRAISON-COFFRET"]);
 });

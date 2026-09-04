@@ -21,7 +21,7 @@ Ce document distingue ce qui est corrigé dans le code de ce qui nécessite une 
 
 ## P0 — actions externes indispensables
 
-1. **Promotions Shopify** — déployer la Discount Function décrite dans `SHOPIFY_SETUP.md`, créer les quatre codes, autoriser leur combinaison et vérifier les allocations réelles. L'application Admin actuellement utilisée doit d'abord recevoir les droits Shopify relatifs aux remises.
+1. **Promotions Shopify** — accorder `read_discounts` et `write_discounts` à l'application Admin, exécuter `node scripts/configure-shopify-discounts.js --apply`, puis vérifier les paliers et allocations réelles décrits dans `SHOPIFY_SETUP.md`.
 2. **Stock** — remplacer la politique de survente `CONTINUE` par un modèle de stock partagé ou une réserve conservatrice, puis saisir le stock physique.
 3. **Prix** — fixer le prix des 175 produits encore à 0 €, ou les dépublier du canal commercial.
 4. **Checkout** — lever le mot de passe de la boutique uniquement après configuration des paiements, taxes, zones/tarifs de livraison et e-mails transactionnels.

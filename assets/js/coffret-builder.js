@@ -9,6 +9,11 @@
   const STORAGE_KEY = "korei-coffret";
   const esc = (v) => (global.KoreiSite?.escapeHtml || ((x) => x))(v);
   const SLOT_COUNTS = { "2ml": 10, "5ml": 5, "10ml": 3 };
+  // Les remises Shopify sont preparees par paliers. Dix coffrets par format
+  // couvrent largement un panier particulier tout en gardant une liste de
+  // codes finie et auditable. Au-dela, la demande releve d'une commande en
+  // volume et ne doit pas partir au checkout avec une remise incomplete.
+  const MAX_BOXES_PER_FORMAT = 10;
   // Libellés alignés sur les trois coffrets réels : 10x2ml, 5x5ml, 3x10ml.
   // Noms arretes par le brief du 24 aout 2026 (KOR-C11).
   const PACK_LABELS = { "2ml": "Découverte", "5ml": "Voyage", "10ml": "Iconique" };
@@ -17,7 +22,6 @@
   // un seuil en euros rendrait le message d'incitation faux (« plus que 1
   // parfum pour la livraison offerte » alors qu'elle le serait déjà).
   const COFFRET_DISCOUNT = 0.1;
-  const CODES_COFFRET = { "2ml": "COFFRET-2ML", "5ml": "COFFRET-5ML", "10ml": "COFFRET-10ML" };
   const CODE_LIVRAISON_COFFRET = "LIVRAISON-COFFRET";
   const basePath = location.pathname.includes("/pages/") ? "../" : "";
 
@@ -71,7 +75,10 @@
     const slots = SLOT_COUNTS[format] || 0;
     if (!slots) return 0;
     const current = countFor(format, items);
-    return (Math.floor(current / slots) + 1) * slots;
+    return Math.min(
+      (Math.floor(current / slots) + 1) * slots,
+      slots * MAX_BOXES_PER_FORMAT,
+    );
   }
 
   function addItem(item) {
@@ -121,6 +128,14 @@
       save(items);
       notify();
       synchroniserPanier();
+      return;
+    }
+    const autres = items
+      .filter((it, index) => index !== idx && it.format === format)
+      .reduce((sum, it) => sum + (it.qty || 1), 0);
+    const maximum = (SLOT_COUNTS[format] || 0) * MAX_BOXES_PER_FORMAT;
+    if (maximum && autres + qty > maximum) {
+      showStockNotice(`Maximum ${MAX_BOXES_PER_FORMAT} coffrets ${PACK_LABELS[format]} par commande.`);
       return;
     }
     const updated = { ...current, qty };
@@ -254,7 +269,10 @@
     const state = getCartState(items);
     const codes = state.groups
       .filter((group) => group.boxes > 0)
-      .map((group) => CODES_COFFRET[group.format])
+      // Un seul code par format, calibre sur le nombre exact de flacons
+      // appartenant aux coffrets complets. Exemple : 4 x 10 ml envoie le
+      // palier 3 ; 6 x 10 ml envoie le palier 6.
+      .map((group) => `COFFRET-${group.format.toUpperCase()}-${group.inBoxes}`)
       .filter(Boolean);
     if (state.boxes > 0) codes.push(CODE_LIVRAISON_COFFRET);
     return [...new Set(codes)];
@@ -955,6 +973,7 @@
 
   global.KoreiCoffret = {
     SLOT_COUNTS,
+    MAX_BOXES_PER_FORMAT,
     PACK_LABELS,
     isEligibleFormat,
     addItem,

@@ -17,12 +17,23 @@
  */
 const { shopifyGraphQL } = require("./lib/shopify");
 
-const ALLOWED_PROMOTION_CODES = new Set([
-  "COFFRET-2ML",
-  "COFFRET-5ML",
-  "COFFRET-10ML",
-  "LIVRAISON-COFFRET",
-]);
+const COFFRET_CODE_RULES = {
+  "2ML": 10,
+  "5ML": 5,
+  "10ML": 3,
+};
+const MAX_BOXES_PER_FORMAT = 10;
+const SHIPPING_CODE = "LIVRAISON-COFFRET";
+
+function isAllowedPromotionCode(code) {
+  if (code === SHIPPING_CODE) return true;
+  const match = /^COFFRET-(2ML|5ML|10ML)-(\d+)$/.exec(code);
+  if (!match) return false;
+  const slots = COFFRET_CODE_RULES[match[1]];
+  const quantity = Number(match[2]);
+  return Number.isInteger(quantity) && quantity >= slots &&
+    quantity <= slots * MAX_BOXES_PER_FORMAT && quantity % slots === 0;
+}
 
 const CART_FIELDS = `
   id
@@ -170,7 +181,7 @@ function normalizeCodes(codes) {
     ...new Set(
       codes
         .map((code) => String(code || "").trim().toUpperCase())
-        .filter((code) => ALLOWED_PROMOTION_CODES.has(code)),
+        .filter(isAllowedPromotionCode),
     ),
   ];
 }
@@ -281,3 +292,4 @@ async function handler(req, res) {
 module.exports = handler;
 module.exports.normalizeCodes = normalizeCodes;
 module.exports.normalizeLines = normalizeLines;
+module.exports.isAllowedPromotionCode = isAllowedPromotionCode;

@@ -33,11 +33,19 @@
       icon: "ti-droplet",
       params: { note: "bergamote" },
     },
+    // Deux parfums seulement portent la famille « gourmand » au releve du
+    // client : la collection restait masquee alors que le catalogue en est
+    // plein. Elle se definit donc par ses notes, comme « Notes d'agrumes »
+    // juste au-dessus, et son intitule dit maintenant ce qu'elle filtre.
+    // La vanille en est absente a dessein : elle figure dans 177 parfums sur
+    // 338, ce n'est plus une collection mais le catalogue.
     {
       name: "Collection gourmande",
-      tagline: "Vanille · Caramel · Cacao",
+      tagline: "Caramel · Cacao · Praliné",
       icon: "ti-cookie",
-      params: { family: "gourmand" },
+      params: {
+        note: ["caramel", "cacao", "chocolat", "praliné", "noisette", "barbe à papa", "guimauve"],
+      },
     },
     {
       name: "Pour le soir",
@@ -88,7 +96,17 @@
 
     grid.innerHTML = visibles.map((col) => {
       const count = store.filterProducts(col.params).length;
-      const query = new URLSearchParams(col.params).toString();
+      // Un tableau passe a URLSearchParams est aplati en une seule valeur
+      // separee par des virgules — « note=caramel,cacao,praline » — que le
+      // catalogue lit comme un nom de note unique, introuvable. Chaque
+      // valeur prend donc son propre parametre.
+      const query = Object.entries(col.params)
+        .flatMap(([cle, valeur]) =>
+          (Array.isArray(valeur) ? valeur : [valeur]).map(
+            (v) => `${encodeURIComponent(cle)}=${encodeURIComponent(v)}`,
+          ),
+        )
+        .join("&");
       const hasPhoto = Boolean(col.image);
       const media = hasPhoto
         ? `<div class="collection-card-media" style="background-image: url('${col.image}')"></div>`

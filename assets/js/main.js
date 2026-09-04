@@ -1485,21 +1485,26 @@
 
     // ── Paramètres d'URL (liens entrants depuis home / collections)
     const urlParams = new URLSearchParams(window.location.search);
-    const urlBrand = urlParams.get("brand");
-    if (urlBrand) {
-      filters.brand = [urlBrand];
+    // Ces cinq filtres acceptent plusieurs valeurs dans la page — les chips
+    // sont a selection multiple. L'URL ne lisait pourtant que la premiere :
+    // un lien « caramel, cacao, praline » venu des collections ne renvoyait
+    // aucun parfum. getAll() les lit toutes, et un lien a une seule valeur
+    // se comporte exactement comme avant.
+    const urlBrand = urlParams.getAll("brand");
+    if (urlBrand.length) {
+      filters.brand = urlBrand;
       brandsExpanded = true;
     }
-    const urlFamily = urlParams.get("family");
-    if (urlFamily) filters.family = [urlFamily];
-    const urlSeason = urlParams.get("season");
-    if (urlSeason) filters.season = [urlSeason];
-    const urlOccasion = urlParams.get("occasion");
-    if (urlOccasion) filters.occasion = [urlOccasion];
+    const urlFamily = urlParams.getAll("family");
+    if (urlFamily.length) filters.family = urlFamily;
+    const urlSeason = urlParams.getAll("season");
+    if (urlSeason.length) filters.season = urlSeason;
+    const urlOccasion = urlParams.getAll("occasion");
+    if (urlOccasion.length) filters.occasion = urlOccasion;
     const urlIntensity = urlParams.get("intensity");
     if (urlIntensity) setIntensity(urlIntensity);
-    const urlNote = urlParams.get("note");
-    if (urlNote) filters.note = [urlNote];
+    const urlNote = urlParams.getAll("note");
+    if (urlNote.length) filters.note = urlNote;
     if (urlParams.get("isNew") === "1") filters.isNew = true;
     // Arrivee depuis la recherche du header : le terme est preremplid dans le
     // champ de filtre du catalogue, pour que l'utilisateur voie ce qui filtre.
