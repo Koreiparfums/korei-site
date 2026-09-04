@@ -64,18 +64,19 @@
 - [x] Activer la Storefront API et générer le Storefront access token
 - [x] Créer 2–3 produits tests dans Shopify
 - [ ] Mapper les champs Korei vers Shopify (variants, collections, tags, metafields)
-- [x] Catalogue dynamique via Shopify Storefront API (avec repli local)
+- [x] Catalogue dynamique via Shopify Storefront API (pagination complète par curseur, avec repli local)
 - [x] Fiche produit dynamique via Shopify Storefront API (avec repli local)
-- [x] Panier fonctionnel via Shopify Cart API — panier hybride : `localStorage` reste l'état local, `/api/cart` synchronise les lignes qui ont une vraie variante Shopify (voir `docs/SHOPIFY_SETUP.md`)
-- [x] Checkout via Shopify Checkout — "Passer la commande" redirige vers le `checkoutUrl` Shopify dès qu'un panier réel existe
-- [x] Gestion stocks par variant Shopify — `isVariantAvailable()` grise le format en rupture (carte favoris, tiers coffret fiche produit, sélecteur panier) ; un rejet Shopify (`cart_user_error`) annule l'ajout local et prévient l'utilisateur au lieu de désynchroniser silencieusement le panier
+- [x] Panier Shopify atomique — chaque changement recrée un panier distant complet et le checkout vérifie lignes, quantités et total
+- [ ] Promotions Shopify — paliers natifs combinables et livraison offerte à créer avec `scripts/configure-shopify-discounts.js`, puis recetter
+- [ ] Checkout public — l'URL existe, mais le mot de passe Shopify doit rester en place jusqu'à validation paiement/taxes/livraison
+- [x] Stock Shopify — 100 unités sur les 489 variantes vendables et survente désactivée (`DENY`), reproductible via `scripts/configure-shopify-inventory.js`
 - [ ] Compte client (Shopify Customer API)
 
 ### Prérequis production
 
 - [ ] Netlify : créer le compte / projet de production
-- [x] Netlify : configurer les variables d'environnement (`GROQ_API_KEY`, `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_PUBLIC_TOKEN`)
-- [ ] DNS : choisir et acheter le domaine officiel (`korei.fr`, `koreiparfums.fr` ou autre)
+- [ ] Netlify : vérifier les variables de production (`GROQ_API_KEY`, `SHOPIFY_STORE_DOMAIN`, jeton Storefront privé/public, `ADMIN_TOKEN`)
+- [x] DNS : domaine officiel acheté — `korei-parfum.com` (registrar Squarespace)
 - [ ] DNS : pointer le domaine principal et `www` vers Netlify
 - [ ] Email pro : créer au minimum `contact@...` et `support@...`
 - [ ] Newsletter : démarrer avec Netlify Forms, puis migrer vers Brevo si campagnes régulières

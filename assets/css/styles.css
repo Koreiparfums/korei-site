@@ -12,7 +12,9 @@
   padding: 0;
 }
 html {
-  font-size: var(--text-16);
+  /* Fluide entre 13px sur tres petit ecran et 16px des 400px de large.
+     Remplace l'ancien palier a 380px : plus de bascule brutale. */
+  font-size: clamp(13px, 11px + 1.25vw, 16px);
 }
 body {
   font-family: "DM Sans", sans-serif;
@@ -71,10 +73,13 @@ textarea {
   /* Échelle typographique — plage micro/label/corps (<20px), consolidée depuis
      55 valeurs décimales issues d'une conversion d'échelle jamais nettoyée.
      La plage titres/display (>=20px) reste à consolider dans une passe dédiée. */
-  --text-9: 8.8px;
-  --text-10: 9.6px;
-  --text-11: 10.4px;
-  --text-12: 11.2px;
+  /* Plancher de lisibilite : les quatre plus petits crans remontaient a
+     8,8 px / 9,6 px, illisibles sur mobile. On compresse le bas de l'echelle
+     pour qu'aucun texte du site ne descende sous 10,5 px. */
+  --text-9: 10.5px;
+  --text-10: 11px;
+  --text-11: 11.4px;
+  --text-12: 11.8px;
   --text-13: 12px;
   --text-14: 12.8px;
   --text-15: 13px;
@@ -187,11 +192,15 @@ textarea {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
+/* Sans min-width: 0, les deux moities du header prennent la largeur de leur
+   contenu et le header depasse la fenetre de quelques pixels : la page
+   defile alors sur le cote (constate a 900 px). */
 .header-left {
   display: flex;
   align-items: center;
   gap: 17.14px;
-  flex: 1 1 0%;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 .hamburger {
   display: none;
@@ -201,6 +210,7 @@ textarea {
   color: var(--text-muted);
   cursor: pointer;
   padding: 4.8px;
+  min-width: 44px;
 }
 .logo {
   font-family: "Cormorant Garamond", serif;
@@ -212,21 +222,20 @@ textarea {
   color: var(--text);
 }
 .logo-center {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  flex: 0 0 auto;
 }
 .nav {
   display: flex;
   align-items: center;
-  gap: 22.85px;
+  gap: clamp(14px, 1.4vw, 22.85px);
 }
 .nav a {
   font-size: var(--text-15);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
+  /* Un intitule de menu ne se coupe jamais en deux lignes. */
+  white-space: nowrap;
   color: var(--text);
   text-decoration: none;
   transition: color 0.12s;
@@ -246,7 +255,8 @@ textarea {
   align-items: center;
   justify-content: flex-end;
   gap: 12.85px;
-  flex: 1 1 0%;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 .search {
   display: flex;
@@ -254,7 +264,11 @@ textarea {
   background: var(--surface);
   padding: 7.14px 10px;
   border-radius: var(--radius-pill);
-  min-width: 328.44px;
+  /* La barre de recherche cede la place quand la nav s'allonge : sans ca, le
+     header dépasse la largeur de la fenetre et la page defile sur le cote. */
+  min-width: 0;
+  width: clamp(180px, 22vw, 328.44px);
+  flex: 0 1 auto;
   border: 0.8px solid var(--border);
   gap: 8.57px;
   box-shadow: var(--shadow-hairline);
@@ -302,6 +316,13 @@ textarea {
   color: var(--text);
   cursor: pointer;
   position: relative;
+  /* Favoris, Panier et Compte sont des liens : sans cela ils heriteraient
+     du soulignement et de la couleur de lien. */
+  display: inline-grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  text-decoration: none;
   padding: 2.86px;
   transition: color 0.2s;
 }
@@ -317,10 +338,10 @@ textarea {
   right: -3.57px;
   background: var(--accent);
   color: var(--bg);
-  font-size: 7.14px;
+  font-size: 10.5px;
   font-weight: 500;
-  width: 12.85px;
-  height: 12.85px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -548,13 +569,139 @@ a.brand-chip {
   text-transform: uppercase;
 }
 
+/* ─── RECHERCHE — resultats en direct ─── */
+.search-results {
+  width: 100%;
+  max-width: 640px;
+  overflow-y: auto;
+  padding-bottom: 40px;
+}
+.search-results__hint {
+  font-size: var(--text-9);
+  letter-spacing: var(--tracking-label);
+  color: var(--text-light);
+  text-transform: uppercase;
+  margin: 18px 0 8px;
+}
+.search-results__hint:first-child {
+  margin-top: 0;
+}
+.search-results__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.search-tendances {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.search-tendance {
+  font-family: "DM Sans", sans-serif;
+  font-size: var(--text-13);
+  color: var(--text);
+  background: var(--surface);
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.search-tendance:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.search-hit {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s;
+}
+.search-hit:hover,
+.search-hit:focus-visible {
+  background: var(--surface);
+}
+.search-hit__media {
+  width: 44px;
+  height: 52px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.search-hit__img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.search-hit__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.search-hit__brand {
+  font-size: var(--text-9);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-light);
+}
+.search-hit__name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-17);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.search-hit__price {
+  font-size: var(--text-13);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.search-hit--maison {
+  border-bottom: 0.8px solid var(--border);
+  border-radius: 0;
+}
+.search-hit--maison i {
+  color: var(--text-light);
+}
+.search-results__all {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  font-size: var(--text-13);
+  color: var(--accent);
+  text-decoration: none;
+}
+.search-results__all:hover {
+  text-decoration: underline;
+}
+.search-results__vide {
+  font-size: var(--text-15);
+  color: var(--text-muted);
+  line-height: 1.7;
+  padding: 12px 0;
+}
+.search-results__vide a {
+  color: var(--accent);
+}
+
+
 /* ─── HERO ─── */
 .hero {
   position: relative;
   background:
-    url("../images/hero/hero-fond.png") center bottom / cover no-repeat,
+    url("../images/hero/hero-fond.webp") center bottom / cover no-repeat,
     var(--bg);
   min-height: 86vh;
+  min-height: 86dvh;
   display: grid;
   grid-template-columns: 0.85fr 1.3fr;
   align-items: center;
@@ -624,6 +771,7 @@ body[data-page="home"] .hero {
 .hero-title {
   font-family: "DM Sans", sans-serif;
   font-size: var(--text-display);
+  font-size: clamp(1.44rem, 1rem + 3.2vw, var(--text-display));
   font-weight: 400;
   line-height: 1.32;
   color: var(--text);
@@ -655,15 +803,12 @@ body[data-page="home"] .hero {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(
-    calc(-50% + var(--decant-h) * 0.0103375),
-    calc(-50% + var(--decant-h) * 0.0882)
-  );
+  transform: translate(-50%, -50%);
   z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  --decant-h: clamp(255px, 28.05vw, 374px);
+  --decant-h: clamp(300px, 33vw, 440px);
 }
 .hero-decant-shadow {
   position: absolute;
@@ -1163,6 +1308,15 @@ body[data-page="home"] .hero {
   min-width: 182.53px;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+.product-card__link {
+  color: inherit;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  text-decoration: none;
 }
 .product-card:hover {
   border-color: var(--border-dark);
@@ -1206,7 +1360,7 @@ body[data-page="home"] .hero {
   position: absolute;
   top: 9.83px;
   left: 9.83px;
-  font-size: 7.02px;
+  font-size: 10.5px;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   padding: 3.51px 8.42px;
@@ -1299,6 +1453,12 @@ body[data-page="home"] .hero {
   gap: 6.4px;
   width: 100%;
   margin: 1.6px 0 10.4px;
+}
+/* Les produits venus de la boutique en ligne n'ont pas encore leurs notes.
+   Sans cette regle, la bande vide gardait ses marges et creusait un blanc
+   entre le nom du parfum et son prix. */
+.card-note-strip.is-vide {
+  display: none;
 }
 .card-note {
   display: grid;
@@ -1416,7 +1576,47 @@ body[data-page="home"] .hero {
   opacity: 0.4;
 }
 
-/* ─── CARD QUICK-ADD ─── */
+/* ─── CARD — PRIX ET ACTION ───
+   Le prix etait un gros bouton noir pleine largeur. Un bouton qui porte un
+   prix se lit « acheter », alors que le clic ouvrait la fiche : le visiteur
+   croyait commander. Le prix redevient du texte, et l'action porte son nom.
+   Reste ci-dessous .card-add, qui ne sert plus qu'a « Bientot disponible ». */
+.card-actions {
+  /* .card-body est un flex centre : sans largeur imposee, le bloc se
+     retrecirait a la taille du texte et le bouton ne ferait plus la largeur
+     de la carte, contrairement a « Bientot disponible » juste a cote. */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8.42px;
+  margin-top: 11.22px;
+}
+.card-actions .card-price {
+  text-align: center;
+  letter-spacing: var(--tracking-tight);
+}
+.card-cta {
+  display: block;
+  padding: 10.53px;
+  border: 0.8px solid var(--text);
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--text);
+  font-family: "DM Sans", sans-serif;
+  font-size: var(--text-13);
+  font-weight: 500;
+  text-align: center;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.product-card:hover .card-cta,
+.product-card:focus-within .card-cta {
+  background: var(--text);
+  color: var(--bg);
+}
+
 .card-add {
   width: 100%;
   background: var(--text);
@@ -1435,6 +1635,21 @@ body[data-page="home"] .hero {
 }
 .card-add:hover {
   background: var(--text-hover);
+}
+/* Parfum en attente de photo : meme gabarit que le bouton d'achat, mais
+   visiblement inactif. On ne fait pas croire a une vente possible. */
+.card-add--bientot {
+  background: none;
+  border: 0.8px solid var(--border-dark, #ccc8c0);
+  color: var(--text-muted);
+  cursor: default;
+  font-size: var(--text-13);
+}
+.card-add--bientot:hover {
+  background: none;
+}
+.product-card.is-bientot .card-img {
+  opacity: 0.92;
 }
 
 /* ─── HOME — cartes parfum (+10% puis -15% : net -6.5% vs base) ─── */
@@ -1455,7 +1670,7 @@ body[data-page="home"] .card-img-icon {
 body[data-page="home"] .card-badge {
   top: 9.19px;
   left: 9.19px;
-  font-size: 6.56px;
+  font-size: 10.5px;
   padding: 3.28px 7.87px;
 }
 body[data-page="home"] .card-fav {
@@ -1486,6 +1701,14 @@ body[data-page="home"] .card-add {
   padding: 11.82px;
   font-size: var(--text-12);
   margin-top: 10.49px;
+}
+body[data-page="home"] .card-actions {
+  gap: 7.87px;
+  margin-top: 10.49px;
+}
+body[data-page="home"] .card-cta {
+  padding: 9.84px;
+  font-size: var(--text-12);
 }
 
 /* ─── WHY ─── */
@@ -1595,6 +1818,7 @@ body[data-page="home"] .card-add {
 .coffret-hero {
   position: relative;
   min-height: 86vh;
+  min-height: 86dvh;
   display: flex;
   align-items: center;
   padding: 0 var(--px);
@@ -1689,7 +1913,8 @@ body[data-page="coffret"] .coffret-hero {
 }
 
 #coffrets,
-#personnaliser {
+#personnaliser,
+#le-decant {
   scroll-margin-top: 96px;
 }
 .coffret-collections {
@@ -1803,6 +2028,9 @@ body[data-page="coffret"] .coffret-hero {
   grid-template-columns: 45% 1fr;
   gap: 40px;
   align-items: start;
+}
+.cb2-grid > * {
+  min-width: 0;
 }
 .cb2-media-col {
   position: sticky;
@@ -2100,6 +2328,9 @@ body[data-page="coffret"] .coffret-hero {
   display: flex;
   flex-direction: column;
   gap: 26px;
+  /* Sans ca, la colonne prend la largeur de son contenu le plus large
+     (min-width: auto) et la page defile sur le cote vers 1024 px. */
+  min-width: 0;
 }
 .cb2-title {
   font-family: "DM Sans", sans-serif;
@@ -2151,7 +2382,6 @@ body[data-page="coffret"] .coffret-hero {
   letter-spacing: var(--tracking-tight);
   text-transform: uppercase;
   color: var(--text-muted);
-  white-space: nowrap;
   transition: color 0.25s ease;
 }
 .cb2-timeline__step.is-current .cb2-timeline__num {
@@ -2835,7 +3065,7 @@ body[data-page="coffret"] .coffret-hero {
   color: var(--bg);
 }
 .home-collection-card__cta {
-  font-size: 7.51px;
+  font-size: 10.5px;
   letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.85);
@@ -2856,39 +3086,92 @@ body[data-page="coffret"] .coffret-hero {
 .brands-section {
   padding: 64px var(--px);
 }
-.brands-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12.8px;
-  max-width: var(--max-w);
-  margin: 0 auto;
+.brands-outro {
+  text-align: center;
+  max-width: 448px;
+  margin: 8px auto 0;
 }
-.brand-logo-card {
+.brands-outro-lead {
+  font-family: "DM Sans", sans-serif;
+  font-size: var(--text-22);
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 0;
+}
+.brands-outro-lead em,
+.brands-outro-sub em {
+  font-style: normal;
+  color: var(--accent);
+}
+.brands-outro-divider {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 88px;
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--bg);
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+  gap: 12.8px;
+  max-width: 240px;
+  margin: 12.8px auto;
+  color: var(--accent);
+  font-size: var(--text-12);
 }
-.brand-logo-card:hover {
-  border-color: var(--accent);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+.brands-outro-divider::before,
+.brands-outro-divider::after {
+  content: "";
+  flex: 1;
+  height: 0.8px;
+  background: var(--accent);
+  opacity: 0.4;
 }
-.brand-logo-card img {
-  max-height: 32px;
-  max-width: 100%;
+.brands-outro-sub {
+  font-size: var(--text-14);
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.brands-marquee {
+  background: transparent;
+  overflow: hidden;
+  padding: 32px 0;
+  margin: 0 calc(-1 * var(--px));
+}
+.brands-marquee-track {
+  display: flex;
+  align-items: baseline;
+  gap: 40px;
+  width: max-content;
+  animation: brandsMarquee 30s linear infinite;
+}
+.brands-marquee-track:hover {
+  animation-play-state: paused;
+}
+@keyframes brandsMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.brand-mark {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.brand-mark:hover {
+  opacity: 1;
+}
+.brand-sep {
+  align-self: center;
+  font-size: var(--text-15);
+  color: var(--accent);
+  opacity: 0.6;
+  line-height: 1;
+}
+.brand-mark img {
+  height: 32px;
   width: auto;
   object-fit: contain;
-}
-.brands-cta {
-  text-align: center;
-  margin-top: 32px;
 }
 
 /* ─── COLLECTIONS ─── */
@@ -3301,6 +3584,14 @@ body[data-page="coffret"] .coffret-hero {
   max-height: 160px;
   padding-bottom: 17.6px;
 }
+/* Page FAQ dediee : les reponses y sont plus longues que les trois de
+   l'accueil, et le plafond de 160 px les coupait en plein milieu. */
+.faq--page {
+  padding-top: 12.8px;
+}
+.faq--page .faq-item.open .faq-answer {
+  max-height: 32rem;
+}
 
 /* ─── QUIZ CTA ─── */
 .quiz-cta {
@@ -3471,8 +3762,8 @@ footer {
   gap: 8px;
 }
 .social-btn {
-  width: 33.6px;
-  height: 33.6px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 0.8px solid rgba(255, 255, 255, 0.2);
   background: none;
@@ -3540,17 +3831,9 @@ footer {
 }
 
 /* ─── RESPONSIVE ─── */
-@media (max-width: 1100px) {
+@media (max-width: 1120px) {
   :root {
     --px: 32px;
-  }
-  /* En dessous de ~1100px, le nav plein (visible jusqu'à 860px) est assez large
-     pour chevaucher un logo vraiment centré (position:absolute) — on retombe sur
-     un centrage flex (imparfait mais garanti sans collision) tant que le nav est affiché. */
-  .logo-center {
-    position: static;
-    transform: none;
-    flex: 0 0 auto;
   }
   .hero-title {
     font-size: 44.8px;
@@ -3562,8 +3845,17 @@ footer {
     grid-template-columns: 1fr 1fr;
     gap: 25.6px;
   }
+}
+
+/* Le menu compte six entrees depuis « Les Boxes » : sous 1200 px, le champ de
+   recherche du header laisse place a la loupe, sinon l'en-tete depasse la
+   largeur de la fenetre et toute la page defile sur le cote. */
+@media (max-width: 1200px) {
   .search {
-    min-width: 257.04px;
+    display: none;
+  }
+  .search-mobile-btn {
+    display: flex;
   }
 }
 @media (max-width: 860px) {
@@ -3575,9 +3867,6 @@ footer {
   }
   .collections-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-  .brands-grid {
-    grid-template-columns: repeat(3, 1fr);
   }
   .favorites-head {
     grid-template-columns: 1fr;
@@ -3796,10 +4085,7 @@ footer {
     font-size: var(--text-23);
   }
 }
-@media (max-width: 580px) {
-  .brands-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+@media (max-width: 640px) {
   .banner {
     font-size: var(--text-9);
     gap: 8px;
@@ -3880,7 +4166,7 @@ footer {
     font-size: 24px;
   }
   .ugc-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
   }
   .footer-top {
     grid-template-columns: 1fr;
@@ -3905,20 +4191,9 @@ footer {
     width: 100%;
   }
 }
-@media (max-width: 380px) {
-  html {
-    font-size: var(--text-13);
-  }
-  .hero-title {
-    font-size: var(--text-23);
-  }
-  .products-grid {
-    grid-template-columns: 1fr;
-  }
-  .ugc-grid {
-    grid-template-columns: 1fr;
-  }
-}
+/* Anciennement un quatrieme palier a 380px. Les memes reglages sont
+   maintenant fluides : ils s'appliquent progressivement au lieu de basculer
+   d'un coup, ce qui evite un point de rupture supplementaire. */
 
 /* ─── PAGE HEADER (catalogue, marques) ─── */
 .page-hero {
@@ -3954,6 +4229,7 @@ footer {
 body[data-page="catalogue"] .page-hero {
   position: relative;
   min-height: 55vh;
+  min-height: 55dvh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -3995,6 +4271,7 @@ body[data-page="catalogue"] .page-hero {
 @media (max-width: 860px) {
   body[data-page="catalogue"] .page-hero {
     min-height: 44vh;
+    min-height: 44dvh;
     padding-top: 32px;
     padding-bottom: 32px;
   }
@@ -4036,6 +4313,7 @@ body[data-page="catalogue"] .page-hero {
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   max-height: calc(100vh - 96px);
+  max-height: calc(100dvh - 96px);
   overflow: hidden;
 }
 .filters-header {
@@ -4122,7 +4400,8 @@ body[data-page="catalogue"] .page-hero {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0;
+  padding: 6px 0;
+  min-height: 44px;
   background: none;
   border: none;
   cursor: pointer;
@@ -4139,7 +4418,9 @@ body[data-page="catalogue"] .page-hero {
   transition: transform 0.25s ease;
 }
 .filter-group:not(.open) .filter-chevron {
-  transform: rotate(-90deg);
+  /* Ferme : le chevron pointe vers le bas, ce qui invite a ouvrir.
+     Il pointait vers la gauche, ce qui ne voulait rien dire. */
+  transform: rotate(180deg);
 }
 .filter-group-body {
   display: grid;
@@ -4932,12 +5213,10 @@ body[data-page="catalogue"] .page-hero {
 }
 
 /* ─── BRANDS GRID ─── */
-#brands-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
-  margin: 0 var(--px) 64px;
-}
+/* Ancienne regle par identifiant, heritee d'une version precedente de la
+   page. Sa specificite (1-0-0) ecrasait .maisons-grid et imposait trois
+   colonnes quoi qu'on ecrive dans la classe. La mise en page appartient a
+   .maisons-grid, que le script pose sur cet element. */
 .brand-card {
   position: relative;
   display: flex;
@@ -5001,6 +5280,12 @@ body[data-page="catalogue"] .page-hero {
   letter-spacing: var(--tracking-tight);
   color: var(--text);
   text-transform: uppercase;
+}
+.brand-card-country {
+  font-size: var(--text-9);
+  letter-spacing: var(--tracking-loud);
+  text-transform: uppercase;
+  color: var(--text-light);
 }
 .brand-card-count {
   font-size: var(--text-12);
@@ -5071,6 +5356,7 @@ body[data-page="catalogue"] .page-hero {
   max-width: calc(100vw - 38.4px);
   height: 416px;
   max-height: calc(100vh - 96px);
+  max-height: calc(100dvh - 96px);
   background: var(--surface);
   border: 0.8px solid var(--border);
   border-radius: var(--radius-lg);
@@ -5324,6 +5610,7 @@ body[data-page="catalogue"] .page-hero {
   width: 320px;
   max-width: calc(100vw - 38.4px);
   max-height: calc(100vh - 96px);
+  max-height: calc(100dvh - 96px);
   background: var(--surface);
   border: 0.8px solid var(--border);
   border-radius: var(--radius-lg);
@@ -5449,7 +5736,7 @@ body[data-page="catalogue"] .page-hero {
   width: 100%;
   text-align: center;
 }
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .coffret-widget {
     bottom: calc(12.8px + env(safe-area-inset-bottom, 0px));
     left: calc(12.8px + env(safe-area-inset-left, 0px));
@@ -5467,13 +5754,13 @@ body[data-page="catalogue"] .page-hero {
   position: absolute;
   top: -2.4px;
   right: -4.8px;
-  min-width: 11.52px;
-  height: 11.52px;
-  padding: 0 2.88px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
   border-radius: var(--radius-pill);
   background: var(--danger);
   color: #fff;
-  font-size: 6.72px;
+  font-size: 10.5px;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -5816,7 +6103,7 @@ body[data-page="favoris"] .favoris-hero {
   box-shadow: var(--shadow-lg);
   border-color: transparent;
 }
-@media (min-width: 1040px) {
+@media (min-width: 1121px) {
   .fav-card--cta {
     grid-row: 1;
     grid-column: 4;
@@ -6005,7 +6292,7 @@ body[data-page="favoris"] .favoris-hero {
   line-height: 1.4;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1120px) {
   .favoris-explore__grid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -6339,6 +6626,21 @@ body[data-page="favoris"] .favoris-hero {
   justify-content: center;
   gap: 8px;
 }
+/* Un bouton inactif doit avoir l'air inactif : le noir plein donnait
+   l'impression d'un bouton cliquable qui ne repondait pas. */
+.panier-summary .btn-dark.panier-summary__cta.is-verrouille {
+  background: var(--surface);
+  color: var(--text-light);
+  border: 0.8px solid var(--border);
+  cursor: not-allowed;
+}
+.panier-summary__blocage {
+  margin: 10px 0 0;
+  font-size: var(--text-13);
+  line-height: 1.6;
+  color: var(--text-muted);
+  text-align: center;
+}
 .panier-summary__secure {
   display: flex;
   align-items: center;
@@ -6460,7 +6762,7 @@ body[data-page="favoris"] .favoris-hero {
   color: var(--text-muted);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1120px) {
   .panier-content {
     grid-template-columns: 1fr;
   }
@@ -6506,7 +6808,7 @@ body[data-page="favoris"] .favoris-hero {
 }
 
 /* ─── FILTRES — TABLETTE / MOBILE (drawer plein écran) ─── */
-@media (max-width: 1024px) {
+@media (max-width: 1120px) {
   .catalogue-layout {
     grid-template-columns: 1fr;
   }
@@ -6550,8 +6852,9 @@ body[data-page="favoris"] .favoris-hero {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 44px;
+    height: 44px;
+    margin: -8px -12px -8px 0;
     background: none;
     border: none;
     cursor: pointer;
@@ -6567,7 +6870,7 @@ body[data-page="favoris"] .favoris-hero {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .catalogue-sidebar {
     width: 100vw;
   }
@@ -6596,6 +6899,13 @@ body[data-page="favoris"] .favoris-hero {
 }
 .media-slot--loaded .media-slot__image {
   display: block;
+}
+/* L'image reste visible par defaut : c'est l'attribut `hidden` conjugue a
+   loading="lazy" qui empechait le navigateur de la telecharger, et les photos
+   de parfum ne s'affichaient jamais. Elle n'est retiree qu'en cas d'echec
+   reel, ou le placeholder prend le relais. */
+.media-slot--empty .media-slot__image {
+  display: none;
 }
 .media-slot--card {
   height: 210.61px;
@@ -6907,6 +7217,7 @@ body[data-page="favoris"] .favoris-hero {
 /* ─── 404 ─── */
 .error-page {
   min-height: 80vh;
+  min-height: 80dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7000,9 +7311,20 @@ body[data-page="favoris"] .favoris-hero {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+/* Les deux reponses tiennent cote a cote, meme gabarit. « Refuser » est
+   dessine en contour et non en plein : il reste lisible et cliquable du
+   premier coup, sans passer devant « J'accepte ». */
+.cookie-banner__actions {
+  display: flex;
+  align-items: center;
+  gap: 9.6px;
+  flex-shrink: 0;
+}
 .cookie-banner__btn {
   flex-shrink: 0;
-  border: none;
+  /* Bordure transparente plutot que « none » : les deux boutons font alors
+     exactement la meme hauteur, contour compris. */
+  border: 1px solid transparent;
   background: var(--accent);
   color: var(--text);
   font: inherit;
@@ -7012,6 +7334,19 @@ body[data-page="favoris"] .favoris-hero {
   border-radius: var(--radius-pill);
   cursor: pointer;
 }
+.cookie-banner__btn--ghost {
+  background: transparent;
+  color: var(--bg);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  font-weight: 500;
+}
+.cookie-banner__btn--ghost:hover {
+  border-color: var(--bg);
+}
+.cookie-banner__btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 @media (max-width: 640px) {
   .cookie-banner {
     justify-content: flex-start;
@@ -7019,12 +7354,3532 @@ body[data-page="favoris"] .favoris-hero {
     padding-right: calc(72px + env(safe-area-inset-right, 0px));
     padding-bottom: calc(14.4px + env(safe-area-inset-bottom, 0px));
   }
+  .cookie-banner__actions {
+    width: 100%;
+  }
+  .cookie-banner__actions .cookie-banner__btn {
+    flex: 1;
+    padding-left: 12.8px;
+    padding-right: 12.8px;
+  }
 }
 body.has-cookie-banner .chatbot-widget {
   bottom: calc(19.2px + 68px + env(safe-area-inset-bottom, 0px));
 }
-@media (max-width: 768px) {
+@media (max-width: 860px) {
   body.has-cookie-banner .chatbot-widget {
     bottom: calc(12.8px + 68px + env(safe-area-inset-bottom, 0px));
   }
+}
+
+/* ─── BARRE D'ONGLETS MOBILE (KOR-A1) ─── */
+.tabbar {
+  display: none;
+}
+.tabbar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3.2px;
+  /* Cinq onglets : chacun prend un cinquieme, sans deborder a 320px. */
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px 2px;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text-muted);
+  transition: color 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.tabbar__item.is-active {
+  color: var(--accent);
+}
+.tabbar__icon {
+  position: relative;
+  display: block;
+  font-size: 20.8px;
+  line-height: 1;
+}
+.tabbar__label {
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-tight);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tabbar__badge {
+  position: absolute;
+  top: -4.8px;
+  right: -8px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: #fff;
+  font-size: var(--text-9);
+  font-weight: 500;
+  line-height: 16px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.tabbar__item:focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: -3.2px;
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 860px) {
+  .tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 600;
+    display: flex;
+    align-items: stretch;
+    background: var(--bg);
+    border-top: 0.8px solid var(--border);
+    box-shadow: var(--shadow-float);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  /* KOR-A2 : plus aucun bouton flottant ne recouvre les boutons d'achat */
+  .coffret-widget {
+    display: none;
+  }
+  .chatbot-widget {
+    bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+  }
+  /* Les resultats de recherche ne se cachent pas derriere la barre d'onglets */
+  .search-results {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+  /* Le bandeau cookies se pose au-dessus de la barre, jamais dessous */
+  .cookie-banner {
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 14.4px;
+  }
+  /* Le bouton conseiller se cale au-dessus de tout le bas de page. */
+  .chatbot-widget,
+  body.has-cookie-banner .chatbot-widget {
+    bottom: calc(var(--bottom-chrome, 56px) + 12.8px + env(safe-area-inset-bottom, 0px));
+  }
+  body.has-tabbar {
+    padding-bottom: calc(var(--tabbar-h, 56px) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ─── Remise coffret dans le panier (KOR-C1/C2) ─── */
+.panier-summary__row--discount {
+  color: var(--accent);
+  font-weight: 500;
+}
+.panier-summary__hint.is-won {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ─── Récap coffret dans le widget (KOR-C2) ─── */
+.coffret-summary {
+  padding: 12.8px 16px;
+  border-bottom: 0.8px solid var(--border);
+  background: var(--surface);
+}
+.coffret-summary.is-won {
+  background: var(--accent-light);
+}
+.coffret-summary__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12.8px;
+  font-size: var(--text-14);
+}
+.coffret-summary__row strong {
+  font-size: var(--text-17);
+  font-variant-numeric: tabular-nums;
+}
+.coffret-summary__saved {
+  margin-top: 4.8px;
+  font-size: var(--text-12);
+  font-weight: 500;
+  color: var(--accent);
+}
+.coffret-summary__auto {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  color: var(--accent);
+  font-size: var(--text-12);
+  font-weight: 600;
+}
+.coffret-summary__pending {
+  margin-top: 3px;
+  color: var(--text-muted);
+  font-size: var(--text-11);
+}
+.coffret-summary__next {
+  margin: 8px 0 0;
+  font-size: var(--text-12);
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+.coffret-summary__next strong {
+  color: var(--text);
+  font-weight: 500;
+}
+.coffret-group.is-complete .coffret-group__bar > span {
+  background: var(--accent);
+}
+.coffret-group__benefit {
+  margin: 6px 0 8px;
+  color: var(--accent);
+  font-size: var(--text-11);
+  font-weight: 500;
+  line-height: 1.4;
+}
+.coffret-panel__foot .btn-dark {
+  display: block;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+}
+
+/* ─── Coffret groupé dans le panier (KOR-C8) ─── */
+.panier-group {
+  list-style: none;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.panier-group.is-complete {
+  border-color: var(--accent-soft);
+}
+.panier-group__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14.4px 19.2px;
+  background: var(--surface);
+  border-bottom: 0.8px solid var(--border);
+}
+.panier-group.is-complete .panier-group__head {
+  background: var(--accent-light);
+}
+.panier-group__name {
+  display: block;
+  font-size: var(--text-15);
+  font-weight: 500;
+}
+.panier-group__meta {
+  display: block;
+  font-size: var(--text-12);
+  color: var(--text-muted);
+  margin-top: 1.6px;
+  font-variant-numeric: tabular-nums;
+}
+.panier-group__money {
+  text-align: right;
+  flex-shrink: 0;
+}
+.panier-group__total {
+  display: block;
+  font-size: var(--text-17);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.panier-group__saved {
+  display: block;
+  font-size: var(--text-12);
+  color: var(--accent);
+  font-weight: 500;
+  margin-top: 1.6px;
+}
+.panier-group__next {
+  margin: 0;
+  padding: 9.6px 19.2px;
+  font-size: var(--text-13);
+  color: var(--text-muted);
+  background: var(--surface);
+  border-bottom: 0.8px solid var(--border);
+}
+.panier-group__created {
+  display: flex;
+  align-items: center;
+  gap: 8px 16px;
+  flex-wrap: wrap;
+  padding: 10px 19.2px;
+  color: var(--accent);
+  background: var(--accent-light);
+  border-bottom: 0.8px solid var(--accent-soft);
+  font-size: var(--text-12);
+}
+.panier-group__created span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+.panier-group__created strong {
+  font-weight: 600;
+}
+.panier-group__created em {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-style: normal;
+}
+.panier-group__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+@media (max-width: 640px) {
+  .panier-group__head {
+    padding: 12.8px 14.4px;
+  }
+  .panier-group__next {
+    padding: 8px 14.4px;
+  }
+  .panier-group__created {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+    padding: 9.6px 14.4px;
+  }
+  .panier-group__created em {
+    margin-left: 0;
+  }
+}
+
+/* ==========================================================================
+   Mon espace (KOR-A9)
+   Page compte sans authentification : resume de ce que le visiteur a fait
+   sur cet appareil. Reprend les cartes du reste du site, sans nouveau motif.
+   ========================================================================== */
+.compte {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px var(--px) 72px;
+}
+.compte-head {
+  margin-bottom: 32px;
+}
+.compte-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-display);
+  font-weight: 300;
+  color: var(--text);
+  margin: 8px 0 8px;
+}
+.compte-lede {
+  color: var(--text-muted);
+  font-size: var(--text-15);
+  max-width: 46ch;
+}
+.compte-grid {
+  display: grid;
+  gap: 12px;
+}
+.compte-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+.compte-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-1.6px);
+}
+.compte-card:focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3.2px;
+}
+.compte-card__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: var(--radius-pill);
+  background: var(--surface-alt, #f2ece2);
+  color: var(--accent);
+  font-size: 20.8px;
+}
+.compte-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 3.2px;
+  min-width: 0;
+}
+.compte-card__title {
+  font-size: var(--text-15);
+  color: var(--text);
+}
+.compte-card__sub {
+  font-size: var(--text-13);
+  color: var(--text-muted);
+}
+.compte-card__go {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: 17.6px;
+}
+.compte-orders {
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 0.8px solid var(--border);
+}
+.compte-h2 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-23);
+  font-weight: 300;
+  margin: 0 0 8px;
+}
+.compte-empty {
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  max-width: 52ch;
+}
+.compte-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 0.8px solid var(--border);
+}
+.compte-links a {
+  font-size: var(--text-13);
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.compte-links a:hover {
+  color: var(--accent);
+}
+@media (max-width: 640px) {
+  .compte {
+    padding-top: 28px;
+  }
+}
+
+/* ==========================================================================
+   Tiroir de filtres qui monte par le bas (KOR-A10, brief §6)
+   Sous 860px, le panneau lateral devient un tiroir ancre en bas de l'ecran :
+   la grille reste visible derriere, et le pouce atteint le bouton Appliquer.
+   Entre 861 et 1120px, le panneau lateral d'origine est conserve.
+   ========================================================================== */
+.filters-handle {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .catalogue-sidebar {
+    top: auto;
+    left: 0;
+    right: 0;
+    /* Le tiroir s'arrete au-dessus de la barre d'onglets : elle reste visible
+       et aucun element flottant ne chevauche un bouton d'action. */
+    /* --bottom-chrome = barre d'onglets + bandeau cookies, mesures en JS.
+       Le tiroir s'arrete au-dessus des deux : le bouton Appliquer reste
+       toujours atteignable. */
+    bottom: var(--bottom-bars, 0px);
+    width: 100%;
+    max-height: calc(90vh - var(--bottom-bars, 0px));
+    max-height: calc(90dvh - var(--bottom-bars, 0px));
+    transform: translateY(100%);
+    transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+    will-change: transform;
+  }
+  body.filters-open .catalogue-sidebar {
+    transform: translateY(0);
+  }
+  /* Pendant le glissement au doigt, on suit le doigt sans transition. */
+  .catalogue-sidebar.is-dragging {
+    transition: none;
+  }
+  .filters-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: calc(90vh - var(--bottom-bars, 0px));
+    max-height: calc(90dvh - var(--bottom-bars, 0px));
+    border-radius: 0;
+    box-shadow: 0 -8px 32px rgba(26, 26, 24, 0.18);
+    overflow: hidden;
+  }
+  .filters-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0 2px;
+    flex: none;
+    touch-action: none;
+    cursor: grab;
+  }
+  .filters-handle span {
+    display: block;
+    width: 40px;
+    height: 4px;
+    border-radius: var(--radius-pill);
+    background: var(--border);
+  }
+  .filters-scroll {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  .filters-actions {
+    flex: none;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    background: var(--surface);
+    border-top: 0.8px solid var(--border);
+  }
+  /* La page derriere ne defile plus tant que le tiroir est ouvert. */
+  body.filters-open {
+    overflow: hidden;
+  }
+  /* Brief §6 : aucun element flottant ne chevauche un bouton d'action.
+     Le bouton conseiller s'efface pendant que le tiroir est ouvert. */
+  body.filters-open .chatbot-widget,
+  body.filters-open .coffret-widget {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Transitions entre pages facon application (KOR-A8)
+   L'API View Transitions anime le passage d'une page a l'autre sans
+   framework. Les navigateurs qui ne la connaissent pas ignorent la regle.
+   ========================================================================== */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: korei-fade-out 0.16s ease both;
+}
+::view-transition-new(root) {
+  animation: korei-fade-in 0.22s ease both;
+}
+@keyframes korei-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes korei-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* Respect du reglage systeme : aucune animation de page si l'utilisateur a
+   demande a en voir moins. @view-transition ne peut pas etre imbrique dans
+   @media (regle du langage) : on neutralise donc les animations elles-memes,
+   ce qui revient au meme et ne casse pas l'analyse de la feuille. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   L'attribut hidden doit toujours gagner
+   La regle du navigateur ([hidden] { display: none }) a la meme force qu'une
+   classe, et perd donc face a n'importe quel `.bloc { display: flex }` de la
+   feuille. Resultat : des blocs masques par le JS restaient a l'ecran, comme
+   la ligne « Coffret complet · −10 % : −0€ » du panier. Une seule regle ferme
+   la famille entiere de bugs.
+   ========================================================================== */
+[hidden] {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Zones de toucher (KOR-A8, brief §6)
+   Sous 860 px, tout ce qui se touche fait au moins 44 px de haut. On agrandit
+   la zone sensible sans grossir le dessin : le bouton garde son apparence.
+   ========================================================================== */
+@media (max-width: 860px) {
+  .hamburger,
+  .logo,
+  .btn-dark,
+  .btn-outline,
+  .btn-white,
+  .pdp-btn,
+  .chatbot-suggestion,
+  .pdp-carousel-nav button,
+  .quiz-note-chip,
+  .brand-mark,
+  .chip,
+  .cb2-filter-chip,
+  .filters-reset,
+  .show-more-link {
+    min-height: 44px;
+  }
+  /* Un min-height seul laisse le texte colle en haut : on recentre. */
+  .btn-dark,
+  .btn-outline,
+  .btn-white,
+  .chip,
+  .cb2-filter-chip,
+  .filters-reset,
+  .quiz-note-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* .chip a une hauteur fixe de 36 px qui gagnerait sur le min-height. */
+  .chip {
+    height: auto;
+  }
+  /* Barre d'outils du catalogue : bouton filtres, tri, recherche interne,
+     et chaque ligne de case a cocher des filtres. */
+  .btn-filters-open,
+  .catalogue-topbar select,
+  .mini-search,
+  .cb2-search,
+  .pop-check {
+    min-height: 44px;
+  }
+  .btn-filters-open {
+    height: auto;
+  }
+  .catalogue-topbar select {
+    padding: 0 11.2px;
+  }
+  /* Boutons ronds : on elargit la zone sensible avec un pseudo-element
+     centre, ce qui evite de deformer la carte produit. */
+  .chatbot-send {
+    height: 44px;
+    width: 44px;
+  }
+  /* .card-fav est deja en position: absolute (coin haut droit de la photo) :
+     le remettre en relative le renvoyait au milieu de la carte. Un element
+     absolu est deja un contexte valable pour le ::after ci-dessous. */
+  .card-add,
+  .chatbot-close {
+    position: relative;
+  }
+  .card-fav::after,
+  .card-add::after,
+  .chatbot-close::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* ==========================================================================
+   Les trois coffrets vendus (KOR-C9, brief §3.3 et §4)
+   Une carte par format. La remise et la livraison offerte sont annoncees sur
+   la carte elle-meme : c'est le point le plus important du brief.
+   ========================================================================== */
+.coffret-collections .dose-title {
+  text-wrap: balance;
+}
+.dose-sub {
+  max-width: 58ch;
+  margin: 16px auto 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--text-15);
+  line-height: 1.65;
+}
+.box-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  max-width: 1120px;
+  margin: 40px auto 0;
+  padding: 0 var(--px);
+}
+.box-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.box-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3.2px);
+  box-shadow: 0 12px 32px -20px rgba(26, 26, 24, 0.4);
+}
+.box-card:focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3.2px;
+}
+.box-card--popular {
+  border-color: var(--accent);
+}
+.box-card__badge,
+.box-card__discount {
+  position: absolute;
+  top: 12.8px;
+  z-index: 2;
+  padding: 4.8px 11.2px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+.box-card__badge {
+  left: 12.8px;
+  background: var(--accent);
+  color: #fff;
+}
+.box-card__discount {
+  right: 12.8px;
+  background: var(--text);
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  /* La pastille ne doit jamais se couper en deux lignes. */
+  white-space: nowrap;
+}
+.box-card__media {
+  /* Les photos officielles du coffret sont carrees, sur fond blanc.
+     On les affiche entieres : recadrer couperait le logo Korei. */
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #fff;
+}
+.box-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.box-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  flex: 1;
+}
+.box-card__name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-23);
+  font-weight: 300;
+  margin: 0;
+}
+.box-card__format {
+  margin: 0;
+  color: var(--accent);
+  font-size: var(--text-13);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+.box-card__desc {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-14);
+  line-height: 1.6;
+}
+.box-card__perks {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6.4px;
+}
+.box-card__perks li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-13);
+  color: var(--text);
+}
+.box-card__perks i {
+  color: var(--accent);
+  font-size: 16px;
+}
+.box-card__cta {
+  margin-top: auto;
+  padding-top: 14px;
+  font-size: var(--text-13);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text);
+}
+.box-card:hover .box-card__cta {
+  color: var(--accent);
+}
+
+.box-trust {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1px;
+  max-width: 1120px;
+  margin: 32px auto 0;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--border);
+  overflow: hidden;
+}
+.box-trust__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 20px;
+  background: var(--surface);
+}
+.box-trust__item i {
+  color: var(--accent);
+  font-size: 22.4px;
+  flex: none;
+}
+.box-trust__item span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--text-12);
+  color: var(--text-muted);
+}
+.box-trust__item b {
+  font-size: var(--text-13);
+  font-weight: 500;
+  color: var(--text);
+}
+@media (max-width: 640px) {
+  .box-grid {
+    margin-top: 28px;
+  }
+  .box-trust {
+    margin-left: var(--px);
+    margin-right: var(--px);
+  }
+}
+
+/* ==========================================================================
+   Configurateur : etapes, compteurs, recapitulatif (KOR-C12, C13, C14, C15)
+   ========================================================================== */
+
+/* Les trois etapes du brief : boutons, pour pouvoir revenir en arriere. */
+.cb2-timeline {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-bottom: 0.8px solid var(--border);
+}
+/* Sans min-width: 0, chaque etape prend la largeur de son libelle (nowrap)
+   et la grille deborde de la fenetre vers 1024 px. */
+.cb2-timeline > li,
+.cb2-timeline__step {
+  min-width: 0;
+}
+.cb2-timeline__step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 6px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font: inherit;
+  font-size: var(--text-13);
+  color: var(--text-light);
+  cursor: pointer;
+  text-align: center;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.cb2-timeline__step:disabled {
+  cursor: default;
+}
+.cb2-timeline__step.is-current {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.cb2-timeline__step.is-done {
+  color: var(--text);
+}
+.cb2-timeline__num {
+  display: grid;
+  place-items: center;
+  width: 22.4px;
+  height: 22.4px;
+  flex: none;
+  border-radius: 50%;
+  border: 0.8px solid currentColor;
+  font-size: var(--text-11);
+  font-variant-numeric: tabular-nums;
+}
+.cb2-timeline__step.is-current .cb2-timeline__num {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+/* Le libelle tenait sur une ligne avec des points de suspension :
+   « Selectionnez vos parf... ». Il passe a la ligne plutot que d'etre
+   tronque, la barre d'etapes reste lisible d'un coup d'oeil. */
+.cb2-timeline__label {
+  white-space: normal;
+  text-wrap: balance;
+  line-height: 1.35;
+}
+
+/* Compteur de resultats de la recherche. */
+.cb2-results__count {
+  margin: 12px 0 8px;
+  font-size: var(--text-12);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Compteur « − quantite + » sur chaque parfum suggere. */
+.cb2-result__qty {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  flex: none;
+}
+.cb2-qty-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--text-17);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+.cb2-qty-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.cb2-qty-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.cb2-qty-value {
+  min-width: 24px;
+  text-align: center;
+  font-size: var(--text-15);
+  font-variant-numeric: tabular-nums;
+}
+.cb2-result.is-picked {
+  border-color: var(--accent);
+}
+.cb2-result__check {
+  position: absolute;
+  top: -4.8px;
+  right: -4.8px;
+  display: grid;
+  place-items: center;
+  width: 20.8px;
+  height: 20.8px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: var(--text-11);
+}
+.cb2-result__media {
+  position: relative;
+}
+
+/* Recapitulatif chiffre, toujours visible. */
+.cb2-recap {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 0.8px solid var(--border);
+}
+.cb2-recap__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: var(--text-13);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.cb2-recap__row--discount {
+  color: var(--accent);
+}
+.cb2-recap__row--discount[hidden] {
+  display: none;
+}
+#cb2Ship.is-won {
+  color: var(--accent);
+}
+
+/* ==========================================================================
+   Recapitulatif du coffret sur telephone (KOR-C14, brief §4)
+   Sur ordinateur, l'apercu est une colonne collante a gauche. Sous 860 px il
+   devient une barre fixe en bas, depliable : c'est ce que demande le brief,
+   et cela corrige le chevauchement de l'apercu collant sur les resultats.
+   ========================================================================== */
+.cb2-dock {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .cb2-media-col {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: var(--bottom-bars, 0px);
+    top: auto;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border-top: 0.8px solid var(--border);
+    box-shadow: 0 -8px 28px -18px rgba(26, 26, 24, 0.5);
+    max-height: calc(88dvh - var(--bottom-bars, 0px));
+  }
+  .cb2-dock {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    min-height: 60px;
+    padding: 12px var(--px);
+    border: 0;
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    flex: none;
+  }
+  .cb2-dock__left,
+  .cb2-dock__right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .cb2-dock__left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  .cb2-dock__name {
+    font-size: var(--text-14);
+    color: var(--text);
+  }
+  .cb2-dock__count {
+    font-size: var(--text-12);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .cb2-dock__total {
+    font-size: var(--text-19);
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .cb2-dock__chevron {
+    color: var(--text-muted);
+    font-size: 19.2px;
+    transition: transform 0.25s ease;
+  }
+  .cb2-dock[aria-expanded="true"] .cb2-dock__chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Replie : seule la barre reste. Deplie : l'apercu complet defile. */
+  .cb2-preview {
+    display: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0 var(--px) 20px;
+    background: var(--surface);
+  }
+  .cb2-media-col.is-open .cb2-preview {
+    display: block;
+  }
+
+  /* Le contenu de la page ne doit pas finir sous la barre. */
+  .cb2 {
+    padding-bottom: 84px;
+  }
+  /* Brief §6 : rien ne chevauche un bouton d'action. Le bouton conseiller
+     s'efface quand le recapitulatif est deplie. */
+  body:has(.cb2-media-col.is-open) .chatbot-widget {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Hero d'accueil (KOR-D1, KOR-D7, brief §1)
+   Photo pleine largeur, texte a gauche dans la zone laissee libre par la
+   photo, un seul bouton. La preuve sociale est sous l'accroche, visible
+   sans avoir a faire defiler.
+   ========================================================================== */
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-height: 76vh;
+  min-height: 76dvh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--bg);
+}
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+.hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 70% center;
+}
+/* Voile clair a gauche : le texte reste lisible sur la photo, sans la ternir. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    100deg,
+    rgba(250, 247, 242, 0.97) 0%,
+    rgba(250, 247, 242, 0.92) 28%,
+    rgba(250, 247, 242, 0.45) 52%,
+    rgba(250, 247, 242, 0) 72%
+  );
+}
+.hero__inner {
+  width: 100%;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 64px var(--px);
+}
+.hero__content {
+  max-width: 34rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+.hero__eyebrow {
+  margin: 0;
+  font-size: var(--text-11);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.hero__title {
+  margin: 0;
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  font-size: clamp(2.1rem, 1rem + 4.4vw, 4.2rem);
+  line-height: 1.08;
+  color: var(--text);
+  text-wrap: balance;
+}
+.hero__sub {
+  margin: 0;
+  max-width: 34ch;
+  font-size: var(--text-16);
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+.hero__proof {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  font-size: var(--text-13);
+  color: var(--text);
+}
+.hero__proof[hidden] {
+  display: none;
+}
+.hero__proof-stars {
+  display: inline-flex;
+  gap: 2px;
+  color: var(--accent);
+}
+.hero__proof-score {
+  font-size: var(--text-17);
+  font-variant-numeric: tabular-nums;
+}
+.hero__proof-sep {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+}
+.hero__proof-orders {
+  display: inline-flex;
+  align-items: center;
+  gap: 6.4px;
+  color: var(--text-muted);
+}
+.hero__proof-orders i {
+  color: var(--accent);
+  font-size: 16px;
+}
+.hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  margin-top: 8px;
+  padding: 0 32px;
+  border-radius: var(--radius-pill);
+  background: var(--text);
+  color: var(--bg);
+  font-size: var(--text-15);
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+.hero__cta:hover {
+  background: var(--accent);
+  transform: translateY(-1.6px);
+}
+.hero__cta:focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3.2px;
+}
+/* Deux boutons cote a cote : « Decouvrir les parfums » vers le catalogue,
+   « Pourquoi un decant ? » vers l'explication, plus bas sur la page. Le
+   second est secondaire — meme gabarit, simple contour — pour que l'oeil
+   sache lequel est l'action principale. */
+.hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.hero__cta--ghost {
+  background: none;
+  border: 0.8px solid var(--text);
+  color: var(--text);
+}
+.hero__cta--ghost:hover {
+  background: var(--text);
+  color: var(--bg);
+}
+
+@media (max-width: 860px) {
+  .hero {
+    min-height: 0;
+    align-items: flex-end;
+  }
+  .hero__media img {
+    object-position: 62% center;
+  }
+  /* Sur telephone la photo passe derriere un voile plus dense en bas :
+     le texte reste lisible sans reduire la photo a une bande. */
+  .hero::before {
+    background: linear-gradient(
+      180deg,
+      rgba(250, 247, 242, 0.15) 0%,
+      rgba(250, 247, 242, 0.75) 42%,
+      rgba(250, 247, 242, 0.98) 62%
+    );
+  }
+  .hero__inner {
+    padding: 220px var(--px) 40px;
+  }
+  .hero__content {
+    max-width: none;
+    gap: 16px;
+  }
+  .hero__ctas,
+  .hero__cta {
+    width: 100%;
+  }
+  /* Les faits passent l'un sous l'autre : le separateur vertical n'a plus
+     de sens et laissait une barre orpheline en fin de ligne. */
+  .hero__proof {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .hero__proof-sep {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Page Maisons (KOR-E1, E4, E5, brief §5)
+   Annuaire de marques : titre editorial, barre alphabetique, deux filtres,
+   grille de logos sobre, puis les maisons phares avec leur produit signature.
+   ========================================================================== */
+.maisons-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 96px var(--px) 76px;
+  text-align: center;
+  overflow: hidden;
+  background:
+    linear-gradient(to bottom, rgba(252, 250, 247, 0.93), rgba(252, 250, 247, 0.985)),
+    url("../images/hero/hero-flacons-niche-sm.webp") center / cover no-repeat;
+  border-bottom: 1px solid var(--border);
+}
+.maisons-hero > * {
+  position: relative;
+}
+.maisons-hero__title {
+  margin: 0;
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  font-size: clamp(2.4rem, 1.2rem + 4vw, 4.4rem);
+  line-height: 1.1;
+  color: var(--text);
+}
+.maisons-hero__title em {
+  font-style: normal;
+  color: var(--accent);
+}
+.maisons-hero__rule {
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: var(--accent);
+}
+.maisons-hero__sub {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--text-muted);
+  font-size: var(--text-15);
+}
+
+/* Barre A–Z. Elle defile horizontalement sur telephone. */
+.maisons-alpha {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+  padding: 0 var(--px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-top: 0.8px solid var(--border);
+  border-bottom: 0.8px solid var(--border);
+}
+.maisons-alpha::-webkit-scrollbar {
+  display: none;
+}
+.maisons-alpha__letter {
+  flex: none;
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font: inherit;
+  font-size: var(--text-13);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    color 0.16s ease,
+    border-color 0.16s ease;
+}
+.maisons-alpha__letter:disabled {
+  color: var(--border);
+  cursor: default;
+}
+.maisons-alpha__letter.is-active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.maisons-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 24px var(--px);
+}
+.maisons-toolbar__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.maisons-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.maisons-select__label {
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.maisons-select select,
+.maisons-search input {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--text-13);
+}
+.maisons-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+.maisons-search i {
+  position: absolute;
+  left: 14px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.maisons-search input {
+  padding-left: 38px;
+  min-width: 220px;
+}
+.maisons-count {
+  color: var(--accent);
+  font-size: var(--text-14);
+  font-variant-numeric: tabular-nums;
+}
+.maisons-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 6.4px;
+  min-height: 44px;
+  margin-left: auto;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--text-13);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.maisons-reset:hover {
+  color: var(--accent);
+}
+
+.maisons-grid {
+  display: grid;
+  /* Quatre colonnes comme la maquette. En auto-fill le navigateur n'en
+     retenait que trois : on les pose explicitement, et les paliers plus
+     bas reduisent le compte. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--px) 64px;
+}
+.maison-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 148px;
+  padding: 26px 20px 22px;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+.maison-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-1.6px);
+}
+.maison-card:focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3.2px;
+}
+.maison-card.is-highlight {
+  border-color: var(--accent);
+}
+.maison-card__logo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 58px;
+}
+/* Le logo se pose par-dessus le nom. S'il manque, l'image est retiree du DOM
+   et le nom reapparait tout seul : jamais de cadre vide. */
+.maison-card__mark {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: auto;
+  max-width: 100%;
+  height: 100%;
+  max-height: 58px;
+  object-fit: contain;
+  background: var(--surface);
+}
+/* Une maison sans logo garde son nom en typographie de marque : jamais un
+   cadre vide (KOR-E1). */
+.maison-card__wordmark {
+  display: grid;
+  place-items: center;
+  /* Sans cette ligne, le display:grid l'emporte sur l'attribut hidden et le
+     nom de la maison restait affiche par-dessus son logo. */
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-19);
+  letter-spacing: 0.06em;
+  text-align: center;
+  color: var(--text);
+}
+/* Maison sans parfum au catalogue : la carte est visible mais inerte. */
+.maison-card.is-vide {
+  cursor: default;
+}
+.maison-card.is-vide:hover {
+  border-color: var(--border);
+  transform: none;
+}
+.maison-card__soon {
+  font-size: var(--text-11);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-light);
+}
+.maison-card__country {
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.maisons-phares {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 48px var(--px) 72px;
+  border-top: 0.8px solid var(--border);
+}
+.maisons-phares__title {
+  margin: 0;
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  font-size: var(--text-23);
+  color: var(--text);
+}
+.maisons-phares__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: var(--max-w);
+  margin-top: 16px;
+}
+.phare-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 14px;
+  border: 0.8px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+.phare-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-1.6px);
+}
+.phare-card__brand {
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-16);
+  color: var(--text);
+  text-align: center;
+}
+/* Le logo de la maison coiffe la carte, comme la maquette. Le nom reste
+   dessous en repli : il reapparait si l'image manque (data-onerror). */
+.phare-card__mark {
+  display: block;
+  max-width: 96px;
+  max-height: 22px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto 2px;
+  opacity: 0.85;
+}
+.phare-card__mark + .phare-card__brandname {
+  display: none;
+}
+.phare-card__media {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+}
+.phare-card__media img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.phare-card__name {
+  font-size: var(--text-11);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text);
+  text-align: center;
+}
+.phare-card__type {
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .maisons-hero {
+    padding-top: 36px;
+  }
+  .maisons-alpha {
+    justify-content: flex-start;
+  }
+  .maisons-toolbar__filters {
+    width: 100%;
+  }
+  /* Les deux libelles n'ont pas la meme longueur : cote a cote, chaque menu
+     demarrait a une abscisse differente. Le libelle passe au-dessus, les
+     deux menus s'alignent. */
+  .maisons-select {
+    flex: 1 1 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .maisons-select select {
+    width: 100%;
+  }
+  .maisons-search input {
+    min-width: 0;
+    width: 100%;
+  }
+  .maisons-search {
+    flex: 1 1 100%;
+  }
+  .maisons-reset {
+    margin-left: 0;
+  }
+  .maisons-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1120px) {
+  .maisons-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 860px) {
+  .maisons-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ─── KOR-D2 · carrousel « Nos formats » ─────────────────────────────────
+   Balayage sur telephone, fleches sur ordinateur. Les points indiquent la
+   position : sans eux, rien ne dit qu'il reste des cartes a droite. */
+.formats-section {
+  padding: 64px var(--px) 8px;
+}
+.formats-carousel {
+  position: relative;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.formats-track {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0 8px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(240px, 1fr);
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  flex: 1;
+}
+.formats-track::-webkit-scrollbar {
+  display: none;
+}
+.format-card {
+  position: relative;
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px 20px;
+  text-align: center;
+}
+.format-card__flag {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.format-card__media {
+  height: 190px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+/* Les trois flacons sont a l'echelle les uns des autres : un 10 ml doit
+   visiblement etre plus grand qu'un 2 ml, sinon la section n'explique rien. */
+.format-card__media img {
+  width: auto;
+  object-fit: contain;
+}
+[data-vial="2ml"] .format-card__media img {
+  height: 58%;
+}
+[data-vial="5ml"] .format-card__media img {
+  height: 77%;
+}
+[data-vial="10ml"] .format-card__media img {
+  height: 100%;
+}
+.format-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.format-card__size {
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-28);
+  font-variant-numeric: lining-nums;
+  color: var(--text);
+  line-height: 1;
+}
+.format-card__use {
+  font-size: var(--text-13);
+  color: var(--text-muted);
+  line-height: 1.55;
+  max-width: 22ch;
+}
+.format-card__price {
+  font-size: var(--text-13);
+  color: var(--text);
+}
+.format-card__price b {
+  font-weight: 500;
+  color: var(--accent);
+}
+.format-card__cta {
+  margin-top: 6px;
+  gap: 6px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text);
+  border-bottom: 1px solid var(--accent);
+  text-decoration: none;
+}
+.formats-arrow {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.formats-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+/* Trois cartes tiennent sur un grand ecran : plutot que deux fleches grises
+   qui ne servent a rien, on les retire. */
+.formats-carousel[data-static] .formats-arrow {
+  display: none;
+}
+.formats-dots {
+  display: none;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+.formats-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.2s ease, width 0.2s ease;
+}
+.formats-dot.is-active {
+  width: 18px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+/* ─── KOR-D6 · promesse coffret sur l'accueil ─── */
+.packs-promise {
+  max-width: var(--max-w);
+  margin: 0 auto 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  font-size: var(--text-14);
+  color: var(--text);
+}
+.packs-promise__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.packs-promise__item i {
+  color: var(--accent);
+}
+.packs-promise__item b {
+  font-weight: 500;
+}
+.packs-promise__sep {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+}
+.packs-cta-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+/* ─── KOR-D3 · grille des maisons sur l'accueil ─── */
+.home-maisons {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.home-maison {
+  background: #fff;
+  min-height: 116px;
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.home-maison:hover,
+.home-maison:focus-visible {
+  background: var(--surface);
+}
+/* Dix maisons sur cinq colonnes, douze sur quatre ou trois : la grille ne
+   laisse jamais de case vide. Le script en rend douze ; on cache les deux
+   dernieres la ou elles ne rempliraient pas une rangee entiere. */
+.home-maison:nth-child(n + 11) {
+  display: none;
+}
+.home-maison__logo {
+  max-width: 108px;
+  max-height: 34px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.home-maison__wordmark {
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-20);
+  color: var(--text);
+  text-align: center;
+  line-height: 1.1;
+}
+.home-maison__count {
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+@media (max-width: 1120px) {
+  .home-maisons {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  /* Quatre colonnes (et trois en dessous de 860 px) : douze maisons font
+     des rangees pleines. */
+  .home-maison:nth-child(n + 11) {
+    display: flex;
+  }
+}
+@media (max-width: 860px) {
+  .home-maisons {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  /* Sur telephone : deux colonnes (brief §2) et balayage plutot que fleches. */
+  .home-maisons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* Deux colonnes : dix maisons, cinq rangees, pas de case vide. */
+  .home-maison:nth-child(n + 11) {
+    display: none;
+  }
+  .formats-arrow {
+    display: none;
+  }
+  .formats-dots {
+    display: flex;
+  }
+  .formats-track {
+    grid-auto-columns: 76%;
+    gap: 14px;
+  }
+  .format-card__media {
+    height: 150px;
+  }
+  .packs-promise__sep {
+    display: none;
+  }
+}
+.formats-dots.is-hidden {
+  display: none;
+}
+
+/* ─── KOR-G1 · page « Les Boxes Kōrei » ──────────────────────────────────
+   Gabarit livre avant son contenu (brief §9). Aucune box n'est presentee
+   comme achetable tant que l'offre n'est pas arretee. */
+.boxes-hero {
+  padding: 56px var(--px) 40px;
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.boxes-hero__eyebrow {
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.boxes-hero__title {
+  margin-top: 10px;
+  font-family: "DM Sans", sans-serif;
+  font-size: clamp(2rem, 1.4rem + 3vw, 3.25rem);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--text);
+}
+.boxes-hero__title em {
+  font-style: italic;
+  color: var(--accent);
+}
+.boxes-hero__rule {
+  display: block;
+  width: 48px;
+  height: 1.6px;
+  margin: 18px auto;
+  background: var(--accent);
+}
+.boxes-hero__sub {
+  font-size: var(--text-16);
+  line-height: 1.65;
+  color: var(--text-muted);
+  max-width: 46ch;
+}
+.boxes-hero__note {
+  margin-top: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font-size: var(--text-13);
+  color: var(--text);
+  text-align: left;
+}
+.boxes-hero__note i {
+  color: var(--accent);
+  flex: none;
+}
+.boxes-hero__cta {
+  margin-top: 24px;
+}
+
+/* Offre 10 × 10 ml */
+.boxes-feature {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 16px var(--px) 64px;
+  display: grid;
+  grid-template-columns: minmax(0, 480px) minmax(0, 1fr);
+  gap: 44px;
+  align-items: center;
+}
+.boxes-feature__media {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #fff;
+}
+.boxes-feature__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.boxes-feature__flag {
+  display: inline-block;
+  padding: 4.8px 11.2px;
+  border-radius: var(--radius-pill);
+  background: var(--text);
+  color: #fff;
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+.boxes-feature__title {
+  margin-top: 14px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(1.75rem, 1.2rem + 2.4vw, 2.5rem);
+  font-variant-numeric: lining-nums;
+  color: var(--text);
+  line-height: 1.15;
+}
+.boxes-feature__desc {
+  margin-top: 12px;
+  font-size: var(--text-15);
+  line-height: 1.65;
+  color: var(--text-muted);
+  max-width: 46ch;
+}
+.boxes-feature__list {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.boxes-feature__list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--text-14);
+  color: var(--text);
+}
+.boxes-feature__list i {
+  color: var(--accent);
+}
+.boxes-feature__pending {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-size: var(--text-13);
+  color: var(--text-muted);
+}
+
+/* Univers annonces */
+.boxes-themes {
+  padding: 0 var(--px) 64px;
+}
+.boxes-grid {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.box-theme {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--surface);
+  text-decoration: none;
+}
+.box-theme__media {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #fff;
+}
+.box-theme__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Une box qui n'existe pas encore ne doit pas ressembler a un produit
+   cliquable : image plus sourde et pas d'effet au survol. */
+.box-theme--soon .box-theme__media img {
+  filter: saturate(0.55);
+}
+.box-theme__body {
+  padding: 18px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.box-theme__name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: var(--text-22);
+  color: var(--text);
+}
+.box-theme__desc {
+  font-size: var(--text-13);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.box-theme__soon {
+  margin-top: 4px;
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.box-theme__cta {
+  margin-top: 4px;
+  font-size: var(--text-11);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.boxes-alt {
+  padding: 48px var(--px) 72px;
+  text-align: center;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+.boxes-alt__title {
+  font-family: "DM Sans", sans-serif;
+  font-size: var(--text-22);
+  font-weight: 400;
+  color: var(--text);
+}
+.boxes-alt__sub {
+  margin: 10px auto 24px;
+  max-width: 52ch;
+  font-size: var(--text-14);
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+@media (max-width: 1120px) {
+  .boxes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 860px) {
+  .boxes-feature {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+@media (max-width: 640px) {
+  .boxes-grid {
+    grid-template-columns: 1fr;
+  }
+  .boxes-hero {
+    padding-top: 36px;
+  }
+}
+
+/* ─── Vignettes de notes par famille olfactive ───────────────────────────
+   Les photos d'ingredients n'existent que pour 5 des 51 notes du catalogue.
+   En attendant les vraies photos, la vignette dit la famille de la note :
+   une couleur et un picto, au lieu d'une initiale qui n'apprend rien. */
+/* Les deux classes plutot qu'une : la regle du monogramme juste au-dessus
+   porte un :has(img) qui la rend plus specifique qu'un simple .note-image--
+   family. Sans ce doublage, les huit familles heritaient toutes du meme fond
+   dore et seule l'encre du picto changeait. */
+.note-image.note-image--family {
+  background: var(--note-bg, var(--accent-light));
+  border-color: var(--note-line, var(--border));
+  color: var(--note-ink, var(--accent));
+  font-style: normal;
+}
+.note-image--family i {
+  font-size: 0.52em;
+  line-height: 1;
+}
+.note-image--family[data-family="agrume"] {
+  --note-bg: #f6f9e9;
+  --note-line: #dfe8bf;
+  --note-ink: #7f9130;
+}
+.note-image--family[data-family="fruit"] {
+  --note-bg: #fdf0ef;
+  --note-line: #f2d3cf;
+  --note-ink: #b8574c;
+}
+.note-image--family[data-family="fleur"] {
+  --note-bg: #fdf0f4;
+  --note-line: #f2d2dd;
+  --note-ink: #b45877;
+}
+.note-image--family[data-family="bois"] {
+  --note-bg: #f4f1ea;
+  --note-line: #ded5c4;
+  --note-ink: #7a6544;
+}
+.note-image--family[data-family="epice"] {
+  --note-bg: #fdf1e6;
+  --note-line: #f0d7ba;
+  --note-ink: #b4712c;
+}
+.note-image--family[data-family="gourmand"] {
+  --note-bg: #f9f1e6;
+  --note-line: #e8d5bb;
+  --note-ink: #96693a;
+}
+.note-image--family[data-family="resine"] {
+  --note-bg: #f7f0e4;
+  --note-line: #e5d4b6;
+  --note-ink: #9a7524;
+}
+.note-image--family[data-family="musc"] {
+  --note-bg: #f4f4f2;
+  --note-line: #ddddd8;
+  --note-ink: #7d7d74;
+}
+/* Deux familles ajoutees le 03/09/2026 : les notes vertes et aromatiques
+   d'un cote, les notes marines et minerales de l'autre. Elles portaient
+   jusque-la une initiale grise faute de case ou aller. */
+.note-image--family[data-family="herbe"] {
+  --note-bg: #eff5ec;
+  --note-line: #cfe0c7;
+  --note-ink: #5d7f4e;
+}
+.note-image--family[data-family="marin"] {
+  --note-bg: #edf3f6;
+  --note-line: #cadde5;
+  --note-ink: #4d7787;
+}
+/* Dans la pyramide, la vignette est plus grande : le picto suit. */
+.pdp-py-note .note-image--family i {
+  font-size: 22px;
+}
+.pdp-py-note .note-image--photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Parfum encore sans photo : une silhouette de flacon plutot qu'un trou. */
+.search-hit__icone {
+  font-size: 24px;
+  color: var(--text-light);
+}
+
+/* Trop peu de cartes pour un defilement : rangee simple, sans flechage. */
+.is-rangee-simple {
+  justify-content: flex-start;
+  overflow-x: auto;
+}
+
+/* ==========================================================================
+   Contour au clavier
+   Neuf champs de cette feuille enlevent leur contour de focus (outline: none).
+   Ils le remplacent au mieux par un changement de couleur de bordure, qui se
+   declenche aussi au clic de souris et ne se voit presque pas : au clavier,
+   plus rien n'indiquait vraiment ou on se trouvait.
+
+   On pose donc un anneau dore discret, a la couleur --accent de la charte,
+   uniquement en :focus-visible : le navigateur ne l'allume qu'au clavier, la
+   souris n'y touche pas. L'anneau est porte par le conteneur du champ, sinon
+   il dessinerait un rectangle a l'interieur d'une pastille arrondie.
+   ========================================================================== */
+.search:has(input:focus-visible),
+.search-overlay-head:has(.search-overlay-input:focus-visible),
+.cb2-search:has(input:focus-visible),
+.cb2-message-card:has(.cb2-message:focus-visible),
+.mini-search:has(input:focus-visible),
+.brands-search:has(input:focus-visible),
+.newsletter-input:focus-visible,
+.catalogue-topbar select:focus-visible,
+.chatbot-input:focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3.2px;
+}
+
+/* ==========================================================================
+   DIRECTION VISUELLE — « le comptoir », page d'accueil (03/09/2026)
+
+   Meme direction que la fiche produit : la serif porte les noms, une chasse
+   fixe porte les chiffres, le dore redevient un sceau et non un aplat, les
+   angles s'aplatissent. S'y ajoute ici ce qui manquait le plus : une mise en
+   scene a l'ouverture, et des sections qui se revelent au defilement.
+
+   Bloc pose en fin de fichier, a specificite egale : il se retire d'un seul
+   tenant pour revenir a l'etat d'avant.
+   ========================================================================== */
+
+:root {
+  /* Le dore de marque tombe a 2,9:1 sur blanc. Ce ton-ci passe la barre et
+     reste le meme dore : on ne s'en sert que pour du texte. */
+  --sceau: #8a6a2f;
+  --mesure: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --pose: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ─── 1 · Le hero respire ─────────────────────────────────────────────── */
+
+.hero {
+  min-height: 88vh;
+  min-height: 88dvh;
+}
+/* Le voile s'arrete plus tot : la photo du client est belle, on la montre. */
+/* Le voile suit la colonne de texte. Elle est passee de 33 a 36rem pour le
+   titre en deux lignes : les paliers se decalent d'autant, sinon la fin de
+   « Le parfum d'abord. » se pose sur le premier flacon. */
+.hero::before {
+  background: linear-gradient(
+    100deg,
+    rgba(250, 247, 242, 0.96) 0%,
+    rgba(250, 247, 242, 0.92) 30%,
+    rgba(250, 247, 242, 0.42) 54%,
+    rgba(250, 247, 242, 0) 72%
+  );
+}
+/* La photo laisse un tiers de vide a gauche, pas la moitie : le texte doit
+   tenir dedans, sinon les boutons se posent sur un flacon. */
+.hero__content {
+  /* 36rem et non 33 : « Le parfum d'abord. » demande 540 px a la taille du
+     titre, la colonne n'en offrait que 528. Douze pixels manquants, et la
+     phrase se cassait en trois lignes au lieu de deux. */
+  max-width: 36rem;
+  gap: 22px;
+}
+/* Et on repousse un peu les flacons vers la droite pour gagner ce qu'il
+   manque. */
+.hero__media img {
+  object-position: 76% center;
+}
+.hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--mesure);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  color: var(--sceau);
+}
+.hero__eyebrow::after {
+  content: "";
+  width: 58px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+.hero__title {
+  font-size: clamp(2.6rem, 1rem + 5.2vw, 4.9rem);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+/* Les deux chiffres de l'accroche sont des donnees, pas de la prose : ils
+   passent en chasse fixe, comme les prix de la fiche produit.
+
+   Pas de tabular-nums ici, contrairement au reste du site : la chasse fixe
+   donne alors a la virgule et a l'espace la largeur d'un chiffre, et
+   « 5,90 € » se lit « 5 , 90 € ». Les colonnes de prix en ont besoin, une
+   accroche non. */
+#hero-count {
+  font-family: var(--mesure);
+  font-weight: 400;
+  font-size: 0.74em;
+  font-variant-numeric: lining-nums;
+  letter-spacing: -0.03em;
+}
+/* Le prix reste dans la serif, lui. Une chasse fixe donne a la virgule, a
+   l'espace et a l'euro la largeur d'un chiffre — c'est ce qui fait une chasse
+   fixe — et « 5,90 € » se lit alors « 5 , 90 € ». Un entier seul le supporte,
+   un prix non. */
+#hero-from {
+  white-space: nowrap;
+}
+.hero__sub {
+  max-width: 38ch;
+  font-size: var(--text-17);
+  line-height: 1.7;
+}
+/* La ligne de preuves passait derriere les flacons : la photo commence au
+   milieu, elle doit s'arreter avant. Elle tient sur deux lignes plutot que
+   d'aller se perdre dans l'image. */
+.hero__proof--facts {
+  max-width: 30rem;
+  padding-top: 4px;
+  gap: 8px 18px;
+  font-family: var(--mesure);
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.hero__proof--facts .hero__proof-sep {
+  display: none;
+}
+.hero__proof--facts .hero__proof-orders {
+  align-items: flex-start;
+}
+.hero__proof-orders i {
+  color: var(--sceau);
+}
+
+/* ─── 2 · Les boutons perdent leurs coins ─────────────────────────────── */
+
+.hero__cta {
+  min-height: 60px;
+  padding: 0 34px;
+  border-radius: 0;
+  font-family: var(--mesure);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+.hero__cta:hover {
+  transform: none;
+  background: var(--sceau);
+}
+/* Le bouton secondaire tombe sur la photo : un simple contour y flotte sans
+   se rattacher a rien. Un fond a peine teinte, et un flou derriere, suffisent
+   a le poser comme une commande sans masquer le flacon. */
+.hero__cta--ghost {
+  border-width: 1px;
+  border-color: rgba(31, 31, 31, 0.28);
+  background: rgba(250, 247, 242, 0.55);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+.hero__cta--ghost:hover {
+  background: var(--text);
+  border-color: var(--text);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* ─── 3 · Les titres de section prennent de la hauteur ────────────────── */
+
+.dose-title,
+.favorites-title,
+.section-title,
+.quiz-title,
+.newsletter-title {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  font-size: clamp(2.1rem, 1rem + 3.2vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.022em;
+}
+.dose-title em,
+.favorites-title em,
+.section-title em,
+.quiz-title em {
+  font-style: italic;
+  color: var(--sceau);
+}
+.dose-eyebrow,
+.section-eyebrow,
+.favorites-eyebrow {
+  font-family: var(--mesure);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--sceau);
+}
+
+/* Les chiffres du site s'alignent : prix, volumes, compteurs. */
+.card-price,
+.dose-price,
+.pack-price {
+  font-family: var(--mesure);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ─── 4 · L'ouverture de page ─────────────────────────────────────────── */
+
+@keyframes koreiPose {
+  from {
+    opacity: 0;
+    transform: scale(1.045);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes koreiMonte {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* La photo se pose la premiere, lentement. Le texte monte ensuite, ligne a
+   ligne. C'est la seule mise en scene de la page : tout le reste se revele
+   au defilement, plus discretement. */
+.hero__media img {
+  animation: koreiPose 1400ms var(--pose) both;
+}
+.hero__content > * {
+  animation: koreiMonte 760ms var(--pose) both;
+}
+.hero__content > *:nth-child(1) { animation-delay: 260ms; }
+.hero__content > *:nth-child(2) { animation-delay: 360ms; }
+.hero__content > *:nth-child(3) { animation-delay: 450ms; }
+.hero__content > *:nth-child(4) { animation-delay: 530ms; }
+.hero__content > *:nth-child(5) { animation-delay: 600ms; }
+.hero__content > *:nth-child(6) { animation-delay: 660ms; }
+
+/* ─── 5 · La revelation au defilement ─────────────────────────────────── */
+
+/* Pilote par main.js : la classe n'est posee que si l'observateur existe,
+   pour qu'un navigateur sans JavaScript affiche tout, tout de suite. */
+/* La transition ne porte QUE sur l'arrivee. Si on la met sur .js-reveal, le
+   bloc part de son opacite normale et s'efface sous les yeux pendant une
+   seconde avant de revenir : on voit le contenu disparaitre, puis reapparaitre.
+   Masquer doit etre instantane, reveler seul s'anime. */
+.js-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  will-change: opacity, transform;
+}
+.js-reveal.est-visible {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 900ms var(--pose),
+    transform 900ms var(--pose);
+}
+
+/* ─── 6 · Les images vivent au survol ─────────────────────────────────── */
+
+.product-card .card-img,
+.collection-card-media,
+.pack-card__media {
+  overflow: hidden;
+}
+.product-card .card-img img,
+.collection-card-media img,
+.pack-card__media img {
+  transition: transform 1200ms var(--pose);
+}
+.product-card:hover .card-img img,
+.collection-card:hover .collection-card-media img,
+.pack-card:hover .pack-card__media img {
+  transform: scale(1.045);
+}
+
+/* ─── 7 · Ce que demande le systeme ───────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__media img,
+  .hero__content > * {
+    animation: none;
+  }
+  .js-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .product-card:hover .card-img img,
+  .collection-card:hover .collection-card-media img,
+  .pack-card:hover .pack-card__media img {
+    transform: none;
+  }
+}
+
+@media (max-width: 860px) {
+  /* Sur telephone, la photo passe derriere le texte et non a cote : le voile
+     du haut de fichier est horizontal, il ne couvre rien ici. On reprend donc
+     le degrade vertical, plus dense, et on rend au bloc sa pleine largeur que
+     la regle de bureau lui avait reprise. */
+  .hero {
+    min-height: 82vh;
+    min-height: 82dvh;
+    align-items: flex-end;
+  }
+  .hero__media img {
+    /* 62 % cadre sur la partie calme de la photo. La valeur de bureau, elle,
+       va chercher les flacons a droite : illisible sur 375 px de large. */
+    object-position: 62% center;
+  }
+  .hero::before {
+    background: linear-gradient(
+      180deg,
+      rgba(250, 247, 242, 0.1) 0%,
+      rgba(250, 247, 242, 0.62) 30%,
+      rgba(250, 247, 242, 0.95) 46%,
+      rgba(250, 247, 242, 1) 58%
+    );
+  }
+  .hero__content {
+    max-width: none;
+    gap: 16px;
+  }
+  .hero__title {
+    font-size: clamp(2.3rem, 1rem + 8vw, 3.4rem);
+    line-height: 1;
+  }
+  .hero__sub {
+    max-width: none;
+    font-size: var(--text-16);
+  }
+  .hero__proof--facts {
+    max-width: none;
+  }
+  .hero__eyebrow::after {
+    width: 34px;
+  }
+  /* Le bouton secondaire tombe sur la zone opaque : le flou n'a plus rien a
+     flouter et grise le fond pour rien. */
+  .hero__cta--ghost {
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  /* La barre d'onglets est fixe au bas de l'ecran et recouvrait le second
+     bouton. Elever le rembourrage du bas ne suffit pas : le contenu est plus
+     haut que le hero, il est donc cale par le HAUT. C'est la marge du haut
+     qu'il faut reprendre pour que tout remonte au-dessus de la barre. */
+  .hero__inner {
+    padding-top: 168px;
+    padding-bottom: calc(32px + var(--tabbar-h, 56px) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ==========================================================================
+   ANNEAU AU CLAVIER — partout (04/09/2026)
+
+   Le bloc precedent n'habillait que les champs de recherche. Releve sur la
+   page Catalogue : 457 boutons, dont « Passer la commande », « S'abonner »
+   et chaque carte produit, n'avaient aucun repere visible au clavier. On
+   voyait ou on ecrivait, jamais ou on allait cliquer.
+
+   Meme anneau que les champs, meme dore de la charte, toujours en
+   :focus-visible : le navigateur ne l'allume qu'au clavier, la souris n'y
+   touche pas. L'anneau epouse tout seul les coins arrondis de l'element.
+   ========================================================================== */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3.2px;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3.2px;
+}
+
+/* Sauf ceux dont le conteneur porte deja l'anneau : sans cette exception,
+   un rectangle se dessinerait a l'interieur de la pastille arrondie. */
+.search input:focus-visible,
+.search-overlay-head .search-overlay-input:focus-visible,
+.cb2-search input:focus-visible,
+.mini-search input:focus-visible,
+.brands-search input:focus-visible {
+  outline: none;
+}
+
+/* ==========================================================================
+   LES PAGES INTERIEURES REJOIGNENT LA DIRECTION DE L'ACCUEIL (04/09/2026)
+
+   L'accueil a pris la Cormorant en septembre, les huit pages qui portent un
+   « page-hero » etaient restees en DM Sans. Resultat : la voix de la maison
+   changeait entre la page d'accueil et le catalogue, la page ou le client
+   passe le plus de temps. Meme serif, meme sur-titre en chasse fixe suivi
+   d'un filet, meme dore de sceau.
+   ========================================================================== */
+.page-hero-title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 300;
+  font-size: clamp(2.6rem, 1rem + 4vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.page-hero-title em {
+  font-style: italic;
+  color: var(--sceau, var(--accent));
+}
+.page-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--mesure);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  color: var(--sceau, var(--accent));
+  margin-bottom: 16px;
+}
+/* Le filet qui prolonge le sur-titre, comme sur l'accueil. */
+.page-hero-eyebrow::after {
+  content: "";
+  width: 58px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+.page-hero-sub {
+  max-width: 34rem;
+  font-size: 14.5px;
+  line-height: 1.75;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   DIRECTION — l'angle droit, le filet, l'or en encre
+   ════════════════════════════════════════════════════════════════════════
+
+   La fiche produit a change de langage : angles vifs, filets d'un pixel,
+   or en encre plutot qu'en aplat, chiffres en chasse fixe. Le reste du
+   site parlait encore l'ancien : coins arrondis, ombres portees, pastilles
+   dorees pleines. Deux langages sur un meme site, c'est deux maisons.
+
+   Rien de la charte ne bouge : meme ivoire, meme or, meme Cormorant, meme
+   italique sur le mot accentue. Ce sont les enveloppes qui changent.
+
+   ── 1. L'angle dit ce qu'est l'objet ────────────────────────────────────
+   Ce qui contient le parfum — carte, photo, panneau, bouton — prend
+   l'angle droit du coffret. Ce qui est un regard ou une personne —
+   medaillon de note, avatar, coeur des favoris, bulle du conseiller —
+   reste rond. Les etiquettes que l'on active restent des pastilles : ce
+   sont des mots que l'on coche, pas des surfaces. */
+:root {
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+}
+
+/* Les boutons pleine largeur prenaient la pilule. Un bouton de parfumerie
+   est un cartouche, pas une gelule. */
+.btn-dark,
+.btn-white,
+.btn-outline,
+.card-cta,
+.hero__cta,
+.btn-filters-apply,
+.btn-filters-clear,
+.btn-filters-open {
+  border-radius: 0;
+}
+
+/* ── 2. L'ombre devient un filet ─────────────────────────────────────────
+   Une ombre portee sous une carte imite un objet pose sur une table. Une
+   parfumerie n'a pas d'objets qui flottent : elle a des cartouches, des
+   filets et du blanc. Les surfaces au repos perdent donc leur ombre et
+   gardent leur trait d'un pixel.
+
+   Les ombres restent sur ce qui flotte vraiment — le message qui apparait,
+   l'apercu du conseiller, les panneaux, la barre collante : la elles
+   disent une hauteur reelle, pas un effet. */
+:root {
+  --shadow-sm: none;
+  --shadow-md: none;
+}
+.korei-toast,
+.cb2-preview {
+  box-shadow: 0 16px 40px rgba(26, 26, 24, 0.12);
+}
+/* Sans ombre, le survol n'a plus de relief pour se signaler. Le trait
+   passe a l'or : c'est le meme geste que le format choisi sur la fiche. */
+.product-card:hover,
+.fav-card:hover,
+.brand-card:hover,
+.favoris-explore__tile:hover {
+  border-color: var(--accent);
+}
+
+/* ── 3. L'or passe en encre ──────────────────────────────────────────────
+   « Nouveau » etait un aplat dore plein, seul reste des pastilles pleines.
+   Sur la fiche produit les reperes sont devenus du texte : or fonce sur
+   fond clair, un filet autour. Les cartes du catalogue s'alignent. Le
+   dore de la marque tombe a 2,9:1 sur blanc et devient illisible sous
+   11 px : les petits reperes prennent donc l'or du sceau, 4,7:1. */
+.badge-new {
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  border: 0.8px solid var(--badge-border);
+}
+.badge-best {
+  color: var(--badge-text);
+}
+
+/* ── 4. Le nom de la note ne se coupe plus ───────────────────────────────
+   Sous chaque medaillon, une seule ligne coupee net : « Limone Cos… »,
+   « Ferule gom… », « Orange san… ». Vingt-sept noms sur douze cartes.
+   Deux lignes suffisent a en ecrire la quasi-totalite, et la hauteur
+   reservee garde les cartes d'aplomb. */
+.card-note > span:last-child {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: clip;
+  min-height: calc(2 * 1.2em);
+  text-wrap: balance;
+}
+
+/* ── 5. Le texte du bandeau passe devant la photo ────────────────────────
+   Mesure a 1280 px : le sous-titre court de 10 a 41 % de la largeur, et le
+   voile n'est plus qu'a 69 % d'opacite a son extremite droite. Le nom d'un
+   flacon de la photo se lisait donc au travers d'un texte gris de 15 px.
+
+   Le voile tient maintenant sa pleine opacite sur toute la colonne de
+   texte, puis tombe d'un coup. La photo garde plus de la moitie de la
+   largeur, la ou sont les flacons. Et le sous-titre quitte le gris pour
+   le brun chaud de la charte : c'est le meme texte, il se lit. */
+@media (min-width: 861px) {
+  .hero::before {
+    background: linear-gradient(
+      100deg,
+      rgb(250, 247, 242) 0%,
+      rgb(250, 247, 242) 42%,
+      rgba(250, 247, 242, 0.45) 62%,
+      rgba(250, 247, 242, 0) 78%
+    );
+  }
+}
+/* Sur telephone le texte occupe toute la largeur : le voile ne peut pas
+   suivre une colonne, il suit la hauteur. Il montait a 0,95 seulement a
+   46 % de la hauteur, or le texte commence a 26 % — le nom d'un flacon se
+   lisait au travers du titre et du sous-titre. La photo garde le tiers du
+   haut, le texte a l'ivoire plein. */
+@media (max-width: 860px) {
+  .hero::before {
+    background: linear-gradient(
+      180deg,
+      rgba(250, 247, 242, 0.05) 0%,
+      rgba(250, 247, 242, 0.35) 16%,
+      rgba(250, 247, 242, 0.92) 27%,
+      rgb(250, 247, 242) 32%,
+      rgb(250, 247, 242) 100%
+    );
+  }
+}
+.hero__sub {
+  color: var(--text-warm);
+}
+
+/* Derniers arrondis : le repere pose sur une carte, les champs de saisie
+   et le menu de tri. Un repere est une etiquette collee sur un coffret, un
+   champ est un cartouche. Restent rondes les seules pastilles que l'on
+   coche — filtres du catalogue, suggestions du conseiller — et les
+   medaillons de notes, qui sont des regards sur un ingredient. */
+.card-badge,
+.search,
+.mini-search,
+.chatbot-input,
+.filters-sort select,
+.sort-select {
+  border-radius: 0;
+}
+
+/* ── 6. La question, dans la voix de la maison ───────────────────────────
+   « Vider le panier » passait par la fenetre du navigateur, celle qui
+   s'annonce « localhost dit : » sur fond gris systeme. Elle casse en une
+   seconde tout ce que la page a construit.
+
+   Meme ivoire, meme filet, meme Cormorant que le reste. Le bouton qui
+   detruit est plein, celui qui renonce est un contour — et c'est lui qui
+   a le focus a l'ouverture. */
+.korei-ask {
+  /* Le reset du haut de page met margin:0 sur tout. Or c'est « margin:auto »
+     qui centre une <dialog> modale : sans lui, la question s'affichait dans
+     le coin haut gauche de l'ecran. */
+  margin: auto;
+  border: 1px solid var(--border-dark);
+  border-radius: 0;
+  padding: 34px 34px 28px;
+  max-width: 26rem;
+  width: calc(100% - 32px);
+  background: var(--surface);
+  color: var(--text);
+}
+.korei-ask::backdrop {
+  background: rgba(26, 26, 24, 0.45);
+}
+.korei-ask__titre {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 27px;
+  font-weight: 500;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.korei-ask__texte {
+  margin-top: 10px;
+  font-size: var(--text-15);
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 34ch;
+}
+.korei-ask__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+.korei-ask__btn {
+  flex: 1 1 auto;
+  min-width: 8rem;
+  padding: 12px 16px;
+  border: 1px solid var(--text);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: "DM Sans", sans-serif;
+  font-size: var(--text-11);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+.korei-ask__btn:hover {
+  background: var(--accent-light);
+}
+.korei-ask__btn--oui {
+  background: var(--text);
+  color: var(--bg);
+}
+.korei-ask__btn--oui:hover {
+  background: var(--text-hover);
+  color: var(--bg);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   DIRECTION — l'angle droit, partout (04/09/2026)
+   ════════════════════════════════════════════════════════════════════════
+
+   La passe precedente avait aplati les cartes, les panneaux et les boutons,
+   mais laissait des pastilles et des pastilles rondes un peu partout :
+   fleches de carrousel, medaillons de notes, compteurs du panier, bouton du
+   conseiller, etiquettes du catalogue. Une carte carree posee a cote d'un
+   bouton rond, c'est deux epoques sur le meme ecran.
+
+   La regle est simple et sans exception utile : ce site n'a pas d'angle
+   arrondi. Une maison de parfum vend des flacons, des etuis et des
+   coffrets ; ce sont des objets a aretes. Le rectangle est notre forme.
+
+   Restent rondes les seules choses qui ne sont pas des surfaces : les
+   points. Puce de separation, point de pagination, point d'un bouton radio,
+   points d'attente du conseiller, curseur du reglage de prix. Un point n'a
+   pas de coins a arrondir, il EST rond — et le rond d'un bouton radio est
+   une convention que le visiteur lit sans y penser.
+   ════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --radius-pill: 0px;
+}
+
+/* Vignettes et photos : un cadre, pas un hublot. */
+.note-image,
+.cb2-slot,
+.cb2-slot--empty::after,
+.cb2-list-thumb,
+.cb2-result__thumb,
+.cb2-card__thumb,
+.chatbot-avatar,
+.testimonial-avatar,
+.favoris-explore__tile::before,
+/* Fleches, bascules et petits boutons d'action. */
+.favorites-nav-btn,
+.formats-arrow,
+.chatbot-toggle,
+.chatbot-send,
+.coffret-toggle,
+.coffret-items li button,
+.fav-card__heart,
+.fav-card__add,
+.panier-item__qty button,
+.panier-item__remove,
+.cb2-result__add,
+.cb2-result__check,
+.cb2-card__action,
+.ugc-play,
+.social-btn,
+/* Numeros d'etape et medaillons d'icone. */
+.step-num,
+.cb2-timeline__num,
+.cb2-card__step,
+.cb2-perk__icon,
+/* Compteurs, etiquettes et champs. */
+.cart-count,
+.tabbar__badge,
+.search-hit,
+.chip,
+.quiz-note-chip,
+.chatbot-suggestion,
+.chatbot-input,
+.newsletter-input,
+.filters-count-pill,
+.active-filter-pill,
+.brands-filter-pill,
+.brands-popular-pill,
+.cb2-filter-chip,
+.payment-chip,
+.fav-card__tag,
+.box-card__badge,
+.box-card__discount,
+.boxes-feature__flag,
+.box-theme,
+.admin-usage-badge,
+.admin-pill,
+.admin-tag,
+.admin-chip {
+  border-radius: 0;
+}
+
+/* Les points restent des points. Liste fermee, tenue a la main : tout ce
+   qui n'y figure pas est carre. */
+.banner-sep,
+.ticker-dot,
+.formats-dot,
+.chip .chip-dot,
+.option-card .radio-dot,
+.option-card .radio-dot::after,
+.chatbot-typing span,
+.price-slider input[type="range"]::-webkit-slider-thumb,
+.price-slider input[type="range"]::-moz-range-thumb {
+  border-radius: 50%;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   DIRECTION — une seule voix pour les titres de page (04/09/2026)
+   ════════════════════════════════════════════════════════════════════════
+
+   Releve sur les quatorze pages : cinq traitements differents pour le meme
+   objet, le titre de page. Neuf pages en Cormorant 300, quatre en DM Sans
+   400, une en DM Sans 300. Le visiteur qui passe du catalogue au panier
+   change de maison sans changer de site.
+
+   Le Cormorant l'emporte : c'est la voix de l'accueil, celle de la fiche
+   produit, celle des titres de section. Les cinq titres restes en
+   sans-serif la rejoignent, avec le meme corps fluide et le meme mot en
+   italique dore. Aucune mise en page ne bouge — la photo du coffret, le
+   bandeau des boxes, le fil du panier restent ou ils sont. Seule la
+   typographie change.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.coffret-hero__title,
+.boxes-hero__title,
+.collections-head-title,
+.favoris-hero__title,
+.panier-head__title,
+.compte-title,
+.maisons-hero__title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 300;
+  font-size: clamp(2.6rem, 1rem + 4vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.coffret-hero__title em,
+.boxes-hero__title em,
+.collections-head-title em,
+.favoris-hero__title em,
+.panier-head__title em,
+.compte-title em,
+.maisons-hero__title em {
+  font-style: italic;
+  color: var(--sceau, var(--accent));
+}
+
+/* Le sur-titre suit la meme regle partout : chasse fixe, or du sceau,
+   grand interlettrage, prolonge d'un filet. Quatre pages n'en avaient
+   aucun, trois le declinaient a leur maniere. */
+.coffret-hero__eyebrow,
+.boxes-hero__eyebrow,
+.collections-head-eyebrow,
+.favoris-hero__eyebrow,
+.panier-head__eyebrow,
+.maisons-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--mesure);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--sceau, var(--accent));
+  margin-bottom: 16px;
+}
+.coffret-hero__eyebrow::after,
+.boxes-hero__eyebrow::after,
+.collections-head-eyebrow::after,
+.favoris-hero__eyebrow::after,
+.panier-head__eyebrow::after,
+.maisons-hero__eyebrow::after {
+  content: "";
+  width: 58px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   DIRECTION — un seul bouton (04/09/2026)
+   ════════════════════════════════════════════════════════════════════════
+
+   Releve sur cinq pages : la meme action, « acheter », portait six
+   typographies. DM Sans 11 px interlettre a 0,10 em au panier, 11,5 px a
+   0,19 em sur la fiche, 12 px en gras a 0,12 em sur le coffret, 13 px a
+   0,13 em sur l'accueil, 11,4 px en 400 dans les filtres, et IBM Plex Mono
+   dans le bandeau. Six fois le meme geste, six dessins.
+
+   Le site a trois voix, une par role. Le Cormorant porte les titres. La
+   chasse fixe porte les mesures : sur-titres, millilitres, prix, nombres de
+   pulverisations. DM Sans porte le texte courant.
+
+   Un libelle de bouton n'est pas du texte courant : c'est une etiquette,
+   au meme titre qu'un sur-titre ou qu'un prix. Il passe donc en chasse
+   fixe, comme le bouton du bandeau le faisait deja seul dans son coin.
+   Cette boutique vend des millilitres ; ses commandes se lisent comme ses
+   quantites.
+
+   Une seule mesure, deux tailles : la courante, et celle des grands appels
+   du bandeau et de la fiche.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.btn-dark,
+.btn-white,
+.btn-outline,
+.btn-text,
+.card-cta,
+.btn-filters-apply,
+.btn-filters-clear,
+.btn-filters-open,
+.cb2-cta,
+.pdp-btn,
+.pdp-sticky__cta,
+.korei-ask__btn,
+.hero__cta {
+  font-family: var(--mesure);
+  font-weight: 500;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+.btn-dark,
+.btn-white,
+.btn-outline,
+.btn-text,
+.card-cta,
+.btn-filters-apply,
+.btn-filters-clear,
+.btn-filters-open,
+.korei-ask__btn {
+  font-size: 11px;
+}
+/* Les grands appels : bandeau, fiche produit, coffret. */
+.hero__cta,
+.pdp-btn,
+.pdp-sticky__cta,
+.cb2-cta {
+  font-size: 11.5px;
+}
+
+/* La grande taille. Un seul dessin, celui du bandeau : 60 px de haut,
+   34 px de marge laterale. Sert aux appels qui portent une section
+   entiere. Un bouton du bandeau et un bouton de bas de page se
+   ressemblent maintenant assez pour qu'on les reconnaisse. */
+.btn-lg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 0 34px;
+  font-size: 11.5px;
+}
+/* Le lien de la carte format soulignait son mot avec sa propre mesure. */
+.format-card__cta {
+  font-family: var(--mesure);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.19em;
+}
+/* L'accueil reduisait le bouton de carte de son cote. Une carte reste une
+   carte, qu'elle soit sur l'accueil ou dans le catalogue. */
+body[data-page="home"] .card-cta {
+  font-size: 11px;
+}
+/* Les titres de groupe du filtre sont des etiquettes, pas des phrases :
+   ils rejoignent la chasse fixe comme les sur-titres et les prix. */
+.filter-group-head {
+  font-family: var(--mesure);
+  letter-spacing: 0.19em;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   DIRECTION — un seul repere (04/09/2026)
+   ════════════════════════════════════════════════════════════════════════
+
+   Sur la seule page d'accueil, quatre facons de poser une etiquette :
+
+     « Grand classique »  creme, filet dore, DM Sans 10,5 px
+     « Notre conseil »    dore sur transparent, sans filet, 11 px  (formats)
+     « Notre conseil »    aplat dore, texte blanc, 11 px          (coffrets)
+     « −10 % »            aplat noir, texte blanc
+
+   Les deux « Notre conseil » sont le meme mot, a dix centimetres l'un de
+   l'autre, dessines differemment.
+
+   Un repere ne crie pas : il indique. Il prend donc partout le meme
+   cartouche — fond creme, filet d'un demi-pixel, encre d'or sombre, chasse
+   fixe a 9,5 px. C'est deja le dessin des reperes de la fiche produit ;
+   le reste de la boutique s'y range.
+
+   L'or plein disparait : sur un aplat dore le texte blanc tombe a 2,4:1,
+   illisible sous 11 px. L'aplat noir du « −10 % » disparait aussi. Une
+   remise n'a pas besoin d'un autocollant : le chiffre suffit.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.card-badge,
+.badge-best,
+.badge-new,
+.badge-exclusive,
+.box-card__badge,
+.box-card__discount,
+.format-card__flag,
+.boxes-feature__flag,
+.coffret-card__badge,
+.fav-card__tag,
+.chatbot-mock-badge {
+  font-family: var(--mesure);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  border: 0.8px solid var(--badge-border);
+  border-radius: 0;
+}
+/* Le repere garde sa place et son air : quelques pixels de respiration,
+   jamais plus que le mot qu'il porte. */
+.card-badge,
+.box-card__badge,
+.box-card__discount,
+.boxes-feature__flag,
+.coffret-card__badge,
+.fav-card__tag,
+.chatbot-mock-badge {
+  padding: 4px 9px;
+}
+/* Le drapeau des cartes format flottait sans fond au-dessus du flacon :
+   il prend le cartouche comme les autres. */
+.format-card__flag {
+  padding: 4px 9px;
+}
+/* Le chiffre de la remise s'aligne comme les autres chiffres du site. */
+.box-card__discount {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   DIRECTION — une seule puce (04/09/2026)
+   ════════════════════════════════════════════════════════════════════════
+
+   Une puce porte un nom propre : « Memo Paris », « Vanille », « Boisé ».
+   Elle se coche, elle ne commande rien. Elle reste donc en DM Sans, en
+   casse ordinaire, la ou les boutons passent en chasse fixe.
+
+   Trois dessins circulaient : 11 px dans le catalogue et 11,4 px dans le
+   meme panneau lateral, 11,8 px chez le coffret, 10 px en capitales dorees
+   sur l'accueil. Les capitales de l'accueil faisaient crier des noms de
+   notes qui devraient se lire.
+
+   Une seule puce : 11,4 px, DM Sans, casse ordinaire, fond blanc, filet.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.chip,
+.cb2-filter-chip,
+.quiz-note-chip {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11.4px;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+/* L'accueil habillait ses notes en creme et or. Une puce a cocher est un
+   fond blanc et un filet, partout. */
+.quiz-note-chip {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0 16px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+}
+.quiz-note-chip:hover {
+  border-color: var(--text);
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* Le sur-titre : deux blocs manquaient a l'appel. Le conseiller et
+   l'inscription gardaient DM Sans a 11 px pendant que les sept autres
+   sections etaient deja passees en chasse fixe a 10 px. Ce sont des
+   sur-titres comme les autres. */
+.quiz-eyebrow,
+.newsletter-eyebrow,
+.sub-eyebrow,
+.pack-choice-card__eyebrow,
+.placeholder-premium__eyebrow {
+  font-family: var(--mesure);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--sceau);
+}
+
+/* La pastille du conseiller s'efface tant que le bandeau est a l'ecran :
+   sur mobile elle recouvrait le coin droit du second bouton. Elle reste
+   dans le flux, elle ne fait que disparaitre — le lecteur d'ecran la
+   retrouve des qu'elle revient. */
+.chatbot-widget.est-efface {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s;
+}
+.chatbot-widget {
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   DIRECTION — les chiffres tiennent la colonne (04/09/2026)
+   ════════════════════════════════════════════════════════════════════════
+
+   La regle etait posee depuis longtemps : dans cette boutique, tout ce qui
+   se mesure se lit en chasse fixe. Prix, millilitres, pulverisations. Elle
+   n'avait ete appliquee qu'a l'accueil et a la fiche produit.
+
+   Le panier et le coffret — les deux pages ou l'on additionne — gardaient
+   DM Sans. Un sous-total, une remise et un total empiles en fonte a chasse
+   variable ne s'alignent pas : la virgule flotte d'une ligne a l'autre.
+   C'est justement la que les chiffres alignes servent.
+
+   Meme chose pour « 10 × 2 ml » : c'est une mesure, pas une phrase.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.panier-summary__row span,
+.panier-summary__total span,
+.panier-item__price,
+.panier-item__unit,
+.cb2-dock__total,
+.cb2-recap__row span,
+.cb2-preview__price,
+.cb2-cta__price,
+.cb2-format__ml,
+.cb2-result__price,
+.box-card__format,
+.fav-card__price {
+  font-family: var(--mesure);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ── Les appels de bandeau ont tous la meme taille ───────────────────────
+   Le bandeau de l'accueil portait des boutons de 60 px ; celui des
+   coffrets, les memes mots dans des boutons de 37. Deux bandeaux, deux
+   echelles. Les appels de bandeau prennent partout la grande taille.
+
+   Et les deux boutons cote a cote ne faisaient pas la meme hauteur : le
+   plein n'a pas de filet, le contour en a un de 1,2 px de chaque cote,
+   soit 2,4 px d'ecart visible. Le plein prend donc un filet transparent
+   de la meme epaisseur : meme boite, meme hauteur. */
+.btn-dark,
+.btn-white {
+  border: 1.2px solid transparent;
+}
+.coffret-hero__ctas .btn-dark,
+.coffret-hero__ctas .btn-outline,
+.boxes-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 0 34px;
+  font-size: 11.5px;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   Un champ de saisie ne fait jamais zoomer le telephone (04/09/2026)
+   ════════════════════════════════════════════════════════════════════════
+
+   Safari sur iPhone agrandit la page des qu'on touche un champ dont le
+   texte fait moins de 16 px. La page saute, se recadre, et ne revient pas
+   toute seule. Sept champs du site etaient dans ce cas :
+
+     recherche du catalogue      11 px
+     recherche du coffret        15 px
+     conseiller                  12 px
+     inscription a la lettre     13 px
+     recherche des maisons       13 px
+     formulaire de contact       13 px
+     champs du compte            13 px
+
+   Les champs gardent leur taille sur grand ecran, ou elle s'accorde au
+   reste. Sous 860 px ils passent tous a 16 px : c'est le seuil du systeme,
+   pas un choix de dessin. */
+@media (max-width: 860px) {
+  input[type="text"],
+  input[type="search"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+/* Deux angles arrondis avaient survecu au passage au rectiligne : la ligne
+   de resultat de la recherche, et la pastille active du carrousel de
+   formats, qui s'etire en batonnet. Un batonnet est un filet, pas une
+   gelule. */
+.search-hit,
+.formats-dot.is-active {
+  border-radius: 0;
+}
+
+/* Deux jetons portaient le meme or sombre a quatre unites pres :
+   --badge-text #8a6825 et --sceau #8a6a2f. Un seul suffit. Les jetons se
+   resolvent a l'usage, l'ordre de declaration n'a pas d'importance. */
+:root {
+  --badge-text: var(--sceau);
+}
+
+/* ── Trois retardataires, releves au controle des dix-sept pages ─────────
+   « Sauvegarder la selection » et « Vider le panier » sont des boutons :
+   ils prennent la mesure comme les autres, meme sans fond ni filet. Le
+   lien « Voir toutes les collections » du bloc favoris aussi. Et le repere
+   de carte gardait 10,5 px sur la seule page d'accueil, contre 9,5 px
+   partout ailleurs — meme classe, meme mot, deux tailles. */
+.panier-card__save,
+.panier-card__clear,
+.favoris-explore__head a {
+  font-family: var(--mesure);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+body[data-page="home"] .card-badge {
+  font-size: 9.5px;
+  padding: 4px 9px;
 }

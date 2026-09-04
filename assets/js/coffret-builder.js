@@ -2,15 +2,27 @@
  * Kōrei — Coffret personnalisé
  * État partagé (localStorage) + widget flottant réutilisable sur toutes les pages.
  * Un coffret est composé exclusivement de décants (2ml/5ml/10ml), sur le modèle
- * des formats vendus sur la page Coffret : Découverte (10×2ml), Équilibré (5×5ml),
- * Collection (3×10ml).
+ * des formats vendus sur la page Coffret : Découverte (10×2ml), Voyage (5×5ml),
+ * Iconique (3×10ml).
  */
 (function (global) {
   const STORAGE_KEY = "korei-coffret";
   const esc = (v) => (global.KoreiSite?.escapeHtml || ((x) => x))(v);
   const SLOT_COUNTS = { "2ml": 10, "5ml": 5, "10ml": 3 };
-  const PACK_LABELS = { "2ml": "Découverte", "5ml": "Équilibré", "10ml": "Collection" };
-  const FREE_SHIPPING_THRESHOLD = 60;
+  // Les remises Shopify sont preparees par paliers. Dix coffrets par format
+  // couvrent largement un panier particulier tout en gardant une liste de
+  // codes finie et auditable. Au-dela, la demande releve d'une commande en
+  // volume et ne doit pas partir au checkout avec une remise incomplete.
+  const MAX_BOXES_PER_FORMAT = 10;
+  // Libellés alignés sur les trois coffrets réels : 10x2ml, 5x5ml, 3x10ml.
+  // Noms arretes par le brief du 24 aout 2026 (KOR-C11).
+  const PACK_LABELS = { "2ml": "Découverte", "5ml": "Voyage", "10ml": "Iconique" };
+  // KOR-C1 — un coffret complet donne −10 % sur chaque flacon qu'il contient.
+  // KOR-C6 — et la livraison offerte. La règle est le coffret, pas un montant :
+  // un seuil en euros rendrait le message d'incitation faux (« plus que 1
+  // parfum pour la livraison offerte » alors qu'elle le serait déjà).
+  const COFFRET_DISCOUNT = 0.1;
+  const CODE_LIVRAISON_COFFRET = "LIVRAISON-COFFRET";
   const basePath = location.pathname.includes("/pages/") ? "../" : "";
 
   function load() {
@@ -50,16 +62,53 @@
     return load().some((it) => it.productId === productId && it.format === format);
   }
 
+  // Nombre de flacons déjà présents pour un format, toutes lignes confondues.
+  function countFor(format, items) {
+    return (items || load())
+      .filter((it) => it.format === format)
+      .reduce((sum, it) => sum + (it.qty || 1), 0);
+  }
+
+  // KOR-C5 — un coffret ne dépasse jamais sa capacité. Au-delà, on ouvre un
+  // second coffret : la capacité effective est donc un multiple du quota.
+  function capacityFor(format, items) {
+    const slots = SLOT_COUNTS[format] || 0;
+    if (!slots) return 0;
+    const current = countFor(format, items);
+    return Math.min(
+      (Math.floor(current / slots) + 1) * slots,
+      slots * MAX_BOXES_PER_FORMAT,
+    );
+  }
+
   function addItem(item) {
     if (!isEligibleFormat(item.format)) return false;
     const items = load();
     if (items.some((it) => it.productId === item.productId && it.format === item.format)) return false;
-    const stored = { ...item, qty: item.qty || 1, addedAt: Date.now() };
+
+    const slots = SLOT_COUNTS[item.format];
+    const current = countFor(item.format, items);
+    const qty = item.qty || 1;
+    if (current + qty > capacityFor(item.format, items)) {
+      showStockNotice(`Coffret ${PACK_LABELS[item.format]} complet (${slots} flacons). Retirez-en un pour changer.`);
+      return false;
+    }
+
+    const stored = { ...item, qty, addedAt: Date.now() };
     items.push(stored);
     save(items);
     notify();
-    syncRemoteAdd(stored);
+    synchroniserPanier();
+    announceCoffret(item.format, current + qty, slots);
     return true;
+  }
+
+  // KOR-C3 — le coffret se forme tout seul quand le compte est atteint.
+  function announceCoffret(format, total, slots) {
+    if (!slots || total % slots !== 0) return;
+    const boxes = total / slots;
+    const label = boxes > 1 ? `${boxes} coffrets ${PACK_LABELS[format]}` : `Coffret ${PACK_LABELS[format]}`;
+    showStockNotice(`${label} créé${boxes > 1 ? "s" : ""} automatiquement · −10 % par flacon en validation`);
   }
 
   function removeItem(productId, format) {
@@ -68,7 +117,7 @@
     const remaining = items.filter((it) => !(it.productId === productId && it.format === format));
     save(remaining);
     notify();
-    if (removed) syncRemoteRemove(removed);
+    if (removed) synchroniserPanier();
   }
 
   function setQty(productId, format, qty) {
@@ -80,14 +129,48 @@
       items.splice(idx, 1);
       save(items);
       notify();
-      syncRemoteRemove(current);
+      synchroniserPanier();
+      return;
+    }
+    const autres = items
+      .filter((it, index) => index !== idx && it.format === format)
+      .reduce((sum, it) => sum + (it.qty || 1), 0);
+    const maximum = (SLOT_COUNTS[format] || 0) * MAX_BOXES_PER_FORMAT;
+    if (maximum && autres + qty > maximum) {
+      showStockNotice(`Maximum ${MAX_BOXES_PER_FORMAT} coffrets ${PACK_LABELS[format]} par commande.`);
       return;
     }
     const updated = { ...current, qty };
     items[idx] = updated;
     save(items);
     notify();
-    syncRemoteQty(updated, qty, current.qty || 1);
+    synchroniserPanier();
+    announceCoffret(format, autres + qty, SLOT_COUNTS[format]);
+  }
+
+  // Le configurateur ajoute tout un coffret en une seule opération locale,
+  // puis une seule synchronisation distante. Cela évite de créer un panier
+  // Shopify concurrent pour chaque flacon lorsque le panier est encore vide.
+  function addItemsBatch(batch) {
+    if (!Array.isArray(batch) || !batch.length) return 0;
+    const items = load();
+    let changed = 0;
+
+    for (const item of batch) {
+      if (!item || !isEligibleFormat(item.format)) continue;
+      const qty = Math.max(1, Number(item.qty) || 1);
+      const idx = items.findIndex((it) => it.productId === item.productId && it.format === item.format);
+      const stored = { ...item, qty, addedAt: idx >= 0 ? items[idx].addedAt : Date.now() + changed };
+      if (idx >= 0) items[idx] = { ...items[idx], ...stored };
+      else items.push(stored);
+      changed += 1;
+    }
+
+    if (!changed) return 0;
+    save(items);
+    notify();
+    synchroniserPanier();
+    return changed;
   }
 
   function incrementQty(productId, format) {
@@ -108,11 +191,9 @@
     return { count, slots };
   }
 
-  // ── Prix par décant (même formule que la fiche produit / favoris)
+  // ── Prix par décant : source unique, voir product-store.js
   function formatPriceFor(product, format) {
-    if (format === "5ml") return Math.round(product.price * 2.2);
-    if (format === "10ml") return Math.round(product.price * 3.8);
-    return product.price;
+    return global.KoreiProductStore?.getFormatPrice(product, format) ?? 0;
   }
 
   // ── Panier Shopify (optionnel) : ne suit que les lignes ayant une vraie
@@ -135,7 +216,25 @@
   function saveShopifyCart(cart) {
     try {
       if (!cart) localStorage.removeItem(CART_STORAGE_KEY);
-      else localStorage.setItem(CART_STORAGE_KEY, JSON.stringify({ id: cart.id, checkoutUrl: cart.checkoutUrl }));
+      else {
+        const discountCodes = Array.isArray(cart.discountCodes) ? cart.discountCodes : [];
+        const remise = Number(cart.discountApplied ?? cart.remise) || 0;
+        const livraisonOfferte = discountCodes.some(
+          (entry) => entry?.applicable && String(entry.code || "").toUpperCase() === CODE_LIVRAISON_COFFRET,
+        );
+        localStorage.setItem(
+          CART_STORAGE_KEY,
+          // Les avantages viennent exclusivement de Shopify. Le navigateur les
+          // conserve pour rendre le panier, mais ne les invente jamais.
+          JSON.stringify({
+            id: cart.id,
+            checkoutUrl: cart.checkoutUrl,
+            remise,
+            discountCodes,
+            livraisonOfferte,
+          }),
+        );
+      }
     } catch {
       // stockage indisponible : le lien de checkout sera simplement recréé au prochain ajout
     }
@@ -143,6 +242,85 @@
 
   function getCheckoutUrl() {
     return loadShopifyCart()?.checkoutUrl || null;
+  }
+
+  // Le montant que Shopify a accepte de retirer, et lui seul.
+  function remiseAccordee() {
+    const valeur = Number(loadShopifyCart()?.remise);
+    return Number.isFinite(valeur) && valeur > 0 ? valeur : 0;
+  }
+
+  function livraisonAccordee() {
+    return loadShopifyCart()?.livraisonOfferte === true;
+  }
+
+  const remoteSyncState = { pending: false, error: null };
+  let remoteSyncLoop = null;
+  let remoteSyncAgain = false;
+
+  function getRemoteLines(items = load()) {
+    const byVariant = new Map();
+    for (const item of items) {
+      if (!item.variantId) continue;
+      const quantity = Math.max(1, Number(item.qty) || 1);
+      byVariant.set(item.variantId, (byVariant.get(item.variantId) || 0) + quantity);
+    }
+    return [...byVariant.entries()].map(([variantId, quantity]) => ({ variantId, quantity }));
+  }
+
+  function getPromotionCodes(items = load()) {
+    const state = getCartState(items);
+    const codes = state.groups
+      .filter((group) => group.boxes > 0)
+      // Un seul code par format, calibre sur le nombre exact de flacons
+      // appartenant aux coffrets complets. Exemple : 4 x 10 ml envoie le
+      // palier 3 ; 6 x 10 ml envoie le palier 6.
+      .map((group) => `COFFRET-${group.format.toUpperCase()}-${group.inBoxes}`)
+      .filter(Boolean);
+    if (state.boxes > 0) codes.push(CODE_LIVRAISON_COFFRET);
+    return [...new Set(codes)];
+  }
+
+  // Shopify reçoit toujours un instantané complet du panier. Les changements
+  // rapprochés sont sérialisés et regroupés : le dernier instantané gagne.
+  function synchroniserPanier() {
+    remoteSyncAgain = true;
+    if (remoteSyncLoop) return remoteSyncLoop;
+
+    remoteSyncLoop = (async () => {
+      while (remoteSyncAgain) {
+        remoteSyncAgain = false;
+        const items = load();
+        const lines = getRemoteLines(items);
+        remoteSyncState.pending = true;
+        remoteSyncState.error = null;
+        notify();
+
+        if (!lines.length) {
+          saveShopifyCart(null);
+          remoteSyncState.pending = false;
+          notify();
+          continue;
+        }
+
+        const result = await cartRequest("sync", {
+          lines,
+          codes: getPromotionCodes(items),
+        });
+        if (result.cart) {
+          saveShopifyCart(result.cart);
+          remoteSyncState.error = null;
+        } else {
+          remoteSyncState.error = result.message || result.error || "La caisse est momentanément indisponible.";
+        }
+        remoteSyncState.pending = false;
+        notify();
+      }
+    })().finally(() => {
+      remoteSyncLoop = null;
+      if (remoteSyncAgain) synchroniserPanier();
+    });
+    return remoteSyncLoop;
   }
 
   async function cartRequest(action, payload) {
@@ -168,70 +346,14 @@
       el = document.createElement("div");
       el.id = "korei-stock-toast";
       el.className = "korei-toast";
+      el.setAttribute("role", "status");
+      el.setAttribute("aria-live", "polite");
       document.body.appendChild(el);
     }
     el.textContent = message;
     el.classList.add("is-visible");
     clearTimeout(showStockNotice._timer);
     showStockNotice._timer = setTimeout(() => el.classList.remove("is-visible"), 4000);
-  }
-
-  function patchItem(productId, format, patch) {
-    const items = load();
-    const idx = items.findIndex((it) => it.productId === productId && it.format === format);
-    if (idx === -1) return;
-    items[idx] = { ...items[idx], ...patch };
-    save(items);
-  }
-
-  function findRemoteLine(cart, variantId) {
-    return (cart?.lines || []).find((line) => line.variantId === variantId) || null;
-  }
-
-  async function syncRemoteAdd(item) {
-    if (!item.variantId) return;
-    const cached = loadShopifyCart();
-    const result = cached?.id
-      ? await cartRequest("add", { cartId: cached.id, variantId: item.variantId, quantity: item.qty || 1 })
-      : await cartRequest("create", { variantId: item.variantId, quantity: item.qty || 1 });
-
-    if (result.error === "cart_user_error") {
-      removeItem(item.productId, item.format);
-      showStockNotice(result.message || "Stock insuffisant pour ce format — article retiré du panier.");
-      return;
-    }
-    if (!result.cart) return;
-    saveShopifyCart(result.cart);
-    const line = findRemoteLine(result.cart, item.variantId);
-    if (line) patchItem(item.productId, item.format, { shopifyLineId: line.id });
-    notify();
-  }
-
-  async function syncRemoteQty(item, qty, previousQty) {
-    const cached = loadShopifyCart();
-    if (!item.shopifyLineId || !cached?.id) return;
-    const result = await cartRequest("update", { cartId: cached.id, lineId: item.shopifyLineId, quantity: qty });
-
-    if (result.error === "cart_user_error") {
-      if (previousQty > 0) patchItem(item.productId, item.format, { qty: previousQty });
-      showStockNotice(result.message || "Stock insuffisant pour cette quantité — ajustée.");
-      notify();
-      return;
-    }
-    if (result.cart) {
-      saveShopifyCart(result.cart);
-      notify();
-    }
-  }
-
-  async function syncRemoteRemove(item) {
-    const cached = loadShopifyCart();
-    if (!item.shopifyLineId || !cached?.id) return;
-    const result = await cartRequest("remove", { cartId: cached.id, lineId: item.shopifyLineId });
-    if (result.cart) {
-      saveShopifyCart(result.cart);
-      notify();
-    }
   }
 
   // ── Widget flottant (injecté une fois, sur n'importe quelle page qui charge ce script)
@@ -252,19 +374,40 @@
       return;
     }
 
-    body.innerHTML = Object.keys(SLOT_COUNTS)
+    const state = getCartState(items);
+    const nextStep = getNextStep(state);
+
+    body.innerHTML = `
+      <div class="coffret-summary${state.discount > 0 ? " is-won" : ""}">
+        <div class="coffret-summary__row">
+          <span>${state.qty} flacon${state.qty > 1 ? "s" : ""}</span>
+          <strong>${money(state.total)}</strong>
+        </div>
+        ${state.boxes > 0 ? `<div class="coffret-summary__auto"><i class="ti ti-package" aria-hidden="true"></i> ${state.boxes} coffret${state.boxes > 1 ? "s" : ""} créé${state.boxes > 1 ? "s" : ""} automatiquement</div>` : ""}
+        ${state.discount > 0 ? `<div class="coffret-summary__saved">−10 % par flacon confirmé · vous économisez ${money(state.discount)}</div>` : state.boxes > 0 ? `<div class="coffret-summary__pending">−10 % par flacon en validation Shopify</div>` : ""}
+        ${state.freeShipping ? `<div class="coffret-summary__saved">Livraison offerte</div>` : ""}
+        ${state.synchronisationEnCours ? `<div class="coffret-summary__next">Vérification du panier…</div>` : ""}
+        ${state.erreurSynchronisation ? `<div class="coffret-summary__next">${esc(state.erreurSynchronisation)}</div>` : ""}
+        ${nextStep ? `<p class="coffret-summary__next">Plus que <strong>${nextStep.missing} parfum${nextStep.missing > 1 ? "s" : ""}</strong> en ${nextStep.format.replace("ml", " ml")} pour −10 % et la livraison offerte</p>` : ""}
+      </div>` +
+      Object.keys(SLOT_COUNTS)
       .map((format) => {
         const groupItems = items.filter((it) => it.format === format);
         if (!groupItems.length) return "";
         const slots = SLOT_COUNTS[format];
         const totalQty = groupItems.reduce((sum, it) => sum + (it.qty || 1), 0);
-        const pct = Math.min(100, (totalQty / slots) * 100);
+        const inBox = totalQty % slots === 0 ? slots : totalQty % slots;
+        const pct = Math.min(100, (inBox / slots) * 100);
+        const complete = totalQty >= slots;
+        const boxes = Math.floor(totalQty / slots);
+        const singles = totalQty % slots;
         return `
-          <div class="coffret-group">
+          <div class="coffret-group${complete ? " is-complete" : ""}">
             <div class="coffret-group__head">
               <span>${PACK_LABELS[format]} · ${format.replace("ml", " ml")}</span>
-              <span>${totalQty}/${slots}</span>
+              <span>${totalQty > slots ? `${boxes} coffret${boxes > 1 ? "s" : ""}${singles ? ` + ${singles}` : ""}` : `${totalQty}/${slots}`}</span>
             </div>
+            ${complete ? `<p class="coffret-group__benefit">Créé automatiquement · ${boxes * slots} flacon${boxes * slots > 1 ? "s" : ""} à −10 % chacun${singles ? ` · ${singles} seul${singles > 1 ? "s" : ""} au prix normal` : ""}</p>` : ""}
             <span class="coffret-group__bar"><span style="width:${pct}%"></span></span>
             <ul class="coffret-items">
               ${groupItems
@@ -310,7 +453,7 @@
         </div>
         <div class="coffret-panel__body" id="coffret-body"></div>
         <div class="coffret-panel__foot">
-          <button class="btn-dark" type="button" disabled title="Bientôt disponible">Finaliser mon coffret</button>
+          <a class="btn-dark" href="${basePath}pages/panier.html">Voir mon panier</a>
         </div>
       </div>`;
     document.body.appendChild(el);
@@ -368,6 +511,58 @@
   }
 
   // ── Page dédiée pages/panier.html
+  /**
+   * KOR-C8 — le panier montre les coffrets comme des ensembles.
+   * Un groupe par format ayant au moins un flacon, avec son en-tête : nom du
+   * coffret, avancement, total remisé et économie. Les flacons hors coffret
+   * complet restent visibles dans le même groupe, mais sans remise annoncée.
+   */
+  function renderPanierGroups(items) {
+    const state = getCartState(items);
+    return state.groups
+      .filter((group) => group.count > 0)
+      .map((group) => {
+        const groupItems = items.filter((it) => it.format === group.format);
+        const complete = group.boxes > 0;
+        const ratioConfirme = state.discountAttendu > 0
+          ? Math.min(1, state.discount / state.discountAttendu)
+          : 0;
+        const remiseConfirmee = group.discount * ratioConfirme;
+        const net = group.gross - remiseConfirmee;
+        const singles = group.count - group.inBoxes;
+        const title = group.boxes > 1
+          ? `${group.boxes} coffrets ${group.label}${singles ? ` + ${singles} flacon${singles > 1 ? "s" : ""} seul${singles > 1 ? "s" : ""}` : ""}`
+          : complete
+            ? `Coffret ${group.label}${singles ? ` + ${singles} flacon${singles > 1 ? "s" : ""} seul${singles > 1 ? "s" : ""}` : ""}`
+            : `Coffret ${group.label} en cours`;
+        const status = group.boxes > 1
+          ? `${group.boxes} coffrets créés automatiquement`
+          : "Coffret créé automatiquement";
+        return `
+          <li class="panier-group${complete ? " is-complete" : ""}">
+            <div class="panier-group__head">
+              <div class="panier-group__id">
+                <span class="panier-group__name">${title}</span>
+                <span class="panier-group__meta">${complete ? `${group.inBoxes} flacon${group.inBoxes > 1 ? "s" : ""} dans ${group.boxes > 1 ? "les coffrets" : "le coffret"}${singles ? ` · ${singles} seul au prix normal` : ""}` : `${group.count}/${group.slots}`} · ${group.format.replace("ml", " ml")}</span>
+              </div>
+              <div class="panier-group__money">
+                <span class="panier-group__total">${money(net)}</span>
+                ${remiseConfirmee > 0 ? `<span class="panier-group__saved">−10 % par flacon confirmé · ${money(remiseConfirmee)} économisés</span>` : ""}
+              </div>
+            </div>
+            ${
+              complete
+                ? `<div class="panier-group__created" role="status"><span><i class="ti ti-package" aria-hidden="true"></i>${status}</span><strong>${group.inBoxes} flacon${group.inBoxes > 1 ? "s" : ""} à −10 % chacun</strong>${singles ? `<em>${singles} flacon${singles > 1 ? "s" : ""} seul${singles > 1 ? "s" : ""} · prix normal</em>` : ""}</div>`
+                : `<p class="panier-group__next">Plus que ${group.missing} parfum${group.missing > 1 ? "s" : ""} pour créer automatiquement le coffret, obtenir −10 % par flacon et la livraison offerte</p>`
+            }
+            <ul class="panier-group__items">
+              ${groupItems.map(renderPanierItem).join("")}
+            </ul>
+          </li>`;
+      })
+      .join("");
+  }
+
   function renderPanierItem(item) {
     const ui = global.KoreiUI || {};
     const store = global.KoreiProductStore;
@@ -386,7 +581,7 @@
     return `
       <li class="panier-item${available ? "" : " is-soldout"}" data-product-id="${item.productId}" data-format="${item.format}">
         <a href="../pages/product.html?id=${item.productId}" class="panier-item__media">
-          ${src ? `<img src="${src}" alt="" loading="lazy" />` : ""}
+          ${src ? `<img src="${src}" alt="" width="750" height="1000" loading="lazy" decoding="async" />` : ""}
         </a>
         <div class="panier-item__body">
           <a href="../pages/product.html?id=${item.productId}" class="panier-item__link">
@@ -403,32 +598,147 @@
           <span>${qty}</span>
           <button type="button" data-qty-incr="${item.productId}|${item.format}" aria-label="Augmenter la quantité"${available ? "" : " disabled"}>+</button>
         </div>
-        <span class="panier-item__price">${lineTotal}€</span>
+        <span class="panier-item__price">${money(lineTotal)}</span>
         <button type="button" class="panier-item__remove" data-remove="${item.productId}|${item.format}" aria-label="Retirer ${esc(item.name)} du panier">
           <i class="ti ti-x"></i>
         </button>
       </li>`;
   }
 
+  function money(value) {
+    const rounded = Math.round(value * 100) / 100;
+    return global.KoreiProducts?.prixEuros(rounded) ?? `${rounded}\u00a0€`;
+  }
+
+  /**
+   * KOR-C1/C2/C3 — état commercial du panier.
+   *
+   * Un coffret est un lot complet de flacons d'un même format : 10x2ml, 5x5ml
+   * ou 3x10ml. Les flacons qui composent un coffret complet sont remisés de
+   * 10 % chacun ; ceux du lot en cours restent au prix plein tant que le
+   * coffret n'est pas rempli. Le total se recalcule à chaque changement.
+   */
+  function getCartState(items) {
+    const list = items || load();
+    const groups = Object.keys(SLOT_COUNTS).map((format) => {
+      const slots = SLOT_COUNTS[format];
+      const groupItems = list.filter((it) => it.format === format);
+      const count = groupItems.reduce((sum, it) => sum + (it.qty || 1), 0);
+      const gross = groupItems.reduce((sum, it) => sum + (Number(it.price) || 0) * (it.qty || 1), 0);
+      const boxes = Math.floor(count / slots);
+      const inBoxes = boxes * slots;
+      const missing = count === 0 ? slots : (slots - (count % slots)) % slots;
+
+      // Les flacons remisés sont ceux des coffrets complets. On applique la
+      // remise au prorata du nombre de flacons concernés, dans l'ordre d'ajout.
+      let remaining = inBoxes;
+      let discount = 0;
+      for (const it of groupItems) {
+        if (remaining <= 0) break;
+        const qty = Math.min(it.qty || 1, remaining);
+        discount += (Number(it.price) || 0) * qty * COFFRET_DISCOUNT;
+        remaining -= qty;
+      }
+
+      return { format, slots, count, gross, boxes, inBoxes, missing, discount, label: PACK_LABELS[format] };
+    });
+
+    const gross = groups.reduce((sum, g) => sum + g.gross, 0);
+    const discount = groups.reduce((sum, g) => sum + g.discount, 0);
+    const boxes = groups.reduce((sum, g) => sum + g.boxes, 0);
+    const qty = groups.reduce((sum, g) => sum + g.count, 0);
+
+    // `discount` ci-dessus est la remise que la regle du coffret appelle.
+    // Elle ne devient un vrai rabais que si Shopify l'a acceptee : c'est
+    // Shopify qui encaisse, et une remise affichee mais non facturee fait
+    // payer au client plus que le prix annonce. On garde donc les deux.
+    const accorde = remiseAccordee();
+    return {
+      groups,
+      qty,
+      gross,
+      // Remise due au titre du coffret, avant confirmation de la boutique.
+      discountAttendu: discount,
+      discount: accorde,
+      total: gross - accorde,
+      boxes,
+      // La livraison offerte suit la meme regle : tant que la boutique ne la
+      // pose pas, on ne l'annonce pas.
+      freeShipping: livraisonAccordee() && boxes > 0,
+      remiseEnAttente: discount > 0.01 && accorde < 0.01,
+      synchronisationEnCours: remoteSyncState.pending,
+      erreurSynchronisation: remoteSyncState.error,
+    };
+  }
+
+  /**
+   * KOR-C2 — le message d'incitation. Il vise le format le plus proche
+   * d'un coffret complet, celui pour lequel l'effort demandé est le plus petit.
+   */
+  function getNextStep(state) {
+    const started = state.groups.filter((g) => g.count > 0 && g.missing > 0);
+    if (!started.length) return null;
+    return started.reduce((best, g) => (!best || g.missing < best.missing ? g : best), null);
+  }
+
   function updatePanierSummary(items) {
+    const state = getCartState(items);
     const countEl = document.getElementById("panier-stat-count");
     const subtotalEl = document.getElementById("panier-subtotal-value");
     const totalEl = document.getElementById("panier-total-value");
     const shipEl = document.getElementById("panier-ship-value");
     const hintEl = document.getElementById("panier-ship-hint");
-    const totalQty = items.reduce((sum, it) => sum + (it.qty || 1), 0);
-    const total = items.reduce((sum, it) => sum + (Number(it.price) || 0) * (it.qty || 1), 0);
+    const discountRow = document.getElementById("panier-discount-row");
+    const discountEl = document.getElementById("panier-discount-value");
 
-    if (countEl) countEl.textContent = `${totalQty} article${totalQty > 1 ? "s" : ""} dans votre sélection`;
-    if (subtotalEl) subtotalEl.textContent = `${total}€`;
-    if (totalEl) totalEl.textContent = `${total}€`;
+    if (countEl) {
+      countEl.textContent = `${state.qty} article${state.qty > 1 ? "s" : ""} dans votre sélection`;
+    }
+    if (subtotalEl) subtotalEl.textContent = money(state.gross);
+    if (totalEl) totalEl.textContent = money(state.total);
+
+    if (discountRow) {
+      discountRow.hidden = state.discount <= 0;
+      const boxLabel = state.boxes > 1 ? `${state.boxes} coffrets` : "Coffret complet";
+      const label = discountRow.querySelector("[data-discount-label]");
+      if (label) label.textContent = `${boxLabel} · −10 % par flacon`;
+      if (discountEl) discountEl.textContent = `−${money(state.discount)}`;
+    }
+
     if (shipEl) {
-      const remaining = FREE_SHIPPING_THRESHOLD - total;
-      shipEl.textContent = remaining > 0 ? "Payante" : "Offerte";
-      shipEl.classList.toggle("is-free", remaining <= 0);
-      if (hintEl) {
-        hintEl.hidden = remaining <= 0;
-        if (remaining > 0) hintEl.textContent = `Plus que ${remaining}€ pour la livraison offerte`;
+      shipEl.textContent = state.freeShipping
+        ? "Offerte"
+        : state.synchronisationEnCours && state.boxes > 0
+          ? "Validation…"
+          : "Payante";
+      shipEl.classList.toggle("is-free", state.freeShipping);
+    }
+
+    if (hintEl) {
+      const next = getNextStep(state);
+      if (state.synchronisationEnCours) {
+        hintEl.hidden = false;
+        hintEl.classList.remove("is-won");
+        hintEl.textContent = "Nous vérifions les flacons, la remise et la livraison…";
+      } else if (state.erreurSynchronisation) {
+        hintEl.hidden = false;
+        hintEl.classList.remove("is-won");
+        hintEl.textContent = "Le panier n'a pas pu être vérifié. Réessayez avant de commander.";
+      } else if (state.freeShipping && !next) {
+        hintEl.hidden = false;
+        hintEl.classList.add("is-won");
+        hintEl.textContent = "Coffret créé automatiquement · −10 % par flacon confirmé · Livraison offerte";
+      } else if (next) {
+        hintEl.hidden = false;
+        hintEl.classList.toggle("is-won", false);
+        const gain = state.freeShipping ? "−10 % par flacon" : "−10 % par flacon et la livraison offerte";
+        hintEl.textContent = `Plus que ${next.missing} parfum${next.missing > 1 ? "s" : ""} en ${next.format.replace("ml", " ml")} pour ${gain}`;
+      } else if (state.boxes > 0) {
+        hintEl.hidden = false;
+        hintEl.classList.remove("is-won");
+        hintEl.textContent = "La remise coffret n'est pas encore active en caisse.";
+      } else {
+        hintEl.hidden = true;
       }
     }
   }
@@ -455,7 +765,7 @@
       if (layout) layout.hidden = false;
       if (empty) empty.hidden = true;
       if (stats) stats.hidden = false;
-      container.innerHTML = items.map(renderPanierItem).join("");
+      container.innerHTML = renderPanierGroups(items);
 
       container.querySelectorAll("[data-remove]").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -497,7 +807,7 @@
               name: item.name,
               brand: item.brand,
               format: newFormat,
-              price: variant ? Number(variant.price) : formatPriceFor(product, newFormat),
+              price: formatPriceFor(product, newFormat),
               qty: item.qty || 1,
               variantId: variant?.id,
             });
@@ -532,9 +842,19 @@
     }
 
     if (clearBtn) {
-      clearBtn.addEventListener("click", () => {
-        if (!load().length) return;
-        if (!confirm("Vider entièrement votre panier ?")) return;
+      clearBtn.addEventListener("click", async () => {
+        const items = load();
+        if (!items.length) return;
+        const nombre = items.reduce((somme, it) => somme + (it.qty || 1), 0);
+        const demander = global.KoreiUI?.demanderConfirmation;
+        const question = {
+          titre: "Vider le panier ?",
+          texte: `${nombre} flacon${nombre > 1 ? "s" : ""} en sortira${nombre > 1 ? "ient" : ""}. Vos favoris ne bougent pas.`,
+          valider: "Vider le panier",
+          annuler: "Garder ma sélection",
+        };
+        const ok = demander ? await demander(question) : global.confirm(question.titre);
+        if (!ok) return;
         save([]);
         saveShopifyCart(null);
         notify();
@@ -542,21 +862,122 @@
     }
   }
 
-  // ── CTA "Passer la commande" : n'est activé que si un panier Shopify réel
-  // (avec checkoutUrl) existe. Sinon, reste désactivé comme aujourd'hui.
+  // Une ligne ne peut partir en commande que si elle porte une variante
+  // Shopify. Les parfums encore absents de la boutique en ligne n'en ont pas.
+  function lignesNonCommandables() {
+    return load().filter((it) => !it.variantId);
+  }
+
+  // ── CTA "Passer la commande". Le bouton etait desactive sans rien dire :
+  // le visiteur cliquait dans le vide, avec pour seule explication une
+  // infobulle « Bientot disponible » invisible au doigt. Le panier annonce
+  // maintenant ce qui manque, et le bouton a l'air inactif quand il l'est.
   function initCheckoutCta() {
     const cta = document.querySelector(".panier-summary__cta");
     if (!cta) return;
 
+    let message = document.getElementById("panier-blocage");
+    if (!message) {
+      message = document.createElement("p");
+      message.className = "panier-summary__blocage";
+      message.id = "panier-blocage";
+      message.hidden = true;
+      cta.insertAdjacentElement("afterend", message);
+    }
+
     const sync = () => {
       const url = getCheckoutUrl();
-      cta.disabled = !url;
-      cta.title = url ? "" : "Bientôt disponible";
+      const state = getCartState();
+      const bloquantes = lignesNonCommandables();
+      const remiseManquante = state.discountAttendu > 0.01 && state.discount + 0.01 < state.discountAttendu;
+      const avantageManquant = state.boxes > 0 && (remiseManquante || !state.freeShipping);
+      const verrouille = !url || bloquantes.length > 0 || state.synchronisationEnCours ||
+        Boolean(state.erreurSynchronisation) || avantageManquant;
+      cta.disabled = verrouille;
+      cta.classList.toggle("is-verrouille", verrouille);
+      cta.title = "";
+
+      if (state.synchronisationEnCours) {
+        message.textContent = "Vérification du panier en cours…";
+        message.hidden = false;
+        return;
+      }
+      if (state.erreurSynchronisation) {
+        message.textContent = "Le panier n'a pas pu être vérifié. Modifiez-le pour réessayer.";
+        message.hidden = false;
+        return;
+      }
+      if (bloquantes.length) {
+        const noms = bloquantes.map((it) => it.name).filter(Boolean);
+        const liste = noms.slice(0, 3).join(", ");
+        const reste = noms.length > 3 ? ` et ${noms.length - 3} autre${noms.length - 3 > 1 ? "s" : ""}` : "";
+        message.textContent =
+          noms.length === 1
+            ? `${liste} n'est pas encore en vente en ligne. Retirez-le du panier pour commander le reste.`
+            : `${liste}${reste} ne sont pas encore en vente en ligne. Retirez-les du panier pour commander le reste.`;
+        message.hidden = false;
+        return;
+      }
+      if (avantageManquant) {
+        message.textContent = "La remise de 10 % ou la livraison offerte n'est pas encore active en caisse. Nous ne prenons pas la commande tant que le prix affiché n'est pas celui qui sera facturé.";
+        message.hidden = false;
+        return;
+      }
+      message.hidden = true;
     };
 
-    cta.addEventListener("click", () => {
+    function sameLines(cart) {
+      const expected = getRemoteLines();
+      const actual = (cart?.lines || []).map((line) => ({
+        variantId: line.variantId,
+        quantity: Number(line.quantity) || 0,
+      }));
+      const key = (line) => `${line.variantId}|${line.quantity}`;
+      return expected.map(key).sort().join(";") === actual.map(key).sort().join(";");
+    }
+
+    // Dernier contrôle serveur avant de céder la main au checkout : lignes,
+    // total et avantages doivent tous correspondre à la promesse affichée.
+    async function verifierShopify() {
+      const panier = loadShopifyCart();
+      if (!panier?.id) return { kind: "unavailable" };
+      const { cart, error } = await cartRequest("get", { cartId: panier.id });
+      if (error || !cart) return { kind: "unavailable" };
+      if (!sameLines(cart)) return { kind: "lines" };
+
+      saveShopifyCart(cart);
+      const facture = Number(cart.cost?.totalAmount?.amount);
+      const annonce = Number(getCartState().total);
+      if (!Number.isFinite(facture) || !Number.isFinite(annonce)) return { kind: "unavailable" };
+      if (Math.abs(facture - annonce) > 0.01) return { kind: "total", annonce, facture };
+
+      const state = getCartState();
+      if (state.boxes > 0 && (state.discount + 0.01 < state.discountAttendu || !state.freeShipping)) {
+        return { kind: "promotion" };
+      }
+      return null;
+    }
+
+    cta.addEventListener("click", async () => {
       const url = getCheckoutUrl();
-      if (url) window.location.href = url;
+      if (!url) return;
+      cta.disabled = true;
+      const ecart = await verifierShopify();
+      cta.disabled = false;
+      if (ecart) {
+        if (ecart.kind === "lines") {
+          message.textContent = "Le panier en caisse ne contient pas exactement les mêmes flacons. La commande est bloquée ; modifiez le panier pour relancer la vérification.";
+        } else if (ecart.kind === "total") {
+          message.textContent = `Le paiement afficherait ${money(ecart.facture)} au lieu de ${money(ecart.annonce)}. La commande est bloquée pour éviter un mauvais montant.`;
+        } else if (ecart.kind === "promotion") {
+          message.textContent = "La remise de 10 % ou la livraison offerte n'est pas confirmée en caisse. La commande reste bloquée.";
+        } else {
+          message.textContent = "Impossible de vérifier le panier. La commande reste bloquée par sécurité.";
+        }
+        message.hidden = false;
+        return;
+      }
+      window.location.href = url;
     });
 
     sync();
@@ -565,9 +986,11 @@
 
   global.KoreiCoffret = {
     SLOT_COUNTS,
+    MAX_BOXES_PER_FORMAT,
     PACK_LABELS,
     isEligibleFormat,
     addItem,
+    addItemsBatch,
     removeItem,
     setQty,
     incrementQty,
@@ -575,7 +998,16 @@
     hasItem,
     getProgress,
     getCheckoutUrl,
+    getPromotionCodes,
+    getRemoteLines,
+    synchroniserPanier,
     onChange,
+    notice: showStockNotice,
+    getCartState,
+    getNextStep,
+    countFor,
+    capacityFor,
+    COFFRET_DISCOUNT,
   };
 
   function init() {
@@ -584,6 +1016,7 @@
     renderPanierPage();
     initPanierActions();
     initCheckoutCta();
+    if (document.getElementById("panier-groups") && load().length) synchroniserPanier();
   }
 
   if (document.readyState === "loading") {

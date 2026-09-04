@@ -2,6 +2,7 @@
  * Korei — API panier (Shopify Storefront Cart API).
  *
  * POST /api/cart avec { action, ... } :
+ *   sync   → { lines, codes } — recrée atomiquement le panier avec toutes ses lignes
  *   create → { variantId, quantity } — crée un panier avec une ligne initiale
  *   add    → { cartId, variantId, quantity } — ajoute une ligne
  *   update → { cartId, lineId, quantity } — change la quantité d'une ligne
@@ -16,6 +17,24 @@
  */
 const { shopifyGraphQL } = require("./lib/shopify");
 
+const COFFRET_CODE_RULES = {
+  "2ML": 10,
+  "5ML": 5,
+  "10ML": 3,
+};
+const MAX_BOXES_PER_FORMAT = 10;
+const SHIPPING_CODE = "LIVRAISON-COFFRET";
+
+function isAllowedPromotionCode(code) {
+  if (code === SHIPPING_CODE) return true;
+  const match = /^COFFRET-(2ML|5ML|10ML)-(\d+)$/.exec(code);
+  if (!match) return false;
+  const slots = COFFRET_CODE_RULES[match[1]];
+  const quantity = Number(match[2]);
+  return Number.isInteger(quantity) && quantity >= slots &&
+    quantity <= slots * MAX_BOXES_PER_FORMAT && quantity % slots === 0;
+}
+
 const CART_FIELDS = `
   id
   checkoutUrl
@@ -23,6 +42,10 @@ const CART_FIELDS = `
   cost {
     subtotalAmount { amount currencyCode }
     totalAmount { amount currencyCode }
+  }
+  discountCodes { code applicable }
+  discountAllocations {
+    discountedAmount { amount currencyCode }
   }
   lines(first: 50) {
     nodes {
@@ -41,8 +64,8 @@ const CART_FIELDS = `
 `;
 
 const CART_CREATE_MUTATION = `
-  mutation KoreiCartCreate($lines: [CartLineInput!]!) {
-    cartCreate(input: { lines: $lines }) {
+  mutation KoreiCartCreate($lines: [CartLineInput!]!, $codes: [String!]) {
+    cartCreate(input: { lines: $lines, discountCodes: $codes }) {
       cart { ${CART_FIELDS} }
       userErrors { field message }
     }
@@ -70,6 +93,20 @@ const CART_LINES_UPDATE_MUTATION = `
 const CART_LINES_REMOVE_MUTATION = `
   mutation KoreiCartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+      cart { ${CART_FIELDS} }
+      userErrors { field message }
+    }
+  }
+`;
+
+// Poser un code de reduction sur le panier. C'est le seul moyen, avec les
+// autorisations de l'application, de faire porter la remise coffret par
+// Shopify plutot que par le navigateur. Shopify repond « applicable: false »
+// quand le code n'existe pas : le site le lit et n'annonce alors aucune
+// remise, au lieu d'en promettre une qui ne sera pas facturee.
+const CART_DISCOUNT_MUTATION = `
+  mutation KoreiCartDiscount($cartId: ID!, $codes: [String!]!) {
+    cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $codes) {
       cart { ${CART_FIELDS} }
       userErrors { field message }
     }
@@ -104,6 +141,13 @@ function normalizeCart(cart) {
     checkoutUrl: cart.checkoutUrl,
     totalQuantity: cart.totalQuantity,
     cost: cart.cost,
+    // Ce que Shopify a reellement accepte de remiser. Le site n'affiche que
+    // ca : une remise annoncee et non facturee est un prix trompeur.
+    discountCodes: cart.discountCodes || [],
+    discountApplied: (cart.discountAllocations || []).reduce(
+      (total, a) => total + Number(a.discountedAmount?.amount || 0),
+      0,
+    ),
     lines: (cart.lines?.nodes || []).map((line) => ({
       id: line.id,
       quantity: line.quantity,
@@ -115,6 +159,31 @@ function normalizeCart(cart) {
       currencyCode: line.merchandise?.price?.currencyCode || "EUR",
     })),
   };
+}
+
+function normalizeLines(lines) {
+  if (!Array.isArray(lines)) return null;
+  const normalized = [];
+  for (const line of lines) {
+    const variantId = String(line?.variantId || "").trim();
+    const quantity = Number(line?.quantity);
+    if (!variantId.startsWith("gid://shopify/ProductVariant/") || !Number.isInteger(quantity) || quantity < 1) {
+      return null;
+    }
+    normalized.push({ merchandiseId: variantId, quantity });
+  }
+  return normalized.length > 0 && normalized.length <= 50 ? normalized : null;
+}
+
+function normalizeCodes(codes) {
+  if (!Array.isArray(codes)) return [];
+  return [
+    ...new Set(
+      codes
+        .map((code) => String(code || "").trim().toUpperCase())
+        .filter(isAllowedPromotionCode),
+    ),
+  ];
 }
 
 async function runCartMutation(query, variables, mutationName) {
@@ -142,11 +211,23 @@ async function handler(req, res) {
 
   const { action, cartId, lineId, variantId, quantity } = body;
 
+  if (action === "sync") {
+    const lines = normalizeLines(body.lines);
+    if (!lines) return sendJson(res, 400, { error: "invalid_lines" });
+    const result = await runCartMutation(
+      CART_CREATE_MUTATION,
+      { lines, codes: normalizeCodes(body.codes) },
+      "cartCreate",
+    );
+    if (!result.ok) return sendJson(res, result.status, { error: result.error, message: result.message });
+    return sendJson(res, 200, { cart: result.cart });
+  }
+
   if (action === "create") {
     if (!variantId || !quantity) return sendJson(res, 400, { error: "missing_fields" });
     const result = await runCartMutation(
       CART_CREATE_MUTATION,
-      { lines: [{ merchandiseId: variantId, quantity }] },
+      { lines: [{ merchandiseId: variantId, quantity }], codes: [] },
       "cartCreate",
     );
     if (!result.ok) return sendJson(res, result.status, { error: result.error, message: result.message });
@@ -186,6 +267,18 @@ async function handler(req, res) {
     return sendJson(res, 200, { cart: result.cart });
   }
 
+  if (action === "discount") {
+    if (!cartId) return sendJson(res, 400, { error: "cart_id_requis" });
+    const codes = normalizeCodes(body.codes);
+    const result = await runCartMutation(
+      CART_DISCOUNT_MUTATION,
+      { cartId, codes },
+      "cartDiscountCodesUpdate",
+    );
+    if (!result.ok) return sendJson(res, result.status, { error: result.error, message: result.message });
+    return sendJson(res, 200, { cart: result.cart });
+  }
+
   if (action === "get") {
     if (!cartId) return sendJson(res, 400, { error: "missing_fields" });
     const result = await shopifyGraphQL(CART_QUERY, { cartId });
@@ -197,3 +290,6 @@ async function handler(req, res) {
 }
 
 module.exports = handler;
+module.exports.normalizeCodes = normalizeCodes;
+module.exports.normalizeLines = normalizeLines;
+module.exports.isAllowedPromotionCode = isAllowedPromotionCode;

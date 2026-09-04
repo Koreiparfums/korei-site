@@ -1,6 +1,11 @@
 const { shopifyGraphQL } = require("./lib/shopify");
 
-const MAX_PRODUCTS = 100;
+// Shopify renvoie au maximum 250 produits par page. On reste à 100 pour
+// garder une réponse raisonnable, puis on suit le curseur jusqu'à la fin du
+// catalogue. MAX_PAGES est uniquement un garde-fou contre un curseur Shopify
+// défectueux ou une réponse qui ne progresserait plus.
+const PAGE_SIZE = 100;
+const MAX_PAGES = 100;
 
 const METAFIELD_IDENTIFIERS = [
   "notes_top",
@@ -15,8 +20,8 @@ const METAFIELD_IDENTIFIERS = [
 ].map((key) => ({ namespace: "korei", key }));
 
 const PRODUCTS_QUERY = `
-  query KoreiProducts($first: Int!, $metafields: [HasMetafieldsIdentifier!]!) {
-    products(first: $first, sortKey: TITLE) {
+  query KoreiProducts($first: Int!, $after: String, $metafields: [HasMetafieldsIdentifier!]!) {
+    products(first: $first, after: $after, sortKey: TITLE) {
       nodes {
         id
         handle
@@ -29,6 +34,12 @@ const PRODUCTS_QUERY = `
         featuredImage {
           url
           altText
+        }
+        images(first: 6) {
+          nodes {
+            url
+            altText
+          }
         }
         priceRange {
           minVariantPrice {
@@ -56,6 +67,10 @@ const PRODUCTS_QUERY = `
           value
           type
         }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
       }
     }
   }
@@ -129,6 +144,9 @@ function mapProduct(product) {
     description: product.description || "",
     image: product.featuredImage?.url || null,
     imageAlt: product.featuredImage?.altText || `${product.vendor || "Korei"} ${product.title}`,
+    // KOR-B6 — la galerie a besoin de toutes les photos, pas seulement de la
+    // principale. Sans ca, la fiche ne peut jamais montrer un second angle.
+    images: (product.images?.nodes || []).map((node) => node.url).filter(Boolean),
     price,
     currencyCode: product.priceRange?.minVariantPrice?.currencyCode || "EUR",
     supplierAvailable: product.availableForSale,
@@ -161,16 +179,47 @@ async function handler(req, res) {
     return sendJson(res, 405, { error: "method_not_allowed" });
   }
 
-  const result = await shopifyGraphQL(PRODUCTS_QUERY, { first: MAX_PRODUCTS, metafields: METAFIELD_IDENTIFIERS });
-  if (!result.ok) {
-    return sendJson(res, result.status, { error: result.error, message: result.message });
+  const rawProducts = [];
+  let after = null;
+
+  for (let page = 0; page < MAX_PAGES; page += 1) {
+    const result = await shopifyGraphQL(PRODUCTS_QUERY, {
+      first: PAGE_SIZE,
+      after,
+      metafields: METAFIELD_IDENTIFIERS,
+    });
+    if (!result.ok) {
+      return sendJson(res, result.status, { error: result.error, message: result.message });
+    }
+
+    const connection = result.data?.products;
+    rawProducts.push(...(connection?.nodes || []));
+
+    const pageInfo = connection?.pageInfo || {};
+    if (!pageInfo.hasNextPage) break;
+
+    // Ne jamais relancer la même page si Shopify renvoie un curseur invalide.
+    if (!pageInfo.endCursor || pageInfo.endCursor === after) {
+      return sendJson(res, 502, {
+        error: "shopify_pagination_failed",
+        message: "Shopify returned an invalid pagination cursor.",
+      });
+    }
+    after = pageInfo.endCursor;
+
+    if (page === MAX_PAGES - 1) {
+      return sendJson(res, 502, {
+        error: "shopify_pagination_limit",
+        message: "Shopify catalog exceeds the configured pagination safety limit.",
+      });
+    }
   }
 
-  const products = (result.data?.products?.nodes || []).map(mapProduct);
+  const products = rawProducts.map(mapProduct);
   return sendJson(
     res,
     200,
-    { products, source: "shopify", updatedAt: new Date().toISOString() },
+    { products, source: "shopify", count: products.length, updatedAt: new Date().toISOString() },
     "public, max-age=60, s-maxage=300",
   );
 }

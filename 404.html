@@ -8,28 +8,31 @@
     <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="theme-color" content="#1a1a18" />
+    <link rel="apple-touch-icon" href="/assets/images/app/icon-192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Kōrei" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400;1,9..40,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" />
     <link rel="stylesheet" href="/assets/css/styles.css" />
   </head>
   <body data-page="static">
     <div class="banner">
       <div class="banner-track">
-        <span class="banner-item">Livraison offerte dès 60€</span>
+        <span class="banner-item">Livraison offerte dès un coffret</span>
         <span class="banner-sep"></span>
-        <span class="banner-item">Décants 100% authentiques</span>
+        <span class="banner-item">Décants 100&nbsp;% authentiques</span>
         <span class="banner-sep"></span>
-        <span class="banner-item">Expédition sous 24h</span>
+        <span class="banner-item">Expédition sous 24&nbsp;h</span>
         <span class="banner-sep"></span>
         <span class="banner-item">Satisfaction 30 jours</span>
         <span class="banner-sep"></span>
-        <span class="banner-item">Livraison offerte dès 60€</span>
+        <span class="banner-item">Livraison offerte dès un coffret</span>
         <span class="banner-sep"></span>
-        <span class="banner-item">Décants 100% authentiques</span>
+        <span class="banner-item">Décants 100&nbsp;% authentiques</span>
         <span class="banner-sep"></span>
-        <span class="banner-item">Expédition sous 24h</span>
+        <span class="banner-item">Expédition sous 24&nbsp;h</span>
         <span class="banner-sep"></span>
         <span class="banner-item">Satisfaction 30 jours</span>
       </div>
@@ -37,7 +40,7 @@
 
     <header class="header">
       <div class="header-left">
-        <button class="hamburger" onclick="toggleMenu()" aria-label="Menu" type="button">
+        <button class="hamburger" data-toggle-menu aria-label="Menu" type="button">
           <i class="ti ti-menu-2"></i>
         </button>
         <nav class="nav">
@@ -55,28 +58,28 @@
           <input type="search" placeholder="Rechercher des marques..." aria-label="Rechercher" />
         </div>
         <div class="header-actions">
-          <button class="icon-btn search-mobile-btn" onclick="toggleSearch()" aria-label="Rechercher" type="button">
+          <button class="icon-btn search-mobile-btn" data-toggle-search aria-label="Rechercher" type="button">
             <i class="ti ti-search"></i>
           </button>
-          <button class="icon-btn" aria-label="Favoris" type="button">
+          <a class="icon-btn" href="pages/favoris.html" aria-label="Favoris">
             <i class="ti ti-heart"></i>
-          </button>
-          <button class="icon-btn" aria-label="Panier" type="button">
+          </a>
+          <a class="icon-btn" href="pages/panier.html" aria-label="Panier">
             <i class="ti ti-shopping-bag"></i>
-          </button>
-          <button class="icon-btn" aria-label="Compte" type="button">
+          </a>
+          <a class="icon-btn" href="pages/compte.html" aria-label="Compte">
             <i class="ti ti-user"></i>
-          </button>
+          </a>
         </div>
       </div>
     </header>
 
     <div class="mobile-menu" id="mobileMenu">
-      <div class="mobile-overlay" onclick="toggleMenu()"></div>
+      <div class="mobile-overlay" data-toggle-menu></div>
       <div class="mobile-drawer">
         <div class="mobile-drawer-head">
           <span class="logo">Kōrei</span>
-          <button onclick="toggleMenu()" type="button" style="background:none;border:none;font-size:26px;cursor:pointer;color:#888">
+          <button data-toggle-menu type="button" style="background:none;border:none;font-size:26px;cursor:pointer;color:#888">
             <i class="ti ti-x"></i>
           </button>
         </div>
@@ -92,11 +95,11 @@
       <div class="search-overlay-head">
         <i class="ti ti-search search-overlay-icon"></i>
         <input type="search" class="search-overlay-input" placeholder="Rechercher un parfum, une marque…" aria-label="Rechercher" />
-        <button class="search-overlay-close" onclick="toggleSearch()" aria-label="Fermer" type="button">
+        <button class="search-overlay-close" data-toggle-search aria-label="Fermer" type="button">
           <i class="ti ti-x"></i>
         </button>
       </div>
-      <p class="search-overlay-hint">Tendances : Oud Wood · Aventus · Interlude Man</p>
+      <p class="search-overlay-hint">Pour commencer : Oud Wood · Aventus · Interlude Man</p>
     </div>
 
     <main class="error-page">
@@ -118,6 +121,9 @@
         <div>
           <div class="footer-logo">Kōrei</div>
           <div class="footer-tagline">Parfumerie de niche · Paris</div>
+          <div class="footer-tagline">
+            Décants remplis à la main, depuis le flacon d'origine.
+          </div>
           <div class="footer-socials">
             <button class="social-btn" aria-label="Instagram" type="button">
               <i class="ti ti-brand-instagram"></i>
@@ -142,7 +148,11 @@
         <div class="footer-col">
           <div class="footer-col-title">Aide</div>
           <a href="pages/contact.html">Contact</a>
+          <a href="pages/faq.html">FAQ</a>
+          <a href="pages/livraison-retours.html">Livraison &amp; retours</a>
           <a href="pages/cgv.html">CGV</a>
+          <a href="pages/mentions-legales.html">Mentions légales</a>
+          <a href="pages/confidentialite.html">Confidentialité</a>
         </div>
       </div>
       <div class="footer-bottom">
@@ -152,10 +162,14 @@
 
     <script src="assets/js/site.js"></script>
     <script src="assets/js/products.js"></script>
+    <script src="assets/js/catalogue-bientot.js"></script>
+    <script src="assets/js/catalogue-client.js"></script>
+    <script src="assets/js/sensoriel.js"></script>
     <script src="assets/js/product-store.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/favorites.js"></script>
     <script src="assets/js/coffret-builder.js"></script>
+    <script src="assets/js/tabbar.js"></script>
     <script src="assets/js/chatbot.js"></script>
 
     <div id="chatbot-widget" class="chatbot-widget">
@@ -175,7 +189,7 @@
             <button type="submit" class="chatbot-send" aria-label="Envoyer"><i class="ti ti-send"></i></button>
           </form>
         </div>
-        <div class="chatbot-mock-badge">Mode démo — IA à connecter</div>
+        <div class="chatbot-mock-badge">Version démo : l'assistant complet arrive bientôt.</div>
       </div>
       <button type="button" id="chatbot-toggle" class="chatbot-toggle" aria-label="Ouvrir le conseiller olfactif" aria-expanded="false">
         <i class="ti ti-message-chatbot"></i>

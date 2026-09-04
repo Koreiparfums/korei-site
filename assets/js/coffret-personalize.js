@@ -7,20 +7,65 @@
  * n'est codé en dur : la liste vient de KoreiProducts.PRODUCTS.
  */
 (function () {
+  // KOR-C1 — plus de prix fixe. Chaque format renvoie vers sa clé décant, et
+  // le prix du coffret est la somme des parfums choisis, chacun à −10 %.
   const FORMATS = {
-    "10x2ml": { label: "Découverte", price: 69, capacity: 10 },
-    "5x5ml": { label: "Signature", price: 99, capacity: 5 },
-    "3x10ml": { label: "Collection", price: 149, capacity: 3 },
+    "10x2ml": { label: "Découverte", capacity: 10, key: "2ml" },
+    "5x5ml": { label: "Voyage", capacity: 5, key: "5ml" },
+    "3x10ml": { label: "Iconique", capacity: 3, key: "10ml" },
+  };
+  const DISCOUNT = 0.1;
+
+  // KOR-C15 — familles du brief §4. Le catalogue nomme parfois les memes
+  // familles autrement : on regroupe ici plutot que de renommer les donnees.
+  const FAMILY_ALIASES = {
+    "boisé": ["boisé", "boise", "woody", "chypre"],
+    floral: ["floral", "florale", "fleuri"],
+    oriental: ["oriental", "orientale", "ambré", "ambre", "épicé", "epice"],
+    frais: ["frais", "fraîche", "fraiche", "agrumes", "citrus", "aquatique", "hespéridé"],
+    gourmand: ["gourmand", "gourmande", "sucré", "sucre", "vanillé"],
   };
 
   const coffret = {
     format: "5x5ml",
     items: [], // { productId, quantity }
     message: "",
-    price: FORMATS["5x5ml"].price,
+    price: 0,
     search: "",
     filter: null, // "bestseller" | "new" | famille du produit
   };
+
+  function formatKey() {
+    return FORMATS[coffret.format].key;
+  }
+
+  function unitPrice(productId) {
+    const store = window.KoreiProductStore;
+    const product = store?.getProductById?.(productId) || store?.getAllProducts?.().find((p) => p.id === productId);
+    return product ? store.getFormatPrice(product, formatKey()) : 0;
+  }
+
+  function money(value) {
+    const rounded = Math.round(value * 100) / 100;
+    return window.KoreiProducts?.prixEuros(rounded) ?? `${rounded}\u00a0€`;
+  }
+
+  /**
+   * KOR-C1 — le prix se recalcule à chaque parfum ajouté ou retiré.
+   * La remise n'est acquise que si le coffret est complet.
+   */
+  function recomputePrice() {
+    const total = coffret.items.reduce(
+      (sum, it) => sum + unitPrice(it.productId) * (it.quantity || 1),
+      0,
+    );
+    const count = coffret.items.reduce((sum, it) => sum + (it.quantity || 1), 0);
+    const complete = count === FORMATS[coffret.format].capacity;
+    coffret.gross = total;
+    coffret.saved = complete ? total * DISCOUNT : 0;
+    coffret.price = total - coffret.saved;
+    return coffret.price;
+  }
 
   // Persiste le brouillon (format/sélection/message) pour qu'il survive à un
   // rechargement ou une navigation — avant, tout se perdait au refresh.
@@ -59,7 +104,7 @@
 
     if (draft.format && FORMATS[draft.format]) {
       coffret.format = draft.format;
-      coffret.price = FORMATS[draft.format].price;
+      recomputePrice();
     }
     if (Array.isArray(draft.items)) {
       const capacity = FORMATS[coffret.format].capacity;
@@ -88,7 +133,6 @@
 
     const basePath = "../";
     const withBase = (window.KoreiSite && window.KoreiSite.withBase) || ((p, b) => `${b}${p}`);
-    const renderStars = (window.KoreiUI && window.KoreiUI.renderStars) || (() => "");
     const products = (window.KoreiProducts && window.KoreiProducts.PRODUCTS) || [];
     const productById = new Map(products.map((p) => [p.id, p]));
 
@@ -106,7 +150,7 @@
     }
     function thumbHtml(p) {
       const src = p.image ? withBase(p.image, basePath) : "";
-      const img = src ? `<img src="${src}" alt="" data-onerror="remove" />` : "";
+      const img = src ? `<img src="${src}" alt="" width="750" height="1000" loading="lazy" decoding="async" data-onerror="remove" />` : "";
       return `${img}<span>${initialOf(p)}</span>`;
     }
 
@@ -129,6 +173,16 @@
     const messageInput = document.getElementById("cb2Message");
     const messageCount = document.getElementById("cb2MessageCount");
     const timelineSteps = document.querySelectorAll("#cb2Timeline .cb2-timeline__step");
+    const subtotalEl = document.getElementById("cb2Subtotal");
+    const discountRow = document.getElementById("cb2DiscountRow");
+    const discountEl = document.getElementById("cb2Discount");
+    const shipEl = document.getElementById("cb2Ship");
+    const resultsCountEl = document.getElementById("cb2ResultsCount");
+    const mediaCol = document.getElementById("cb2MediaCol");
+    const dock = document.getElementById("cb2Dock");
+    const dockName = document.getElementById("cb2DockName");
+    const dockCount = document.getElementById("cb2DockCount");
+    const dockTotal = document.getElementById("cb2DockTotal");
 
     // Restaure un brouillon éventuel avant le premier rendu, puis remet en
     // phase les contrôles qui ne sont pas recalculés par render() (boutons
@@ -141,6 +195,7 @@
     });
     if (messageInput) messageInput.value = coffret.message;
     if (messageCount) messageCount.textContent = String(coffret.message.length);
+    let wasComplete = total() === capacity();
 
     function capacity() {
       return FORMATS[coffret.format].capacity;
@@ -173,7 +228,7 @@
 
     function setFormat(id) {
       coffret.format = id;
-      coffret.price = FORMATS[id].price;
+      recomputePrice();
       coffret.items = [];
       formatBtns.forEach((b) => {
         const active = b.dataset.format === id;
@@ -188,17 +243,31 @@
       if (!coffret.filter) return true;
       if (coffret.filter === "bestseller") return !!p.bestseller;
       if (coffret.filter === "new") return !!p.new;
-      return p.family === coffret.filter;
+      const aliases = FAMILY_ALIASES[coffret.filter] || [coffret.filter];
+      const family = normalize(p.family);
+      return aliases.some((a) => family === normalize(a));
     }
     function searchCandidates() {
       const q = normalize(coffret.search).trim();
-      return products
+      const matched = products
+        // Un parfum sans photo de flacon n'est pas vendable : il ne peut pas
+        // entrer dans un coffret.
+        .filter((p) => p.supplierAvailable !== false)
         .filter((p) => matchesFilter(p))
-        .filter((p) => !q || normalize(`${p.brand} ${p.name}`).includes(q))
-        .slice(0, 8);
+        .filter((p) => !q || normalize(`${p.brand} ${p.name}`).includes(q));
+
+      if (q || coffret.filter) return { list: matched.slice(0, 8), matched: matched.length };
+
+      // Rien de saisi : on met les best-sellers en avant, puis le reste.
+      const ranked = matched
+        .slice()
+        .sort((a, b) => Number(Boolean(b.bestseller)) - Number(Boolean(a.bestseller)));
+      return { list: ranked.slice(0, 8), matched: matched.length };
     }
+    // Les suggestions sont visibles dès l'arrivée : sans elles, la zone
+    // « Ajoutez vos parfums » restait vide tant qu'on ne tapait rien.
     function resultsShouldShow() {
-      return coffret.search.trim().length > 0 || !!coffret.filter;
+      return true;
     }
     function renderResults() {
       if (!resultsEl) return;
@@ -207,31 +276,41 @@
         resultsEl.innerHTML = "";
         return;
       }
-      const candidates = searchCandidates();
+      const { list: candidates, matched } = searchCandidates();
       const full = total() >= capacity();
       resultsEl.hidden = false;
+      if (resultsCountEl) {
+        resultsCountEl.textContent = matched === 0
+          ? ""
+          : `${matched} parfum${matched > 1 ? "s" : ""} disponible${matched > 1 ? "s" : ""}${candidates.length < matched ? ` · ${candidates.length} affichés` : ""}`;
+      }
       if (candidates.length === 0) {
         resultsEl.innerHTML = `<div class="cb2-results__empty">Aucun parfum ne correspond à cette recherche.</div>`;
         return;
       }
+      // KOR-C13 — un compteur « − quantite + » par parfum : on peut prendre
+      // deux fois le meme flacon dans un coffret.
       resultsEl.innerHTML = candidates
-        .map(
-          (p) => `
-        <div class="cb2-result" data-product-id="${p.id}">
+        .map((p) => {
+          const qty = getItem(p.id)?.quantity || 0;
+          return `
+        <div class="cb2-result${qty ? " is-picked" : ""}" data-product-id="${p.id}">
           <div class="cb2-result__media">
             <span class="cb2-result__thumb">${thumbHtml(p)}</span>
-            <button type="button" class="cb2-result__add" data-add-id="${p.id}" ${full ? "disabled" : ""} aria-label="Ajouter ${p.name}">
-              <i class="ti ti-plus" aria-hidden="true"></i>
-            </button>
+            ${qty ? '<span class="cb2-result__check" aria-hidden="true"><i class="ti ti-check"></i></span>' : ""}
           </div>
           <div class="cb2-result__info">
             <div class="cb2-result__name">${p.name}</div>
             <div class="cb2-result__brand">${p.brand}</div>
             <div class="cb2-result__notes">${notesOf(p)}</div>
-            ${p.rating ? `<div class="cb2-result__rating">${renderStars(p.rating)}</div>` : ""}
           </div>
-        </div>`
-        )
+          <div class="cb2-result__qty">
+            <button type="button" class="cb2-qty-btn" data-qty="-1" data-id="${p.id}" ${qty === 0 ? "disabled" : ""} aria-label="Retirer un ${p.name}">−</button>
+            <span class="cb2-qty-value" aria-live="polite">${qty}</span>
+            <button type="button" class="cb2-qty-btn" data-qty="1" data-id="${p.id}" ${full ? "disabled" : ""} aria-label="Ajouter un ${p.name}">+</button>
+          </div>
+        </div>`;
+        })
         .join("");
     }
 
@@ -294,7 +373,8 @@
         .join("");
     }
 
-    // ── Timeline : où en est le client dans les 4 étapes
+    // ── KOR-C12 — les trois etapes du brief. L'etape avance seule : des le
+    // format choisi on passe a 2, des le coffret complet on passe a 3.
     function updateTimeline() {
       if (!timelineSteps.length) return;
       const t = total();
@@ -307,10 +387,13 @@
       timelineSteps.forEach((step, i) => {
         const key = step.dataset.step;
         const numEl = step.querySelector(".cb2-timeline__num");
-        const s = state[key];
-        step.classList.toggle("is-done", s === "done");
-        step.classList.toggle("is-current", s === "current");
-        if (numEl) numEl.textContent = s === "done" ? "✓" : String(i + 1);
+        const st = state[key];
+        step.classList.toggle("is-done", st === "done");
+        step.classList.toggle("is-current", st === "current");
+        // Une etape non franchie n'est pas cliquable : on ne saute pas en avant.
+        step.disabled = st === "pending";
+        step.setAttribute("aria-current", st === "current" ? "step" : "false");
+        if (numEl) numEl.textContent = st === "done" ? "✓" : String(i + 1);
       });
     }
 
@@ -339,10 +422,30 @@
       barFill.style.width = `${Math.min(100, (t / cap) * 100)}%`;
       countEl.textContent = `${t} / ${cap} flacons`;
 
-      // format + prix (avec une pulsation quand le prix change réellement, ex. changement de format)
+      // format + prix (avec une pulsation quand le prix change réellement)
+      recomputePrice();
       formatNameEl.textContent = FORMATS[coffret.format].label;
-      const priceText = `${coffret.price}€`;
+      const priceText = money(coffret.price);
       priceEl.textContent = priceText;
+
+      // KOR-C14 — le detail du calcul reste sous les yeux : sous-total,
+      // remise incluse, livraison. Trois lignes mises a jour a chaque geste.
+      if (subtotalEl) subtotalEl.textContent = money(coffret.gross);
+      if (discountRow) {
+        const has = coffret.saved > 0;
+        discountRow.hidden = !has;
+        if (discountEl) discountEl.textContent = `−${money(coffret.saved)}`;
+      }
+      if (shipEl) {
+        const complete0 = total() === cap;
+        shipEl.textContent = complete0 ? "À confirmer en caisse" : "Selon le panier";
+        shipEl.classList.remove("is-won");
+      }
+
+      // Barre fixe du telephone : elle reprend le nom, l'avancement et le total.
+      if (dockName) dockName.textContent = `Coffret ${FORMATS[coffret.format].label}`;
+      if (dockCount) dockCount.textContent = t === cap ? `Créé · −10 % par flacon` : `${t} / ${cap} flacons`;
+      if (dockTotal) dockTotal.textContent = priceText;
       if (ctaPriceEl) ctaPriceEl.textContent = priceText;
       if (coffret.price !== lastPrice) {
         priceEl.classList.remove("is-updating");
@@ -356,9 +459,26 @@
       const complete = t === cap;
       addBtn.disabled = !complete;
       addBtn.classList.toggle("is-ready", complete);
-      if (ctaLabel) ctaLabel.textContent = complete ? "✓ Coffret prêt — Ajouter au panier" : "Ajouter le coffret au panier";
-      hint.hidden = complete;
-      if (!complete) hint.textContent = `Sélectionnez ${cap - t} flacon${cap - t > 1 ? "s" : ""} de plus pour continuer.`;
+      if (ctaLabel) ctaLabel.textContent = complete ? "✓ Coffret créé — Ajouter au panier" : "Ajouter le coffret au panier";
+
+      // KOR-C2 — ce qu'il reste à faire pour gagner la remise, en clair.
+      const missing = cap - t;
+      hint.hidden = false;
+      if (complete) {
+        hint.classList.add("is-won");
+        hint.textContent = `Coffret créé automatiquement · −10 % par flacon (${money(coffret.saved)} économisés) et livraison offerte, à confirmer dans le panier`;
+      } else if (t === 0) {
+        hint.classList.remove("is-won");
+        hint.textContent = `Choisissez ${cap} parfums pour −10 % sur chaque flacon et la livraison offerte`;
+      } else {
+        hint.classList.remove("is-won");
+        hint.textContent = `Plus que ${missing} parfum${missing > 1 ? "s" : ""} : le coffret sera créé automatiquement avec −10 % par flacon et la livraison offerte`;
+      }
+
+      if (complete && !wasComplete) {
+        window.KoreiCoffret?.notice?.(`Coffret ${FORMATS[coffret.format].label} créé automatiquement · −10 % par flacon`);
+      }
+      wasComplete = complete;
 
       updateTimeline();
       saveDraft();
@@ -379,29 +499,68 @@
 
     filterChips.forEach((chip) => {
       chip.addEventListener("click", () => {
-        const key = chip.dataset.filter;
+        const key = chip.dataset.filter || null;
         coffret.filter = coffret.filter === key ? null : key;
-        filterChips.forEach((c) => c.classList.toggle("is-active", c.dataset.filter === coffret.filter));
+        filterChips.forEach((c) =>
+          c.classList.toggle("is-active", (c.dataset.filter || null) === coffret.filter),
+        );
         renderResults();
       });
     });
 
+    // La barre fixe du telephone se deplie au clic (KOR-C14).
+    dock?.addEventListener("click", () => {
+      const open = mediaCol.classList.toggle("is-open");
+      dock.setAttribute("aria-expanded", String(open));
+    });
+
+    // KOR-C12 — revenir a une etape deja franchie en cliquant dessus.
+    const SECTION_OF_STEP = { format: "#cb2Formats", parfums: "#cb2Search", validation: ".cb2-action" };
+    timelineSteps.forEach((step) => {
+      step.addEventListener("click", () => {
+        const target = document.querySelector(SECTION_OF_STEP[step.dataset.step]);
+        target?.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (step.dataset.step === "parfums") searchInput?.focus({ preventScroll: true });
+      });
+    });
+
+    // KOR-C9 — les trois cartes de coffret preselectionnent leur format.
+    document.querySelectorAll(".box-card[data-format]").forEach((card) => {
+      card.addEventListener("click", (e) => {
+        e.preventDefault();
+        setFormat(card.dataset.format);
+        document.getElementById("personnaliser")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    // Format passe en parametre d'URL (lien depuis la fiche produit).
+    const urlFormat = new URLSearchParams(location.search).get("format");
+    if (urlFormat && FORMATS[urlFormat] && urlFormat !== coffret.format) setFormat(urlFormat);
+
     document.addEventListener("click", (e) => {
-      const withinSearchArea = e.target.closest("#cb2Search, #cb2FilterChips, #cb2Results");
-      if (!withinSearchArea && !coffret.filter) {
-        if (resultsEl) resultsEl.hidden = true;
-      }
+      // La liste de suggestions reste visible : rien à masquer au clic extérieur.
     });
 
     if (resultsEl) {
       resultsEl.addEventListener("click", (e) => {
+        // KOR-C13 — les boutons − et + de chaque parfum suggere.
+        const qtyBtn = e.target.closest("[data-qty]");
+        if (qtyBtn && !qtyBtn.disabled) {
+          const id = qtyBtn.dataset.id;
+          const delta = Number(qtyBtn.dataset.qty);
+          if (delta > 0) {
+            addProduct(id);
+          } else {
+            const item = getItem(id);
+            if (!item) return;
+            if (item.quantity <= 1) removeProduct(id);
+            else stepProduct(id, -1);
+          }
+          return;
+        }
         const btn = e.target.closest("[data-add-id]");
         if (!btn || btn.disabled) return;
         addProduct(btn.dataset.addId);
-        if (searchInput) {
-          searchInput.value = "";
-          coffret.search = "";
-        }
       });
     }
 
@@ -439,26 +598,45 @@
       addBtn.addEventListener("click", () => {
         if (addBtn.disabled) return;
 
-        // Le widget panier flottant partagé (coffret-builder.js) dédoublonne
-        // par produit+format et ne sait pas représenter une quantité — on ne
-        // s'y connecte donc pas ici pour ne pas afficher un total faux.
-        // Point d'intégration propre pour un futur backend / panier réel :
-        document.dispatchEvent(
-          new CustomEvent("korei:coffret-added", {
-            detail: {
-              format: coffret.format,
-              items: coffret.items.map(({ productId, quantity }) => ({ productId, quantity })),
-              message: coffret.message,
-              price: coffret.price,
-            },
-          })
-        );
+        // KOR-C6 — le coffret rejoint réellement le panier partagé.
+        const cart = window.KoreiCoffret;
+        const store = window.KoreiProductStore;
+        if (!cart || !store) return;
+
+        const key = formatKey();
+        const batch = coffret.items.map(({ productId, quantity }) => {
+          const product = store.getProductById?.(productId) || store.getAllProducts?.().find((p) => p.id === productId);
+          if (!product) return null;
+          const variant = store.getVariantForFormat(product, key);
+          return {
+            productId,
+            name: product.name,
+            brand: product.brand,
+            format: key,
+            price: store.getFormatPrice(product, key),
+            qty: quantity || 1,
+            variantId: variant?.id,
+          };
+        }).filter(Boolean);
+        const added = cart.addItemsBatch?.(batch) || 0;
+
+        if (!added) {
+          cart.notice?.("Impossible d'ajouter ce coffret. Réessayez.");
+          return;
+        }
+
+        // Le brouillon a rempli son rôle : on repart d'un coffret vide.
+        coffret.items = [];
+        coffret.message = "";
+        saveDraft();
 
         const originalLabel = ctaLabel ? ctaLabel.textContent : "";
-        if (ctaLabel) ctaLabel.textContent = "Ajouté à votre coffret";
+        if (ctaLabel) ctaLabel.textContent = "Coffret ajouté au panier";
+        cart.notice?.(`Coffret ${FORMATS[coffret.format].label} ajouté · −10 % par flacon en validation Shopify`);
+        render();
         setTimeout(() => {
           if (ctaLabel) ctaLabel.textContent = originalLabel;
-        }, 1800);
+        }, 2200);
       });
     }
 
@@ -467,9 +645,17 @@
     previousCardIds = new Set();
   }
 
+  // Le catalogue en ligne arrive de facon asynchrone : demarrer sans l'attendre
+  // n'offrait que les parfums du fichier local.
+  function demarrer() {
+    Promise.resolve(window.KoreiShopifyCatalog?.load())
+      .then(() => window.KoreiCatalogLoader?.load())
+      .finally(init);
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", demarrer);
   } else {
-    init();
+    demarrer();
   }
 })();

@@ -137,10 +137,9 @@
     { format: "5ml", label: "5 ml" },
     { format: "10ml", label: "10 ml" },
   ];
+  // Prix par décant : source unique, voir product-store.js
   function formatPriceFor(product, format) {
-    if (format === "5ml") return Math.round(product.price * 2.2);
-    if (format === "10ml") return Math.round(product.price * 3.8);
-    return product.price;
+    return global.KoreiProductStore?.getFormatPrice(product, format) ?? 0;
   }
 
   function getProduct(id) {
@@ -185,7 +184,7 @@
         </button>
         ${inCoffret ? `<span class="fav-card__tag"><i class="ti ti-package"></i> Dans mon coffret</span>` : ""}
         <a href="../pages/product.html?id=${product.id}" class="fav-card__media">
-          ${src ? `<img src="${src}" alt="" loading="lazy" />` : ""}
+          ${src ? `<img src="${src}" alt="" width="750" height="1000" loading="lazy" decoding="async" />` : ""}
         </a>
         <div class="fav-card__body">
           <a href="../pages/product.html?id=${product.id}" class="fav-card__link">
@@ -195,7 +194,7 @@
           ${notes ? `<span class="fav-card__notes">${esc(notes)}</span>` : ""}
           <div class="fav-card__shop">
             <select class="fav-card__select" data-fav-select aria-label="Format">${optionsHtml}</select>
-            <span class="fav-card__price" data-fav-price>${formatPriceFor(product, "2ml")}€</span>
+            <span class="fav-card__price" data-fav-price>${global.KoreiProducts?.prixEuros(formatPriceFor(product, "2ml")) ?? `${formatPriceFor(product, "2ml")}\u00a0€`}</span>
             <button type="button" class="fav-card__add" data-fav-add aria-label="Ajouter ${esc(product.name)} au coffret">
               <i class="ti ti-package"></i>
             </button>
@@ -208,7 +207,7 @@
     return `
       <div class="fav-card fav-card--cta">
         <div class="fav-card--cta__media">
-          <img src="../assets/images/packs/signature.png" alt="" loading="lazy" />
+          <img src="../assets/images/packs/signature.webp" alt="" width="1600" height="600" loading="lazy" decoding="async" />
         </div>
         <div class="fav-card--cta__body">
           <span class="fav-card--cta__icon" aria-hidden="true"><i class="ti ti-sparkles"></i></span>
@@ -245,7 +244,7 @@
 
       select.addEventListener("change", () => {
         const opt = select.options[select.selectedIndex];
-        if (priceEl) priceEl.textContent = `${opt.dataset.price}€`;
+        if (priceEl) priceEl.textContent = global.KoreiProducts?.prixEuros(opt.dataset.price) ?? `${opt.dataset.price}\u00a0€`;
         syncAddState();
       });
 

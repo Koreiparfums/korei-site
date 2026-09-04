@@ -8,7 +8,9 @@ const DEFAULT_MODEL = "llama-3.3-70b-versatile";
 const DEFAULT_PRICE_INPUT_PER_1M = 0.59;
 const DEFAULT_PRICE_OUTPUT_PER_1M = 0.79;
 const MAX_HISTORY_MESSAGES = 8;
-const MAX_CATALOG_PRODUCTS = 40;
+// Le catalogue Korei compte actuellement 338 produits. Le plafond protège la
+// taille de requête sans rendre 298 références invisibles au conseiller.
+const MAX_CATALOG_PRODUCTS = 400;
 const RATE_LIMIT_WINDOW_MS = Number(
   process.env.CHAT_RATE_LIMIT_WINDOW_MS || 60_000,
 );

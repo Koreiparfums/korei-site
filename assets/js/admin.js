@@ -1,12 +1,22 @@
 /**
  * Korei — Dashboard admin catalogue.
- * Parcourt l'export Fragrantica consolidé (korei_fragrantica_export.csv), permet la curation manuelle
+ * Parcourt l'export de catalogue consolide, permet la curation manuelle
  * (ajout / édition / suppression, sillage & longévité définis à la main) et
  * pilote /api/admin/catalog (protégé par ADMIN_TOKEN).
  */
 (function () {
   const TOKEN_KEY = "korei-admin-token";
-  const CSV_SOURCE = "../korei_fragrantica_export.csv";
+  // L'export de catalogue ne vit plus dans le dossier publie : 470 Ko
+  // telechargeables par n'importe qui, et un nom de fichier qui annonce la
+  // provenance de la donnee. Il est desormais a la racine du projet, a cote
+  // de scripts/, et seul le serveur de developpement le sert, sous cette
+  // adresse. En ligne, l'adresse ne repond pas et l'onglet « Import »
+  // l'explique au lieu de rester vide.
+  const CSV_SOURCE = "/dev/export-catalogue.csv";
+  const CSV_ABSENT =
+    "L'export de catalogue n'est pas disponible ici. Le fichier CSV a été sorti du dossier publié : " +
+    "il se trouve maintenant à la racine du projet, à côté du dossier scripts/. " +
+    "L'onglet Import ne fonctionne qu'en local, avec le serveur de développement (npm run dev).";
 
   const FAMILY_OPTIONS = [
     { value: "oriental", label: "Oriental" },
@@ -145,9 +155,19 @@
 
   async function loadAllCsvRows() {
     if (state.csvRows) return state.csvRows;
-    const response = await fetch(CSV_SOURCE);
+    // Hors du poste de developpement, l'adresse ne repond pas : le serveur
+    // renvoie la page 404, qui se lit comme un CSV vide. On refuse ce
+    // silence et on remonte une erreur que l'onglet Import sait afficher.
+    let response;
+    try {
+      response = await fetch(CSV_SOURCE);
+    } catch (error) {
+      throw new Error(CSV_ABSENT);
+    }
+    if (!response.ok) throw new Error(CSV_ABSENT);
     const text = await response.text();
     const rows = parseCsv(text).filter((r) => r.brand && r.name);
+    if (!rows.length) throw new Error(CSV_ABSENT);
     state.csvRows = rows;
 
     const brands = new Map();
@@ -332,6 +352,14 @@
         .join("");
 
       el("#import-count").textContent = `${Math.min(total, MAX_ROWS)} / ${total} résultat${total > 1 ? "s" : ""}${total > MAX_ROWS ? " (affinez la recherche)" : ""}`;
+    }).catch((error) => {
+      // Une liste vide ne dit rien. On explique ou est passe le fichier.
+      list.textContent = "";
+      const avis = document.createElement("p");
+      avis.className = "admin-empty";
+      avis.textContent = error && error.message ? error.message : CSV_ABSENT;
+      list.appendChild(avis);
+      el("#import-count").textContent = "";
     });
   }
 

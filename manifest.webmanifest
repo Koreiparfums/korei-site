@@ -2,18 +2,26 @@
   "name": "Korei — Parfumerie de Niche",
   "short_name": "Korei",
   "description": "Flacons entiers et décants authentiques des plus grandes maisons de parfum.",
+  "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "orientation": "portrait",
+  "background_color": "#faf7f2",
   "theme_color": "#1a1a18",
   "lang": "fr",
+  "dir": "ltr",
+  "categories": ["shopping", "lifestyle"],
   "icons": [
-    {
-      "src": "/assets/images/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    }
+    { "src": "/assets/images/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/assets/images/app/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/images/app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/images/app/icon-192-maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/assets/images/app/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Tous les parfums", "url": "/pages/catalogue.html", "icons": [{ "src": "/assets/images/app/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Composer un coffret", "url": "/pages/coffret.html", "icons": [{ "src": "/assets/images/app/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Mon panier", "url": "/pages/panier.html", "icons": [{ "src": "/assets/images/app/icon-192.png", "sizes": "192x192" }] }
   ]
 }

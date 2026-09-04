@@ -140,6 +140,23 @@ async function routeApi(req, res) {
   return send(res, 404, JSON.stringify({ error: "not_found" }), "application/json; charset=utf-8");
 }
 
+// L'export de catalogue qui alimente l'onglet « Import » de l'administration
+// pese 470 Ko et n'a rien a faire dans le dossier publie : n'importe qui
+// pourrait le telecharger une fois le site en ligne. Il vit donc a la racine
+// du projet, a cote de scripts/. Seul ce serveur de developpement le sert, et
+// seulement en lecture. En ligne, l'adresse ne repond pas — c'est voulu, et
+// l'administration l'explique.
+const EXPORT_CATALOGUE = path.join(ROOT, "..", "korei_fragrantica_export.csv");
+
+function routeExportCatalogue(req, res) {
+  if (!fs.existsSync(EXPORT_CATALOGUE)) {
+    return send(res, 404, "Export de catalogue introuvable a la racine du projet.");
+  }
+  res.setHeader("Content-Type", MIME_TYPES[".csv"]);
+  setSecurityHeaders(res);
+  fs.createReadStream(EXPORT_CATALOGUE).pipe(res);
+}
+
 function safeFilePath(urlPath) {
   const decodedPath = decodeURIComponent(urlPath);
   const normalizedPath = path.normalize(decodedPath).replace(/^(\.\.[/\\])+/, "");
@@ -152,7 +169,7 @@ function safeFilePath(urlPath) {
 // Reflète les headers définis dans netlify.toml [[headers]] for "/*", pour
 // pouvoir tester la CSP en local avant qu'elle n'atteigne la prod.
 const CSP =
-  "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'";
+  "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'";
 
 function setSecurityHeaders(res) {
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -194,6 +211,11 @@ const server = http.createServer(async (req, res) => {
 
     if (req.url.startsWith("/sitemap.xml")) {
       await sitemapHandler(req, res);
+      return;
+    }
+
+    if (req.url.startsWith("/dev/export-catalogue.csv")) {
+      routeExportCatalogue(req, res);
       return;
     }
 

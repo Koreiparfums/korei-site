@@ -33,6 +33,7 @@ h2 {
 /* ── Login */
 .admin-login {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -293,6 +294,7 @@ h2 {
   max-width: 640px;
   width: 92vw;
   max-height: 88vh;
+  max-height: 88dvh;
 }
 
 .admin-dialog::backdrop {
@@ -306,6 +308,7 @@ h2 {
   gap: 18px;
   overflow-y: auto;
   max-height: 88vh;
+  max-height: 88dvh;
 }
 
 .admin-form-grid {
@@ -416,6 +419,13 @@ h2 {
 }
 .admin-tags:focus-within {
   border-color: var(--accent);
+}
+/* Le champ interne enleve son contour de focus (outline: none plus bas). La
+   bordure doree ci-dessus change aussi au clic de souris et se voit a peine :
+   au clavier, on pose un vrai anneau, comme sur le reste du site. */
+.admin-tags:has(input:focus-visible) {
+  outline: 1.6px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .admin-tag {

@@ -3,26 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Korei — Parfumerie de niche à Paris. Décants et flacons authentiques, sélection curatée des plus grandes maisons." />
-    <title>À propos — Korei</title>
+    <meta name="description" content="Kōrei — Parfumerie de niche à Paris. Décants authentiques des plus grandes maisons, transvasés à la main." />
+    <title>À propos — Kōrei</title>
     <link rel="icon" href="../assets/images/favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="../manifest.webmanifest" />
     <meta name="theme-color" content="#1a1a18" />
-    <link rel="canonical" href="https://korei.fr/pages/about" />
+    <link rel="apple-touch-icon" href="/assets/images/app/icon-192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Kōrei" />
+    <link rel="canonical" href="https://korei-parfum.com/pages/about" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Korei" />
-    <meta property="og:title" content="À propos — Korei" />
+    <meta property="og:site_name" content="Kōrei" />
+    <meta property="og:title" content="À propos — Kōrei" />
     <meta property="og:description" content="Parfumerie de niche — décants et flacons authentiques des plus grandes maisons." />
-    <meta property="og:url" content="https://korei.fr/pages/about" />
-    <meta property="og:image" content="https://korei.fr/assets/images/og/og-default.svg" />
+    <meta property="og:url" content="https://korei-parfum.com/pages/about" />
+    <meta property="og:image" content="https://korei-parfum.com/assets/images/og/og-default.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="À propos — Korei" />
+    <meta name="twitter:title" content="À propos — Kōrei" />
     <meta name="twitter:description" content="Parfumerie de niche — décants et flacons authentiques." />
-    <meta name="twitter:image" content="https://korei.fr/assets/images/og/og-default.svg" />
+    <meta name="twitter:image" content="https://korei-parfum.com/assets/images/og/og-default.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400;1,9..40,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" />
     <link rel="stylesheet" href="../assets/css/styles.css" />
   </head>
   <body data-page="static">
@@ -35,6 +38,7 @@
           <a href="../index.html">Accueil</a>
           <a href="catalogue.html">Parfums</a>
           <a href="coffret.html">Coffrets</a>
+          <a href="boxes.html">Les Boxes</a>
           <a href="brands.html">Marques</a>
           <a href="collections.html">Collections</a>
         </nav>
@@ -43,21 +47,21 @@
       <div class="header-right">
         <div class="search" role="search">
           <span class="search-icon"><i class="ti ti-search"></i></span>
-          <input type="search" placeholder="Rechercher des marques..." aria-label="Rechercher" />
+          <input type="search" placeholder="Rechercher un parfum, une marque…" aria-label="Rechercher" />
         </div>
         <div class="header-actions">
           <button class="icon-btn search-mobile-btn" data-toggle-search aria-label="Rechercher" type="button">
             <i class="ti ti-search"></i>
           </button>
-          <button class="icon-btn" aria-label="Favoris" type="button">
+          <a class="icon-btn" href="favoris.html" aria-label="Favoris">
             <i class="ti ti-heart"></i>
-          </button>
-          <button class="icon-btn" aria-label="Panier" type="button">
+          </a>
+          <a class="icon-btn" href="panier.html" aria-label="Panier">
             <i class="ti ti-shopping-bag"></i>
-          </button>
-          <button class="icon-btn" aria-label="Compte" type="button">
+          </a>
+          <a class="icon-btn" href="compte.html" aria-label="Compte">
             <i class="ti ti-user"></i>
-          </button>
+          </a>
         </div>
       </div>
     </header>
@@ -74,6 +78,7 @@
         <a href="../index.html">Accueil</a>
         <a href="catalogue.html">Parfums</a>
         <a href="coffret.html">Coffrets</a>
+        <a href="boxes.html">Les Boxes</a>
         <a href="brands.html">Marques</a>
         <a href="collections.html">Collections</a>
         <a href="#" data-open-chatbot>Conseiller IA</a>
@@ -88,30 +93,30 @@
           <i class="ti ti-x"></i>
         </button>
       </div>
-      <p class="search-overlay-hint">Tendances : Oud Wood · Aventus · Interlude Man</p>
+      <p class="search-overlay-hint">Pour commencer : Oud Wood · Aventus · Interlude Man</p>
     </div>
 
     <main>
     <section class="page-hero">
-      <div class="page-hero-eyebrow">Korei</div>
+      <div class="page-hero-eyebrow">Kōrei</div>
       <h1 class="page-hero-title">À <em>propos</em></h1>
       <p class="page-hero-sub">Parfumerie de niche · Paris</p>
     </section>
 
     <article class="static-content">
       <p>
-        Korei réunit flacons entiers et décants des maisons les plus remarquables de la parfumerie de niche.
-        Notre mission : rendre accessible l'exploration olfactive, sans compromis sur l'authenticité.
+        Kōrei réunit les décants des maisons les plus remarquables de la parfumerie de niche.
+        Notre mission : rendre la parfumerie de niche essayable, sans jamais transiger sur l'authenticité.
       </p>
       <p>
-        Chaque parfum est approvisionné via des distributeurs officiels. Les décants 2ml, 5ml et 10ml
+        Chaque parfum est approvisionné via des distributeurs officiels. Les décants 2&nbsp;ml, 5&nbsp;ml et 10&nbsp;ml
         permettent d'essayer avant d'investir dans un flacon entier.
       </p>
       <h2>Notre engagement</h2>
       <ul>
-        <li>100% authentique — sourcing direct</li>
+        <li>100&nbsp;% authentique — sourcing direct</li>
         <li>Sélection curatée — niche et créateurs</li>
-        <li>Expédition soignée sous 24h</li>
+        <li>Expédition soignée sous 24&nbsp;h</li>
         <li>Satisfaction garantie 30 jours</li>
       </ul>
     </article>
@@ -122,6 +127,9 @@
         <div>
           <div class="footer-logo">Kōrei</div>
           <div class="footer-tagline">Parfumerie de niche · Paris</div>
+          <div class="footer-tagline">
+            Décants remplis à la main, depuis le flacon d'origine.
+          </div>
           <div class="footer-socials">
             <button class="social-btn" aria-label="Instagram" type="button">
               <i class="ti ti-brand-instagram"></i>
@@ -135,6 +143,7 @@
           <div class="footer-col-title">Boutique</div>
           <a href="catalogue.html">Tous les parfums</a>
           <a href="coffret.html">Coffrets</a>
+          <a href="boxes.html">Les Boxes</a>
           <a href="brands.html">Marques</a>
           <a href="collections.html">Collections</a>
         </div>
@@ -146,8 +155,11 @@
         <div class="footer-col">
           <div class="footer-col-title">Aide</div>
           <a href="contact.html">Contact</a>
+          <a href="faq.html">FAQ</a>
+          <a href="livraison-retours.html">Livraison &amp; retours</a>
           <a href="cgv.html">CGV</a>
           <a href="mentions-legales.html">Mentions légales</a>
+          <a href="confidentialite.html">Confidentialité</a>
         </div>
       </div>
       <div class="footer-bottom">
@@ -157,17 +169,21 @@
 
     <script src="../assets/js/site.js"></script>
     <script src="../assets/js/products.js"></script>
+    <script src="../assets/js/catalogue-bientot.js"></script>
+    <script src="../assets/js/catalogue-client.js"></script>
+    <script src="../assets/js/sensoriel.js"></script>
     <script src="../assets/js/product-store.js"></script>
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/favorites.js"></script>
     <script src="../assets/js/coffret-builder.js"></script>
+    <script src="../assets/js/tabbar.js"></script>
     <script src="../assets/js/chatbot.js"></script>
 
     <div id="chatbot-widget" class="chatbot-widget">
-      <div id="chatbot-panel" class="chatbot-panel" role="dialog" aria-label="Conseiller olfactif Korei">
+      <div id="chatbot-panel" class="chatbot-panel" role="dialog" aria-label="Conseiller olfactif Kōrei">
         <div class="chatbot-head">
           <div>
-            <div class="chatbot-head-title">Conseiller Korei</div>
+            <div class="chatbot-head-title">Conseiller Kōrei</div>
             <div class="chatbot-head-sub">Assistant olfactif · Démo</div>
           </div>
           <button type="button" id="chatbot-close" class="chatbot-close" aria-label="Fermer"><i class="ti ti-x"></i></button>
@@ -180,7 +196,7 @@
             <button type="submit" class="chatbot-send" aria-label="Envoyer"><i class="ti ti-send"></i></button>
           </form>
         </div>
-        <div class="chatbot-mock-badge">Mode démo — IA à connecter</div>
+        <div class="chatbot-mock-badge">Version démo : l'assistant complet arrive bientôt.</div>
       </div>
       <button type="button" id="chatbot-toggle" class="chatbot-toggle" aria-label="Ouvrir le conseiller olfactif" aria-expanded="false">
         <i class="ti ti-message-chatbot"></i>

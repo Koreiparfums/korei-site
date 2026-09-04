@@ -34,12 +34,60 @@
     return catalog().filter((p) => p.family === family);
   }
 
+  // ── Les deux vitrines de l'accueil ──────────────────────────────────────
+  //
+  // Regle commune : on n'y met que ce qui s'achete. « Bientot disponible »
+  // a sa place au catalogue, ou le visiteur cherche, jamais dans une
+  // selection qui invite a acheter.
+  //
+  // Les reperes « bestseller » et « new » du catalogue datent des produits
+  // de demonstration de juillet : sur les cinq classiques marques, un seul
+  // figure au tarif du client. Une vitrine a une carte ne vaut rien.
+  //
+  // Les deux sections reposent donc sur l'annee de sortie, qui est une
+  // donnee verifiable et non un chiffre invente : un classique est un
+  // parfum sorti il y a plus de dix ans, une nouveaute un parfum sorti dans
+  // les deux dernieres annees. Le repere editorial reste prioritaire quand
+  // il existe, et la selection se met a jour toute seule d'une annee sur
+  // l'autre.
+  const VITRINE_MAX = 12;
+  const ANS_CLASSIQUE = 10;
+  const ANS_NOUVEAUTE = 2;
+
+  const enVente = (p) => p.bientot !== true && Number(p.price) > 0;
+  const annee = (p) => Number(p.annee) || 0;
+
+  function vitrine(marques, candidats, ordre) {
+    const vus = new Set(marques.map((p) => p.id));
+    return [...marques, ...candidats.filter((p) => !vus.has(p.id)).sort(ordre)].slice(0, VITRINE_MAX);
+  }
+
+  // Le repere editorial passe devant, mais il ne dispense pas de la date.
+  // « Lettre de Pushkar » etait marque « bestseller » depuis les produits
+  // de demonstration de juillet et paraissait donc parmi les grands
+  // classiques sans qu'on sache de quand il date. Une vitrine qui promet
+  // un classique doit pouvoir le prouver : sans annee, le parfum n'y entre
+  // pas. Il reste au catalogue, ou il se cherche par son nom.
   function getBestsellers() {
-    return catalog().filter((p) => p.bestseller);
+    const vendables = catalog().filter(enVente);
+    const seuil = new Date().getFullYear() - ANS_CLASSIQUE;
+    const classique = (p) => annee(p) > 0 && annee(p) <= seuil;
+    return vitrine(
+      vendables.filter((p) => p.bestseller && classique(p)),
+      vendables.filter(classique),
+      (a, b) => annee(a) - annee(b),
+    );
   }
 
   function getNewProducts() {
-    return catalog().filter((p) => p.new);
+    const vendables = catalog().filter(enVente);
+    const seuil = new Date().getFullYear() - ANS_NOUVEAUTE;
+    const nouveau = (p) => annee(p) >= seuil;
+    return vitrine(
+      vendables.filter((p) => p.new && nouveau(p)),
+      vendables.filter(nouveau),
+      (a, b) => annee(b) - annee(a),
+    );
   }
 
   function getBrandById(id) {
@@ -73,7 +121,9 @@
       ...product.occasions,
     ]
       .join(" ")
-      .toLowerCase();
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
   }
 
   function searchProducts(query) {
@@ -82,12 +132,20 @@
     return catalog().filter((p) => productSearchText(p).includes(q));
   }
 
+  function tenue(produit) {
+    const mesures = global.KoreiProducts?.SENSORIEL || {};
+    return mesures[produit.id]?.tenue ?? -1;
+  }
+
   function sortProducts(list, sort = "popular") {
     const sorted = [...list];
     if (sort === "price-asc") sorted.sort((a, b) => a.price - b.price);
     else if (sort === "price-desc") sorted.sort((a, b) => b.price - a.price);
-    else if (sort === "rating") sorted.sort((a, b) => b.rating - a.rating);
-    else sorted.sort((a, b) => (b.bestseller ? 1 : 0) - (a.bestseller ? 1 : 0) || b.rating - a.rating);
+    // La tenue est mesuree, contrairement a la note sur 5 qui trainait ici
+    // et que personne n'avait jamais relevee. Un parfum sans mesure passe
+    // derriere ceux qui en ont une, plutot que de valoir zero.
+    else if (sort === "tenue") sorted.sort((a, b) => tenue(b) - tenue(a));
+    else sorted.sort((a, b) => (b.bestseller ? 1 : 0) - (a.bestseller ? 1 : 0) || tenue(b) - tenue(a));
     return sorted;
   }
 
@@ -129,16 +187,40 @@
     if (filters.priceMin != null) list = list.filter((p) => p.price >= filters.priceMin);
     if (filters.priceMax) list = list.filter((p) => p.price <= filters.priceMax);
     if (filters.supplierAvailable === true) list = list.filter((p) => p.supplierAvailable);
+    // Saisons et occasions n'existent que sur les 13 fiches ecrites a la main.
+    // Le releve du client ne les porte pas, et on a choisi de ne pas les
+    // deviner : une saison inventee fausse le filtre sans que ca se voie.
+    // Un parfum sans la donnee ne repond donc pas au filtre — il n'y a pas
+    // d'autre reponse honnete — mais il ne fait plus tomber la page.
     const seasons = toArray(filters.season);
-    if (seasons.length) list = list.filter((p) => p.seasons.some((s) => seasons.includes(s)));
+    if (seasons.length) {
+      list = list.filter((p) => (p.seasons || []).some((s) => seasons.includes(s)));
+    }
     const occasions = toArray(filters.occasion);
-    if (occasions.length) list = list.filter((p) => p.occasions.some((o) => occasions.includes(o)));
-    if (filters.isNew) list = list.filter((p) => p.new);
-    if (filters.bestseller) list = list.filter((p) => p.bestseller);
+    if (occasions.length) {
+      list = list.filter((p) => (p.occasions || []).some((o) => occasions.includes(o)));
+    }
+    // « Nouveautes » et « Grands classiques » repondent la meme chose ici que
+    // sur l'accueil : la vitrine et le filtre du catalogue ne peuvent pas se
+    // contredire. Sans cela, la collection « Nouveautes » annonçait 148
+    // parfums dont 143 sans prix, et le visiteur arrivait sur une page de
+    // « bientot disponible ».
+    if (filters.isNew) {
+      const nouveaux = new Set(getNewProducts().map((p) => p.id));
+      list = list.filter((p) => nouveaux.has(p.id));
+    }
+    if (filters.bestseller) {
+      const classiques = new Set(getBestsellers().map((p) => p.id));
+      list = list.filter((p) => classiques.has(p.id));
+    }
     const notes = toArray(filters.note).map(normalizeQuery);
     if (notes.length) {
       list = list.filter((p) => {
-        const productNotes = [...p.notesTop, ...p.notesHeart, ...p.notesBase].map(normalizeQuery);
+        const productNotes = [
+          ...(p.notesTop || []),
+          ...(p.notesHeart || []),
+          ...(p.notesBase || []),
+        ].map(normalizeQuery);
         return notes.some((n) => productNotes.some((pn) => pn.includes(n)));
       });
     }
@@ -154,7 +236,15 @@
     const q = normalizeQuery(query);
     let score = 0;
 
-    const allNotes = [...product.notesTop, ...product.notesHeart, ...product.notesBase];
+    const allNotes = [
+      ...(product.notesTop || []),
+      ...(product.notesHeart || []),
+      ...(product.notesBase || []),
+    ];
+    // Seules les 13 fiches ecrites a la main portent une saison et une
+    // occasion. Le releve du client ne les a pas, et on ne les devine pas.
+    const saisons = product.seasons || [];
+    const occasions = product.occasions || [];
     allNotes.forEach((note) => {
       const n = normalizeQuery(note);
       if (q.includes(n)) score += 6;
@@ -181,25 +271,25 @@
       if (allNotes.some((n) => /santal|cedre|vetiver|bois/i.test(normalizeQuery(n)))) score += 3;
     }
     if (q.includes("ete")) {
-      if (product.seasons.includes("été")) score += 5;
+      if (saisons.includes("été")) score += 5;
     }
     if (q.includes("hiver")) {
-      if (product.seasons.includes("hiver")) score += 5;
+      if (saisons.includes("hiver")) score += 5;
     }
     if (q.includes("printemps")) {
-      if (product.seasons.includes("printemps")) score += 4;
+      if (saisons.includes("printemps")) score += 4;
     }
     if (q.includes("automne")) {
-      if (product.seasons.includes("automne")) score += 4;
+      if (saisons.includes("automne")) score += 4;
     }
     if (q.includes("bureau") || q.includes("travail") || q.includes("office")) {
-      if (product.occasions.includes("bureau")) score += 5;
+      if (occasions.includes("bureau")) score += 5;
     }
     if (q.includes("soiree")) {
-      if (product.occasions.includes("soirée")) score += 5;
+      if (occasions.includes("soirée")) score += 5;
     }
     if (q.includes("date") || q.includes("romantique")) {
-      if (product.occasions.includes("date")) score += 4;
+      if (occasions.includes("date")) score += 4;
     }
     if (q.includes("homme") || q.includes("masculin")) {
       if (product.gender === "homme") score += 4;
@@ -296,8 +386,37 @@
     return !variant || variant.availableForSale !== false;
   }
 
+  /**
+   * Prix d'un format, source unique pour toute l'application.
+   *
+   * Le prix vient de la variante Shopify dès qu'elle existe : c'est le seul
+   * prix qui engage. Les coefficients ci-dessous ne servent que de repli pour
+   * le catalogue de démonstration local, qui n'a aucune variante. Ils ne
+   * doivent jamais être recopiés ailleurs.
+   */
+  const DEMO_MULTIPLIERS = { "2ml": 1, "5ml": 2.2, "10ml": 3.8 };
+
+  function getFormatPrice(product, format) {
+    const variant = getVariantForFormat(product, format);
+    if (variant) return Number(variant.price);
+
+    // Le bareme du client : un prix par parfum ET par format, releve dans son
+    // tableur. Il ne se deduit d'aucun coefficient — deux parfums a 8,90 EUR
+    // le 2 ml peuvent valoir 18,90 et 21,90 EUR le 5 ml, parce que le prix
+    // d'achat au flacon n'est pas le meme. Quand il est la, il fait foi.
+    const reel = product?.prices?.[format];
+    if (typeof reel === "number" && reel > 0) return reel;
+
+    // Les multiplicateurs ne servent plus qu'aux quelques fiches de
+    // demonstration ecrites a la main, qui n'ont ni variante ni bareme.
+    const multiplier = DEMO_MULTIPLIERS[format];
+    if (!multiplier || !product?.price) return 0;
+    return Math.round(product.price * multiplier);
+  }
+
   global.KoreiProductStore = {
     getAllProducts,
+    getFormatPrice,
     getProductById,
     getProductsByBrand,
     getProductsByFamily,

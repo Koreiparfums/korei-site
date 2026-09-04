@@ -3,35 +3,53 @@
  *
  * IMAGES À REMPLACER (JPG ou WebP recommandé) :
  * ─────────────────────────────────────────────
- * Hero      → assets/images/hero/hero-main.jpg        (800×1000 min, ratio 4:5)
- * Lifestyle → assets/images/lifestyle/lifestyle-1.jpg … lifestyle-3.jpg (800×1000)
- * Produits  → assets/images/products/{id}.jpg         (800×1000, ex: oud-wood.jpg)
- * Social    → assets/images/og/og-default.jpg         (1200×630, optionnel)
+ * Hero      → assets/images/hero/hero-main.webp        (800×1000 min, ratio 4:5)
+ * Lifestyle → assets/images/lifestyle/lifestyle-1.webp … lifestyle-3.webp (800×1000)
+ * Produits  → assets/images/products/{id}.webp         (800×1000, ex: oud-wood.webp)
+ * Social    → assets/images/og/og-default.webp         (1200×630, optionnel)
  *
  * Mettre à jour SITE_URL avant la mise en production.
  */
 (function (global) {
-  const SITE_URL = "https://korei.fr";
+  const SITE_URL = "https://korei-parfum.com";
+
+  /**
+   * Un outil de mesure d'audience est-il installe sur le site ?
+   *
+   * Aujourd'hui : NON. Aucun Google Analytics, aucun Matomo, aucun pixel
+   * publicitaire, aucun traceur tiers. Le site ne depose que des donnees
+   * techniques dans le localStorage du navigateur : le choix cookies, les
+   * favoris, le coffret en cours. Rien de tout cela n'exige un consentement.
+   *
+   * Un bandeau cookies affiche alors qu'il n'y a rien a consentir n'est pas
+   * une precaution : c'est une gene inutile, et il habitue le visiteur a
+   * cliquer sans lire. Tant que ce drapeau vaut false, le bandeau ne
+   * s'affiche pas.
+   *
+   * Le jour ou un outil de mesure sera pose : passer cette ligne a true, et
+   * le bandeau revient tel quel, avec « Refuser » et « J'accepte ».
+   */
+  const MESURE_INSTALLEE = false;
 
   const SITE = {
-    name: "Korei",
+    name: "Kōrei",
     tagline: "Parfumerie de niche",
     locale: "fr_FR",
     url: SITE_URL,
-    email: "contact@korei.fr",
+    email: "contact@korei-parfum.com",
   };
 
   const IMAGES = {
     favicon: "assets/images/favicon.svg",
-    ogDefault: "assets/images/og/og-default.svg",
-    hero: "assets/images/hero/hero-main.jpg",
+    ogDefault: "assets/images/og/og-default.jpg",
+    hero: "assets/images/hero/hero-main.webp",
     productPlaceholder: "assets/images/products/placeholder.svg",
     lifestyle: [
-      "assets/images/lifestyle/lifestyle-1.jpg",
-      "assets/images/lifestyle/lifestyle-2.jpg",
-      "assets/images/lifestyle/lifestyle-3.jpg",
+      "assets/images/lifestyle/lifestyle-1.webp",
+      "assets/images/lifestyle/lifestyle-2.webp",
+      "assets/images/lifestyle/lifestyle-3.webp",
     ],
-    product: (id) => `assets/images/products/${id}.jpg`,
+    product: (id) => `assets/images/products/${id}.webp`,
   };
 
   /** Labels affichés tant que les photos lifestyle ne sont pas ajoutées */
@@ -167,7 +185,7 @@
         <div class="media-slot__placeholder placeholder-premium placeholder-premium--hero">
           <div class="placeholder-premium__pattern" aria-hidden="true"></div>
           <div class="placeholder-premium__content">
-            <span class="placeholder-premium__eyebrow">Korei</span>
+            <span class="placeholder-premium__eyebrow">Kōrei</span>
             <span class="placeholder-premium__title">Parfumerie<br>de niche</span>
             <span class="placeholder-premium__sub">Décants & flacons authentiques</span>
           </div>
@@ -181,7 +199,7 @@
           <div class="placeholder-premium__pattern" aria-hidden="true"></div>
           <div class="placeholder-premium__content">
             <i class="ti ti-photo placeholder-premium__icon" aria-hidden="true"></i>
-            <span class="placeholder-premium__title">${escapeHtml(data.title || "Korei")}</span>
+            <span class="placeholder-premium__title">${escapeHtml(data.title || "Kōrei")}</span>
             <span class="placeholder-premium__sub">${escapeHtml(data.subtitle || "")}</span>
           </div>
         </div>`;
@@ -214,14 +232,12 @@
         slot.classList.add("media-slot--empty");
         slot.classList.remove("media-slot--loaded");
         if (placeholder) placeholder.hidden = false;
-        img.hidden = true;
       };
 
       const showImage = () => {
         slot.classList.remove("media-slot--empty");
         slot.classList.add("media-slot--loaded");
         if (placeholder) placeholder.hidden = true;
-        img.hidden = false;
       };
 
       img.addEventListener("error", showPlaceholder);
@@ -245,10 +261,10 @@
     grid.innerHTML = IMAGES.lifestyle
       .map((src, i) => {
         const path = withBase(src, basePath);
-        const meta = LIFESTYLE_SLOTS[i] || { title: "Korei", subtitle: "" };
+        const meta = LIFESTYLE_SLOTS[i] || { title: "Kōrei", subtitle: "" };
         return `
           <div class="lifestyle-slot media-slot" data-slot="lifestyle-${i + 1}">
-            <img class="media-slot__image lifestyle-slot__img" src="${path}" alt="${meta.title} — Korei" hidden />
+            <img class="media-slot__image lifestyle-slot__img" src="${path}" alt="${meta.title} — Kōrei" width="1600" height="900" loading="lazy" decoding="async" />
             ${renderPlaceholder("lifestyle", { ...meta, index: i })}
           </div>`;
       })
@@ -295,6 +311,10 @@
   }
 
   function initCookieBanner() {
+    // Rien a mesurer, donc rien a demander : voir MESURE_INSTALLEE en haut
+    // du fichier. Une seule ligne a changer le jour venu.
+    if (!MESURE_INSTALLEE) return;
+
     let consent;
     try {
       consent = localStorage.getItem(COOKIE_CONSENT_KEY);
@@ -313,20 +333,43 @@
         Nous utilisons des cookies pour assurer le bon fonctionnement du site et mesurer sa fréquentation.
         <a href="${base}pages/mentions-legales.html">En savoir plus</a>
       </p>
-      <button type="button" class="cookie-banner__btn">J'accepte</button>
+      <span class="cookie-banner__actions">
+        <button type="button" class="cookie-banner__btn cookie-banner__btn--ghost" data-consent="0">Refuser</button>
+        <button type="button" class="cookie-banner__btn" data-consent="1">J'accepte</button>
+      </span>
     `;
     document.body.appendChild(banner);
     document.body.classList.add("has-cookie-banner");
 
-    banner.querySelector(".cookie-banner__btn").addEventListener("click", () => {
-      try {
-        localStorage.setItem(COOKIE_CONSENT_KEY, "1");
-      } catch (error) {
-        // stockage indisponible — le bandeau réapparaîtra à la prochaine visite
-      }
-      banner.remove();
-      document.body.classList.remove("has-cookie-banner");
+    // Refuser doit etre aussi simple qu'accepter : meme taille, meme place,
+    // un seul clic, et le choix se retient de la meme facon. C'est la regle
+    // de la CNIL, et c'est aussi la seule lecture honnete du bandeau.
+    banner.querySelectorAll("[data-consent]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        try {
+          localStorage.setItem(COOKIE_CONSENT_KEY, btn.getAttribute("data-consent"));
+        } catch (error) {
+          // stockage indisponible — le bandeau réapparaîtra à la prochaine visite
+        }
+        banner.remove();
+        document.body.classList.remove("has-cookie-banner");
+      });
     });
+  }
+
+  /**
+   * Le choix du visiteur, pour le jour ou un outil de mesure sera pose :
+   * true accepte, false refuse, null pas encore repondu. Tant qu'aucun outil
+   * n'est installe, personne n'appelle cette fonction — et c'est normal.
+   */
+  function cookieConsent() {
+    try {
+      const value = localStorage.getItem(COOKIE_CONSENT_KEY);
+      if (value === null) return null;
+      return value === "1";
+    } catch (error) {
+      return null;
+    }
   }
 
   global.KoreiSite = {
@@ -346,6 +389,7 @@
     initLifestyleSlots,
     initHeaderScroll,
     initCookieBanner,
+    cookieConsent,
   };
 
   if (document.readyState === "loading") {
@@ -363,4 +407,137 @@
     initHeaderScroll();
     initCookieBanner();
   }
+
+  /**
+   * Demande de confirmation, dans la voix de la maison.
+   *
+   * Le navigateur en propose une toute faite, confirm(), mais elle s'annonce
+   * « localhost dit : » dans une fenetre systeme grise. Sur une parfumerie,
+   * cette fenetre-la casse tout ce que la page a construit.
+   *
+   * On s'appuie sur <dialog>, qui donne gratuitement ce qui compte : le
+   * piege du focus, la fermeture par Echap, l'inertie de la page derriere.
+   * Il ne reste qu'a l'habiller. Le bouton qui detruit n'est jamais celui
+   * qui a le focus a l'ouverture.
+   *
+   * Renvoie une promesse : true si l'on confirme, false sinon.
+   */
+  function demanderConfirmation({ titre, texte = "", valider = "Confirmer", annuler = "Annuler" }) {
+    return new Promise((resoudre) => {
+      if (typeof HTMLDialogElement === "undefined") {
+        resoudre(global.confirm(titre));
+        return;
+      }
+
+      const boite = document.createElement("dialog");
+      boite.className = "korei-ask";
+      boite.innerHTML = `
+        <h2 class="korei-ask__titre"></h2>
+        ${texte ? '<p class="korei-ask__texte"></p>' : ""}
+        <div class="korei-ask__actions">
+          <button type="button" class="korei-ask__btn" data-ask="non"></button>
+          <button type="button" class="korei-ask__btn korei-ask__btn--oui" data-ask="oui"></button>
+        </div>`;
+      boite.querySelector(".korei-ask__titre").textContent = titre;
+      if (texte) boite.querySelector(".korei-ask__texte").textContent = texte;
+      boite.querySelector('[data-ask="non"]').textContent = annuler;
+      boite.querySelector('[data-ask="oui"]').textContent = valider;
+
+      // On ne se repose pas sur l'evenement « close » de <dialog> : certains
+      // moteurs ne l'emettent pas, et la promesse ne se resolvait jamais.
+      // Chaque sortie appelle la meme fonction, une seule fois.
+      let fini = false;
+      const terminer = (reponse) => {
+        if (fini) return;
+        fini = true;
+        if (boite.open) boite.close();
+        boite.remove();
+        resoudre(reponse);
+      };
+
+      boite.addEventListener("click", (event) => {
+        const bouton = event.target.closest("[data-ask]");
+        if (bouton) terminer(bouton.dataset.ask === "oui");
+      });
+      // Echap : « cancel » d'abord, la touche en secours.
+      boite.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        terminer(false);
+      });
+      boite.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          terminer(false);
+        }
+      });
+      boite.addEventListener("close", () => terminer(false));
+
+      document.body.appendChild(boite);
+      boite.showModal();
+      boite.querySelector('[data-ask="non"]').focus();
+    });
+  }
+
+  global.KoreiUI = global.KoreiUI || {};
+  global.KoreiUI.demanderConfirmation = demanderConfirmation;
+
+  /**
+   * Enregistrement du service worker (KOR-A7).
+   *
+   * En HTTPS seulement. Le navigateur l'accepte aussi sur localhost, et on
+   * s'en servait — mais en developpement il ne rend aucun service et cache
+   * un piege : il sert l'ancien fichier apres modification. On a corrige
+   * deux fois de suite un bug deja corrige, et valide une fois un correctif
+   * que le serveur n'avait pas encore charge.
+   *
+   * Sur localhost, on desinstalle donc celui qui traine et on vide ses
+   * caches, pour que la page ouverte soit toujours celle du disque.
+   */
+  if ("serviceWorker" in navigator) {
+    const local = ["localhost", "127.0.0.1"].includes(global.location.hostname);
+    if (local) {
+      navigator.serviceWorker.getRegistrations?.().then((liste) => {
+        liste.forEach((enregistrement) => enregistrement.unregister());
+      });
+      global.caches?.keys().then((cles) => cles.forEach((cle) => global.caches.delete(cle)));
+    } else if (global.location.protocol === "https:") {
+      global.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch(() => {
+          // Un echec d'enregistrement ne doit jamais casser la page.
+        });
+      });
+    }
+  }
+
+  /**
+   * Le conseiller ne se pose pas sur le bandeau.
+   *
+   * Sur mobile, la pastille du conseiller est fixee en bas a droite. Les
+   * deux boutons du bandeau, eux, prennent toute la largeur : la pastille
+   * recouvrait le coin droit de « Pourquoi un decant ? » des l'ouverture.
+   * La premiere image de la boutique montrait un bouton mange.
+   *
+   * On l'efface donc tant que le bandeau est a l'ecran, et on la fait
+   * paraitre des que le visiteur l'a passe. Sans bandeau — toutes les
+   * autres pages — elle reste visible depuis le debut.
+   */
+  const conseiller = document.getElementById("chatbot-widget");
+  const banniere = document.querySelector(".hero");
+  if (conseiller && banniere) {
+    let enAttente = false;
+    const mesurer = () => {
+      enAttente = false;
+      const bas = banniere.getBoundingClientRect().bottom;
+      conseiller.classList.toggle("est-efface", bas > 0);
+    };
+    const demander = () => {
+      if (enAttente) return;
+      enAttente = true;
+      global.requestAnimationFrame(mesurer);
+    };
+    mesurer();
+    global.addEventListener("scroll", demander, { passive: true });
+    global.addEventListener("resize", demander);
+  }
+
 })(window);

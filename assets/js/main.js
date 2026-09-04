@@ -2,11 +2,16 @@
  * Korei — main.js
  * UI partagée : navigation, produits, FAQ, favoris
  *
- * Images produits : déposer assets/images/products/{product.id}.jpg
+ * Images produits : déposer assets/images/products/{product.id}.webp
  * ou définir product.image dans products.js pour un chemin custom.
  */
 (function (global) {
   const { formatPrice } = global.KoreiProducts || {};
+
+  // Meme ecriture du prix partout : « 8,90 € », espace insecable comprise.
+  function formatPrix(valeur) {
+    return global.KoreiProducts?.prixEuros(valeur) ?? `${valeur}\u00a0€`;
+  }
   const site = global.KoreiSite;
 
   function productImageSrc(product, basePath = "") {
@@ -20,13 +25,26 @@
     if (!src) return "";
     const esc = site?.escapeHtml || ((v) => v);
     const alt = `${esc(product.brand)} ${esc(product.name)}`;
-    return `<img class="${className} media-slot__image" src="${src}" alt="${alt}" hidden />`;
+    // Les visuels n'ont pas tous la meme definition : les plus anciens font
+    // 750 px de large, ceux qui viennent du releve descendent parfois a 375.
+    // On annonce la largeur reelle, sinon le navigateur choisit une image
+    // qu'on n'a pas et l'affiche floue en croyant l'avoir en grand.
+    const grande = product.imageWidth || 750;
+    const petite = Math.min(400, grande);
+    const small = src.replace(/\.webp$/, "-sm.webp");
+    const srcset = src.endsWith(".webp")
+      ? ` srcset="${small} ${petite}w, ${src} ${grande}w" sizes="(max-width: 640px) 45vw, 220px"`
+      : "";
+    // Pas d'attribut `hidden` ici : une image a la fois masquee et differee
+    // n'est jamais telechargee par le navigateur, donc jamais affichee. Le
+    // fondu est gere en CSS par la classe media-slot--loaded.
+    return `<img class="${className} media-slot__image" src="${src}"${srcset} alt="${alt}" width="${grande}" height="${Math.round((grande * 4) / 3)}" loading="lazy" decoding="async" />`;
   }
 
   function renderProductGlowHtml(product, basePath = "") {
     const src = productImageSrc(product, basePath);
     if (!src) return "";
-    return `<img class="card-img-glow" src="${src}" alt="" aria-hidden="true" loading="lazy" />`;
+    return `<img class="card-img-glow" src="${src}" alt="" aria-hidden="true" width="750" height="1000" loading="lazy" decoding="async" />`;
   }
 
   function noteSlug(note) {
@@ -34,16 +52,161 @@
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase()
+      // Les ligatures n'ont pas de decomposition NFD : sans cette ligne,
+      // « Œillet » devient « illet » et ne retrouve ni sa photo ni sa famille.
+      .replace(/\u0153/g, "oe")
+      .replace(/\u00e6/g, "ae")
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
+  }
+
+  // Vignettes de notes reellement presentes dans assets/images/notes.
+  // 46 photos d'ingredients fournies par le client, detourees et declinees
+  // par slug. Regenerer avec scripts/notes_ingredients.py apres tout ajout.
+  const NOTE_IMAGES = new Set([
+    "ambre", "ananas", "anis", "anis-etoile", "benjoin", "bergamote",
+    "bois", "bois-de-cedre", "bois-de-santal", "bouleau", "cacao", "cafe",
+    "cardamome", "cassis", "cedre", "chene", "chocolat", "citron",
+    "clou-de-girofle", "cuir", "epices", "fleur-d-oranger", "geranium", "gingembre",
+    "iris", "jasmin", "labdanum", "lavande", "mandarine", "menthe",
+    "miel", "mousse", "mousse-de-chene", "muguet", "musc", "musc-blanc",
+    "neroli", "noix-de-muscade", "nutmeg", "oak", "orange", "oud",
+    "pamplemousse", "patchouli", "pink-pepper", "pivoine", "poire", "poivre",
+    "poivre-rose", "pomme", "resine", "rose", "rose-centifolia", "rose-de-damas",
+    "safran", "santal", "sauge", "sauge-sclaree", "star-anise", "styrax",
+    "tonka", "tubereuse", "vanille", "vetiver", "violet", "violette",
+    "ylang-ylang",
+  ]);
+
+  // Repli pour les notes encore sans photo : la vignette porte la famille
+  // olfactive, pastille coloree et picto. Une information vraie et lisible,
+  // la ou une simple lettre grise ne disait rien. La photo passe devant.
+  const NOTE_FAMILIES = {
+    agrume: { icon: "ti-lemon-2", notes: ["bergamote", "citron", "pamplemousse", "orange", "mandarine", "yuzu", "neroli", "petit-grain", "agrumes", "cedrat", "kumquat", "litsea-cubeba", "feuille-de-mandarinier"] },
+    fruit: { icon: "ti-apple", notes: ["ananas", "pomme", "litchi", "peche", "poire", "fruits-rouges", "cassis", "framboise", "figue", "cerise", "coing", "mangue", "abricot", "prune", "fruits", "banane", "fraise", "fraise-des-bois", "fruit-de-la-passion", "fruits-exotiques", "fruits-secs", "goyave", "melon", "mure", "peche-blanche", "rhubarbe", "notes-fruitees", "dattes", "coco-de-mer", "grenade", "kiwi", "nectarine", "pasteque", "raisin", "sapote"] },
+    fleur: { icon: "ti-flower", notes: ["rose", "rose-centifolia", "jasmin", "pivoine", "violette", "violet", "iris", "muguet", "tubereuse", "ylang-ylang", "fleur-d-oranger", "lavande", "heliotrope", "hedione", "gardenia", "narcisse", "magnolia", "freesia", "cyclamen", "fleur-d-abricotier", "fleur-de-poirier", "fleur-de-tiare", "fleurs", "fleurs-blanches", "frangipanier", "hibiscus", "heliotrope-blanc", "lys", "notes-fleuries", "notes-florales-exotiques", "orchidee", "orchidee-noire", "osmanthus", "osmanthus-de-chine", "pavot", "souci", "oeillet", "angelique", "geranium", "amaryllis", "aubepine", "boronia", "cananga", "fleur-d-oranger-amere", "fleur-d-oranger-d-afrique", "fleur-de-framboisier", "fleur-de-pecher", "fleur-de-soie", "fleur-de-tabac", "jacinthe", "lilas", "lotus", "mahonia", "reine-de-la-nuit", "arbre-a-soie", "camomille", "nympheal", "petalia", "pomarose", "mahonial"] },
+    bois: { icon: "ti-tree", notes: ["bois", "bois-de-cedre", "cedre", "santal", "bois-de-santal", "gaiac", "bois-de-gaiac", "vetiver", "patchouli", "bouleau", "oud", "chene", "oak", "mousse", "mousse-de-chene", "acajou", "bois-de-poirier", "cabreuva", "cypres", "genevrier", "lentisque", "palissandre", "pin", "thuya", "ebene", "ecorce", "akigalawood", "amyris", "bois-blancs", "bois-d-akigala", "bois-de-copaiba", "bois-de-teck", "bois-exotiques", "clearwood", "georgywood", "palissandre-du-bresil", "papyrus", "rhus", "sapin-baumier", "palo-santo-d-equateur", "evernyl", "iso-e-super", "pepperwood"] },
+    epice: { icon: "ti-flame", notes: ["poivre", "poivre-rose", "pink-pepper", "cardamome", "cannelle", "safran", "anis", "anis-etoile", "star-anise", "noix-de-muscade", "nutmeg", "epices", "gingembre", "racine-d-angelique", "clou-de-girofle", "sauge", "sauge-sclaree", "cannelle-de-ceylan", "coriandre", "curcuma", "baies-de-genievre", "baies-de-genevrier", "piment-rouge", "poivron-vert", "notes-epicees", "laurier", "badiane", "carvi", "clou-de-girofle-de-madagascar", "cumin", "feuille-de-cannelier", "feuille-de-laurier", "graines-de-celeri", "piment", "reglisse"] },
+    gourmand: { icon: "ti-candy", notes: ["vanille", "tonka", "feve-de-tonka", "praline", "chocolat", "cacao", "cafe", "caramel", "miel", "rhum", "cognac", "canne-a-sucre", "amande", "noix-de-coco", "lait", "creme-fouettee", "accord-gourmand", "amande-amere", "amaretto", "barbe-a-papa", "beurre-de-cacahuete", "caramel-au-beurre", "caramel-sale", "cassonade", "chataigne", "creme-glacee", "fruits-a-coque", "lait-de-coco", "noisette", "panacotta", "pistache", "riz", "sorbet", "sucre", "sucre-roux", "sesame", "truffe", "whisky", "coumarine", "ble", "notes-sucrees", "gelee", "amande-caramelisee", "cookie", "cotton-candy", "creme-irlandaise", "gelato", "glace", "liqueur", "malt", "noix", "sorbet-a-la-noix-de-coco", "toffee", "vin-rouge", "vodka", "notes-lactees"] },
+    resine: { icon: "ti-droplet", notes: ["ambre", "resine", "encens", "oliban", "styrax", "benjoin", "labdanum", "fumee", "tabac", "cuir", "myrrhe", "ciste", "resines", "baume-de-tolu", "baume-du-perou", "baume-de-gurjun", "castoreum", "cigare-cubain", "feuille-de-tabac", "ferule-gommeuse", "huile-de-cade", "heliantheme", "immortelle", "notes-animales", "poudre-a-canon", "resine-oliban", "concrete", "daim", "elemi", "cypriol", "huile-essentielle-de-cypriol", "absolue-de-ciste", "absolue-de-tabac", "ciste-d-espagne", "ciste-de-france", "ciste-incanus", "civette", "cire-d-abeille", "daim-blanc", "daim-blond", "opoponax", "resine-d-elemi", "notes-balsamiques", "baumier-du-perou", "tabac-sylvestre"] },
+    musc: { icon: "ti-wind", notes: ["musc", "musc-blanc", "ambroxan", "ambrostar", "cashmeran", "bois-de-cachemire", "ambrette", "ambrettolide", "ambrofix", "jasmolactone", "notes-poudrees", "aldehydes", "amberwood", "ambrox", "lorenox", "nirvanolide", "serenolide"] },
+    herbe: { icon: "ti-leaf", notes: ["armoise", "basilic", "cannabis", "davana", "fougere", "foin", "herbe", "menthe", "notes-vertes", "accord-vert", "romarin", "thym", "estragon", "epilobe-en-epi", "graines-de-carotte", "buchu", "champignon", "feuilles-vertes", "mate", "the-noir", "the-rouge", "celeri", "absinthe", "basilic-thai", "citronnelle", "eucalyptus", "feuille-de-the", "menthe-poivree", "the", "the-oolong", "the-vert", "notes-terreuses", "teinture-de-terre", "betterave", "carotte", "pomme-de-terre"] },
+    marin: { icon: "ti-ripple", notes: ["notes-aquatiques", "notes-marines", "notes-minerales", "notes-metalliques", "notes-ozoniques", "sel-de-mer", "sable", "notes-solaires", "herbier-marin", "note-solaire", "sel"] },
+  };
+
+  const NOTE_FAMILY_BY_SLUG = (() => {
+    const map = {};
+    Object.entries(NOTE_FAMILIES).forEach(([family, def]) => {
+      def.notes.forEach((slug) => {
+        map[slug] = { family, icon: def.icon };
+      });
+    });
+    return map;
+  })();
+
+  function noteFamilyOf(note) {
+    const slug = noteSlug(note);
+    // « Rose de Bulgarie » herite de la famille de « rose » : meme repli que
+    // pour la photo, une variete reste dans la famille de son ingredient.
+    return NOTE_FAMILY_BY_SLUG[slug] || NOTE_FAMILY_BY_SLUG[slugDeRepli(slug)] || null;
+  }
+
+  // Le catalogue nomme souvent une note par son origine : « Rose de Bulgarie »,
+  // « Jasmin du Maroc », « Oud de Thailande ». C'est le meme ingredient que la
+  // photo de base. On retombe dessus plutot que d'afficher une pastille.
+  // Une variete n'est jamais rabattue sur un ingredient different : « Ambroxan »
+  // ne devient pas « Ambre », « Fleur d'oranger » ne devient pas « Orange ».
+  const NOTES_DE_BASE = [
+    "rose", "jasmin", "vanille", "patchouli", "oud", "poivre", "musc", "cedre",
+    "santal", "bois-de-santal", "iris", "ambre", "safran", "cuir", "tonka",
+    "lavande", "bergamote", "mandarine", "orange", "citron", "cacao", "cafe",
+    "miel", "mousse-de-chene", "vetiver", "benjoin", "labdanum", "styrax",
+    "gingembre", "cardamome", "geranium", "neroli", "tubereuse", "ylang-ylang",
+  ];
+
+  // Toutes les notes ne portent pas la racine de leur photo dans leur nom :
+  // « Sandal » est du santal, « Bois d'agar du Laos » est de l'oud, « Bigarade »
+  // est une orange. Celles-la sont nommees une par une, en clair. Le
+  // rapprochement reste une decision prise note par note, jamais le hasard
+  // d'un morceau de texte commun : « Bois de gaiac » n'est pas « Bois ».
+  const NOTES_ALIAS = {
+    // le meme ingredient, ecrit en anglais ou en italien
+    "indian-jasmine": "jasmin",
+    "italian-lemon": "citron",
+    "italian-mandarin": "mandarine",
+    "limone-costa-d-amalfi": "citron",
+    "sandal": "santal",
+    "sicilian-bergamot": "bergamote",
+    "sugarloaf-pineapple": "ananas",
+    // le meme ingredient sous un autre nom
+    "bigarade": "orange",
+    "bois-d-agar-du-cambodge": "oud",
+    "bois-d-agar-du-laos": "oud",
+    "vetyver": "vetiver",
+    // l'ingredient precise par sa variete, sa partie ou son procede
+    "bourgeon-de-cassis": "cassis",
+    "chocolat-noir": "chocolat",
+    "feuille-de-cassissier": "cassis",
+    "feuille-de-violette": "violette",
+    "fleur-d-oranger-de-tunisie": "fleur-d-oranger",
+    "goudron-de-bouleau-de-finlande": "bouleau",
+    "mousse-blanche": "mousse",
+    "pomme-granny-smith": "pomme",
+    "pomme-verte": "pomme",
+    // libelles generiques : la photo generique dit exactement la meme chose
+    "bois-precieux": "bois",
+    "bois-sec": "bois",
+    "notes-boisees": "bois",
+    "notes-boisees-sombres": "bois",
+    "resines": "resine",
+  };
+
+  // Pieges de la recherche par morceaux de texte. « Rock rose » est le nom
+  // anglais du ciste : ce n'est pas une rose et sa photo mentirait sur ce
+  // qu'on achete. Ces libelles gardent leur pastille.
+  const NOTES_SANS_REPLI = new Set(["rock-rose"]);
+
+  function slugDeRepli(slug) {
+    if (NOTES_SANS_REPLI.has(slug)) return "";
+    // « sandal » -> « santal » : rattachement decide a la main.
+    const alias = NOTES_ALIAS[slug];
+    if (alias) return NOTE_IMAGES.has(alias) ? alias : "";
+    // « rose-de-bulgarie » -> « rose », « poivre-noir » -> « poivre ».
+    const candidats = NOTES_DE_BASE.filter(
+      (base) => slug === base || slug.startsWith(`${base}-`),
+    ).sort((a, b) => b.length - a.length);
+    for (const base of candidats) {
+      if (NOTE_IMAGES.has(base)) return base;
+    }
+    // « gousse-de-vanille-noire » : l'ingredient est au milieu du libelle.
+    for (const base of [...NOTES_DE_BASE].sort((a, b) => b.length - a.length)) {
+      if (slug.includes(`-${base}-`) || slug.endsWith(`-${base}`)) {
+        if (NOTE_IMAGES.has(base)) return base;
+      }
+    }
+    return "";
   }
 
   function noteImageHtml(note, basePath = "") {
     const slug = noteSlug(note);
     const esc = site?.escapeHtml || ((v) => v);
+    const fichier = NOTE_IMAGES.has(slug) ? slug : slugDeRepli(slug);
+    if (fichier) {
+      return `
+      <span class="note-image note-image--photo">
+        <img src="${basePath}assets/images/notes/${fichier}.webp" alt="" width="38" height="38" loading="lazy" decoding="async" data-onerror="remove" />
+      </span>`;
+    }
+    const fam = noteFamilyOf(note);
+    if (fam) {
+      return `
+      <span class="note-image note-image--family" data-family="${fam.family}">
+        <i class="ti ${fam.icon}" aria-hidden="true"></i>
+      </span>`;
+    }
+    // Note inconnue du classement : on retombe sur l'initiale, jamais sur un vide.
     return `
       <span class="note-image">
-        <img src="${basePath}assets/images/notes/${slug}.jpg" alt="" loading="lazy" data-onerror="remove" />
         <span>${esc(note.slice(0, 1))}</span>
       </span>`;
   }
@@ -79,11 +242,6 @@
           ? "https://schema.org/OutOfStock"
           : "https://schema.org/InStock",
         url: site?.absoluteUrl(pagePath) || pagePath,
-      },
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: product.fragrantica?.rating || product.rating,
-        reviewCount: product.fragrantica?.votes || Math.max(1, Math.round(product.rating * 12)),
       },
     };
   }
@@ -151,24 +309,163 @@
   }
 
   // ── Search overlay
+  // Le chemin depuis la page courante vers la racine du site : les pages de
+  // second niveau vivent dans /pages/, la page d'accueil a la racine.
+  function baseDepuisUrl() {
+    return window.location.pathname.includes("/pages/") ? "../" : "";
+  }
+
+  const RECHERCHE_TENDANCES = ["Oud", "Aventus", "Vanille", "Cuir"];
+
   function toggleSearch() {
     const overlay = document.getElementById("searchOverlay");
     if (!overlay) return;
     overlay.classList.toggle("open");
     if (overlay.classList.contains("open")) {
       document.body.style.overflow = "hidden";
-      overlay.querySelector(".search-overlay-input")?.focus();
+      const input = overlay.querySelector(".search-overlay-input");
+      input?.focus();
+      rendreRecherche(input?.value || "");
     } else {
       document.body.style.overflow = "";
     }
   }
 
+  function ligneParfum(product, basePath) {
+    const esc = site?.escapeHtml || ((v) => v);
+    const url = `${basePath}pages/product.html?id=${product.id}`;
+    const prix = formatPrice ? formatPrice(product.price) : `À partir de ${product.price}€`;
+    const indispo = product.bientot === true;
+    return `
+      <a class="search-hit" href="${url}">
+        <span class="search-hit__media">${
+          productImageSrc(product, basePath)
+            ? renderProductImageHtml(product, basePath, "search-hit__img")
+            : `<i class="ti ti-bottle search-hit__icone" aria-hidden="true"></i>`
+        }</span>
+        <span class="search-hit__body">
+          <span class="search-hit__brand">${esc(product.brand || "")}</span>
+          <span class="search-hit__name">${esc(product.name)}</span>
+        </span>
+        <span class="search-hit__price">${indispo ? "Bientôt" : esc(prix)}</span>
+      </a>`;
+  }
+
+  function ligneMaison(brand, basePath) {
+    const esc = site?.escapeHtml || ((v) => v);
+    const url = `${basePath}pages/catalogue.html?brand=${encodeURIComponent(brand.id)}`;
+    return `
+      <a class="search-hit search-hit--maison" href="${url}">
+        <span class="search-hit__body">
+          <span class="search-hit__name">${esc(brand.name)}</span>
+          <span class="search-hit__brand">${esc(brand.country || "")}</span>
+        </span>
+        <i class="ti ti-arrow-narrow-right" aria-hidden="true"></i>
+      </a>`;
+  }
+
+  // Rendu des resultats. Aucune donnee inventee : on n'affiche que ce que le
+  // catalogue contient reellement, et on le dit quand il ne contient rien.
+  function rendreRecherche(valeur) {
+    const zone = document.getElementById("searchResults");
+    if (!zone) return;
+    const esc = site?.escapeHtml || ((v) => v);
+    const basePath = baseDepuisUrl();
+    const store = global.KoreiProductStore;
+    const q = (valeur || "").trim();
+
+    if (q.length < 2) {
+      zone.innerHTML = `
+        <p class="search-results__hint">Recherches fréquentes</p>
+        <div class="search-tendances">
+          ${RECHERCHE_TENDANCES.map(
+            (mot) => `<button type="button" class="search-tendance" data-terme="${esc(mot)}">${esc(mot)}</button>`
+          ).join("")}
+        </div>`;
+      return;
+    }
+
+    const parfums = (store?.searchProducts?.(q) || []).slice(0, 6);
+    const qn = q
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+    const maisons = (store?.getBrands?.() || [])
+      .filter((b) =>
+        (b.name || "")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .includes(qn)
+      )
+      .slice(0, 4);
+
+    if (!parfums.length && !maisons.length) {
+      zone.innerHTML = `
+        <p class="search-results__vide">
+          Aucun parfum ne correspond à « ${esc(q)} ».<br />
+          <a href="${basePath}pages/catalogue.html">Parcourir tout le catalogue</a>
+        </p>`;
+      return;
+    }
+
+    zone.innerHTML = `
+      ${
+        maisons.length
+          ? `<p class="search-results__hint">Maisons</p>
+             <div class="search-results__list">${maisons.map((b) => ligneMaison(b, basePath)).join("")}</div>`
+          : ""
+      }
+      ${
+        parfums.length
+          ? `<p class="search-results__hint">Parfums</p>
+             <div class="search-results__list">${parfums.map((p) => ligneParfum(p, basePath)).join("")}</div>`
+          : ""
+      }
+      <a class="search-results__all" href="${basePath}pages/catalogue.html?search=${encodeURIComponent(q)}">
+        Voir tous les résultats <i class="ti ti-arrow-narrow-right" aria-hidden="true"></i>
+      </a>`;
+    site?.initMediaSlots?.();
+  }
+
   function initSearchOverlay() {
     const overlay = document.getElementById("searchOverlay");
     if (!overlay) return;
+
+    // La zone de resultats est injectee ici plutot que dans chaque gabarit :
+    // l'overlay est identique sur les quatorze pages du site.
+    if (!document.getElementById("searchResults")) {
+      const zone = document.createElement("div");
+      zone.className = "search-results";
+      zone.id = "searchResults";
+      overlay.appendChild(zone);
+    }
+    overlay.querySelector(".search-overlay-hint")?.remove();
+
+    const input = overlay.querySelector(".search-overlay-input");
+    let minuteur = null;
+    input?.addEventListener("input", () => {
+      clearTimeout(minuteur);
+      minuteur = setTimeout(() => rendreRecherche(input.value), 120);
+    });
+
+    overlay.addEventListener("click", (e) => {
+      const chip = e.target.closest("[data-terme]");
+      if (!chip || !input) return;
+      input.value = chip.dataset.terme;
+      input.focus();
+      rendreRecherche(input.value);
+    });
+
     overlay.addEventListener("keydown", (e) => {
       if (e.key === "Escape") toggleSearch();
+      if (e.key === "Enter" && input && input.value.trim().length >= 2) {
+        e.preventDefault();
+        window.location.href = `${baseDepuisUrl()}pages/catalogue.html?search=${encodeURIComponent(input.value.trim())}`;
+      }
     });
+
+    rendreRecherche("");
   }
 
   function initNavigationAccessibility() {
@@ -251,21 +548,35 @@
 
     const minWidth = options.grid ? "style=\"min-width: 0\"" : "";
 
+    // Parfum en attente de sa photo : la carte reste visible, mais le prix
+    // laisse la place a « Bientot disponible ». On ne propose pas a l'achat
+    // un parfum que le client n'a pas en stock.
+    const bientot = product.bientot === true;
+    // Le prix n'est plus un bouton. Un gros bouton noir portant un prix se
+    // lit « acheter », alors que le clic ouvre la fiche : le visiteur croit
+    // commander et se retrouve ailleurs. Desormais le prix est du texte, et
+    // l'action porte son nom. Ni <button> ni <a> ici : la carte entiere est
+    // deja un lien, un element interactif imbrique serait du HTML invalide.
+    const actionHtml = bientot
+      ? `<span class="card-add card-add--bientot">Bientôt disponible</span>`
+      : `<div class="card-actions">
+          <span class="card-price">${price}</span>
+          <span class="card-cta">Voir le parfum</span>
+        </div>`;
+
     return `
-      <a href="${productUrl}" class="product-card" ${minWidth} data-product-id="${product.id}">
+      <article class="product-card${bientot ? " is-bientot" : ""}" ${minWidth} data-product-id="${product.id}">
+        <a href="${productUrl}" class="product-card__link" aria-label="Voir ${esc(product.name)} par ${esc(product.brand)}">
         <div class="card-img media-slot media-slot--card">
           ${renderProductGlowHtml(product, basePath)}
           ${badgeHtml}
-          <button class="card-fav" type="button" aria-label="Favoris" data-fav-btn>
-            <i class="ti ti-heart"></i>
-          </button>
           ${renderProductImageHtml(product, basePath)}
           ${renderProductPlaceholderHtml(product, "product")}
         </div>
         <div class="card-body">
           <div class="card-brand">${esc(product.brand)}</div>
           <h3 class="card-name">${esc(product.name)}</h3>
-          <div class="card-note-strip" aria-label="Notes principales">
+          <div class="card-note-strip${keyNotes.length ? "" : " is-vide"}" aria-label="Notes principales">
             ${keyNotes
               .map(
                 (note) => `
@@ -276,12 +587,13 @@
               )
               .join("")}
           </div>
-          <div class="card-footer">
-            <div class="card-rating">${renderStars(product.rating)}</div>
-          </div>
-          <button class="card-add" type="button" aria-label="Voir ${product.name}">${price}</button>
+          ${actionHtml}
         </div>
-      </a>`;
+        </a>
+        <button class="card-fav" type="button" aria-label="Ajouter aux favoris" data-fav-btn>
+          <i class="ti ti-heart" aria-hidden="true"></i>
+        </button>
+      </article>`;
   }
 
   function renderProducts(container, products, options = {}) {
@@ -292,16 +604,9 @@
   }
 
   function initProductCardInteractions(container) {
+    // Le lien principal et le coeur sont désormais frères : aucun contrôle
+    // interactif n'est imbriqué dans un autre.
     global.KoreiFavorites?.initHeartButtons(container);
-
-    container.querySelectorAll(".card-add").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const card = btn.closest(".product-card");
-        if (card?.href) window.location.href = card.href;
-      });
-    });
   }
 
   // ── Filtres marques (chips)
@@ -326,15 +631,273 @@
   }
 
   // ── Init page accueil
+  /**
+   * KOR-D7 — preuve sociale du hero.
+   *
+   * Le brief montre « 4.8/5 » et « 1200+ commandes ». La boutique n'a aucune
+   * commande a ce jour : ces deux chiffres ne sont donc pas affiches. Le bloc
+   * reste masque tant que ces valeurs ne sont pas renseignees ici avec des
+   * donnees reelles. Ne rien inventer : une fausse note se voit et se paie.
+   */
+  const SOCIAL_PROOF = {
+    rating: null, // ex. 4.8
+    ratingMax: 5,
+    orders: null, // ex. "1200+ commandes"
+  };
+
+  function initHeroProof() {
+    const store = global.KoreiProductStore;
+    if (!store) return;
+    // « Testez X parfums des Y € » est une promesse de vente : elle ne peut
+    // porter que sur ce qui est reellement achetable. Les fiches annoncees en
+    // « bientot disponible » sont au catalogue mais pas au panier, elles ne
+    // comptent donc pas ici.
+    const products = (store.getAllProducts?.() || []).filter(
+      (p) => p.supplierAvailable !== false,
+    );
+
+    // Le titre ne porte plus ni compteur ni prix d'appel : « Essayez 163
+    // parfums des 5,90 € » se perimait au premier parfum ajoute, et ouvrir
+    // sur son prix plancher n'est pas une facon de vendre du parfum de niche.
+    //
+    // Reste ce chiffre-ci, en petites capitales sous le sous-titre. On
+    // l'arrondit vers le bas au multiple de cinq pour qu'il tienne quand le
+    // catalogue bouge : « plus de 45 maisons » reste vrai a 46 comme a 49.
+    const brandEl = document.getElementById("hero-brand-count");
+    if (brandEl && products.length) {
+      const brands = new Set(products.map((p) => p.brandId || p.brand)).size;
+      let seuil = Math.floor(brands / 5) * 5;
+      // A 45 pile, « plus de 45 » serait faux : on descend d'un cran.
+      if (seuil >= brands) seuil -= 5;
+      brandEl.textContent =
+        seuil >= 10
+          ? `Plus de ${seuil} maisons de niche`
+          : `${brands} maisons de niche sélectionnées`;
+    }
+
+    // Preuve sociale : uniquement si les chiffres existent vraiment.
+    const proof = document.getElementById("hero-proof");
+    const facts = document.getElementById("hero-facts");
+    if (!proof || SOCIAL_PROOF.rating == null || !SOCIAL_PROOF.orders) return;
+    document.getElementById("hero-proof-score").textContent =
+      `${String(SOCIAL_PROOF.rating).replace(".", ",")}/${SOCIAL_PROOF.ratingMax}`;
+    document.getElementById("hero-proof-orders").textContent = SOCIAL_PROOF.orders;
+    proof.hidden = false;
+    if (facts) facts.hidden = true;
+  }
+
+  // ── KOR-D2 : carrousel « Nos formats »
+  // Les prix de depart viennent du catalogue, pas d'une valeur ecrite en dur :
+  // le jour ou un prix Shopify bouge, l'accueil suit tout seul.
+  function initFormatsSection() {
+    const track = document.getElementById("formats-track");
+    const store = global.KoreiProductStore;
+    if (!track || !store) return;
+
+    const products = store.getAllProducts?.() || [];
+    document.querySelectorAll("[data-format-from]").forEach((el) => {
+      const format = el.getAttribute("data-format-from");
+      const prices = products
+        .map((p) => store.getFormatPrice(p, format))
+        .filter((v) => Number.isFinite(v) && v > 0);
+      if (!prices.length) {
+        el.closest(".format-card__price")?.setAttribute("hidden", "");
+        return;
+      }
+      const min = Math.min(...prices);
+      el.textContent = formatPrix(min);
+    });
+
+    const cards = Array.from(track.children);
+    const dots = document.getElementById("formats-dots");
+    if (dots) {
+      dots.innerHTML = cards.map(() => '<span class="formats-dot"></span>').join("");
+    }
+    const dotEls = dots ? Array.from(dots.children) : [];
+
+    function currentIndex() {
+      const mid = track.scrollLeft + track.clientWidth / 2;
+      let best = 0;
+      let bestDist = Infinity;
+      cards.forEach((card, i) => {
+        const center = card.offsetLeft + card.offsetWidth / 2;
+        const dist = Math.abs(center - mid);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = i;
+        }
+      });
+      return best;
+    }
+
+    function syncUI() {
+      const i = currentIndex();
+      dotEls.forEach((d, k) => d.classList.toggle("is-active", k === i));
+      // Une fleche qui ne peut plus rien faire est desactivee plutot que muette.
+      const maxScroll = track.scrollWidth - track.clientWidth - 2;
+      // Tout tient a l'ecran : ni fleches ni points a afficher.
+      const statique = maxScroll <= 0;
+      track.parentElement?.toggleAttribute("data-static", statique);
+      if (dots) dots.classList.toggle("is-hidden", statique);
+      track.parentElement
+        ?.querySelectorAll("[data-formats-dir]")
+        .forEach((btn) => {
+          const dir = Number(btn.getAttribute("data-formats-dir"));
+          btn.disabled = dir < 0 ? track.scrollLeft <= 2 : track.scrollLeft >= maxScroll;
+        });
+    }
+
+    track.parentElement?.querySelectorAll("[data-formats-dir]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const dir = Number(btn.getAttribute("data-formats-dir"));
+        const target = cards[Math.min(cards.length - 1, Math.max(0, currentIndex() + dir))];
+        if (target) {
+          track.scrollTo({ left: target.offsetLeft - track.offsetLeft, behavior: "smooth" });
+        }
+      });
+    });
+    track.addEventListener("scroll", syncUI, { passive: true });
+    window.addEventListener("resize", syncUI);
+    syncUI();
+  }
+
+  // ── KOR-D3 : grille des maisons
+  // Uniquement les maisons dont au moins un parfum est en vente. Le clic mene
+  // au catalogue deja filtre.
+  // Les fichiers .svg du dossier brands/ ne sont PAS des logos : ce sont des
+  // placeholders qui ecrivent le nom en Georgia. Les vrais logos sont les .webp.
+  const HOME_LOGOS = new Set([
+    "amouage", "arte-profumi", "bdk-parfums", "bohoboco",
+    "born-to-stand-out", "byredo", "byron", "calisto", "casamorati",
+    "castel", "chanel", "creed", "dior", "eau-de-soie", "ella-k", "fomowa",
+    "frederic-malle", "giardini-di-toscana", "gritti", "guerlain", "initio",
+    "kajal", "kilian", "kys", "laboya", "les-eaux-primordiales",
+    "louis-vuitton", "maison-margiela", "majestic-mist", "mancera",
+    "marc-antoine-barrois", "matiere-premiere", "memo-paris", "mes-bisous",
+    "montale", "nishane", "noeme", "parfums-de-marly", "reinvented",
+    "rosendo-mateu", "scentologia", "sospiro", "stephanie-de-bruijn",
+    "tiziana-terenzi", "tom-ford", "xerjoff",
+  ]);
+
+  function initHomeMaisons() {
+    const grid = document.getElementById("home-maisons-grid");
+    const store = global.KoreiProductStore;
+    if (!grid || !store) return;
+
+    const maisons = (store.getBrands?.() || [])
+      .map((b) => ({ ...b, count: (store.getProductsByBrand(b.id) || []).length }))
+      .filter((b) => b.count > 0)
+      .sort((a, b) => b.count - a.count)
+      // Douze maisons, pas dix : sur quatre ou trois colonnes, dix laissaient
+      // deux cases vides en bas de grille. La feuille de style cache les deux
+      // dernieres quand la grille a cinq colonnes (ou deux, sur telephone).
+      .slice(0, 12);
+
+    if (!maisons.length) {
+      grid.closest("section")?.setAttribute("hidden", "");
+      return;
+    }
+
+    grid.innerHTML = maisons
+      .map((b) => {
+        const logo = HOME_LOGOS.has(b.id)
+          ? `<img class="home-maison__logo" src="assets/images/brands/${b.id}.webp" alt="${b.name}" loading="lazy" decoding="async" />`
+          : `<span class="home-maison__wordmark">${b.name}</span>`;
+        const label = `${b.count} parfum${b.count > 1 ? "s" : ""}`;
+        return `<a class="home-maison" href="pages/catalogue.html?brand=${b.id}" aria-label="${b.name}, ${label}">
+            ${logo}
+            <span class="home-maison__count">${label}</span>
+          </a>`;
+      })
+      .join("");
+  }
+
+  /**
+   * KOR-D9 — les sections se revelent au defilement.
+   *
+   * La classe qui masque est posee ICI, en JavaScript, et jamais dans le
+   * HTML : un navigateur sans script, ou un observateur indisponible, doit
+   * afficher la page entiere tout de suite. Une page blanche vaut toujours
+   * moins qu'une page sans animation.
+   *
+   * Le hero est exclu : il a sa propre mise en scene a l'ouverture, en CSS.
+   * Chaque bloc ne se revele qu'une fois, puis on cesse de l'observer.
+   */
+  function initReveal() {
+    if (!("IntersectionObserver" in global)) return;
+    if (global.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+
+    const blocs = document.querySelectorAll(
+      "main > section:not(.hero), .favorites-section, .formats-section, " +
+        ".packs-section, .collections-section, .brands-section, .quiz-cta, " +
+        ".faq, .newsletter",
+    );
+    if (!blocs.length) return;
+
+    let aRepondu = false;
+    const observateur = new IntersectionObserver(
+      (entrees) => {
+        aRepondu = true;
+        entrees.forEach((entree) => {
+          if (!entree.isIntersecting) return;
+          entree.target.classList.add("est-visible");
+          observateur.unobserve(entree.target);
+        });
+      },
+      // 12 % de hauteur de fenetre en avance : le bloc a fini de monter
+      // quand le regard arrive dessus, il ne s'anime pas sous les yeux.
+      { rootMargin: "0px 0px -12% 0px", threshold: 0.06 },
+    );
+
+    const suivis = [];
+    blocs.forEach((bloc) => {
+      // Ce qui est deja a l'ecran au chargement ne s'anime pas : sinon la
+      // premiere section clignote juste apres le hero.
+      if (bloc.getBoundingClientRect().top < global.innerHeight * 0.9) return;
+      bloc.classList.add("js-reveal");
+      observateur.observe(bloc);
+      suivis.push(bloc);
+    });
+    if (!suivis.length) return;
+
+    // Filet de securite. L'observateur ne rend la main que si le navigateur
+    // dessine : onglet ouvert en arriere-plan, fenetre masquee, moteur qui
+    // met le rendu en pause. Dans ces cas-la il ne repond jamais, et la page
+    // reste blanche sous le hero.
+    //
+    // Deux secondes apres le chargement, si l'observateur n'a pas emis une
+    // seule fois, on considere qu'il ne le fera pas : on montre tout et on
+    // s'arrete. Une section sans animation vaut toujours mieux qu'une
+    // section invisible.
+    global.setTimeout(() => {
+      if (aRepondu) return;
+      observateur.disconnect();
+      suivis.forEach((bloc) => bloc.classList.add("est-visible"));
+    }, 2000);
+  }
+
   function initHomePage() {
+    initHeroProof();
+    initReveal();
     const store = global.KoreiProductStore;
 
-    renderProducts(document.getElementById("bestsellers-grid"), store.getBestsellers(), { basePath: "" });
-    // TODO: revenir à store.getNewProducts() une fois une vraie sélection nouveautés définie.
-    renderProducts(document.getElementById("new-products-grid"), store.getBestsellers(), { basePath: "" });
-
+    const bestsellers = store.getBestsellers();
+    renderProducts(document.getElementById("bestsellers-grid"), bestsellers, { basePath: "" });
     initProductCarousel("bestsellers-grid");
-    initProductCarousel("new-products-grid");
+
+    // Nouveautés : jamais les mêmes produits que les best-sellers. Sous 4 résultats,
+    // la section entière disparaît plutôt que d'afficher une rangée bancale.
+    const bestsellerIds = new Set(bestsellers.map((p) => p.id));
+    const news = store.getNewProducts().filter((p) => !bestsellerIds.has(p.id));
+    const newsSection = document.getElementById("new-products-grid")?.closest("section");
+    if (news.length >= 4) {
+      renderProducts(document.getElementById("new-products-grid"), news, { basePath: "" });
+      initProductCarousel("new-products-grid");
+    } else if (newsSection) {
+      newsSection.hidden = true;
+    }
+    initFormatsSection();
+    initHomeMaisons();
     initBrandChips();
     initChatbotTriggers();
   }
@@ -348,6 +911,20 @@
 
     const realCards = Array.from(track.children);
     if (realCards.length < 2) return;
+
+    // Le defilement infini duplique le jeu de cartes avant et apres. Quand le
+    // jeu reel ne remplit pas la largeur visible, les copies se retrouvent a
+    // l'ecran en meme temps que les originaux : le visiteur voit deux fois le
+    // meme parfum cote a cote. Dans ce cas on laisse une rangee simple.
+    const largeurReelle = realCards.reduce((somme, carte) => {
+      const b = carte.getBoundingClientRect();
+      return somme + b.width;
+    }, 0);
+    if (largeurReelle < track.clientWidth * 1.2) {
+      track.classList.add("is-rangee-simple");
+      nav.hidden = true;
+      return;
+    }
 
     const cloneSet = () =>
       realCards.map((card) => {
@@ -420,6 +997,10 @@
     cuir: "Cuir",
     fruity: "Fruité",
     aromatique: "Aromatique",
+    // 19 parfums portent cette famille. Sans son intitule, le filtre du
+    // catalogue affichait « frais » en minuscule entre « Floral » et
+    // « Fruite ».
+    frais: "Frais",
   };
   const OCCASION_LABELS = {
     été: "Été",
@@ -438,6 +1019,20 @@
     const store = global.KoreiProductStore;
     if (!grid || !store) return;
     const allProducts = store.getAllProducts();
+
+    // Un filtre affiché pour seulement quelques fiches donne des résultats
+    // arbitraires. On le masque tant qu'au moins 25 % du catalogue n'est pas
+    // renseigné, au lieu de prétendre couvrir toute l'offre.
+    const coverage = (predicate) => allProducts.length
+      ? allProducts.filter(predicate).length / allProducts.length
+      : 0;
+    if (coverage((p) => Boolean(p.intensity)) < 0.25) {
+      document.querySelector('[data-group="intensity"]')?.remove();
+      document.querySelector('#filter-sort option[value="tenue"]')?.remove();
+    }
+    if (coverage((p) => (p.seasons || []).length > 0 || (p.occasions || []).length > 0) < 0.25) {
+      document.querySelector('[data-group="occasion"]')?.remove();
+    }
 
     const filters = {
       brand: [],
@@ -644,7 +1239,9 @@
     });
 
     // ── Sillage / Longévité — jauges synchronisées (même axe d'intensité produit)
-    const gaugeGroups = [document.getElementById("longevity-gauges"), document.getElementById("sillage-gauges")];
+    // Un seul groupe de jauges : « Longevite » et « Sillage » pilotaient tous
+    // deux filters.intensity, si bien que cliquer dans l'un allumait l'autre.
+    const gaugeGroups = [document.getElementById("intensity-gauges")];
     function setIntensity(value) {
       filters.intensity = value;
       gaugeGroups.forEach((group) => {
@@ -722,8 +1319,7 @@
       document.querySelectorAll(".chip.active").forEach((c) => c.classList.remove("active"));
       gaugeGroups.forEach((group) => group?.querySelectorAll(".gauge-row.active").forEach((r) => r.classList.remove("active")));
       occasionGrid?.querySelectorAll(".occasion-item.active").forEach((el) => el.classList.remove("active"));
-      document.querySelectorAll('input[name="concentration"]').forEach((r) => (r.checked = false));
-      ["pop-new", "pop-bestseller", "pop-limited", "pop-exclusive"].forEach((id) => {
+      ["pop-new", "pop-bestseller"].forEach((id) => {
         const el = document.getElementById(id);
         if (el) el.checked = false;
       });
@@ -811,7 +1407,7 @@
       if (filters.isNew) pills.push({ key: "isNew", value: "1" });
       if (filters.bestseller) pills.push({ key: "bestseller", value: "1" });
       if (filters.priceMin > PRICE_MIN || filters.priceMax < PRICE_MAX) {
-        pills.push({ key: "price", value: `${filters.priceMin}€ – ${filters.priceMax}€` });
+        pills.push({ key: "price", value: `${formatPrix(filters.priceMin)} – ${formatPrix(filters.priceMax)}` });
       }
 
       bar.hidden = pills.length === 0;
@@ -829,36 +1425,98 @@
     });
     document.getElementById("activeFiltersClearAll")?.addEventListener("click", resetAllFilters);
 
-    // ── Ouverture / fermeture du drawer mobile
+    // ── Ouverture / fermeture du tiroir de filtres (KOR-A10)
+    const sidebarEl = document.getElementById("filterSidebar");
     function openDrawer() {
       document.body.classList.add("filters-open");
     }
     function closeDrawer() {
       document.body.classList.remove("filters-open");
+      if (sidebarEl) {
+        sidebarEl.classList.remove("is-dragging");
+        sidebarEl.style.transform = "";
+      }
     }
     document.getElementById("filters-open-btn")?.addEventListener("click", openDrawer);
     document.getElementById("filters-mobile-close")?.addEventListener("click", closeDrawer);
     document.getElementById("filtersOverlay")?.addEventListener("click", closeDrawer);
     document.getElementById("filters-apply")?.addEventListener("click", closeDrawer);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && document.body.classList.contains("filters-open")) {
+        closeDrawer();
+      }
+    });
+
+    // Glissement vers le bas sur la poignée : le tiroir suit le doigt, puis se
+    // ferme au-delà d'un quart de sa hauteur, sinon il revient en place.
+    const handle = document.getElementById("filters-handle");
+    if (handle && sidebarEl) {
+      let startY = 0;
+      let delta = 0;
+      let dragging = false;
+
+      const onMove = (event) => {
+        if (!dragging) return;
+        const y = event.touches ? event.touches[0].clientY : event.clientY;
+        delta = Math.max(0, y - startY);
+        sidebarEl.style.transform = `translateY(${delta}px)`;
+      };
+      const onEnd = () => {
+        if (!dragging) return;
+        dragging = false;
+        sidebarEl.classList.remove("is-dragging");
+        sidebarEl.style.transform = "";
+        if (delta > sidebarEl.getBoundingClientRect().height / 4) closeDrawer();
+        document.removeEventListener("touchmove", onMove);
+        document.removeEventListener("touchend", onEnd);
+        document.removeEventListener("mousemove", onMove);
+        document.removeEventListener("mouseup", onEnd);
+      };
+      const onStart = (event) => {
+        dragging = true;
+        delta = 0;
+        startY = event.touches ? event.touches[0].clientY : event.clientY;
+        sidebarEl.classList.add("is-dragging");
+        document.addEventListener("touchmove", onMove, { passive: true });
+        document.addEventListener("touchend", onEnd);
+        document.addEventListener("mousemove", onMove);
+        document.addEventListener("mouseup", onEnd);
+      };
+      handle.addEventListener("touchstart", onStart, { passive: true });
+      handle.addEventListener("mousedown", onStart);
+    }
 
     // ── Paramètres d'URL (liens entrants depuis home / collections)
     const urlParams = new URLSearchParams(window.location.search);
-    const urlBrand = urlParams.get("brand");
-    if (urlBrand) {
-      filters.brand = [urlBrand];
+    // Ces cinq filtres acceptent plusieurs valeurs dans la page — les chips
+    // sont a selection multiple. L'URL ne lisait pourtant que la premiere :
+    // un lien « caramel, cacao, praline » venu des collections ne renvoyait
+    // aucun parfum. getAll() les lit toutes, et un lien a une seule valeur
+    // se comporte exactement comme avant.
+    const urlBrand = urlParams.getAll("brand");
+    if (urlBrand.length) {
+      filters.brand = urlBrand;
       brandsExpanded = true;
     }
-    const urlFamily = urlParams.get("family");
-    if (urlFamily) filters.family = [urlFamily];
-    const urlSeason = urlParams.get("season");
-    if (urlSeason) filters.season = [urlSeason];
-    const urlOccasion = urlParams.get("occasion");
-    if (urlOccasion) filters.occasion = [urlOccasion];
+    const urlFamily = urlParams.getAll("family");
+    if (urlFamily.length) filters.family = urlFamily;
+    const urlSeason = urlParams.getAll("season");
+    if (urlSeason.length) filters.season = urlSeason;
+    const urlOccasion = urlParams.getAll("occasion");
+    if (urlOccasion.length) filters.occasion = urlOccasion;
     const urlIntensity = urlParams.get("intensity");
     if (urlIntensity) setIntensity(urlIntensity);
-    const urlNote = urlParams.get("note");
-    if (urlNote) filters.note = [urlNote];
+    const urlNote = urlParams.getAll("note");
+    if (urlNote.length) filters.note = urlNote;
     if (urlParams.get("isNew") === "1") filters.isNew = true;
+    // Arrivee depuis la recherche du header : le terme est preremplid dans le
+    // champ de filtre du catalogue, pour que l'utilisateur voie ce qui filtre.
+    const urlSearch = urlParams.get("search");
+    if (urlSearch) {
+      filters.search = urlSearch;
+      const champ = document.getElementById("filter-search");
+      if (champ) champ.value = urlSearch;
+    }
 
     refreshBrandVisibility();
     // Reflète l'état initial (URL) sur les chips déjà rendues
@@ -905,7 +1563,8 @@
         form.reportValidity();
         return;
       }
-      showSuccess();
+      status.textContent = "Mode local : inscription non envoyée. Le formulaire sera actif sur le site Netlify.";
+      status.classList.remove("is-success");
     });
   }
 
@@ -932,8 +1591,21 @@
         form.reportValidity();
         return;
       }
-      showSuccess();
+      status.textContent = "Mode local : message non envoyé. Le formulaire sera actif sur le site Netlify.";
+      status.classList.remove("is-success");
     });
+  }
+
+  function removeUnavailableSocialLinks() {
+    document.querySelectorAll("button.social-btn").forEach((button) => button.remove());
+    document.querySelectorAll(".footer-socials:empty").forEach((container) => container.remove());
+  }
+
+  // Les Boxes sont encore une page d'annonce, sans offre ni lien de commande.
+  // Elles restent accessibles directement pour la préparation éditoriale,
+  // mais ne doivent pas être présentées comme une rubrique achetable.
+  function removeUnavailableBoxesLinks() {
+    document.querySelectorAll('a[href$="boxes.html"]').forEach((link) => link.remove());
   }
 
   // ── Délégation des actions déclarées en data-attributes (CSP : pas d'onclick inline)
@@ -969,6 +1641,8 @@
     initChatbotTriggers();
     initNewsletterForm();
     initContactForm();
+    removeUnavailableSocialLinks();
+    removeUnavailableBoxesLinks();
 
     const page = document.body.dataset.page;
     if (page === "home") initHomePage();
@@ -978,7 +1652,11 @@
   global.toggleFaq = toggleFaq;
   global.toggleMenu = toggleMenu;
   global.toggleSearch = toggleSearch;
-  global.KoreiUI = {
+  // Fusion et non remplacement : site.js pose deja la demande de
+  // confirmation sur KoreiUI, et il se charge avant main.js. Une
+  // affectation seche la faisait disparaitre, et « Vider le panier »
+  // retombait sur la fenetre grise du navigateur.
+  global.KoreiUI = Object.assign(global.KoreiUI || {}, {
     renderProductCard,
     renderProducts,
     renderStars,
@@ -989,11 +1667,17 @@
     productSchema,
     productBreadcrumbSchema,
     noteImageHtml,
+    noteFamilyOf,
+    // Source unique des photos d'ingredients disponibles : la fiche produit
+    // en gardait une copie figee, qui se desynchronisait a chaque ajout.
+    NOTE_IMAGES,
+    slugDeRepli,
+    noteSlug,
     initBrandChips,
     initHomePage,
     initCataloguePage,
     initProductCarousel,
-  };
+  });
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {

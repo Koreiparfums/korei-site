@@ -2,6 +2,25 @@
  * Korei — Page marques
  */
 (function (global) {
+  // Maisons dont le logo existe reellement dans le depot.
+  // ATTENTION : les fichiers .svg de brands/ ne sont pas des logos, ce sont des
+  // placeholders qui ecrivent le nom de la marque en Georgia. On utilise donc
+  // les .webp, qui sont les vraies marques (KOR-E3).
+  // Les seize maisons du catalogue ont desormais leur logo dans
+  // assets/images/brands (voir scripts/logos_marques.py).
+  const LOGOS = new Set([
+    "amouage", "arte-profumi", "bdk-parfums", "bohoboco",
+    "born-to-stand-out", "byredo", "byron", "calisto", "casamorati",
+    "castel", "chanel", "creed", "dior", "eau-de-soie", "ella-k", "fomowa",
+    "frederic-malle", "giardini-di-toscana", "gritti", "guerlain", "initio",
+    "kajal", "kilian", "kys", "laboya", "les-eaux-primordiales",
+    "louis-vuitton", "maison-margiela", "majestic-mist", "mancera",
+    "marc-antoine-barrois", "matiere-premiere", "memo-paris", "mes-bisous",
+    "montale", "nishane", "noeme", "parfums-de-marly", "reinvented",
+    "rosendo-mateu", "scentologia", "sospiro", "stephanie-de-bruijn",
+    "tiziana-terenzi", "tom-ford", "xerjoff",
+  ]);
+
   const FAMILY_LABELS = {
     "boisé": "Boisé",
     floral: "Floral",
@@ -10,6 +29,10 @@
     cuir: "Cuir",
     fruity: "Fruité",
     aromatique: "Aromatique",
+    // 19 parfums portent cette famille. Sans son intitule, le filtre du
+    // catalogue affichait « frais » en minuscule entre « Floral » et
+    // « Fruite ».
+    frais: "Frais",
   };
 
   function normalize(str) {
@@ -26,9 +49,13 @@
     if (!grid || !store) return;
 
     const searchInput = document.getElementById("brands-search-input");
-    const popularList = document.getElementById("brands-popular-list");
-    const filtersEl = document.getElementById("brands-filters");
+    const alphaEl = document.getElementById("maisons-alpha");
+    const countrySel = document.getElementById("maisons-country");
+    const familySel = document.getElementById("maisons-family");
+    const countEl = document.getElementById("maisons-count");
+    const resetBtn = document.getElementById("maisons-reset");
     const emptyEl = document.getElementById("brands-empty");
+    const subEl = document.getElementById("maisons-hero-sub");
 
     const params = new URLSearchParams(window.location.search);
     const highlightBrand = params.get("brand");
@@ -36,107 +63,178 @@
     const brandsData = store.getBrands().map((brand) => {
       const products = store.getProductsByBrand(brand.id);
       const families = [...new Set(products.map((p) => p.family))];
-      return { ...brand, count: products.length, families };
+      return { ...brand, count: products.length, families, products };
     });
 
-    const countries = [...new Set(brandsData.map((b) => b.country))].sort();
-    const families = [...new Set(brandsData.flatMap((b) => b.families))].sort();
+    const countries = [...new Set(brandsData.map((b) => b.country).filter(Boolean))].sort();
+    const families = [...new Set(brandsData.flatMap((b) => b.families).filter(Boolean))].sort();
 
-    const state = { search: "", country: "", family: "" };
+    const state = { search: "", country: "", family: "", letter: "" };
 
-    // Populaires : top 5 marques par nombre de parfums disponibles
-    const popular = [...brandsData].sort((a, b) => b.count - a.count).slice(0, 5);
-    if (popularList) {
-      popularList.innerHTML = popular
-        .map(
-          (b) =>
-            `<button type="button" class="brands-popular-pill" data-brand="${b.id}">${b.name}</button>`
-        )
-        .join("");
-      popularList.querySelectorAll(".brands-popular-pill").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const brand = brandsData.find((b) => b.id === btn.dataset.brand);
-          if (!brand || !searchInput) return;
-          searchInput.value = brand.name;
-          state.search = normalize(brand.name);
-          render();
-        });
+    // Les maisons qui ont au moins un parfum au catalogue : elles seules
+    // peuvent etre mises en avant en bas de page.
+    const vendues = brandsData.filter((b) => b.count > 0);
+
+    if (subEl) {
+      subEl.textContent = `${brandsData.length} maisons de parfumerie de niche sélectionnées avec soin.`;
+    }
+
+    // ── Listes deroulantes Pays et Famille (maquette du client)
+    function fillSelect(el, values, allLabel, labels) {
+      if (!el) return;
+      el.innerHTML =
+        `<option value="">${allLabel}</option>` +
+        values.map((v) => `<option value="${v}">${(labels && labels[v]) || v}</option>`).join("");
+    }
+    fillSelect(countrySel, countries, "Tous les pays");
+    fillSelect(familySel, families, "Toutes les familles", FAMILY_LABELS);
+
+    // ── KOR-E4 : barre alphabetique
+    const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    function firstLetter(name) {
+      return normalize(name).slice(0, 1).toUpperCase();
+    }
+    const available = new Set(brandsData.map((b) => firstLetter(b.name)));
+    if (alphaEl) {
+      alphaEl.innerHTML = LETTERS.map((l) => {
+        const has = available.has(l);
+        return `<button type="button" class="maisons-alpha__letter" data-letter="${l}" ${
+          has ? "" : "disabled"
+        } aria-label="Maisons commençant par ${l}">${l}</button>`;
+      }).join("");
+      alphaEl.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-letter]");
+        if (!btn || btn.disabled) return;
+        state.letter = state.letter === btn.dataset.letter ? "" : btn.dataset.letter;
+        syncUI();
+        render();
       });
     }
 
-    function syncFilterUI() {
-      if (!filtersEl) return;
-      const noneActive = !state.country && !state.family;
-      filtersEl.querySelectorAll(".brands-filter-pill").forEach((btn) => {
-        const { type, value } = btn.dataset;
-        let isActive = false;
-        if (type === "reset") isActive = noneActive;
-        else if (type === "country") isActive = state.country === value;
-        else if (type === "family") isActive = state.family === value;
-        btn.classList.toggle("active", isActive);
+    function syncUI() {
+      alphaEl?.querySelectorAll("[data-letter]").forEach((b) => {
+        b.classList.toggle("is-active", b.dataset.letter === state.letter);
       });
+      if (countrySel) countrySel.value = state.country;
+      if (familySel) familySel.value = state.family;
     }
 
-    if (filtersEl) {
-      const countryChip = (c) =>
-        `<button type="button" class="brands-filter-pill" data-type="country" data-value="${c}">${c}</button>`;
-      const familyChip = (f) =>
-        `<button type="button" class="brands-filter-pill" data-type="family" data-value="${f}">${
-          FAMILY_LABELS[f] || f
-        }</button>`;
-      filtersEl.innerHTML = `
-        <button type="button" class="brands-filter-pill active" data-type="reset">Tous</button>
-        <div class="brands-filter-group">
-          <span class="brands-filter-group__label">Pays</span>
-          <div class="brands-filter-group__pills">${countries.map(countryChip).join("")}</div>
-        </div>
-        <div class="brands-filter-group">
-          <span class="brands-filter-group__label">Famille</span>
-          <div class="brands-filter-group__pills">${families.map(familyChip).join("")}</div>
-        </div>
-      `;
-      filtersEl.querySelectorAll(".brands-filter-pill").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const { type, value } = btn.dataset;
-          if (type === "reset") {
-            state.country = "";
-            state.family = "";
-          } else if (type === "country") {
-            state.country = state.country === value ? "" : value;
-          } else if (type === "family") {
-            state.family = state.family === value ? "" : value;
-          }
-          syncFilterUI();
-          render();
-        });
-      });
-    }
+    countrySel?.addEventListener("change", () => {
+      state.country = countrySel.value;
+      render();
+    });
+    familySel?.addEventListener("change", () => {
+      state.family = familySel.value;
+      render();
+    });
+    resetBtn?.addEventListener("click", () => {
+      state.search = "";
+      state.country = "";
+      state.family = "";
+      state.letter = "";
+      if (searchInput) searchInput.value = "";
+      syncUI();
+      render();
+    });
 
     function matches(brand) {
+      // Toutes les maisons sont affichees, meme celles dont aucun parfum n'est
+      // encore au catalogue : la carte existe, elle n'est simplement pas
+      // cliquable. Le client veut voir la maison des maintenant.
       if (state.country && brand.country !== state.country) return false;
       if (state.family && !brand.families.includes(state.family)) return false;
+      if (state.letter && firstLetter(brand.name) !== state.letter) return false;
       if (state.search && !normalize(brand.name).includes(state.search)) return false;
       return true;
+    }
+
+    // ── KOR-E5 : maisons phares, pilotees par la donnee et non codees en dur.
+    // On retient les maisons les mieux fournies, et pour chacune son parfum le
+    // mieux note : le clic mene a la fiche produit, pas a la page marque.
+    // Le parfum mis en avant se choisissait sur une note sur 5 posee au juge,
+    // qui n'existait que pour treize fiches. On prend la tenue, qui est
+    // mesuree, et le nom pour departager : deux maisons sans mesure ne
+    // doivent pas changer de place d'un chargement a l'autre.
+    function tenue(produit) {
+      const mesures = window.KoreiProducts?.SENSORIEL || {};
+      return mesures[produit?.id]?.tenue ?? -1;
+    }
+
+    function renderPhares() {
+      const section = document.getElementById("maisons-phares");
+      const row = document.getElementById("maisons-phares-row");
+      if (!section || !row) return;
+      const phares = vendues
+        .map((b) => ({
+          brand: b,
+          hero: [...b.products].sort((a, c) => tenue(c) - tenue(a) || a.name.localeCompare(c.name, "fr"))[0],
+        }))
+        .filter((x) => x.hero && x.hero.image)
+        .sort((a, c) => tenue(c.hero) - tenue(a.hero) || a.brand.name.localeCompare(c.brand.name, "fr"))
+        .slice(0, 6);
+      if (phares.length < 3) {
+        section.hidden = true;
+        return;
+      }
+      section.hidden = false;
+      row.innerHTML = phares
+        .map(
+          ({ brand, hero }) => `
+        <a class="phare-card" href="product.html?id=${hero.id}">
+          <span class="phare-card__brand">
+            ${
+              LOGOS.has(brand.id)
+                ? `<img class="phare-card__mark" src="../assets/images/brands/${brand.id}.webp" alt="${brand.name}" width="200" height="60" decoding="async" data-onerror="remove" />`
+                : ""
+            }
+            <span class="phare-card__brandname">${brand.name}</span>
+          </span>
+          <span class="phare-card__media">
+            <img src="${site?.withBase(hero.image, "../") || `../${hero.image}`}" alt="${brand.name} ${hero.name}"
+                 width="750" height="1000" loading="lazy" decoding="async" />
+          </span>
+          <span class="phare-card__name">${hero.name}</span>
+          <span class="phare-card__type">${hero.concentration || "Eau de parfum"}</span>
+        </a>`
+        )
+        .join("");
     }
 
     function render() {
       const list = brandsData.filter(matches);
 
+      if (countEl) {
+        countEl.textContent = `${list.length} maison${list.length > 1 ? "s" : ""}`;
+      }
+
+      grid.className = "maisons-grid";
       grid.innerHTML = list
         .map((brand) => {
           const isHighlight = highlightBrand === brand.id;
-          const count = brand.count;
+          // Sans parfum au catalogue, le clic menerait sur une page vide :
+          // la carte reste, mais ce n'est plus un lien.
+          const vide = !brand.count;
+          const balise = vide ? "div" : "a";
+          const lien = vide ? "" : ` href="catalogue.html?brand=${brand.id}"`;
           return `
-            <a href="catalogue.html?brand=${brand.id}" class="brand-card${
-            isHighlight ? " brand-card--highlight" : ""
-          }" data-brand-id="${brand.id}">
-              <div class="brand-card-logo-wrap media-slot">
-                <img class="media-slot__image" src="../assets/images/brands/${brand.id}.png" alt="${brand.name}" hidden />
-                <div class="media-slot__placeholder brand-card-logo-fallback">${brand.name}</div>
-              </div>
-              <div class="brand-card-count">${count} parfum${count > 1 ? "s" : ""} disponible${count > 1 ? "s" : ""}</div>
-              <span class="brand-card-link">Découvrir <i class="ti ti-arrow-right"></i></span>
-            </a>`;
+            <${balise}${lien} class="maison-card${vide ? " is-vide" : ""}${
+              isHighlight ? " is-highlight" : ""
+            }" data-brand-id="${brand.id}"${vide ? ` aria-disabled="true"` : ""}>
+              <span class="maison-card__logo">
+                <!-- Le nom est le repli : il reste dessous et reapparait si
+                     l'image manque (data-onerror="remove"). L'image ne doit
+                     etre ni hidden ni differee, sinon le navigateur ne la
+                     charge jamais et on ne voit que le repli. -->
+                <span class="maison-card__wordmark">${brand.name}</span>
+                ${
+                  LOGOS.has(brand.id)
+                    ? `<img class="maison-card__mark" src="../assets/images/brands/${brand.id}.webp" alt="${brand.name}" width="200" height="60" decoding="async" data-onerror="remove" />`
+                    : ""
+                }
+              </span>
+              <span class="maison-card__country">${brand.country || ""}</span>
+              ${vide ? `<span class="maison-card__soon">Bientôt</span>` : ""}
+            </${balise}>`;
         })
         .join("");
 
@@ -158,7 +256,9 @@
       });
     }
 
+    syncUI();
     render();
+    renderPhares();
   }
 
   if (document.readyState === "loading") {
