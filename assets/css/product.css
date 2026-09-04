@@ -2893,3 +2893,79 @@ body[data-page="product"] {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* ── 15. La note d'ensemble, en etoiles ──────────────────────────────────
+   Un bandeau sous les cartes du Ressenti. Meme cartouche creme que le reste
+   de la section, angle droit, or sombre : les etoiles sont le seul element
+   figuratif de la fiche, donc elles restent petites et le chiffre porte.
+   Le remplissage partiel se fait par largeur, pas par demi-etoile : 4,3 sur 5
+   se lit tel quel, sans arrondi a 4,5. */
+.pdp-note {
+  margin-top: 24px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface, #faf7f2);
+  border: 1px solid var(--pdp-border, #ece3d3);
+}
+.pdp-note__eyebrow {
+  margin: 0;
+}
+.pdp-note__chiffre {
+  margin: 0;
+  font-family: var(--pdp-serif, "Cormorant Garamond", Georgia, serif);
+  font-size: 40px;
+  line-height: 1;
+  font-weight: 400;
+  color: var(--pdp-ink, #1a1a18);
+  /* Le serif de titrage dessine des chiffres elzeviriens : le « 1 » de 4,1
+     descend sous la ligne et le nombre se lit de travers. */
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.pdp-note__chiffre small {
+  font-family: var(--pdp-mesure, "IBM Plex Mono", monospace);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--pdp-ink-soft, #6b6862);
+}
+/* Les deux rangees se superposent : la grise dessine les cinq etoiles, la
+   doree est coupee a la largeur exacte de la note. */
+.pdp-note__etoiles {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+.pdp-note__etoiles-vide,
+.pdp-note__etoiles-plein {
+  display: block;
+  white-space: nowrap;
+  line-height: 0;
+}
+.pdp-note__etoiles-plein {
+  position: absolute;
+  inset: 0 auto 0 0;
+  overflow: hidden;
+  color: var(--pdp-gold, #cc9a36);
+}
+.pdp-note__etoiles-vide {
+  color: var(--pdp-border, #ece3d3);
+}
+.pdp-note__etoiles svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
+.pdp-note__etoiles svg + svg {
+  margin-left: 4px;
+}
+.pdp-note__avis {
+  margin: 0;
+  font-family: var(--pdp-mesure, "IBM Plex Mono", monospace);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--pdp-ink-soft, #6b6862);
+  font-variant-numeric: tabular-nums;
+}
