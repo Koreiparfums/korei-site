@@ -437,8 +437,8 @@
       }
       if (shipEl) {
         const complete0 = total() === cap;
-        shipEl.textContent = complete0 ? "Offerte" : "Selon le panier";
-        shipEl.classList.toggle("is-won", complete0);
+        shipEl.textContent = complete0 ? "À confirmer par Shopify" : "Selon le panier";
+        shipEl.classList.remove("is-won");
       }
 
       // Barre fixe du telephone : elle reprend le nom, l'avancement et le total.
@@ -465,7 +465,7 @@
       hint.hidden = false;
       if (complete) {
         hint.classList.add("is-won");
-        hint.textContent = `−10 % appliqué · vous économisez ${money(coffret.saved)} · livraison offerte`;
+        hint.textContent = `Avantage estimé : −10 % (${money(coffret.saved)}) et livraison offerte, à confirmer dans le panier`;
       } else if (t === 0) {
         hint.classList.remove("is-won");
         hint.textContent = `Choisissez ${cap} parfums pour −10 % sur chaque flacon et la livraison offerte`;
@@ -598,17 +598,11 @@
         if (!cart || !store) return;
 
         const key = formatKey();
-        let added = 0;
-        coffret.items.forEach(({ productId, quantity }) => {
+        const batch = coffret.items.map(({ productId, quantity }) => {
           const product = store.getProductById?.(productId) || store.getAllProducts?.().find((p) => p.id === productId);
-          if (!product) return;
+          if (!product) return null;
           const variant = store.getVariantForFormat(product, key);
-          if (cart.hasItem(productId, key)) {
-            cart.setQty(productId, key, quantity || 1);
-            added += 1;
-            return;
-          }
-          const ok = cart.addItem({
+          return {
             productId,
             name: product.name,
             brand: product.brand,
@@ -616,9 +610,9 @@
             price: store.getFormatPrice(product, key),
             qty: quantity || 1,
             variantId: variant?.id,
-          });
-          if (ok) added += 1;
-        });
+          };
+        }).filter(Boolean);
+        const added = cart.addItemsBatch?.(batch) || 0;
 
         if (!added) {
           cart.notice?.("Impossible d'ajouter ce coffret. Réessayez.");
@@ -632,7 +626,7 @@
 
         const originalLabel = ctaLabel ? ctaLabel.textContent : "";
         if (ctaLabel) ctaLabel.textContent = "Coffret ajouté au panier";
-        cart.notice?.(`Coffret ${FORMATS[coffret.format].label} ajouté · −10 % et livraison offerte`);
+        cart.notice?.(`Coffret ${FORMATS[coffret.format].label} ajouté · validation Shopify en cours`);
         render();
         setTimeout(() => {
           if (ctaLabel) ctaLabel.textContent = originalLabel;

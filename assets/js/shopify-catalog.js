@@ -219,6 +219,10 @@
         occasions: shopifyProduct.occasions.length ? shopifyProduct.occasions : localProduct.occasions,
         badge: shopifyProduct.badge || localProduct.badge,
         badgeLabel: shopifyProduct.badgeLabel || localProduct.badgeLabel,
+        // Les champs Shopify valent false en l'absence de tag. Ils ne doivent
+        // pas effacer la sélection éditoriale déjà définie dans le catalogue.
+        bestseller: Boolean(shopifyProduct.bestseller || localProduct.bestseller),
+        new: Boolean(shopifyProduct.new || localProduct.new),
         notes: [
           ...(shopifyProduct.notesTop.length ? shopifyProduct.notesTop : localProduct.notesTop),
           ...(shopifyProduct.notesHeart.length ? shopifyProduct.notesHeart : localProduct.notesHeart),

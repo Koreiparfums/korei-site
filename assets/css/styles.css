@@ -1308,6 +1308,15 @@ body[data-page="home"] .hero {
   min-width: 182.53px;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+.product-card__link {
+  color: inherit;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  text-decoration: none;
 }
 .product-card:hover {
   border-color: var(--border-dark);
@@ -1603,7 +1612,7 @@ body[data-page="home"] .hero {
     color 0.2s;
 }
 .product-card:hover .card-cta,
-.product-card:focus-visible .card-cta {
+.product-card:focus-within .card-cta {
   background: var(--text);
   color: var(--bg);
 }

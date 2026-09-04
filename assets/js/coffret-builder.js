@@ -17,6 +17,8 @@
   // un seuil en euros rendrait le message d'incitation faux (« plus que 1
   // parfum pour la livraison offerte » alors qu'elle le serait déjà).
   const COFFRET_DISCOUNT = 0.1;
+  const CODES_COFFRET = { "2ml": "COFFRET-2ML", "5ml": "COFFRET-5ML", "10ml": "COFFRET-10ML" };
+  const CODE_LIVRAISON_COFFRET = "LIVRAISON-COFFRET";
   const basePath = location.pathname.includes("/pages/") ? "../" : "";
 
   function load() {
@@ -89,7 +91,7 @@
     items.push(stored);
     save(items);
     notify();
-    syncRemoteAdd(stored);
+    synchroniserPanier();
     announceCoffret(item.format, current + qty, slots);
     return true;
   }
@@ -97,7 +99,7 @@
   // KOR-C3 — le coffret se forme tout seul quand le compte est atteint.
   function announceCoffret(format, total, slots) {
     if (!slots || total % slots !== 0) return;
-    showStockNotice(`Coffret ${PACK_LABELS[format]} complet. −10 % sur chaque flacon et livraison offerte.`);
+    showStockNotice(`Coffret ${PACK_LABELS[format]} complet. Validation des avantages par Shopify…`);
   }
 
   function removeItem(productId, format) {
@@ -106,7 +108,7 @@
     const remaining = items.filter((it) => !(it.productId === productId && it.format === format));
     save(remaining);
     notify();
-    if (removed) syncRemoteRemove(removed);
+    if (removed) synchroniserPanier();
   }
 
   function setQty(productId, format, qty) {
@@ -118,14 +120,39 @@
       items.splice(idx, 1);
       save(items);
       notify();
-      syncRemoteRemove(current);
+      synchroniserPanier();
       return;
     }
     const updated = { ...current, qty };
     items[idx] = updated;
     save(items);
     notify();
-    syncRemoteQty(updated, qty, current.qty || 1);
+    synchroniserPanier();
+  }
+
+  // Le configurateur ajoute tout un coffret en une seule opération locale,
+  // puis une seule synchronisation distante. Cela évite de créer un panier
+  // Shopify concurrent pour chaque flacon lorsque le panier est encore vide.
+  function addItemsBatch(batch) {
+    if (!Array.isArray(batch) || !batch.length) return 0;
+    const items = load();
+    let changed = 0;
+
+    for (const item of batch) {
+      if (!item || !isEligibleFormat(item.format)) continue;
+      const qty = Math.max(1, Number(item.qty) || 1);
+      const idx = items.findIndex((it) => it.productId === item.productId && it.format === item.format);
+      const stored = { ...item, qty, addedAt: idx >= 0 ? items[idx].addedAt : Date.now() + changed };
+      if (idx >= 0) items[idx] = { ...items[idx], ...stored };
+      else items.push(stored);
+      changed += 1;
+    }
+
+    if (!changed) return 0;
+    save(items);
+    notify();
+    synchroniserPanier();
+    return changed;
   }
 
   function incrementQty(productId, format) {
@@ -171,12 +198,25 @@
   function saveShopifyCart(cart) {
     try {
       if (!cart) localStorage.removeItem(CART_STORAGE_KEY);
-      else localStorage.setItem(
-        CART_STORAGE_KEY,
-        // `remise` est le montant que Shopify a accepte de retirer. Il voyage
-        // avec le panier : c'est lui, et pas le calcul local, qui fait le total.
-        JSON.stringify({ id: cart.id, checkoutUrl: cart.checkoutUrl, remise: Number(cart.remise) || 0 }),
-      );
+      else {
+        const discountCodes = Array.isArray(cart.discountCodes) ? cart.discountCodes : [];
+        const remise = Number(cart.discountApplied ?? cart.remise) || 0;
+        const livraisonOfferte = discountCodes.some(
+          (entry) => entry?.applicable && String(entry.code || "").toUpperCase() === CODE_LIVRAISON_COFFRET,
+        );
+        localStorage.setItem(
+          CART_STORAGE_KEY,
+          // Les avantages viennent exclusivement de Shopify. Le navigateur les
+          // conserve pour rendre le panier, mais ne les invente jamais.
+          JSON.stringify({
+            id: cart.id,
+            checkoutUrl: cart.checkoutUrl,
+            remise,
+            discountCodes,
+            livraisonOfferte,
+          }),
+        );
+      }
     } catch {
       // stockage indisponible : le lien de checkout sera simplement recréé au prochain ajout
     }
@@ -192,32 +232,74 @@
     return Number.isFinite(valeur) && valeur > 0 ? valeur : 0;
   }
 
-  // Les codes de la boutique, un par format de coffret. Ils n'existent pas
-  // encore cote Shopify : la mutation repond alors « applicable: false », le
-  // site n'affiche aucune remise, et le prix annonce reste celui facture.
-  // Le jour ou le client les cree dans son back-office, la remise apparait
-  // sans qu'une ligne de code change.
-  const CODES_COFFRET = { "2ml": "COFFRET-2ML", "5ml": "COFFRET-5ML", "10ml": "COFFRET-10ML" };
+  function livraisonAccordee() {
+    return loadShopifyCart()?.livraisonOfferte === true;
+  }
 
-  // Apres chaque changement de panier, on demande a Shopify d'appliquer les
-  // codes des coffrets complets, puis on enregistre ce qu'il a reellement
-  // accorde. C'est ce montant que l'ecran affiche.
-  async function synchroniserRemise() {
-    const panier = loadShopifyCart();
-    if (!panier?.id) return;
-    const codes = [];
-    for (const groupe of getCartState().groups) {
-      if (groupe.boxes > 0 && CODES_COFFRET[groupe.format]) {
-        codes.push(CODES_COFFRET[groupe.format]);
-      }
+  const remoteSyncState = { pending: false, error: null };
+  let remoteSyncLoop = null;
+  let remoteSyncAgain = false;
+
+  function getRemoteLines(items = load()) {
+    const byVariant = new Map();
+    for (const item of items) {
+      if (!item.variantId) continue;
+      const quantity = Math.max(1, Number(item.qty) || 1);
+      byVariant.set(item.variantId, (byVariant.get(item.variantId) || 0) + quantity);
     }
-    const { cart } = await cartRequest("discount", { cartId: panier.id, codes });
-    if (!cart) return;
-    const applique = (cart.discountCodes || []).some((c) => c.applicable);
-    const remise = applique ? Number(cart.discountApplied) || 0 : 0;
-    saveShopifyCart({ ...panier, id: cart.id || panier.id,
-                      checkoutUrl: cart.checkoutUrl || panier.checkoutUrl, remise });
-    notify();
+    return [...byVariant.entries()].map(([variantId, quantity]) => ({ variantId, quantity }));
+  }
+
+  function getPromotionCodes(items = load()) {
+    const state = getCartState(items);
+    const codes = state.groups
+      .filter((group) => group.boxes > 0)
+      .map((group) => CODES_COFFRET[group.format])
+      .filter(Boolean);
+    if (state.boxes > 0) codes.push(CODE_LIVRAISON_COFFRET);
+    return [...new Set(codes)];
+  }
+
+  // Shopify reçoit toujours un instantané complet du panier. Les changements
+  // rapprochés sont sérialisés et regroupés : le dernier instantané gagne.
+  function synchroniserPanier() {
+    remoteSyncAgain = true;
+    if (remoteSyncLoop) return remoteSyncLoop;
+
+    remoteSyncLoop = (async () => {
+      while (remoteSyncAgain) {
+        remoteSyncAgain = false;
+        const items = load();
+        const lines = getRemoteLines(items);
+        remoteSyncState.pending = true;
+        remoteSyncState.error = null;
+        notify();
+
+        if (!lines.length) {
+          saveShopifyCart(null);
+          remoteSyncState.pending = false;
+          notify();
+          continue;
+        }
+
+        const result = await cartRequest("sync", {
+          lines,
+          codes: getPromotionCodes(items),
+        });
+        if (result.cart) {
+          saveShopifyCart(result.cart);
+          remoteSyncState.error = null;
+        } else {
+          remoteSyncState.error = result.message || result.error || "Synchronisation Shopify indisponible.";
+        }
+        remoteSyncState.pending = false;
+        notify();
+      }
+    })().finally(() => {
+      remoteSyncLoop = null;
+      if (remoteSyncAgain) synchroniserPanier();
+    });
+    return remoteSyncLoop;
   }
 
   async function cartRequest(action, payload) {
@@ -251,67 +333,6 @@
     showStockNotice._timer = setTimeout(() => el.classList.remove("is-visible"), 4000);
   }
 
-  function patchItem(productId, format, patch) {
-    const items = load();
-    const idx = items.findIndex((it) => it.productId === productId && it.format === format);
-    if (idx === -1) return;
-    items[idx] = { ...items[idx], ...patch };
-    save(items);
-  }
-
-  function findRemoteLine(cart, variantId) {
-    return (cart?.lines || []).find((line) => line.variantId === variantId) || null;
-  }
-
-  async function syncRemoteAdd(item) {
-    if (!item.variantId) return;
-    const cached = loadShopifyCart();
-    const result = cached?.id
-      ? await cartRequest("add", { cartId: cached.id, variantId: item.variantId, quantity: item.qty || 1 })
-      : await cartRequest("create", { variantId: item.variantId, quantity: item.qty || 1 });
-
-    if (result.error === "cart_user_error") {
-      removeItem(item.productId, item.format);
-      showStockNotice(result.message || "Stock insuffisant pour ce format — article retiré du panier.");
-      return;
-    }
-    if (!result.cart) return;
-    saveShopifyCart(result.cart);
-    synchroniserRemise();
-    const line = findRemoteLine(result.cart, item.variantId);
-    if (line) patchItem(item.productId, item.format, { shopifyLineId: line.id });
-    notify();
-  }
-
-  async function syncRemoteQty(item, qty, previousQty) {
-    const cached = loadShopifyCart();
-    if (!item.shopifyLineId || !cached?.id) return;
-    const result = await cartRequest("update", { cartId: cached.id, lineId: item.shopifyLineId, quantity: qty });
-
-    if (result.error === "cart_user_error") {
-      if (previousQty > 0) patchItem(item.productId, item.format, { qty: previousQty });
-      showStockNotice(result.message || "Stock insuffisant pour cette quantité — ajustée.");
-      notify();
-      return;
-    }
-    if (result.cart) {
-      saveShopifyCart(result.cart);
-      synchroniserRemise();
-      notify();
-    }
-  }
-
-  async function syncRemoteRemove(item) {
-    const cached = loadShopifyCart();
-    if (!item.shopifyLineId || !cached?.id) return;
-    const result = await cartRequest("remove", { cartId: cached.id, lineId: item.shopifyLineId });
-    if (result.cart) {
-      saveShopifyCart(result.cart);
-      synchroniserRemise();
-      notify();
-    }
-  }
-
   // ── Widget flottant (injecté une fois, sur n'importe quelle page qui charge ce script)
   function renderBody() {
     const body = document.getElementById("coffret-body");
@@ -339,8 +360,10 @@
           <span>${state.qty} flacon${state.qty > 1 ? "s" : ""}</span>
           <strong>${money(state.total)}</strong>
         </div>
-        ${state.discount > 0 ? `<div class="coffret-summary__saved">−10 % appliqué · vous économisez ${money(state.discount)}</div>` : ""}
+        ${state.discount > 0 ? `<div class="coffret-summary__saved">−10 % confirmé · vous économisez ${money(state.discount)}</div>` : ""}
         ${state.freeShipping ? `<div class="coffret-summary__saved">Livraison offerte</div>` : ""}
+        ${state.synchronisationEnCours ? `<div class="coffret-summary__next">Validation Shopify en cours…</div>` : ""}
+        ${state.erreurSynchronisation ? `<div class="coffret-summary__next">${esc(state.erreurSynchronisation)}</div>` : ""}
         ${nextStep ? `<p class="coffret-summary__next">Plus que <strong>${nextStep.missing} parfum${nextStep.missing > 1 ? "s" : ""}</strong> en ${nextStep.format.replace("ml", " ml")} pour −10 % et la livraison offerte</p>` : ""}
       </div>` +
       Object.keys(SLOT_COUNTS)
@@ -474,7 +497,11 @@
       .map((group) => {
         const groupItems = items.filter((it) => it.format === group.format);
         const complete = group.boxes > 0;
-        const net = group.gross - group.discount;
+        const ratioConfirme = state.discountAttendu > 0
+          ? Math.min(1, state.discount / state.discountAttendu)
+          : 0;
+        const remiseConfirmee = group.discount * ratioConfirme;
+        const net = group.gross - remiseConfirmee;
         const title = group.boxes > 1
           ? `${group.boxes} coffrets ${group.label}`
           : complete
@@ -489,7 +516,7 @@
               </div>
               <div class="panier-group__money">
                 <span class="panier-group__total">${money(net)}</span>
-                ${group.discount > 0 ? `<span class="panier-group__saved">−10 % · ${money(group.discount)} économisés</span>` : ""}
+                ${remiseConfirmee > 0 ? `<span class="panier-group__saved">−10 % confirmé · ${money(remiseConfirmee)} économisés</span>` : ""}
               </div>
             </div>
             ${
@@ -606,8 +633,10 @@
       boxes,
       // La livraison offerte suit la meme regle : tant que la boutique ne la
       // pose pas, on ne l'annonce pas.
-      freeShipping: accorde > 0 && boxes > 0,
+      freeShipping: livraisonAccordee() && boxes > 0,
       remiseEnAttente: discount > 0.01 && accorde < 0.01,
+      synchronisationEnCours: remoteSyncState.pending,
+      erreurSynchronisation: remoteSyncState.error,
     };
   }
 
@@ -646,21 +675,37 @@
     }
 
     if (shipEl) {
-      shipEl.textContent = state.freeShipping ? "Offerte" : "Payante";
+      shipEl.textContent = state.freeShipping
+        ? "Offerte"
+        : state.synchronisationEnCours && state.boxes > 0
+          ? "Validation…"
+          : "Payante";
       shipEl.classList.toggle("is-free", state.freeShipping);
     }
 
     if (hintEl) {
       const next = getNextStep(state);
-      if (state.freeShipping && !next) {
+      if (state.synchronisationEnCours) {
+        hintEl.hidden = false;
+        hintEl.classList.remove("is-won");
+        hintEl.textContent = "Shopify vérifie les lignes, la remise et la livraison…";
+      } else if (state.erreurSynchronisation) {
+        hintEl.hidden = false;
+        hintEl.classList.remove("is-won");
+        hintEl.textContent = "Le panier Shopify n'a pas pu être synchronisé. Réessayez avant de commander.";
+      } else if (state.freeShipping && !next) {
         hintEl.hidden = false;
         hintEl.classList.add("is-won");
-        hintEl.textContent = "−10 % appliqué · Livraison offerte";
+        hintEl.textContent = "−10 % confirmé · Livraison offerte confirmée";
       } else if (next) {
         hintEl.hidden = false;
         hintEl.classList.toggle("is-won", false);
         const gain = state.freeShipping ? "−10 % sur ces flacons" : "−10 % et la livraison offerte";
         hintEl.textContent = `Plus que ${next.missing} parfum${next.missing > 1 ? "s" : ""} en ${next.format.replace("ml", " ml")} pour ${gain}`;
+      } else if (state.boxes > 0) {
+        hintEl.hidden = false;
+        hintEl.classList.remove("is-won");
+        hintEl.textContent = "Les avantages du coffret ne sont pas encore acceptés par Shopify.";
       } else {
         hintEl.hidden = true;
       }
@@ -801,61 +846,93 @@
 
     const sync = () => {
       const url = getCheckoutUrl();
-      cta.disabled = !url;
-      cta.classList.toggle("is-verrouille", !url);
+      const state = getCartState();
+      const bloquantes = lignesNonCommandables();
+      const remiseManquante = state.discountAttendu > 0.01 && state.discount + 0.01 < state.discountAttendu;
+      const avantageManquant = state.boxes > 0 && (remiseManquante || !state.freeShipping);
+      const verrouille = !url || bloquantes.length > 0 || state.synchronisationEnCours ||
+        Boolean(state.erreurSynchronisation) || avantageManquant;
+      cta.disabled = verrouille;
+      cta.classList.toggle("is-verrouille", verrouille);
       cta.title = "";
 
-      if (url) {
-        message.hidden = true;
+      if (state.synchronisationEnCours) {
+        message.textContent = "Validation du panier par Shopify en cours…";
+        message.hidden = false;
         return;
       }
-      const bloquantes = lignesNonCommandables();
-      if (!bloquantes.length) {
-        message.hidden = true;
+      if (state.erreurSynchronisation) {
+        message.textContent = "Le panier Shopify n'a pas pu être synchronisé. Modifiez le panier pour réessayer.";
+        message.hidden = false;
         return;
       }
-      const noms = bloquantes.map((it) => it.name).filter(Boolean);
-      const liste = noms.slice(0, 3).join(", ");
-      const reste = noms.length > 3 ? ` et ${noms.length - 3} autre${noms.length - 3 > 1 ? "s" : ""}` : "";
-      message.textContent =
-        noms.length === 1
-          ? `${liste} n'est pas encore en vente en ligne. Retirez-le du panier pour commander le reste.`
-          : `${liste}${reste} ne sont pas encore en vente en ligne. Retirez-les du panier pour commander le reste.`;
-      message.hidden = false;
+      if (bloquantes.length) {
+        const noms = bloquantes.map((it) => it.name).filter(Boolean);
+        const liste = noms.slice(0, 3).join(", ");
+        const reste = noms.length > 3 ? ` et ${noms.length - 3} autre${noms.length - 3 > 1 ? "s" : ""}` : "";
+        message.textContent =
+          noms.length === 1
+            ? `${liste} n'est pas encore en vente en ligne. Retirez-le du panier pour commander le reste.`
+            : `${liste}${reste} ne sont pas encore en vente en ligne. Retirez-les du panier pour commander le reste.`;
+        message.hidden = false;
+        return;
+      }
+      if (avantageManquant) {
+        message.textContent = "La remise de 10 % ou la livraison offerte n'a pas été confirmée par Shopify. La commande reste bloquée pour éviter un mauvais montant.";
+        message.hidden = false;
+        return;
+      }
+      message.hidden = true;
     };
 
-    // KOR-P1 — le panier annonce un total que Shopify ne facture pas toujours.
-    // La remise coffret et la livraison offerte sont calculees ici, dans le
-    // navigateur ; le panier Shopify, lui, ne recoit que les lignes. Tant que
-    // la remise n'est pas posee cote Shopify, un client pouvait lire 194,13 €
-    // puis arriver sur une page de paiement a 215,70 €.
-    //
-    // On compare donc les deux totaux juste avant de partir. Un ecart arrete
-    // le depart et le dit. Une panne reseau, elle, ne bloque rien : elle ne
-    // prouve aucun ecart, et le comportement d'avant reprend la main.
-    async function ecartAvecShopify() {
+    function sameLines(cart) {
+      const expected = getRemoteLines();
+      const actual = (cart?.lines || []).map((line) => ({
+        variantId: line.variantId,
+        quantity: Number(line.quantity) || 0,
+      }));
+      const key = (line) => `${line.variantId}|${line.quantity}`;
+      return expected.map(key).sort().join(";") === actual.map(key).sort().join(";");
+    }
+
+    // Dernier contrôle serveur avant de céder la main au checkout : lignes,
+    // total et avantages doivent tous correspondre à la promesse affichée.
+    async function verifierShopify() {
       const panier = loadShopifyCart();
-      if (!panier?.id) return null;
+      if (!panier?.id) return { kind: "unavailable" };
       const { cart, error } = await cartRequest("get", { cartId: panier.id });
-      if (error || !cart) return null;
+      if (error || !cart) return { kind: "unavailable" };
+      if (!sameLines(cart)) return { kind: "lines" };
+
+      saveShopifyCart(cart);
       const facture = Number(cart.cost?.totalAmount?.amount);
       const annonce = Number(getCartState().total);
-      if (!Number.isFinite(facture) || !Number.isFinite(annonce)) return null;
-      return Math.abs(facture - annonce) > 0.01 ? { annonce, facture } : null;
+      if (!Number.isFinite(facture) || !Number.isFinite(annonce)) return { kind: "unavailable" };
+      if (Math.abs(facture - annonce) > 0.01) return { kind: "total", annonce, facture };
+
+      const state = getCartState();
+      if (state.boxes > 0 && (state.discount + 0.01 < state.discountAttendu || !state.freeShipping)) {
+        return { kind: "promotion" };
+      }
+      return null;
     }
 
     cta.addEventListener("click", async () => {
       const url = getCheckoutUrl();
       if (!url) return;
       cta.disabled = true;
-      const ecart = await ecartAvecShopify();
+      const ecart = await verifierShopify();
       cta.disabled = false;
       if (ecart) {
-        message.textContent =
-          `Le paiement afficherait ${money(ecart.facture)} au lieu de ` +
-          `${money(ecart.annonce)}. La remise coffret n'est pas encore posée ` +
-          `sur la boutique. Nous préférons vous arrêter ici plutôt que de vous ` +
-          `faire payer plus que le prix annoncé.`;
+        if (ecart.kind === "lines") {
+          message.textContent = "Le panier Shopify ne contient pas exactement les mêmes flacons. La commande a été bloquée ; modifiez le panier pour relancer la synchronisation.";
+        } else if (ecart.kind === "total") {
+          message.textContent = `Le paiement afficherait ${money(ecart.facture)} au lieu de ${money(ecart.annonce)}. La commande est bloquée pour éviter un mauvais montant.`;
+        } else if (ecart.kind === "promotion") {
+          message.textContent = "La remise de 10 % ou la livraison offerte n'est pas confirmée par Shopify. La commande reste bloquée.";
+        } else {
+          message.textContent = "Impossible de vérifier le panier Shopify. La commande reste bloquée par sécurité.";
+        }
         message.hidden = false;
         return;
       }
@@ -871,6 +948,7 @@
     PACK_LABELS,
     isEligibleFormat,
     addItem,
+    addItemsBatch,
     removeItem,
     setQty,
     incrementQty,
@@ -878,7 +956,7 @@
     hasItem,
     getProgress,
     getCheckoutUrl,
-    synchroniserRemise,
+    synchroniserPanier,
     onChange,
     notice: showStockNotice,
     getCartState,
@@ -894,6 +972,7 @@
     renderPanierPage();
     initPanierActions();
     initCheckoutCta();
+    if (document.getElementById("panier-groups") && load().length) synchroniserPanier();
   }
 
   if (document.readyState === "loading") {

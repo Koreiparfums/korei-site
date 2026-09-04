@@ -128,20 +128,21 @@
       <h2>3. Ce que le site enregistre sur votre appareil</h2>
       <p>
         Le site n'utilise pas de cookie publicitaire. Il enregistre quelques informations dans le
-        stockage local de votre navigateur (<em>localStorage</em>), c'est-à-dire sur votre appareil et
-        nulle part ailleurs. Elles ne sont transmises à personne et disparaissent si vous videz les
-        données du site.
+        stockage local de votre navigateur (<em>localStorage</em>). Certaines restent uniquement sur
+        votre appareil ; d'autres servent de copie locale à un service distant, comme le panier Shopify.
       </p>
       <ul>
         <li><code>korei-cookie-consent</code> — votre réponse au bandeau cookies, pour ne pas la redemander.</li>
         <li><code>korei-favorites</code> — les parfums que vous avez mis en favoris.</li>
         <li><code>korei-coffret</code> et <code>korei-coffret-personalise</code> — le coffret que vous êtes en train de composer.</li>
-        <li><code>korei-shopify-cart</code> et <code>korei-shopify-catalog</code> — votre panier et le catalogue mis en cache, pour que la page se charge vite.</li>
-        <li><code>korei-chat-history</code> — la conversation en cours avec le conseiller olfactif.</li>
+        <li><code>korei-shopify-cart</code> — l'identifiant et une copie du panier créé auprès de Shopify.</li>
+        <li><code>korei-shopify-catalog</code> — une copie temporaire du catalogue public, pour accélérer le chargement.</li>
+        <li><code>korei-chat-history</code> — une copie locale de la conversation avec le conseiller olfactif ; les messages envoyés au conseiller sont transmis au prestataire d'intelligence artificielle décrit ci-dessous.</li>
       </ul>
       <p>
-        Pour tout effacer : videz les données de site de votre navigateur pour korei-parfum.com. Rien
-        ne subsiste de notre côté, puisque rien n'y a été envoyé.
+        Vider les données de site de votre navigateur pour korei-parfum.com supprime ces copies locales.
+        Cette opération ne supprime pas automatiquement les données déjà transmises à Shopify, Groq ou
+        à Kōrei ; pour celles-ci, vous pouvez exercer les droits indiqués à la section 8.
       </p>
 
       <h2>4. Aucun outil de mesure d'audience</h2>
@@ -157,7 +158,7 @@
         <li><strong>Formulaire de contact</strong> — les informations que vous y écrivez servent uniquement à vous répondre.</li>
         <li><strong>Newsletter</strong> — votre adresse e-mail sert uniquement à vous envoyer nos nouveautés. Chaque envoi comporte un lien de désinscription.</li>
         <li><strong>Commande</strong> — nom, adresse de livraison et coordonnées servent à préparer, expédier et facturer votre commande.</li>
-        <li><strong>Conseiller olfactif</strong> — le conseiller est en mode démonstration. Lorsqu'il est activé, le texte que vous saisissez est transmis à un prestataire d'intelligence artificielle pour produire la réponse. <strong>À compléter par Kōrei : nom du prestataire d'intelligence artificielle, pays d'hébergement et lien vers sa politique de confidentialité.</strong></li>
+        <li><strong>Conseiller olfactif</strong> — lorsque vous l'utilisez, le texte que vous saisissez et le contexte nécessaire à la conversation sont transmis à Groq, LLC via GroqCloud afin de produire une réponse. N'y saisissez aucune donnée sensible. Consultez la <a href="https://groq.com/privacy-policy" rel="noopener">politique de confidentialité de Groq</a> et sa documentation <a href="https://console.groq.com/docs/your-data" rel="noopener">sur le traitement des données</a>.</li>
       </ul>
 
       <h2>6. Qui d'autre voit ces données</h2>
@@ -166,16 +167,20 @@
         prestataires nécessaires au fonctionnement du service :
       </p>
       <ul>
-        <li>l'hébergeur du site, Netlify, Inc. ;</li>
-        <li><strong>À compléter par Kōrei : prestataire de paiement, transporteur, et outil d'envoi de la newsletter, avec le pays d'hébergement de chacun.</strong></li>
+        <li>Netlify, Inc., pour l'hébergement du site et l'exécution de ses fonctions techniques ;</li>
+        <li>Shopify International Limited, pour le catalogue, le panier, la commande et le paiement sécurisé ;</li>
+        <li>Groq, LLC, uniquement lorsque vous utilisez le conseiller olfactif ;</li>
+        <li><strong>À compléter par Kōrei : transporteur et outil d'envoi de la newsletter, avec le rôle et la localisation de chacun.</strong></li>
       </ul>
 
       <h2>7. Combien de temps elles sont conservées</h2>
       <p>
-        Les données de commande sont conservées le temps imposé par les obligations comptables et
-        fiscales. Les demandes envoyées par le formulaire de contact sont conservées le temps de traiter
-        la demande. L'adresse inscrite à la newsletter est conservée jusqu'à votre désinscription.<br />
-        <strong>À compléter par Kōrei : durées exactes de conservation, une fois les prestataires choisis.</strong>
+        Les pièces comptables et données de facturation sont conservées pendant dix ans lorsqu'elles
+        relèvent de l'obligation légale de conservation. Les demandes de contact sont conservées le temps
+        nécessaire à leur traitement, puis supprimées ou archivées si une obligation légale le justifie.
+        Les données utilisées pour la prospection sont conservées jusqu'au retrait de votre consentement
+        ou, au plus tard, trois ans après votre dernier contact actif avec Kōrei.<br />
+        <strong>À compléter par Kōrei : durées propres au transporteur et au futur outil de newsletter.</strong>
       </p>
 
       <h2>8. Vos droits</h2>

@@ -212,12 +212,21 @@
       imageWidth: p.imageWidth || (p.image ? 750 : 0),
       priceRange: p.price <= 10 ? "budget" : p.price <= 14 ? "mid" : "premium",
     });
+    // Le tarif du client remplace le prix, la photo et l'adresse Shopify. Il
+    // ne dit rien de la famille olfactive, des saisons, des occasions ni des
+    // reperes editoriaux : ces champs-la restent ceux du catalogue.
+    //
+    // La version precedente ecrasait la fiche entiere. Les 163 parfums
+    // vendables perdaient donc tout ce que le tarif ne redit pas — dont
+    // « bestseller », et l'accueil affichait un carrousel « Les grands
+    // classiques » vide sous son titre. Les collections par saison et par
+    // occasion tombaient de la meme facon.
     const remplacer = (liste) => {
       const vus = new Set();
       const sortie = liste.map((p) => {
         if (!parId.has(p.id)) return p;
         vus.add(p.id);
-        return complet(parId.get(p.id));
+        return { ...p, ...complet(parId.get(p.id)) };
       });
       return [...sortie, ...CLIENT.filter((p) => !vus.has(p.id)).map(complet)];
     };

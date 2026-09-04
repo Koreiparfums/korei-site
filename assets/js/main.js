@@ -565,13 +565,11 @@
         </div>`;
 
     return `
-      <a href="${productUrl}" class="product-card${bientot ? " is-bientot" : ""}" ${minWidth} data-product-id="${product.id}">
+      <article class="product-card${bientot ? " is-bientot" : ""}" ${minWidth} data-product-id="${product.id}">
+        <a href="${productUrl}" class="product-card__link" aria-label="Voir ${esc(product.name)} par ${esc(product.brand)}">
         <div class="card-img media-slot media-slot--card">
           ${renderProductGlowHtml(product, basePath)}
           ${badgeHtml}
-          <button class="card-fav" type="button" aria-label="Favoris" data-fav-btn>
-            <i class="ti ti-heart"></i>
-          </button>
           ${renderProductImageHtml(product, basePath)}
           ${renderProductPlaceholderHtml(product, "product")}
         </div>
@@ -591,7 +589,11 @@
           </div>
           ${actionHtml}
         </div>
-      </a>`;
+        </a>
+        <button class="card-fav" type="button" aria-label="Ajouter aux favoris" data-fav-btn>
+          <i class="ti ti-heart" aria-hidden="true"></i>
+        </button>
+      </article>`;
   }
 
   function renderProducts(container, products, options = {}) {
@@ -602,10 +604,8 @@
   }
 
   function initProductCardInteractions(container) {
-    // Le coeur favoris reste le seul element interactif de la carte : il
-    // arrete le clic pour ne pas ouvrir la fiche (voir favorites.js).
-    // Le prix et le bouton « Voir le parfum » ne sont plus que du texte ;
-    // c'est le lien de la carte qui ouvre la fiche, sans JavaScript.
+    // Le lien principal et le coeur sont désormais frères : aucun contrôle
+    // interactif n'est imbriqué dans un autre.
     global.KoreiFavorites?.initHeartButtons(container);
   }
 
@@ -1012,6 +1012,20 @@
     const store = global.KoreiProductStore;
     if (!grid || !store) return;
     const allProducts = store.getAllProducts();
+
+    // Un filtre affiché pour seulement quelques fiches donne des résultats
+    // arbitraires. On le masque tant qu'au moins 25 % du catalogue n'est pas
+    // renseigné, au lieu de prétendre couvrir toute l'offre.
+    const coverage = (predicate) => allProducts.length
+      ? allProducts.filter(predicate).length / allProducts.length
+      : 0;
+    if (coverage((p) => Boolean(p.intensity)) < 0.25) {
+      document.querySelector('[data-group="intensity"]')?.remove();
+      document.querySelector('#filter-sort option[value="tenue"]')?.remove();
+    }
+    if (coverage((p) => (p.seasons || []).length > 0 || (p.occasions || []).length > 0) < 0.25) {
+      document.querySelector('[data-group="occasion"]')?.remove();
+    }
 
     const filters = {
       brand: [],
@@ -1537,7 +1551,8 @@
         form.reportValidity();
         return;
       }
-      showSuccess();
+      status.textContent = "Mode local : inscription non envoyée. Le formulaire sera actif sur le site Netlify.";
+      status.classList.remove("is-success");
     });
   }
 
@@ -1564,8 +1579,14 @@
         form.reportValidity();
         return;
       }
-      showSuccess();
+      status.textContent = "Mode local : message non envoyé. Le formulaire sera actif sur le site Netlify.";
+      status.classList.remove("is-success");
     });
+  }
+
+  function removeUnavailableSocialLinks() {
+    document.querySelectorAll("button.social-btn").forEach((button) => button.remove());
+    document.querySelectorAll(".footer-socials:empty").forEach((container) => container.remove());
   }
 
   // ── Délégation des actions déclarées en data-attributes (CSP : pas d'onclick inline)
@@ -1601,6 +1622,7 @@
     initChatbotTriggers();
     initNewsletterForm();
     initContactForm();
+    removeUnavailableSocialLinks();
 
     const page = document.body.dataset.page;
     if (page === "home") initHomePage();

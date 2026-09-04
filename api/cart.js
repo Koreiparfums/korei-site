@@ -2,6 +2,7 @@
  * Korei — API panier (Shopify Storefront Cart API).
  *
  * POST /api/cart avec { action, ... } :
+ *   sync   → { lines, codes } — recrée atomiquement le panier avec toutes ses lignes
  *   create → { variantId, quantity } — crée un panier avec une ligne initiale
  *   add    → { cartId, variantId, quantity } — ajoute une ligne
  *   update → { cartId, lineId, quantity } — change la quantité d'une ligne
@@ -45,8 +46,8 @@ const CART_FIELDS = `
 `;
 
 const CART_CREATE_MUTATION = `
-  mutation KoreiCartCreate($lines: [CartLineInput!]!) {
-    cartCreate(input: { lines: $lines }) {
+  mutation KoreiCartCreate($lines: [CartLineInput!]!, $codes: [String!]) {
+    cartCreate(input: { lines: $lines, discountCodes: $codes }) {
       cart { ${CART_FIELDS} }
       userErrors { field message }
     }
@@ -142,6 +143,25 @@ function normalizeCart(cart) {
   };
 }
 
+function normalizeLines(lines) {
+  if (!Array.isArray(lines)) return null;
+  const normalized = [];
+  for (const line of lines) {
+    const variantId = String(line?.variantId || "").trim();
+    const quantity = Number(line?.quantity);
+    if (!variantId.startsWith("gid://shopify/ProductVariant/") || !Number.isInteger(quantity) || quantity < 1) {
+      return null;
+    }
+    normalized.push({ merchandiseId: variantId, quantity });
+  }
+  return normalized.length > 0 && normalized.length <= 50 ? normalized : null;
+}
+
+function normalizeCodes(codes) {
+  if (!Array.isArray(codes)) return [];
+  return [...new Set(codes.map((code) => String(code || "").trim()).filter(Boolean))].slice(0, 6);
+}
+
 async function runCartMutation(query, variables, mutationName) {
   const result = await shopifyGraphQL(query, variables);
   if (!result.ok) return result;
@@ -167,11 +187,23 @@ async function handler(req, res) {
 
   const { action, cartId, lineId, variantId, quantity } = body;
 
+  if (action === "sync") {
+    const lines = normalizeLines(body.lines);
+    if (!lines) return sendJson(res, 400, { error: "invalid_lines" });
+    const result = await runCartMutation(
+      CART_CREATE_MUTATION,
+      { lines, codes: normalizeCodes(body.codes) },
+      "cartCreate",
+    );
+    if (!result.ok) return sendJson(res, result.status, { error: result.error, message: result.message });
+    return sendJson(res, 200, { cart: result.cart });
+  }
+
   if (action === "create") {
     if (!variantId || !quantity) return sendJson(res, 400, { error: "missing_fields" });
     const result = await runCartMutation(
       CART_CREATE_MUTATION,
-      { lines: [{ merchandiseId: variantId, quantity }] },
+      { lines: [{ merchandiseId: variantId, quantity }], codes: [] },
       "cartCreate",
     );
     if (!result.ok) return sendJson(res, result.status, { error: result.error, message: result.message });
@@ -219,7 +251,8 @@ async function handler(req, res) {
       { cartId, codes },
       "cartDiscountCodesUpdate",
     );
-    return sendJson(res, result.status, result.payload);
+    if (!result.ok) return sendJson(res, result.status, { error: result.error, message: result.message });
+    return sendJson(res, 200, { cart: result.cart });
   }
 
   if (action === "get") {
@@ -233,3 +266,5 @@ async function handler(req, res) {
 }
 
 module.exports = handler;
+module.exports.normalizeCodes = normalizeCodes;
+module.exports.normalizeLines = normalizeLines;

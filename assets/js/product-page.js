@@ -560,13 +560,13 @@
   // Les quatre promesses sont exactement celles du bandeau du site : une
   // promesse affichee ici et nulle part ailleurs serait une promesse inventee.
   // « Cadeau mystere offert » a ete retire : rien dans le site ni dans la
-  // boutique ne le met en oeuvre. La livraison offerte des un coffret, elle,
-  // est bien appliquee (voir assets/js/coffret-builder.js).
+  // boutique ne le met en oeuvre. Les avantages du coffret sont confirmes par
+  // Shopify dans le panier avant que le checkout ne soit accessible.
   const TRUST_ROW = [
     { icon: "ti-shield-check", label: "Décants 100 % authentiques" },
     { icon: "ti-rotate", label: "Satisfait ou remboursé 30 jours" },
     { icon: "ti-truck-delivery", label: "Expédition sous 24 h" },
-    { icon: "ti-package", label: "Livraison offerte dès un coffret" },
+    { icon: "ti-package", label: "Livraison offerte sur coffret éligible" },
   ];
 
   function renderTrustRow() {
@@ -626,8 +626,8 @@
             <span class="pdp-rail__quoi">sur chaque flacon</span>
           </div>
           <div class="pdp-rail__gain">
-            <span class="pdp-rail__chiffre pdp-rail__chiffre--mot">Offerte</span>
-            <span class="pdp-rail__quoi">la livraison</span>
+            <span class="pdp-rail__chiffre pdp-rail__chiffre--mot">Offerte*</span>
+            <span class="pdp-rail__quoi">si le coffret est éligible</span>
           </div>
         </div>
         <div class="pdp-rail__track" role="presentation">
@@ -646,7 +646,7 @@
     }
     const rest = tier.capacity - (count % tier.capacity);
     if (count % tier.capacity === 0) {
-      return `Coffret complet. <strong>${prix(saved)} économisés</strong> et livraison offerte.`;
+      return `Coffret complet. Avantages estimés : <strong>${prix(saved)} économisés</strong> et livraison offerte, à confirmer dans le panier.`;
     }
     return `Plus que <strong>${rest} parfum${rest > 1 ? "s" : ""}</strong> en ${sel.vol}.`;
   }
@@ -698,7 +698,6 @@
             <div class="pdp-info pdp-reveal">
               <div class="pdp-brand">${esc(product.brand)}</div>
               <h1 class="pdp-name">${esc(product.name)}</h1>
-              ${product.description ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
               ${renderPriceBlock(selected)}
               ${formats.some((f) => f.price > 0) ? renderFormats(formats) : ""}
               ${renderCoffretRail(product, selected)}
@@ -716,6 +715,7 @@
               </div>
 
               ${renderTrustRow()}
+              ${product.description ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
             </div>
             ${renderAccordions(product)}
             ${renderRessenti(product)}

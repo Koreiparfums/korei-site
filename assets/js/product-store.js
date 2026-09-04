@@ -34,12 +34,52 @@
     return catalog().filter((p) => p.family === family);
   }
 
+  // ── Les deux vitrines de l'accueil ──────────────────────────────────────
+  //
+  // Regle commune : on n'y met que ce qui s'achete. « Bientot disponible »
+  // a sa place au catalogue, ou le visiteur cherche, jamais dans une
+  // selection qui invite a acheter.
+  //
+  // Les reperes « bestseller » et « new » du catalogue datent des produits
+  // de demonstration de juillet : sur les cinq classiques marques, un seul
+  // figure au tarif du client. Une vitrine a une carte ne vaut rien.
+  //
+  // Les deux sections reposent donc sur l'annee de sortie, qui est une
+  // donnee verifiable et non un chiffre invente : un classique est un
+  // parfum sorti il y a plus de dix ans, une nouveaute un parfum sorti dans
+  // les deux dernieres annees. Le repere editorial reste prioritaire quand
+  // il existe, et la selection se met a jour toute seule d'une annee sur
+  // l'autre.
+  const VITRINE_MAX = 12;
+  const ANS_CLASSIQUE = 10;
+  const ANS_NOUVEAUTE = 2;
+
+  const enVente = (p) => p.bientot !== true && Number(p.price) > 0;
+  const annee = (p) => Number(p.annee) || 0;
+
+  function vitrine(marques, candidats, ordre) {
+    const vus = new Set(marques.map((p) => p.id));
+    return [...marques, ...candidats.filter((p) => !vus.has(p.id)).sort(ordre)].slice(0, VITRINE_MAX);
+  }
+
   function getBestsellers() {
-    return catalog().filter((p) => p.bestseller);
+    const vendables = catalog().filter(enVente);
+    const seuil = new Date().getFullYear() - ANS_CLASSIQUE;
+    return vitrine(
+      vendables.filter((p) => p.bestseller),
+      vendables.filter((p) => annee(p) > 0 && annee(p) <= seuil),
+      (a, b) => annee(a) - annee(b),
+    );
   }
 
   function getNewProducts() {
-    return catalog().filter((p) => p.new);
+    const vendables = catalog().filter(enVente);
+    const seuil = new Date().getFullYear() - ANS_NOUVEAUTE;
+    return vitrine(
+      vendables.filter((p) => p.new),
+      vendables.filter((p) => annee(p) >= seuil),
+      (a, b) => annee(b) - annee(a),
+    );
   }
 
   function getBrandById(id) {
