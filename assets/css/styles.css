@@ -10841,3 +10841,10 @@ body[data-page="home"] .card-cta {
 .formats-dot.is-active {
   border-radius: 0;
 }
+
+/* Deux jetons portaient le meme or sombre a quatre unites pres :
+   --badge-text #8a6825 et --sceau #8a6a2f. Un seul suffit. Les jetons se
+   resolvent a l'usage, l'ordre de declaration n'a pas d'importance. */
+:root {
+  --badge-text: var(--sceau);
+}
