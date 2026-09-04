@@ -82,7 +82,9 @@ point de la puce, le point du bouton radio, les trois points du conseiller
 qui ecrit, et le curseur du reglage de prix. Ce sont des points, pas des
 surfaces.
 
-Pas d'ombre portee au repos : un filet d'un pixel. Les ombres restent sur
+Pas d'ombre portee au repos : un filet d'un pixel. Une exception, demandee
+par le client le 4 septembre 2026 : la carte produit n'a plus de filet, elle
+porte une ombre douce qui s'accentue au survol. Les ombres restent sur
 ce qui flotte vraiment — le message qui apparait, l'apercu, les panneaux,
 la barre collante.
 

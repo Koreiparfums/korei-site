@@ -67,7 +67,7 @@
 - [x] Catalogue dynamique via Shopify Storefront API (pagination complète par curseur, avec repli local)
 - [x] Fiche produit dynamique via Shopify Storefront API (avec repli local)
 - [x] Panier Shopify atomique — chaque changement recrée un panier distant complet et le checkout vérifie lignes, quantités et total
-- [ ] Promotions Shopify — paliers natifs combinables et livraison offerte à créer avec `scripts/configure-shopify-discounts.js`, puis recetter
+- [ ] Promotions Shopify — code unique par panier créé par le serveur (`api/coffret-remise.js`), code livraison à créer avec `scripts/configure-shopify-discounts.js --apply`, variables Admin à poser sur Netlify, puis recetter
 - [ ] Checkout public — l'URL existe, mais le mot de passe Shopify doit rester en place jusqu'à validation paiement/taxes/livraison
 - [x] Stock Shopify — 100 unités sur les 489 variantes vendables et survente désactivée (`DENY`), reproductible via `scripts/configure-shopify-inventory.js`
 - [ ] Compte client (Shopify Customer API)

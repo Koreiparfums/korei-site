@@ -8,7 +8,7 @@ Ce document distingue ce qui est corrigé dans le code de ce qui nécessite une 
 - contrôle final des variantes, quantités et totaux avant checkout ;
 - remise et livraison affichées comme confirmées uniquement après acceptation Shopify ;
 - checkout bloqué si un avantage annoncé manque ;
-- seuils de coffret testés : 10 × 2 ml, 5 × 5 ml et 3 × 10 ml ;
+- seuils de coffret testés : 5 × 5 ml et 3 × 10 ml (le 2 ml se vend à l'unité, coffret Découverte retiré le 4 septembre 2026) ;
 - inventaire Shopify initialisé à 100 unités sur les 489 variantes vendables, avec survente désactivée (`DENY`) ;
 - filtres catalogue masqués lorsque les métadonnées ne couvrent pas assez de produits ;
 - best-sellers et nouveautés locaux préservés lors de la fusion Shopify ;

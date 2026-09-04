@@ -10,7 +10,8 @@ Un fichier `.webp` par maison, nommé avec l'identifiant de la marque
 - détouré au plus juste, sans marge
 - tient dans une boîte de 420 × 130 px (affiché à 58 px de haut au maximum)
 
-Quarante-six maisons sur quarante-sept ont leur logo. Deux listes doivent
+Cinquante-quatre maisons sur cinquante-six ont leur logo (Armani Privé et
+Room 1015 n'en publient pas : elles sont retirées de la page Maisons). Deux listes doivent
 rester synchronisées avec ce dossier : `LOGOS` (`assets/js/brands.js`, deux
 usages) et `HOME_LOGOS` (`assets/js/main.js`). Une maison absente de ces
 listes affiche son nom en toutes lettres, ce qui reste propre.
@@ -59,12 +60,25 @@ maison (en-tête, pied de page, favicon haute résolution ou `og:image`).
 | Sospiro | sospirointernational.com, `Artboard_1_1.svg` |
 | Stéphanie de Bruijn | stephaniedebruijn.com, logo d'en-tête |
 | Tiziana Terenzi | tizianaterenzi.com, `TT_logotipo-orizzontale-bianco.png` (blanc, ré-encré) |
+| Bvlgari | Wikimedia Commons, `Bulgari logo.svg` (domaine public) |
+| Carner Barcelona | carnerbarcelona.com, `logo-carner-normal.png` (350 × 99, agrandi) |
+| Essential Parfums | essentialparfums.com, logo d'en-tête (SVG en ligne) |
+| Ex Nihilo | ex-nihilo-paris.com, `logo-footer-svg.svg` (blanc, ré-encré) |
+| Lancôme | Wikimedia Commons, `Lancôme logo.svg` (domaine public) |
+| Nayu Parfums | nayuparfums.com, `nayu-logo.svg` |
+| Pause Coréenne | pausecoreenne.com, `pause-coreenne-logo-scaled.png` (mot-symbole, très allongé) |
+| Stéphane Humbert Lucas | stephanehumbertlucas.com, `SHL-COM-Logo_SHL_SVG.svg` |
 
 « Ré-encré » veut dire : le tracé officiel est conservé tel quel, seule la
 couleur passe au noir du site, comme pour les autres logos du dossier.
 
 ## Réserves
 
+- **Armani Privé** et **Room 1015** n'ont pas de logo : Armani Beauty ne
+  publie aucun fichier de la ligne Privé, et Room 1015 écrit son nom avec une
+  police web, sans image. À la demande du client (4 septembre 2026), ces deux
+  maisons ne figurent pas sur la page Maisons tant qu'un logo manque
+  (`brands.js` filtre sur `LOGOS`).
 - **Esprit Libre** n'a pas de logo, et n'en aura pas : ce n'est pas une
   maison mais un nom de parfum (voir le commentaire dans `BRANDS`).
 - **Calisto** : `BRANDS` écrit « Calisto », la maison parisienne d'extraits

@@ -11,6 +11,7 @@
     "build": "npm run check && npm test && node scripts/build-static.js",
     "shopify:discounts": "node scripts/configure-shopify-discounts.js",
     "shopify:discounts:apply": "node scripts/configure-shopify-discounts.js --apply",
+    "shopify:discounts:nettoyer": "node scripts/configure-shopify-discounts.js --nettoyer",
     "shopify:inventory": "node scripts/configure-shopify-inventory.js",
     "shopify:inventory:apply": "node scripts/configure-shopify-inventory.js --apply"
   },

@@ -20,18 +20,28 @@ test("normalizeLines accepte uniquement des variantes Shopify et quantités enti
   assert.equal(cart.normalizeLines([{ variantId: "gid://shopify/ProductVariant/1", quantity: 1.5 }]), null);
 });
 
-test("normalizeCodes déduplique et refuse les codes non gérés par le site", () => {
+test("normalizeCodes n'accepte que la livraison offerte : la remise produit vient du serveur", () => {
   assert.deepEqual(
-    cart.normalizeCodes(["coffret-10ml-3", " COFFRET-10ML-3 ", "LIVRAISON-COFFRET", "PROMO-ADMIN"]),
-    ["COFFRET-10ML-3", "LIVRAISON-COFFRET"],
-  );
-  assert.deepEqual(
-    cart.normalizeCodes(["COFFRET-2ML-10", "COFFRET-5ML-10", "COFFRET-10ML-6"]),
-    ["COFFRET-2ML-10", "COFFRET-5ML-10", "COFFRET-10ML-6"],
-  );
-  assert.deepEqual(
-    cart.normalizeCodes(["COFFRET-2ML-5", "COFFRET-5ML-7", "COFFRET-10ML-4", "COFFRET-10ML-33"]),
-    [],
+    cart.normalizeCodes([" livraison-coffret ", "LIVRAISON-COFFRET", "COFFRET-5ML-5", "PROMO-ADMIN", "KOREI-COFFRET-ABCDEFGH"]),
+    ["LIVRAISON-COFFRET"],
   );
   assert.deepEqual(cart.normalizeCodes(null), []);
+});
+
+test("orderedLines garde l'ordre du navigateur et reprend prix et format de Shopify", () => {
+  const request = [
+    { merchandiseId: "gid://shopify/ProductVariant/2", quantity: 3 },
+    { merchandiseId: "gid://shopify/ProductVariant/1", quantity: 1 },
+    { merchandiseId: "gid://shopify/ProductVariant/9", quantity: 1 },
+  ];
+  const shopifyCart = {
+    lines: [
+      { variantId: "gid://shopify/ProductVariant/1", price: 36.9, format: "5ml" },
+      { variantId: "gid://shopify/ProductVariant/2", price: 72.9, format: "10ml" },
+    ],
+  };
+  assert.deepEqual(cart.orderedLines(request, shopifyCart), [
+    { variantId: "gid://shopify/ProductVariant/2", quantity: 3, price: 72.9, format: "10ml" },
+    { variantId: "gid://shopify/ProductVariant/1", quantity: 1, price: 36.9, format: "5ml" },
+  ]);
 });

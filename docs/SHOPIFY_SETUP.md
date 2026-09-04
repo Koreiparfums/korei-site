@@ -62,49 +62,53 @@ Avant de rediriger, le site relit le panier Shopify et contrôle les identifiant
 
 ## Remise coffret et livraison offerte
 
-Le site envoie un code de palier par format lorsque le panier contient au moins
-un coffret complet :
+La règle : −10 % sur chaque flacon d'un coffret complet (Voyage 5 × 5 ml,
+Iconique 3 × 10 ml), les flacons en trop au plein tarif. Sept flacons de 5 ml
+donnent cinq flacons remisés et deux au prix normal. Le 2 ml se vend à l'unité.
 
-- `COFFRET-2ML-10`, `COFFRET-2ML-20`, etc. pour les lots de 10 × 2 ml ;
-- `COFFRET-5ML-5`, `COFFRET-5ML-10`, etc. pour les lots de 5 × 5 ml ;
-- `COFFRET-10ML-3`, `COFFRET-10ML-6`, etc. pour les lots de 3 × 10 ml ;
-- `LIVRAISON-COFFRET` dès qu'au moins un de ces lots est complet.
+Shopify natif ne sait pas l'exprimer (relevé du 4 septembre 2026) : une remise
+en pourcentage ne s'arrête pas après N articles, « Achetez X, obtenez Y »
+exige X + Y articles, et une Shopify Function dans une application privée
+exige Shopify Plus alors que la boutique est en plan Basic.
 
-Chaque code produit est une remise Shopify native « montant sur produits » : son
-minimum et sa quantité remisée valent tous deux le palier, avec un effet de
-10 %. Ainsi 4 × 10 ml applique le palier 3 : trois flacons sont remisés et le
-quatrième reste au plein tarif. Le script `scripts/configure-shopify-discounts.js`
-crée dix paliers par format et le code de livraison, sans Shopify Function.
+Le site fait donc autrement. À chaque synchronisation du panier
+(`POST /api/cart`, action `sync`), le serveur :
 
-Les remises doivent être actives et combinables. Le site n'affiche « confirmé »
-et n'autorise le checkout que si Shopify renvoie les codes comme applicables et
-alloue réellement le montant attendu.
+1. recrée le panier Shopify sans remise, ce qui lui donne les prix et formats
+   réels de chaque ligne ;
+2. supprime le code unique de l'instantané précédent (`previousDiscountId`) ;
+3. calcule la remise du coffret sur les lignes, dans l'ordre d'ajout
+   (`api/coffret-remise.js`, même règle que le navigateur) ;
+4. crée un code à usage unique `KOREI-COFFRET-XXXXXXXX` du montant exact en
+   euros, valable 48 h, limité aux variantes remisées, avec un minimum en
+   articles égal au nombre de flacons remisés ;
+5. pose ce code et `LIVRAISON-COFFRET` sur le panier.
 
-Les codes produit ciblent directement les identifiants de variantes du format
-concerné. Le minimum ne mélange donc pas les variantes 2, 5 et 10 ml d'un même
-produit. Dix coffrets au maximum sont acceptés par format et par commande.
+Le navigateur n'envoie jamais de code produit. Il n'affiche « confirmé » et
+n'autorise le checkout que si Shopify alloue réellement le montant attendu et
+accepte le code livraison. Si l'Admin API est indisponible, le panier part sans
+remise produit et la commande reste bloquée avec le message d'attente.
 
-La livraison gratuite native ne sait pas vérifier le format des articles. Le
-site n'envoie donc `LIVRAISON-COFFRET` qu'après avoir lui-même constaté un lot
-complet ; le code garde aussi un minimum Shopify de trois articles et une
-destination France. Ce contrôle pragmatique n'empêche pas totalement la
-réutilisation manuelle du code hors coffret. Une protection absolue exigerait
-une application publique à base de Shopify Function ou Shopify Plus.
+Pour cela, les fonctions Netlify ont besoin, en plus des jetons Storefront, de
+`SHOPIFY_ADMIN_CLIENT_ID` et `SHOPIFY_ADMIN_CLIENT_SECRET` (application Dev
+Dashboard avec `read_discounts` et `write_discounts`). Sans ces variables, la
+remise coffret ne peut pas être créée en production.
 
-Le script de configuration :
+Le script de configuration ne gère plus que le code livraison et le ménage des
+codes uniques consommés ou périmés :
 
 ```bash
 node scripts/configure-shopify-discounts.js
 node scripts/configure-shopify-discounts.js --apply
+node scripts/configure-shopify-discounts.js --nettoyer
 ```
 
-Il demande `read_discounts` et `write_discounts` à l'application Admin, cible
-les variantes par leur option `Format`, et peut être relancé sans créer de code
-en double.
+La livraison gratuite native ne sait pas vérifier le format des articles. Le
+site n'envoie `LIVRAISON-COFFRET` qu'après avoir constaté un coffret complet ;
+le code garde un minimum Shopify de trois articles et une destination France.
 
-Après synchronisation des remises, tester les cas 9/10/11 × 2 ml,
-4/5/6 × 5 ml, 2/3/4 × 10 ml, les paniers mixtes, deux coffrets
-complets, puis une adresse située hors de la zone de livraison offerte.
+Après mise en production, tester 4/5/6/7 × 5 ml, 2/3/4 × 10 ml, un panier
+mixte avec du 2 ml, deux coffrets complets, puis une adresse hors France.
 
 ## Stock par variante
 
