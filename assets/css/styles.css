@@ -12094,3 +12094,52 @@ body {
     display: none;
   }
 }
+
+/* ── Scene WebGL du hero : la lentille qui revele les flacons d'origine.
+   Le canvas prend la place de la photo et des fioles CSS une fois pret ;
+   le DOM reste en place (mesures, repli sans WebGL, animations reduites). */
+.hero--fioles .hero__scene {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.hero--fioles.is-scene .hero__media,
+.hero--fioles.is-scene .hero__fioles img,
+.hero--fioles.is-scene .hero__fioles::after {
+  visibility: hidden;
+}
+.hero--fioles .hero__content,
+.hero--fioles .hero__legende {
+  will-change: transform;
+}
+.hero--fioles .hero__indice {
+  display: none;
+  margin: 0 0 12px;
+  font-family: var(--mesure);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sceau);
+  text-align: center;
+  transition: opacity 0.6s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .hero--fioles.is-scene .hero__indice {
+    display: block;
+  }
+  .hero--fioles .hero__indice.is-vu {
+    opacity: 0;
+  }
+}
+/* Quand la lentille passe sous le texte, un halo clair garde les petites
+   lignes lisibles sur les flacons sombres. */
+.hero--fioles.is-scene .hero__eyebrow,
+.hero--fioles.is-scene .hero__sub,
+.hero--fioles.is-scene .hero__cta--ghost {
+  text-shadow:
+    0 0 16px rgba(250, 247, 242, 0.95),
+    0 0 6px rgba(250, 247, 242, 0.9);
+}
