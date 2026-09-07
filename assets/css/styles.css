@@ -17,7 +17,6 @@ html {
   font-size: clamp(13px, 11px + 1.25vw, 16px);
 }
 body {
-  font-family: "DM Sans", sans-serif;
   font-weight: 400;
   background: var(--bg);
   color: #1a1a18;
@@ -57,7 +56,6 @@ textarea {
   --accent-soft: #dfc088;
   --badge-bg: var(--surface);
   --badge-border: #dfc99a;
-  --badge-text: #8a6825;
   --new-bg: #edf7f1;
   --new-border: #b6dfc6;
   --new-text: #1a6640;
@@ -99,14 +97,6 @@ textarea {
   /* Teintes placeholder — familles olfactives sans équivalent dans la palette de base */
   --family-floral-1: #f8f2f4;
   --family-floral-2: #ece6ea;
-  --radius-sm: 4.8px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
-  --radius-xl: 22px;
-  --radius-pill: 80px;
-  /* Une seule famille d'ombres — 8 rôles distincts, jamais de valeur ad hoc ailleurs. */
-  --shadow-sm: 0 10px 35px rgba(26, 26, 24, 0.04);
-  --shadow-md: 0 16px 40px rgba(26, 26, 24, 0.08);
   --shadow-lg: 0 24px 60px rgba(26, 26, 24, 0.1);
   --shadow-panel: 0 12.8px 38.4px rgba(26, 26, 24, 0.12);
   --shadow-float: 0 6.4px 25.6px rgba(26, 26, 24, 0.18);
@@ -348,12 +338,12 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
 }
 .btn-dark {
   background: var(--text);
   color: var(--bg);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-10);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -374,7 +364,7 @@ textarea {
 .btn-white {
   background: var(--text);
   color: var(--bg);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-10);
   font-weight: 700;
   letter-spacing: var(--tracking-label);
@@ -395,7 +385,7 @@ textarea {
 .btn-outline {
   background: transparent;
   color: var(--text);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-10);
   font-weight: 400;
   letter-spacing: var(--tracking-label);
@@ -489,7 +479,7 @@ a.brand-chip {
   text-transform: uppercase;
   cursor: pointer;
   width: 100%;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
 }
 
 /* ─── SEARCH OVERLAY ─── */
@@ -541,7 +531,7 @@ a.brand-chip {
   flex: 1;
   border: none;
   padding: 4.8px 0;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-16);
   font-weight: 400;
   color: var(--text);
@@ -599,7 +589,7 @@ a.brand-chip {
   gap: 8px;
 }
 .search-tendance {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-13);
   color: var(--text);
   background: var(--surface);
@@ -607,7 +597,9 @@ a.brand-chip {
   border-radius: var(--radius-pill);
   padding: 7px 16px;
   cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
 }
 .search-tendance:hover {
   border-color: var(--accent);
@@ -695,19 +687,9 @@ a.brand-chip {
   color: var(--accent);
 }
 
-
 /* ─── HERO ─── */
 .hero {
-  position: relative;
-  background:
-    url("../images/hero/hero-fond.webp") center bottom / cover no-repeat,
-    var(--bg);
-  min-height: 86vh;
-  min-height: 86dvh;
-  display: grid;
   grid-template-columns: 0.85fr 1.3fr;
-  align-items: center;
-  overflow: hidden;
   padding: 0 var(--px);
   gap: 32px;
 }
@@ -732,7 +714,7 @@ body[data-page="home"] .hero {
   top: 42%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--ghost-fs);
   font-weight: 300;
   letter-spacing: var(--tracking-eyebrow);
@@ -757,7 +739,7 @@ body[data-page="home"] .hero {
   display: flex;
   align-items: center;
   gap: 11.2px;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-10);
   font-weight: 400;
   letter-spacing: var(--tracking-loud);
@@ -771,7 +753,7 @@ body[data-page="home"] .hero {
   background: var(--accent);
 }
 .hero-title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-display);
   font-size: clamp(1.44rem, 1rem + 3.2vw, var(--text-display));
   font-weight: 400;
@@ -898,7 +880,7 @@ body[data-page="home"] .hero {
   box-shadow: var(--shadow-sm);
 }
 .hero-trust-card__title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-20);
   font-weight: 500;
   color: var(--text);
@@ -934,7 +916,7 @@ body[data-page="home"] .hero {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-11);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -971,7 +953,7 @@ body[data-page="home"] .hero {
   margin-bottom: 7.8px;
 }
 .dose-title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 32px;
   font-weight: 400;
   line-height: 1.25;
@@ -1055,7 +1037,7 @@ body[data-page="home"] .hero {
 }
 .dose-ml {
   margin-top: 18px;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 28.4px;
   font-weight: 300;
   letter-spacing: var(--tracking-tight);
@@ -1063,7 +1045,7 @@ body[data-page="home"] .hero {
   line-height: 1;
 }
 .dose-ml span {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-style: italic;
   font-size: var(--text-12);
   font-weight: 400;
@@ -1078,7 +1060,7 @@ body[data-page="home"] .hero {
 }
 .dose-label {
   margin-top: 8px;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-12);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -1091,7 +1073,7 @@ body[data-page="home"] .hero {
 }
 .dose-caption {
   margin: 9px 0 0;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-style: italic;
   font-size: var(--text-14);
   color: var(--text-light);
@@ -1178,7 +1160,7 @@ body[data-page="home"] .hero {
   margin-bottom: 28.8px;
 }
 .section-title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 32px;
   font-weight: 400;
   line-height: 1.25;
@@ -1231,7 +1213,7 @@ body[data-page="home"] .hero {
   margin-bottom: 9.6px;
 }
 .favorites-title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 32px;
   font-weight: 400;
   line-height: 1.25;
@@ -1297,18 +1279,11 @@ body[data-page="home"] .hero {
   height: 100%;
 }
 .product-card {
-  background: var(--bg);
-  border: 0.8px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition:
-    border-color 0.2s,
-    transform 0.2s;
   flex-shrink: 0;
   min-width: 182.53px;
-  display: flex;
   flex-direction: column;
   position: relative;
 }
@@ -1327,7 +1302,11 @@ body[data-page="home"] .hero {
 .card-img {
   height: 210.61px;
   background:
-    radial-gradient(circle at 50% 44%, rgba(255, 255, 255, 0.88), transparent 46%),
+    radial-gradient(
+      circle at 50% 44%,
+      rgba(255, 255, 255, 0.88),
+      transparent 46%
+    ),
     var(--surface);
   display: flex;
   align-items: center;
@@ -1367,20 +1346,15 @@ body[data-page="home"] .hero {
   text-transform: uppercase;
   padding: 3.51px 8.42px;
   border-radius: var(--radius-pill);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 500;
   z-index: 2;
 }
 .badge-best {
   background: var(--badge-bg);
-  color: var(--accent);
   border: 0.8px solid var(--badge-border);
 }
-.badge-new {
-  background: var(--accent);
-  color: var(--bg);
-  border: none;
-}
+
 .badge-exclusive {
   background: var(--text);
   color: var(--bg);
@@ -1415,11 +1389,12 @@ body[data-page="home"] .hero {
   width: 1em;
   height: 1em;
   background-color: var(--danger);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
 }
 .card-body {
-  padding: 15.45px 16.85px 16.85px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -1427,34 +1402,23 @@ body[data-page="home"] .hero {
   text-align: center;
 }
 .card-brand {
-  font-family: "DM Sans", sans-serif;
-  font-size: var(--text-12);
-  letter-spacing: var(--tracking-loud);
+  font-family: "Manrope", sans-serif;
   color: var(--text-muted);
   text-transform: uppercase;
-  margin-bottom: 8.78px;
 }
 .card-name {
-  font-family: "DM Sans", sans-serif;
-  font-size: var(--text-19);
-  font-weight: 500;
   color: var(--text);
-  margin-bottom: 8.78px;
-  line-height: 1.2;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   overflow: hidden;
-  min-height: 42.12px;
   width: 100%;
 }
 .card-note-strip {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6.4px;
   width: 100%;
-  margin: 1.6px 0 10.4px;
 }
 /* Les produits venus de la boutique en ligne n'ont pas encore leurs notes.
    Sans cette regle, la bande vide gardait ses marges et creusait un blanc
@@ -1465,18 +1429,10 @@ body[data-page="home"] .hero {
 .card-note {
   display: grid;
   justify-items: center;
-  gap: 4.8px;
   min-width: 0;
-  color: var(--text-muted);
-  font-size: var(--text-10);
   line-height: 1.2;
 }
-.card-note > span:last-child {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+
 .note-image {
   position: relative;
   display: inline-flex;
@@ -1490,7 +1446,7 @@ body[data-page="home"] .hero {
   background: var(--bg);
   border: 0.8px solid var(--border);
   color: var(--accent);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-20);
   font-style: italic;
 }
@@ -1510,7 +1466,6 @@ body[data-page="home"] .hero {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 .note-image img + span {
   display: none;
@@ -1524,20 +1479,14 @@ body[data-page="home"] .hero {
   margin-bottom: 4.21px;
 }
 .card-price {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-16);
   font-weight: 500;
   color: var(--text);
 }
 .card-rating {
-  display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 7.2px;
-  font-family: "DM Sans", sans-serif;
-  font-size: var(--text-18);
   font-weight: 500;
-  color: var(--text);
 }
 .star-row {
   display: inline-flex;
@@ -1591,22 +1540,15 @@ body[data-page="home"] .hero {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 8.42px;
-  margin-top: 11.22px;
 }
 .card-actions .card-price {
   text-align: center;
-  letter-spacing: var(--tracking-tight);
 }
 .card-cta {
   display: block;
-  padding: 10.53px;
   border: 0.8px solid var(--text);
-  border-radius: var(--radius-md);
   background: none;
   color: var(--text);
-  font-family: "DM Sans", sans-serif;
-  font-size: var(--text-13);
   font-weight: 500;
   text-align: center;
   transition:
@@ -1625,7 +1567,7 @@ body[data-page="home"] .hero {
   color: var(--bg);
   border: none;
   padding: 12.64px;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-14);
   font-weight: 500;
   cursor: pointer;
@@ -1672,8 +1614,6 @@ body[data-page="home"] .card-img-icon {
 body[data-page="home"] .card-badge {
   top: 9.19px;
   left: 9.19px;
-  font-size: 10.5px;
-  padding: 3.28px 7.87px;
 }
 body[data-page="home"] .card-fav {
   top: 9.19px;
@@ -1710,7 +1650,6 @@ body[data-page="home"] .card-actions {
 }
 body[data-page="home"] .card-cta {
   padding: 9.84px;
-  font-size: var(--text-12);
 }
 
 /* ─── WHY ─── */
@@ -1782,7 +1721,7 @@ body[data-page="home"] .card-cta {
   color: var(--accent);
 }
 .pack-choice-card__title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-23);
   font-weight: 400;
   color: var(--text);
@@ -1869,7 +1808,7 @@ body[data-page="coffret"] .coffret-hero {
   margin-bottom: 12.8px;
 }
 .coffret-hero__title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 400;
   font-size: clamp(32px, 5vw, var(--text-display));
   line-height: 1.18;
@@ -1907,7 +1846,9 @@ body[data-page="coffret"] .coffret-hero {
   text-decoration: none;
   border-bottom: 0.8px solid var(--border-dark);
   padding-bottom: 2px;
-  transition: color 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
 }
 .coffret-hero__link:hover {
   color: var(--accent);
@@ -1942,7 +1883,9 @@ body[data-page="coffret"] .coffret-hero {
   inset: 0;
   background-size: cover;
   background-position: center;
-  transition: transform 0.5s ease, filter 0.4s ease;
+  transition:
+    transform 0.5s ease,
+    filter 0.4s ease;
 }
 .coffret-card:hover .coffret-card__media {
   transform: scale(1.05);
@@ -1990,13 +1933,13 @@ body[data-page="coffret"] .coffret-hero {
   transform: translateY(var(--lift-hover));
 }
 .coffret-card__name {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 400;
   font-size: var(--text-22);
   color: var(--bg);
 }
 .coffret-card__cta {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-9);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -2005,7 +1948,9 @@ body[data-page="coffret"] .coffret-hero {
   display: inline-flex;
   align-items: center;
   gap: 4.8px;
-  transition: gap 0.2s, color 0.2s;
+  transition:
+    gap 0.2s,
+    color 0.2s;
 }
 .coffret-card:hover .coffret-card__cta {
   gap: 7.2px;
@@ -2054,7 +1999,7 @@ body[data-page="coffret"] .coffret-hero {
   margin-bottom: 26px;
 }
 .cb2-preview__label {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 21px;
   color: var(--cb2-black);
 }
@@ -2115,7 +2060,7 @@ body[data-page="coffret"] .coffret-hero {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-style: italic;
   font-size: var(--text-20);
   color: var(--cb2-gold);
@@ -2189,7 +2134,7 @@ body[data-page="coffret"] .coffret-hero {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-style: italic;
   font-size: var(--text-13);
   color: var(--cb2-gold);
@@ -2229,7 +2174,7 @@ body[data-page="coffret"] .coffret-hero {
   color: var(--text-muted);
 }
 .cb2-preview__price {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 28px;
   text-transform: none;
   letter-spacing: normal;
@@ -2268,7 +2213,10 @@ body[data-page="coffret"] .coffret-hero {
   padding: 14px 16px;
   border: 0.8px solid var(--cb2-border);
   border-radius: var(--radius-md);
-  transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    transform 0.2s ease;
 }
 .cb2-perk:hover {
   border-color: var(--cb2-gold);
@@ -2319,7 +2267,7 @@ body[data-page="coffret"] .coffret-hero {
 }
 .cb2-mood figcaption {
   padding: 14px 18px;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-style: italic;
   font-size: var(--text-15);
   color: var(--cb2-black);
@@ -2335,7 +2283,7 @@ body[data-page="coffret"] .coffret-hero {
   min-width: 0;
 }
 .cb2-title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 400;
   font-size: var(--text-23);
   color: var(--cb2-black);
@@ -2348,14 +2296,9 @@ body[data-page="coffret"] .coffret-hero {
 }
 
 .cb2-timeline {
-  display: flex;
   align-items: flex-start;
-  margin: 8px 0 4px;
 }
 .cb2-timeline__step {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   flex: 1;
 }
 .cb2-timeline__step:not(:last-child)::after {
@@ -2366,18 +2309,15 @@ body[data-page="coffret"] .coffret-hero {
   margin: 0 10px;
 }
 .cb2-timeline__num {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--text-11);
   font-weight: 600;
-  border: 0.8px solid var(--cb2-border);
   color: var(--text-muted);
   flex-shrink: 0;
-  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
 }
 .cb2-timeline__label {
   font-size: var(--text-10);
@@ -2386,11 +2326,7 @@ body[data-page="coffret"] .coffret-hero {
   color: var(--text-muted);
   transition: color 0.25s ease;
 }
-.cb2-timeline__step.is-current .cb2-timeline__num {
-  border-color: var(--cb2-black);
-  background: var(--cb2-black);
-  color: var(--cb2-bg);
-}
+
 .cb2-timeline__step.is-current .cb2-timeline__label {
   color: var(--cb2-black);
 }
@@ -2441,7 +2377,7 @@ body[data-page="coffret"] .coffret-hero {
   border: none;
   background: none;
   outline: none;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-15);
   color: var(--cb2-black);
 }
@@ -2459,7 +2395,7 @@ body[data-page="coffret"] .coffret-hero {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-12);
   padding: 7px 14px;
   border: 0.8px solid var(--cb2-border);
@@ -2467,7 +2403,10 @@ body[data-page="coffret"] .coffret-hero {
   background: var(--cb2-bg);
   color: var(--cb2-black);
   cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.15s ease;
 }
 .cb2-filter-chip i {
   font-size: var(--text-15);
@@ -2517,14 +2456,15 @@ body[data-page="coffret"] .coffret-hero {
   background: var(--cb2-bg);
   border: 0.8px solid var(--cb2-border);
   border-radius: var(--radius-md);
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 .cb2-result:hover {
   border-color: var(--cb2-gold);
   transform: translateY(var(--lift-hover));
 }
 .cb2-result__media {
-  position: relative;
   margin-bottom: 5px;
 }
 .cb2-result__thumb {
@@ -2550,7 +2490,7 @@ body[data-page="coffret"] .coffret-hero {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-style: italic;
   font-size: 22px;
   color: var(--cb2-gold);
@@ -2606,7 +2546,9 @@ body[data-page="coffret"] .coffret-hero {
   color: var(--bg);
   font-size: var(--text-17);
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
 }
 .cb2-result__add:hover:not(:disabled) {
   background: var(--cb2-black);
@@ -2664,7 +2606,7 @@ body[data-page="coffret"] .coffret-hero {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-style: italic;
   font-size: var(--text-17);
   color: var(--cb2-gold);
@@ -2714,7 +2656,9 @@ body[data-page="coffret"] .coffret-hero {
   border: 0.8px solid var(--cb2-border);
   border-radius: 50%;
   cursor: pointer;
-  transition: border-color 0.3s ease, color 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease;
 }
 .cb2-card__step:hover:not(:disabled) {
   border-color: var(--cb2-gold);
@@ -2738,7 +2682,9 @@ body[data-page="coffret"] .coffret-hero {
   gap: 4px;
   opacity: 0;
   transform: translateY(4px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
   pointer-events: none;
 }
 .cb2-card:hover .cb2-card__actions,
@@ -2769,7 +2715,9 @@ body[data-page="coffret"] .coffret-hero {
   font-size: var(--text-13);
   box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 .cb2-card__action:hover {
   color: var(--cb2-black);
@@ -2805,7 +2753,10 @@ body[data-page="coffret"] .coffret-hero {
   border: 1px solid var(--cb2-border);
   border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease,
+    border-color 0.3s ease;
 }
 .cb2-format:hover {
   transform: translateY(var(--lift-hover));
@@ -2819,7 +2770,7 @@ body[data-page="coffret"] .coffret-hero {
   color: var(--cb2-gold);
 }
 .cb2-format__ml {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-21);
   color: var(--cb2-black);
 }
@@ -2854,7 +2805,7 @@ body[data-page="coffret"] .coffret-hero {
   width: 100%;
   min-height: 70px;
   resize: none;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-15);
   font-style: italic;
   color: var(--cb2-black);
@@ -2892,7 +2843,7 @@ body[data-page="coffret"] .coffret-hero {
   justify-content: space-between;
   gap: 12px;
   padding: 17px 24px;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-13);
   font-weight: 600;
   letter-spacing: var(--tracking-label);
@@ -2902,16 +2853,23 @@ body[data-page="coffret"] .coffret-hero {
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.15s ease;
 }
 .cb2-cta__price {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-21);
   letter-spacing: normal;
   text-transform: none;
 }
 .cb2-cta:hover {
-  background: linear-gradient(135deg, var(--cb2-black) 0%, var(--text-warm) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--cb2-black) 0%,
+    var(--text-warm) 100%
+  );
   box-shadow: var(--shadow-glow);
   transform: translateY(var(--lift-hover));
 }
@@ -2968,7 +2926,7 @@ body[data-page="coffret"] .coffret-hero {
   padding: 32px 0;
 }
 .collections-head-title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-display);
   font-weight: 400;
   color: var(--text);
@@ -3061,7 +3019,7 @@ body[data-page="coffret"] .coffret-hero {
   );
 }
 .home-collection-card__name {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-22);
   font-weight: 400;
   color: var(--bg);
@@ -3094,7 +3052,7 @@ body[data-page="coffret"] .coffret-hero {
   margin: 8px auto 0;
 }
 .brands-outro-lead {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-22);
   font-weight: 400;
   color: var(--text);
@@ -3256,13 +3214,13 @@ body[data-page="coffret"] .coffret-hero {
   transform: translateY(-8px);
 }
 .collection-card-name {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-22);
   font-weight: 500;
   margin: 0 0 4.8px;
 }
 .collection-card-tagline {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-11);
   letter-spacing: var(--tracking-tight);
   opacity: 0.8;
@@ -3277,7 +3235,7 @@ body[data-page="coffret"] .coffret-hero {
   align-items: center;
   gap: 6.4px;
   margin-top: 12.8px;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-11);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -3295,7 +3253,7 @@ body[data-page="coffret"] .coffret-hero {
   top: 16px;
   right: 16px;
   z-index: 1;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-9);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
@@ -3326,7 +3284,7 @@ body[data-page="coffret"] .coffret-hero {
   margin-bottom: 11.2px;
 }
 .sub-title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 35.2px;
   font-weight: 400;
   color: var(--text);
@@ -3429,7 +3387,7 @@ body[data-page="coffret"] .coffret-hero {
   color: var(--text);
 }
 .ugc-label {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-14);
   font-weight: 400;
   color: var(--text);
@@ -3473,7 +3431,7 @@ body[data-page="coffret"] .coffret-hero {
   font-size: var(--text-13);
 }
 .testimonial-text {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-15);
   font-weight: 400;
   font-style: italic;
@@ -3551,7 +3509,7 @@ body[data-page="coffret"] .coffret-hero {
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-14);
   font-weight: 500;
   color: var(--text);
@@ -3617,7 +3575,7 @@ body[data-page="coffret"] .coffret-hero {
   margin-bottom: 12.8px;
 }
 .quiz-title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 32px;
   font-weight: 400;
   color: var(--text);
@@ -3640,23 +3598,14 @@ body[data-page="coffret"] .coffret-hero {
   gap: 9.6px;
 }
 .quiz-note-chip {
-  background: var(--badge-bg);
-  border: 0.8px solid var(--badge-border);
   border-radius: var(--radius-pill);
-  padding: 9.6px 17.6px;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 500;
   font-size: var(--text-10);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--accent);
   cursor: pointer;
   transition: all 0.2s;
-}
-.quiz-note-chip:hover {
-  border-color: var(--text);
-  color: var(--text);
-  background: var(--surface);
 }
 
 /* ─── NEWSLETTER ─── */
@@ -3676,7 +3625,7 @@ body[data-page="coffret"] .coffret-hero {
   margin-bottom: 11.2px;
 }
 .newsletter-title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 32px;
   font-weight: 400;
   color: var(--text);
@@ -3712,7 +3661,7 @@ body[data-page="coffret"] .coffret-hero {
   padding: 11.2px 16px;
   border: 1.2px solid var(--border);
   border-radius: var(--radius-pill);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-13);
   color: var(--text);
   background: var(--surface);
@@ -4205,28 +4154,14 @@ footer {
   border-bottom: 0.8px solid var(--border);
 }
 .page-hero-eyebrow {
-  font-size: var(--text-10);
-  letter-spacing: var(--tracking-eyebrow);
-  color: var(--accent);
   text-transform: uppercase;
-  margin-bottom: 9.6px;
 }
 .page-hero-title {
-  font-family: "DM Sans", sans-serif;
-  font-size: var(--text-display);
-  font-weight: 400;
-  line-height: 1.1;
   margin-bottom: 9.6px;
 }
-.page-hero-title em {
-  font-style: italic;
-  color: var(--accent);
-}
+
 .page-hero-sub {
-  font-size: var(--text-14);
   color: var(--text-muted);
-  max-width: 416px;
-  line-height: 1.7;
 }
 
 body[data-page="catalogue"] .page-hero {
@@ -4331,7 +4266,7 @@ body[data-page="catalogue"] .page-hero {
   margin-bottom: 16px;
 }
 .filters-title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-11);
   font-weight: 500;
   letter-spacing: var(--tracking-eyebrow);
@@ -4408,10 +4343,8 @@ body[data-page="catalogue"] .page-hero {
   background: none;
   border: none;
   cursor: pointer;
-  font-family: "DM Sans", sans-serif;
   font-size: var(--text-10);
   font-weight: 500;
-  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: var(--text);
 }
@@ -4464,7 +4397,7 @@ body[data-page="catalogue"] .page-hero {
   border: none;
   background: none;
   outline: none;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-11);
   color: var(--text);
   min-width: 0;
@@ -4486,7 +4419,7 @@ body[data-page="catalogue"] .page-hero {
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-11);
   cursor: pointer;
   display: inline-flex;
@@ -4555,7 +4488,7 @@ body[data-page="catalogue"] .page-hero {
   background: none;
   border: none;
   padding: 0;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-10);
   color: var(--text-muted);
   text-decoration: underline;
@@ -4768,7 +4701,7 @@ body[data-page="catalogue"] .page-hero {
   border-radius: var(--radius-lg);
   background: var(--bg);
   cursor: pointer;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   transition:
     background 0.22s ease,
     border-color 0.22s ease,
@@ -4865,7 +4798,7 @@ body[data-page="catalogue"] .page-hero {
 .btn-filters-clear {
   height: 44px;
   border-radius: var(--radius-pill);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-11);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
@@ -4907,7 +4840,7 @@ body[data-page="catalogue"] .page-hero {
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-11);
   cursor: pointer;
 }
@@ -5003,7 +4936,7 @@ body[data-page="catalogue"] .page-hero {
   margin-right: auto;
 }
 .catalogue-topbar select {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-11);
   padding: 6.4px 11.2px;
   border: 0.8px solid var(--border);
@@ -5028,7 +4961,7 @@ body[data-page="catalogue"] .page-hero {
 .btn-text {
   background: none;
   border: none;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-11);
   color: var(--accent);
   cursor: pointer;
@@ -5064,7 +4997,7 @@ body[data-page="catalogue"] .page-hero {
   padding: 32px 0;
 }
 .brands-head-title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-display);
   font-weight: 400;
   color: var(--text);
@@ -5081,7 +5014,7 @@ body[data-page="catalogue"] .page-hero {
   margin: 0 0 16px;
 }
 .brands-head-stat {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-10);
   font-weight: 500;
   letter-spacing: var(--tracking-eyebrow);
@@ -5118,7 +5051,7 @@ body[data-page="catalogue"] .page-hero {
   border: none;
   outline: none;
   background: none;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-16);
   color: var(--text);
 }
@@ -5145,7 +5078,7 @@ body[data-page="catalogue"] .page-hero {
   gap: 4px 14.4px;
 }
 .brands-popular-pill {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-12);
   color: var(--text-muted);
   background: none;
@@ -5176,7 +5109,7 @@ body[data-page="catalogue"] .page-hero {
   gap: 10px;
 }
 .brands-filter-group__label {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-10);
   font-weight: 600;
   letter-spacing: var(--tracking-loud);
@@ -5191,7 +5124,7 @@ body[data-page="catalogue"] .page-hero {
   justify-content: center;
 }
 .brands-filter-pill {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-12);
   color: var(--text-muted);
   background: var(--surface);
@@ -5277,7 +5210,7 @@ body[data-page="catalogue"] .page-hero {
   height: 100%;
   align-items: center;
   justify-content: center;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 30px;
   font-weight: 500;
   letter-spacing: var(--tracking-tight);
@@ -5299,7 +5232,7 @@ body[data-page="catalogue"] .page-hero {
   align-items: center;
   gap: 6.4px;
   margin-top: 6.4px;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-11);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -5389,7 +5322,7 @@ body[data-page="catalogue"] .page-hero {
   background: var(--surface);
 }
 .chatbot-head-title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-16);
 }
 .chatbot-head-sub {
@@ -5487,7 +5420,7 @@ body[data-page="catalogue"] .page-hero {
   padding: 0 16px 9.6px;
 }
 .chatbot-suggestion {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-9);
   padding: 4.8px 9.6px;
   border: 0.8px solid var(--border);
@@ -5514,7 +5447,7 @@ body[data-page="catalogue"] .page-hero {
   padding: 9.6px 12.8px;
   border: 0.8px solid var(--border);
   border-radius: var(--radius-pill);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-12);
   outline: none;
 }
@@ -5601,7 +5534,7 @@ body[data-page="catalogue"] .page-hero {
   border-radius: var(--radius-pill);
   background: var(--accent);
   color: var(--bg);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-10);
   font-weight: 600;
   display: flex;
@@ -5613,13 +5546,10 @@ body[data-page="catalogue"] .page-hero {
   position: absolute;
   bottom: 57.6px;
   left: 0;
-  width: 320px;
   max-width: calc(100vw - 38.4px);
   max-height: calc(100vh - 96px);
   max-height: calc(100dvh - 96px);
-  background: var(--surface);
   border: 0.8px solid var(--border);
-  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-panel);
   display: flex;
   flex-direction: column;
@@ -5641,17 +5571,11 @@ body[data-page="catalogue"] .page-hero {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14.4px 16px;
-  border-bottom: 0.8px solid var(--border);
-  font-family: "DM Sans", sans-serif;
-  font-size: var(--text-15);
-  font-weight: 500;
 }
 .coffret-panel__close {
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: var(--text-18);
   cursor: pointer;
   line-height: 1;
 }
@@ -5659,9 +5583,7 @@ body[data-page="catalogue"] .page-hero {
   color: var(--text);
 }
 .coffret-panel__body {
-  padding: 14.4px 16px;
   overflow-y: auto;
-  max-height: 320px;
 }
 .coffret-empty {
   font-size: var(--text-12);
@@ -5733,15 +5655,7 @@ body[data-page="catalogue"] .page-hero {
   border-color: var(--danger);
   color: var(--danger);
 }
-.coffret-panel__foot {
-  padding: 14.4px 16px;
-  border-top: 0.8px solid var(--border);
-}
-.coffret-panel__foot .btn-dark {
-  display: block;
-  width: 100%;
-  text-align: center;
-}
+
 @media (max-width: 640px) {
   .coffret-widget {
     bottom: calc(12.8px + env(safe-area-inset-bottom, 0px));
@@ -5803,7 +5717,7 @@ body[data-page="catalogue"] .page-hero {
   color: var(--border-dark);
 }
 .favoris-empty p {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-23);
   color: var(--text);
 }
@@ -5864,7 +5778,7 @@ body[data-page="favoris"] .favoris-hero {
   padding: 0 var(--px);
 }
 .favoris-hero__title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-display);
   font-weight: 400;
   line-height: 1.1;
@@ -5890,14 +5804,7 @@ body[data-page="favoris"] .favoris-hero {
 .favoris-stats[hidden] {
   display: none;
 }
-.favoris-stat {
-  display: flex;
-  align-items: center;
-  gap: 7.2px;
-  font-size: var(--text-12);
-  color: var(--text);
-  white-space: nowrap;
-}
+
 .favoris-stat {
   display: flex;
   align-items: center;
@@ -5955,7 +5862,9 @@ body[data-page="favoris"] .favoris-hero {
   justify-content: center;
   cursor: pointer;
   box-shadow: var(--shadow-tight);
-  transition: color 0.2s, transform 0.2s;
+  transition:
+    color 0.2s,
+    transform 0.2s;
 }
 .fav-card__heart:hover {
   transform: scale(1.08);
@@ -5974,8 +5883,10 @@ body[data-page="favoris"] .favoris-hero {
   width: 1em;
   height: 1em;
   background-color: var(--danger);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
 }
 .fav-card__tag {
   position: absolute;
@@ -6029,7 +5940,7 @@ body[data-page="favoris"] .favoris-hero {
   color: var(--accent);
 }
 .fav-card__name {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-18);
   color: var(--text);
 }
@@ -6051,12 +5962,12 @@ body[data-page="favoris"] .favoris-hero {
   border-radius: var(--radius-pill);
   background: var(--bg);
   color: var(--text);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-12);
   cursor: pointer;
 }
 .fav-card__price {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-15);
   font-weight: 600;
   color: var(--text);
@@ -6140,7 +6051,11 @@ body[data-page="favoris"] .favoris-hero {
   justify-content: center;
   gap: 8px;
   padding: 28px;
-  background: linear-gradient(180deg, rgba(250, 247, 242, 0.5) 0%, rgba(250, 247, 242, 0.92) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(250, 247, 242, 0.5) 0%,
+    rgba(250, 247, 242, 0.92) 100%
+  );
 }
 .fav-card--cta__icon {
   color: var(--accent);
@@ -6148,7 +6063,7 @@ body[data-page="favoris"] .favoris-hero {
   margin-bottom: 4px;
 }
 .fav-card--cta__title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-18);
   color: var(--text);
   line-height: 1.3;
@@ -6173,7 +6088,7 @@ body[data-page="favoris"] .favoris-hero {
   margin-bottom: 20px;
 }
 .favoris-explore__head h2 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-23);
   font-weight: 400;
   color: var(--text);
@@ -6224,7 +6139,11 @@ body[data-page="favoris"] .favoris-hero {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(20, 18, 16, 0.62) 0%, transparent 55%);
+  background: linear-gradient(
+    to top,
+    rgba(20, 18, 16, 0.62) 0%,
+    transparent 55%
+  );
   transition: background 0.25s ease;
 }
 .favoris-explore__tile::before {
@@ -6244,7 +6163,11 @@ body[data-page="favoris"] .favoris-hero {
   font-size: 13px;
   opacity: 0;
   transform: translateY(-4px);
-  transition: opacity 0.25s ease, transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    background 0.25s ease,
+    color 0.25s ease;
 }
 .favoris-explore__tile:hover::before {
   opacity: 1;
@@ -6256,7 +6179,7 @@ body[data-page="favoris"] .favoris-hero {
   position: relative;
   z-index: 1;
   padding: 12px;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-14);
   color: #fff;
 }
@@ -6351,7 +6274,7 @@ body[data-page="favoris"] .favoris-hero {
   border-bottom: 0.8px solid var(--border);
 }
 .panier-head__title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-display);
   font-weight: 400;
   line-height: 1.1;
@@ -6444,7 +6367,7 @@ body[data-page="favoris"] .favoris-hero {
   color: var(--accent);
 }
 .panier-item__name {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-16);
   color: var(--text);
 }
@@ -6455,7 +6378,7 @@ body[data-page="favoris"] .favoris-hero {
   border-radius: var(--radius-pill);
   background: var(--bg);
   color: var(--text-muted);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-12);
   cursor: pointer;
 }
@@ -6478,7 +6401,9 @@ body[data-page="favoris"] .favoris-hero {
   justify-content: center;
   font-size: var(--text-16);
   line-height: 1;
-  transition: border-color 0.2s, color 0.2s;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
 }
 .panier-item__qty button:hover {
   border-color: var(--text);
@@ -6490,7 +6415,7 @@ body[data-page="favoris"] .favoris-hero {
   color: var(--text);
 }
 .panier-item__price {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 600;
   font-size: var(--text-16);
   color: var(--text);
@@ -6572,7 +6497,7 @@ body[data-page="favoris"] .favoris-hero {
   gap: 14px;
 }
 .panier-summary__title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-18);
   color: var(--text);
 }
@@ -6614,7 +6539,7 @@ body[data-page="favoris"] .favoris-hero {
   justify-content: space-between;
   padding-top: 14px;
   border-top: 0.8px solid var(--border-dark);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-20);
   color: var(--text);
 }
@@ -6685,7 +6610,7 @@ body[data-page="favoris"] .favoris-hero {
   gap: 2px;
 }
 .panier-trust strong {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 500;
   font-size: var(--text-13);
   color: var(--text);
@@ -6732,7 +6657,9 @@ body[data-page="favoris"] .favoris-hero {
   box-shadow: var(--shadow-sm);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.25s, transform 0.25s;
+  transition:
+    opacity 0.25s,
+    transform 0.25s;
   z-index: 500;
   text-align: center;
 }
@@ -6759,7 +6686,7 @@ body[data-page="favoris"] .favoris-hero {
   color: var(--border-dark);
 }
 .panier-empty p {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-18);
   color: var(--text);
 }
@@ -6921,10 +6848,6 @@ body[data-page="favoris"] .favoris-hero {
 }
 .media-slot--card .card-img-photo {
   position: absolute;
-  inset: 7%;
-  width: 86%;
-  height: 86%;
-  object-fit: contain;
 }
 .media-slot--card .product-detail__img {
   position: absolute;
@@ -6989,7 +6912,7 @@ body[data-page="favoris"] .favoris-hero {
   color: var(--accent);
 }
 .placeholder-premium__title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-22);
   font-weight: 400;
   line-height: 1.15;
@@ -7016,7 +6939,7 @@ body[data-page="favoris"] .favoris-hero {
   color: var(--text-muted);
 }
 .placeholder-premium__name {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-18);
   color: var(--text);
   line-height: 1.25;
@@ -7056,7 +6979,11 @@ body[data-page="favoris"] .favoris-hero {
   .placeholder-premium__pattern,
 .placeholder-premium--product[data-family="gourmand"]
   .placeholder-premium__pattern {
-  background: linear-gradient(145deg, var(--accent-light) 0%, var(--surface-2) 100%);
+  background: linear-gradient(
+    145deg,
+    var(--accent-light) 0%,
+    var(--surface-2) 100%
+  );
 }
 .placeholder-premium--product[data-family="boisé"]
   .placeholder-premium__pattern,
@@ -7064,30 +6991,43 @@ body[data-page="favoris"] .favoris-hero {
   .placeholder-premium__pattern,
 .placeholder-premium--product[data-family="aromatique"]
   .placeholder-premium__pattern {
-  background: linear-gradient(145deg, var(--surface-2) 0%, var(--accent-light) 100%);
+  background: linear-gradient(
+    145deg,
+    var(--surface-2) 0%,
+    var(--accent-light) 100%
+  );
 }
 .placeholder-premium--product[data-family="floral"]
   .placeholder-premium__pattern {
-  background: linear-gradient(145deg, var(--family-floral-1) 0%, var(--family-floral-2) 100%);
+  background: linear-gradient(
+    145deg,
+    var(--family-floral-1) 0%,
+    var(--family-floral-2) 100%
+  );
 }
 .placeholder-premium--product[data-family="cuir"]
   .placeholder-premium__pattern {
-  background: linear-gradient(145deg, var(--surface) 0%, var(--border-dark) 100%);
+  background: linear-gradient(
+    145deg,
+    var(--surface) 0%,
+    var(--border-dark) 100%
+  );
 }
-.placeholder-premium--lifestyle[data-variant="0"]
-  .placeholder-premium__pattern,
+.placeholder-premium--lifestyle[data-variant="0"] .placeholder-premium__pattern,
 .placeholder-premium--lifestyle[data-variant="3"]
   .placeholder-premium__pattern {
   background: linear-gradient(150deg, var(--surface) 0%, var(--surface-2) 100%);
 }
-.placeholder-premium--lifestyle[data-variant="1"]
-  .placeholder-premium__pattern,
+.placeholder-premium--lifestyle[data-variant="1"] .placeholder-premium__pattern,
 .placeholder-premium--lifestyle[data-variant="4"]
   .placeholder-premium__pattern {
-  background: linear-gradient(150deg, var(--accent-light) 0%, var(--surface) 100%);
+  background: linear-gradient(
+    150deg,
+    var(--accent-light) 0%,
+    var(--surface) 100%
+  );
 }
-.placeholder-premium--lifestyle[data-variant="2"]
-  .placeholder-premium__pattern,
+.placeholder-premium--lifestyle[data-variant="2"] .placeholder-premium__pattern,
 .placeholder-premium--lifestyle[data-variant="5"]
   .placeholder-premium__pattern {
   background: linear-gradient(150deg, var(--surface-2) 0%, var(--border) 100%);
@@ -7129,7 +7069,7 @@ body[data-page="favoris"] .favoris-hero {
   color: var(--text-muted);
 }
 .static-content h2 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 500;
   font-size: var(--text-23);
   color: var(--text);
@@ -7213,7 +7153,7 @@ body[data-page="favoris"] .favoris-hero {
   padding: 9.6px 12.8px;
   border: 0.8px solid var(--border);
   border-radius: var(--radius-md);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-13);
 }
 .contact-form button {
@@ -7241,7 +7181,7 @@ body[data-page="favoris"] .favoris-hero {
   margin-bottom: 12.8px;
 }
 .error-page-title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 500;
   font-size: 44.8px;
   line-height: 1.1;
@@ -7473,10 +7413,14 @@ body.has-cookie-banner .chatbot-widget {
   /* Le bouton conseiller se cale au-dessus de tout le bas de page. */
   .chatbot-widget,
   body.has-cookie-banner .chatbot-widget {
-    bottom: calc(var(--bottom-chrome, 56px) + 12.8px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(
+      var(--bottom-chrome, 56px) + 12.8px + env(safe-area-inset-bottom, 0px)
+    );
   }
   body.has-tabbar {
-    padding-bottom: calc(var(--tabbar-h, 56px) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(
+      var(--tabbar-h, 56px) + env(safe-area-inset-bottom, 0px)
+    );
   }
 }
 
@@ -8017,7 +7961,6 @@ body.has-cookie-banner .chatbot-widget {
 }
 .box-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 20px;
   max-width: 1120px;
   margin: 40px auto 0;
@@ -8070,7 +8013,6 @@ body.has-cookie-banner .chatbot-widget {
   right: 12.8px;
   background: var(--text);
   color: #fff;
-  font-variant-numeric: tabular-nums;
   /* La pastille ne doit jamais se couper en deux lignes. */
   white-space: nowrap;
 }
@@ -8465,8 +8407,6 @@ body.has-cookie-banner .chatbot-widget {
 .hero {
   position: relative;
   isolation: isolate;
-  min-height: 76vh;
-  min-height: 76dvh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -8481,7 +8421,6 @@ body.has-cookie-banner .chatbot-widget {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 70% center;
 }
 /* Voile clair a gauche : le texte reste lisible sur la photo, sans la ternir. */
 .hero::before {
@@ -8489,13 +8428,6 @@ body.has-cookie-banner .chatbot-widget {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(
-    100deg,
-    rgba(250, 247, 242, 0.97) 0%,
-    rgba(250, 247, 242, 0.92) 28%,
-    rgba(250, 247, 242, 0.45) 52%,
-    rgba(250, 247, 242, 0) 72%
-  );
 }
 .hero__inner {
   width: 100%;
@@ -8504,34 +8436,22 @@ body.has-cookie-banner .chatbot-widget {
   padding: 64px var(--px);
 }
 .hero__content {
-  max-width: 34rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 20px;
 }
 .hero__eyebrow {
   margin: 0;
-  font-size: var(--text-11);
-  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
-  color: var(--accent);
 }
 .hero__title {
   margin: 0;
   font-family: "Cormorant Garamond", serif;
   font-weight: 300;
-  font-size: clamp(2.1rem, 1rem + 4.4vw, 4.2rem);
-  line-height: 1.08;
   color: var(--text);
-  text-wrap: balance;
 }
 .hero__sub {
   margin: 0;
-  max-width: 34ch;
-  font-size: var(--text-16);
-  line-height: 1.65;
-  color: var(--text-muted);
 }
 .hero__proof {
   display: flex;
@@ -8565,29 +8485,21 @@ body.has-cookie-banner .chatbot-widget {
   color: var(--text-muted);
 }
 .hero__proof-orders i {
-  color: var(--accent);
   font-size: 16px;
 }
 .hero__cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 52px;
   margin-top: 8px;
-  padding: 0 32px;
-  border-radius: var(--radius-pill);
   background: var(--text);
   color: var(--bg);
-  font-size: var(--text-15);
   text-decoration: none;
   transition:
     background 0.2s ease,
     transform 0.2s ease;
 }
-.hero__cta:hover {
-  background: var(--accent);
-  transform: translateY(-1.6px);
-}
+
 .hero__cta:focus-visible {
   outline: 1.6px solid var(--accent);
   outline-offset: 3.2px;
@@ -8603,12 +8515,10 @@ body.has-cookie-banner .chatbot-widget {
   gap: 12px;
 }
 .hero__cta--ghost {
-  background: none;
   border: 0.8px solid var(--text);
   color: var(--text);
 }
 .hero__cta--ghost:hover {
-  background: var(--text);
   color: var(--bg);
 }
 
@@ -8668,7 +8578,11 @@ body.has-cookie-banner .chatbot-widget {
   text-align: center;
   overflow: hidden;
   background:
-    linear-gradient(to bottom, rgba(252, 250, 247, 0.93), rgba(252, 250, 247, 0.985)),
+    linear-gradient(
+      to bottom,
+      rgba(252, 250, 247, 0.93),
+      rgba(252, 250, 247, 0.985)
+    ),
     url("../images/hero/hero-flacons-niche-sm.webp") center / cover no-repeat;
   border-bottom: 1px solid var(--border);
 }
@@ -8971,18 +8885,9 @@ body.has-cookie-banner .chatbot-widget {
   display: none;
 }
 .phare-card__media {
-  display: grid;
   place-items: center;
-  width: 100%;
-  aspect-ratio: 3 / 4;
 }
-.phare-card__media img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-}
+
 .phare-card__name {
   font-size: var(--text-11);
   letter-spacing: var(--tracking-eyebrow);
@@ -9151,8 +9056,6 @@ body.has-cookie-banner .chatbot-widget {
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  font-size: var(--text-12);
-  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--text);
   border-bottom: 1px solid var(--accent);
@@ -9191,7 +9094,9 @@ body.has-cookie-banner .chatbot-widget {
   height: 6px;
   border-radius: 50%;
   background: var(--border);
-  transition: background 0.2s ease, width 0.2s ease;
+  transition:
+    background 0.2s ease,
+    width 0.2s ease;
 }
 .formats-dot.is-active {
   width: 18px;
@@ -9353,7 +9258,7 @@ body.has-cookie-banner .chatbot-widget {
 }
 .boxes-hero__title {
   margin-top: 10px;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: clamp(2rem, 1.4rem + 3vw, 3.25rem);
   font-weight: 300;
   line-height: 1.1;
@@ -9542,7 +9447,7 @@ body.has-cookie-banner .chatbot-widget {
   border-top: 1px solid var(--border);
 }
 .boxes-alt__title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-22);
   font-weight: 400;
   color: var(--text);
@@ -9923,12 +9828,24 @@ body.has-cookie-banner .chatbot-widget {
 .hero__content > * {
   animation: koreiMonte 760ms var(--pose) both;
 }
-.hero__content > *:nth-child(1) { animation-delay: 260ms; }
-.hero__content > *:nth-child(2) { animation-delay: 360ms; }
-.hero__content > *:nth-child(3) { animation-delay: 450ms; }
-.hero__content > *:nth-child(4) { animation-delay: 530ms; }
-.hero__content > *:nth-child(5) { animation-delay: 600ms; }
-.hero__content > *:nth-child(6) { animation-delay: 660ms; }
+.hero__content > *:nth-child(1) {
+  animation-delay: 260ms;
+}
+.hero__content > *:nth-child(2) {
+  animation-delay: 360ms;
+}
+.hero__content > *:nth-child(3) {
+  animation-delay: 450ms;
+}
+.hero__content > *:nth-child(4) {
+  animation-delay: 530ms;
+}
+.hero__content > *:nth-child(5) {
+  animation-delay: 600ms;
+}
+.hero__content > *:nth-child(6) {
+  animation-delay: 660ms;
+}
 
 /* ─── 5 · La revelation au defilement ─────────────────────────────────── */
 
@@ -10043,7 +9960,9 @@ body.has-cookie-banner .chatbot-widget {
      qu'il faut reprendre pour que tout remonte au-dessus de la barre. */
   .hero__inner {
     padding-top: 168px;
-    padding-bottom: calc(32px + var(--tabbar-h, 56px) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(
+      32px + var(--tabbar-h, 56px) + env(safe-area-inset-bottom, 0px)
+    );
   }
 }
 
@@ -10220,10 +10139,6 @@ textarea:focus-visible {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
-  white-space: normal;
-  overflow: hidden;
-  text-overflow: clip;
-  min-height: calc(2 * 1.2em);
   text-wrap: balance;
 }
 
@@ -10334,7 +10249,7 @@ textarea:focus-visible {
   border-radius: 0;
   background: transparent;
   color: var(--text);
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: var(--text-11);
   font-weight: 500;
   letter-spacing: var(--tracking-label);
@@ -10714,7 +10629,7 @@ body[data-page="home"] .card-cta {
 .chip,
 .cb2-filter-chip,
 .quiz-note-chip {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 11.4px;
   font-weight: 400;
   letter-spacing: normal;
@@ -10926,25 +10841,14 @@ body[data-page="home"] .card-badge {
    c'est le filet entre l'image et le texte : la teinte se fond dans la carte. */
 .card-img,
 .card-img.media-slot {
-  height: 232px;
   border-bottom: 0;
 }
-.card-body {
-  padding: 6px 16px 18px;
-}
-.card-note-strip {
-  gap: 10px;
-  margin: 4px 0 14px;
-}
+
 .card-note {
   gap: 6px;
-  font-size: var(--text-12);
-  color: var(--text);
 }
 .note-image,
 .card-note .note-image {
-  width: 56px;
-  height: 56px;
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -11005,9 +10909,6 @@ body[data-page="home"] .card-badge {
   justify-content: center;
 }
 .card-note > span:last-child {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
   min-height: 0;
   overflow-wrap: anywhere;
   hyphens: auto;
@@ -11022,10 +10923,7 @@ body[data-page="home"] .card-badge {
 /* Carte produit, image (retour du 4 septembre 2026, exemple scento) : la
    teinte du flacon couvre toute la largeur et fond vers le blanc en bas, le
    flacon est grand mais entier (contain, jamais rogne). */
-.card-img,
-.card-img.media-slot {
-  height: 272px;
-}
+
 .card-img-glow,
 .media-slot--loaded .card-img-glow {
   inset: -25%;
@@ -11042,15 +10940,17 @@ body[data-page="home"] .card-badge {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.55) 70%, #fff 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.55) 70%,
+    #fff 100%
+  );
 }
 .card-img > :not(.card-img-glow) {
   z-index: 2;
 }
 .media-slot--card .card-img-photo {
-  inset: 0;
-  width: 100%;
-  height: 100%;
   object-fit: contain;
 }
 .card-body {
@@ -11058,11 +10958,7 @@ body[data-page="home"] .card-badge {
 }
 /* Le flacon garde une marge en haut et en bas : grand, mais jamais colle au
    bord ni sous le repere. Repere et coeur passent au-dessus du flacon. */
-.media-slot--card .card-img-photo {
-  inset: 7% 4%;
-  width: 92%;
-  height: 86%;
-}
+
 .card-img > .card-badge,
 .card-img > button,
 .card-img > [class*="wish"],
@@ -11110,11 +11006,7 @@ body[data-page="home"] .card-badge {
 /* Fond de la zone image : un degrade uni, du haut vers le bas, dans la
    teinte du flacon (--card-tint posee par site.js). Sans teinte, le fond
    neutre de la carte. Le halo floute ne sert plus. */
-.card-img,
-.card-img.media-slot,
-.media-slot--card.media-slot--loaded {
-  background: linear-gradient(180deg, var(--card-tint, var(--surface)) 0%, rgba(255, 255, 255, 0) 100%), #fff;
-}
+
 .card-img-glow,
 .media-slot--loaded .card-img-glow {
   display: none;
@@ -11133,16 +11025,1072 @@ body[data-page="home"] .card-badge {
   max-width: 100%;
   margin: 0 auto;
   transform-origin: var(--fit-origin, 50% 50%);
-  transform: translate(var(--fit-x, 0), var(--fit-y, 0)) scale(var(--fit-scale, 1));
+  transform: translate(var(--fit-x, 0), var(--fit-y, 0))
+    scale(var(--fit-scale, 1));
 }
 .product-card:hover .card-img .card-img-photo {
-  transform: translate(var(--fit-x, 0), var(--fit-y, 0)) scale(calc(var(--fit-scale, 1) * 1.045));
+  transform: translate(var(--fit-x, 0), var(--fit-y, 0))
+    scale(calc(var(--fit-scale, 1) * 1.045));
 }
 /* Le degrade s'arrete avant le bord bas : la ligne de jonction avec le texte
    est blanche des deux cotes, aucun trait ne peut s'y dessiner. */
 .card-img,
 .card-img.media-slot,
 .media-slot--card.media-slot--loaded {
-  background: linear-gradient(180deg, var(--card-tint, var(--surface)) 0%, rgba(255, 255, 255, 0) 94%), #fff;
+  background:
+    linear-gradient(
+      180deg,
+      var(--card-tint, var(--surface)) 0%,
+      rgba(255, 255, 255, 0) 94%
+    ),
+    #fff;
 }
 
+/* ── Police du corps : Manrope (7 septembre 2026, demande du client).
+   Les titres restent en Cormorant Garamond. */
+body {
+  font-family: "Manrope", "DM Sans", system-ui, sans-serif;
+}
+
+/* ── En-tete mobile : le logo est vraiment au centre de l'ecran.
+   Avant, l'en-tete etait un flex : le logo se calait entre le hamburger
+   (a gauche) et quatre icones (a droite), donc 51 px trop a gauche sur
+   iPhone et 121 px trop a droite sur tablette. Trois colonnes egales aux
+   bords : le logo occupe la colonne du milieu, centre quoi qu'il y ait
+   autour. */
+@media (max-width: 860px) {
+  .header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 8px;
+  }
+  .header-left {
+    justify-content: flex-start;
+  }
+  .logo-center {
+    justify-self: center;
+    text-align: center;
+  }
+  .header-right {
+    justify-content: flex-end;
+  }
+}
+
+/* ── Carte produit, 7 septembre 2026 : « plus large et un peu moins longue,
+   pour laisser la place au texte de la pyramide ». Les trois notes tiennent
+   sur une ligne sans se couper, le nom passe en Cormorant comme les titres,
+   et la note en etoiles s'affiche quand on l'a. */
+.products-grid,
+.favoris-grid {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.card-body {
+  padding: 8px 18px 20px;
+}
+.card-brand {
+  font-size: var(--text-11);
+  letter-spacing: 0.22em;
+  margin-bottom: 6px;
+}
+.card-name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 27px;
+  font-weight: 400;
+  line-height: 1.1;
+  min-height: 0;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.card-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 17px;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--text);
+}
+.card-rating .star-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--accent);
+}
+.card-rating small {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.card-note-strip {
+  gap: 8px;
+  margin: 2px 0 12px;
+}
+.card-note {
+  position: relative;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  padding: 0 4px;
+}
+.card-note > span:last-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  line-height: 1.2;
+}
+.card-note + .card-note::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 8px;
+  bottom: 14px;
+  width: 1px;
+  background: var(--border);
+}
+
+.card-actions {
+  gap: 10px;
+}
+.card-actions .card-price {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.card-cta {
+  font-family: "Manrope", sans-serif;
+  font-size: var(--text-12);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 12px;
+  border-radius: 0;
+}
+@media (max-width: 640px) {
+  .products-grid,
+  .favoris-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .card-img,
+  .card-img.media-slot {
+    height: 190px;
+  }
+  .card-name {
+    font-size: 21px;
+  }
+  .note-image,
+  .card-note .note-image {
+    width: 44px;
+    height: 44px;
+  }
+  .card-note {
+    font-size: 12.5px;
+  }
+}
+
+/* ── « Mon coffret », la carte en bas de page (maquette du 7 septembre) :
+   anneau de progression, message, total, un bloc par coffret avec sa barre,
+   les flacons en photo, « Ajouter un parfum », bouton noir. */
+.coffret-panel {
+  width: 392px;
+  border-radius: 0;
+  background: var(--surface, #faf7f2);
+}
+.coffret-panel__head {
+  padding: 22px 24px 14px;
+  border-bottom: 0;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1;
+}
+.coffret-panel__close {
+  font-size: var(--text-22);
+}
+.coffret-panel__body {
+  padding: 0 24px 8px;
+  max-height: min(520px, calc(100dvh - 260px));
+}
+.cw-progress {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+.cw-ring {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  display: grid;
+  place-items: center;
+}
+.cw-ring svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.cw-ring circle {
+  fill: none;
+  stroke-width: 4;
+}
+.cw-ring__bg {
+  stroke: var(--border);
+}
+.cw-ring__val {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+}
+.cw-ring__txt {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  line-height: 1;
+}
+.cw-ring__txt strong {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 24px;
+  font-weight: 400;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.cw-ring__txt small {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.cw-progress__txt {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: start;
+}
+.cw-progress__txt i {
+  font-size: 24px;
+  color: var(--accent);
+  line-height: 1;
+}
+.cw-progress__txt p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text);
+}
+.cw-progress__txt p strong {
+  font-weight: 600;
+}
+.cw-bar,
+.cw-group__bar {
+  grid-column: 2;
+  display: block;
+  height: 3px;
+  margin-top: 10px;
+  background: var(--border);
+  overflow: hidden;
+}
+.cw-bar span,
+.cw-group__bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+.cw-note {
+  grid-column: 2;
+  margin-top: 6px;
+  font-size: 11px;
+  font-style: normal;
+  color: var(--text-muted);
+}
+.cw-total {
+  margin: 18px 0 0;
+  text-align: center;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.1;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.cw-total strong {
+  font-weight: 400;
+}
+.cw-total small {
+  display: block;
+  margin-top: 2px;
+  font-family: "Manrope", sans-serif;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.cw-rule {
+  display: flex;
+  align-items: center;
+  margin: 10px 24px 14px;
+}
+.cw-rule::before,
+.cw-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.55;
+}
+.cw-rule i {
+  width: 5px;
+  height: 5px;
+  margin: 0 6px;
+  background: var(--accent);
+  transform: rotate(45deg);
+}
+.cw-group {
+  margin: 0 0 12px;
+  padding: 14px 14px 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+.cw-group__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding-bottom: 8px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.2;
+  font-variant-numeric: lining-nums;
+}
+.cw-group__head i {
+  font-size: 20px;
+  color: var(--accent);
+}
+.cw-group__head em {
+  font-style: normal;
+  color: var(--badge-text, #8a6825);
+}
+.cw-group__bar {
+  margin: 0 0 10px;
+}
+.cw-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cw-item {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) 30px;
+  align-items: center;
+  gap: 12px;
+}
+.cw-item__img {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  background: var(--surface, #faf7f2);
+  overflow: hidden;
+}
+.cw-item__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 4px;
+}
+.cw-item__vide {
+  font-size: 22px;
+  color: var(--accent);
+}
+.cw-item__txt {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.cw-item__name {
+  font-family: "Cormorant Garamond", serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cw-item__name small {
+  font-family: "Manrope", sans-serif;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.cw-item__price {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 17px;
+  color: var(--badge-text, #8a6825);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.cw-item button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--surface, #faf7f2);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+}
+.cw-item button:hover {
+  color: var(--danger);
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--danger);
+}
+.cw-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px dashed var(--accent);
+  color: var(--badge-text, #8a6825);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 18px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.cw-add span {
+  width: 24px;
+  height: 24px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  line-height: 1;
+}
+.cw-add:hover {
+  background: var(--accent-light);
+}
+.coffret-panel__foot {
+  padding: 8px 24px 16px;
+  border-top: 0;
+}
+.coffret-panel__foot .btn-dark {
+  padding: 16px;
+  border-radius: 0;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 18px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.cw-trust {
+  margin: 12px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.cw-trust i {
+  color: var(--accent);
+  font-size: 16px;
+}
+@media (max-width: 640px) {
+  .coffret-panel {
+    width: calc(100vw - 25.6px);
+  }
+  .coffret-panel__body {
+    padding: 0 16px 8px;
+  }
+  .coffret-panel__head,
+  .coffret-panel__foot {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .cw-rule {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+}
+/* Tiroir : le nom du parfum tient sur deux lignes plutot que d'etre coupe. */
+.cw-item__name {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  font-size: 17px;
+  line-height: 1.15;
+}
+/* Cartes : un peu moins hautes ; sur mobile le prix reste sur une ligne. */
+.card-img,
+.card-img.media-slot {
+  height: 224px;
+}
+.note-image,
+.card-note .note-image {
+  width: 56px;
+  height: 56px;
+}
+@media (max-width: 640px) {
+  .card-body {
+    padding: 6px 10px 14px;
+  }
+  .card-actions .card-price {
+    font-size: 17px;
+    white-space: nowrap;
+  }
+  .card-cta {
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    padding: 10px 6px;
+  }
+  .card-note {
+    font-size: 11px;
+    padding: 0 2px;
+  }
+  .card-note-strip {
+    gap: 4px;
+  }
+  .card-brand {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+  }
+}
+/* Prix et bouton « Voir le parfum » se calent en bas de la carte : les
+   cartes d'une meme rangee ont la meme hauteur, donc les boutons s'alignent
+   meme quand une carte a une ligne d'etoiles ou un nom sur deux lignes. */
+.card-actions {
+  margin-top: auto;
+  padding-top: 10px;
+}
+.card-note-strip {
+  margin-bottom: 4px;
+}
+/* La carte est repassee en bloc par une regle plus bas : le lien ne
+   s'etirait plus, et le bouton restait a la hauteur du contenu. La carte
+   redevient une colonne flex, le lien prend toute la hauteur. */
+.products-grid .product-card,
+.favoris-grid .product-card,
+.product-card {
+  display: flex;
+  flex-direction: column;
+}
+.product-card > .product-card__link {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Pastille « conseiller » allegee (lot 2) : plus petite, claire, filet
+   or, et au-dessus de la barre d'onglets sur telephone. */
+.chatbot-toggle {
+  width: 42px;
+  height: 42px;
+  background: var(--surface, #faf7f2);
+  color: var(--text);
+  border: 1px solid var(--accent);
+  box-shadow: 0 8px 20px -10px rgba(26, 26, 24, 0.45);
+  font-size: 18px;
+}
+.chatbot-toggle:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: none;
+}
+.chatbot-toggle.open {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+  transform: none;
+}
+@media (max-width: 860px) {
+  #chatbot-toggle {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+  }
+}
+
+/* ── Hero de l'accueil sur telephone (lot 2) : la photo se voit vraiment.
+   Bande photo nette en haut, le voile ne commence qu'au-dessus du texte. */
+@media (max-width: 860px) {
+  .hero__media img {
+    object-position: 60% 42%;
+  }
+  .hero::before {
+    background: linear-gradient(
+      180deg,
+      rgba(250, 247, 242, 0) 0%,
+      rgba(250, 247, 242, 0) 30%,
+      rgba(250, 247, 242, 0.9) 40%,
+      rgba(250, 247, 242, 0.99) 50%
+    );
+  }
+  .hero__inner {
+    padding-top: 290px;
+  }
+}
+
+/* ── Page coffrets : les deux coffrets en comparaison, ligne a ligne. */
+.box-compare {
+  max-width: 760px;
+  margin: 8px auto 0;
+  padding: 0 var(--px);
+}
+.box-compare table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.box-compare th,
+.box-compare td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  vertical-align: middle;
+}
+.box-compare th {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text);
+}
+.box-compare th small {
+  display: block;
+  font-family: "Manrope", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.box-compare td:first-child,
+.box-compare th:first-child {
+  text-align: left;
+  color: var(--text-muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  width: 38%;
+}
+.box-compare td b {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 19px;
+  font-weight: 400;
+  color: var(--text);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.box-compare td i {
+  color: var(--accent);
+  font-size: 18px;
+}
+.box-compare tr.is-price td b {
+  color: var(--badge-text, #8a6825);
+}
+@media (max-width: 640px) {
+  .box-compare th,
+  .box-compare td {
+    padding: 10px 6px;
+  }
+  .box-compare td:first-child,
+  .box-compare th:first-child {
+    width: 34%;
+    font-size: 10px;
+  }
+}
+
+/* ── Les trois formats en une image (accueil, section « Nos formats »). */
+.formats-scale {
+  max-width: 300px;
+  margin: 4px auto 28px;
+  text-align: center;
+}
+.formats-scale img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+.formats-scale figcaption {
+  margin-top: 10px;
+  font-size: var(--text-12);
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+@media (max-width: 640px) {
+  .formats-scale {
+    max-width: 220px;
+    margin-bottom: 20px;
+  }
+}
+
+/* ── Hero de l'accueil, 7 septembre 2026 : plus de voile.
+   Telephone : la photo devient une bande nette en haut, le texte vient
+   dessous sur le fond de la page. Ordinateur : le texte est centre, le
+   voile disparait, seul un leger halo clair reste derriere le bloc de
+   texte pour la lecture. */
+@media (max-width: 860px) {
+  .hero {
+    display: block;
+    min-height: 0;
+  }
+  .hero__media {
+    position: relative;
+    inset: auto;
+    z-index: auto;
+    display: block;
+    height: clamp(260px, 58vw, 380px);
+  }
+  .hero__media img {
+    object-position: 58% 45%;
+  }
+  .hero::before {
+    display: none;
+  }
+  .hero__inner {
+    padding-top: 28px;
+  }
+}
+@media (min-width: 861px) {
+  /* Ordinateur : deux colonnes. Le texte a gauche sur le fond de la page,
+     la photo a droite en pleine hauteur. Plus de voile, plus de texte
+     par-dessus les flacons. */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 50%) minmax(0, 50%);
+    align-items: stretch;
+    padding: 0;
+    gap: 0;
+    min-height: clamp(560px, 68vh, 760px);
+  }
+  .hero::before {
+    display: none;
+  }
+  .hero__media {
+    position: relative;
+    inset: auto;
+    z-index: auto;
+    grid-column: 2;
+    grid-row: 1;
+    display: block;
+    height: 100%;
+  }
+  .hero__media img {
+    object-position: 62% 45%;
+  }
+  .hero__inner {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    max-width: none;
+    margin: 0;
+    /* Le hero remonte sous l'en-tete transparent (78,54 px) : on rend
+       cette hauteur au texte pour qu'il ne passe pas sous la navigation. */
+    padding: calc(78.54px + 48px) clamp(24px, 4vw, 56px) 56px clamp(32px, 5.5vw, 88px);
+  }
+  .hero__content {
+    align-items: flex-start;
+    text-align: left;
+    max-width: 600px;
+    margin: 0;
+    padding: 0;
+    background: none;
+  }
+  /* Le titre doit tenir sur deux lignes : sa taille suit la largeur de la
+     colonne de texte (moitie de l'ecran moins les marges). */
+  .hero__title {
+    font-size: clamp(2.4rem, 5.55vw - 16px, 4.3rem);
+  }
+}
+
+/* ── En-tete telephone, 7 septembre 2026 : les quatre icones de droite
+   (recherche, favoris, panier, compte) debordaient sur le logo, qui n'etait
+   donc plus centre. Icones et ecarts resserres pour tenir dans leur tiers. */
+@media (max-width: 860px) {
+  .header-right,
+  .header-right .header-actions {
+    gap: 0;
+    min-width: 0;
+  }
+  .header-right .icon-btn {
+    width: 36px;
+    min-width: 36px;
+    margin: 0;
+    height: 44px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .header-right .icon-btn svg {
+    width: 21px;
+    height: 21px;
+  }
+}
+@media (max-width: 380px) {
+  .header-right .icon-btn {
+    width: 30px;
+    min-width: 30px;
+  }
+  .header-right .icon-btn svg {
+    width: 19px;
+    height: 19px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Hero « les trois fioles », 7 septembre 2026.
+   Le sujet de Korei n'est pas une pile de flacons de marques, c'est la fiole
+   remplie a la main. Un mur clair, une tablette de marbre, trois fioles a
+   l'echelle, un titre centre. Tout le reste se tait.
+   La tablette de la photo commence a 85 % de sa hauteur : la photo est calee
+   en bas, les fioles ont leur pied a 15 % du bas du hero.
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero--fioles {
+  /* Hauteur du hero et hauteur de la tablette (15 % de la photo, calee en
+     bas) : les deux partent de la meme mesure, les fioles tombent juste. */
+  --hero-h: max(100svh, 820px);
+  --tablette: calc(var(--hero-h) * 0.15);
+  display: block;
+  padding: 0;
+  gap: 0;
+  min-height: var(--hero-h);
+  overflow: hidden;
+}
+.hero--fioles::before {
+  display: none;
+}
+.hero--fioles .hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: block;
+  height: auto;
+  grid-column: auto;
+}
+.hero--fioles .hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 100%;
+  transform: none;
+}
+.hero--fioles .hero__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  min-height: var(--hero-h);
+  padding: calc(78.54px + clamp(24px, 4.5vh, 56px)) var(--px) var(--tablette);
+}
+.hero--fioles .hero__content {
+  flex: none;
+  align-items: center;
+  text-align: center;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 0;
+  gap: 20px;
+  background: none;
+}
+.hero--fioles .hero__eyebrow {
+  gap: 14px;
+}
+.hero--fioles .hero__eyebrow::before,
+.hero--fioles .hero__eyebrow::after {
+  content: "";
+  width: 44px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+.hero--fioles .hero__title {
+  font-size: clamp(2.8rem, 1.4rem + 3.8vw, 4.6rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.hero--fioles .hero__line {
+  display: block;
+}
+.hero--fioles .hero__title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--sceau);
+}
+.hero--fioles .hero__sub {
+  max-width: 50ch;
+  margin: 0 auto;
+}
+.hero--fioles .hero__ctas {
+  justify-content: center;
+  gap: 28px;
+}
+.hero--fioles .hero__cta {
+  margin-top: 4px;
+  padding: 17px 32px;
+  font-family: "Manrope", sans-serif;
+  font-size: var(--text-12);
+  font-weight: 500;
+  letter-spacing: var(--tracking-loud);
+  text-transform: uppercase;
+}
+/* La seconde action redevient un lien : un souligne dore, pas un cadre. */
+.hero--fioles .hero__cta--ghost {
+  min-height: 0;
+  height: auto;
+  padding: 0 0 5px;
+  border: 0;
+  border-bottom: 1px solid var(--accent);
+  background: none;
+  color: var(--text);
+  line-height: 1.2;
+  align-self: center;
+}
+.hero--fioles .hero__cta--ghost:hover {
+  color: var(--sceau);
+  background: none;
+  transform: none;
+}
+
+/* Les fioles : pied sur la tablette, ombre portee vers la gauche comme la
+   lumiere de la photo qui vient de droite. */
+.hero--fioles .hero__fioles {
+  position: relative;
+  width: 100%;
+  margin: auto 0 0;
+  padding-top: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+.hero--fioles .hero__fioles img {
+  display: block;
+  width: auto;
+  height: clamp(200px, 30vh, 320px);
+  filter: drop-shadow(-16px 20px 22px rgba(70, 52, 22, 0.28));
+}
+.hero--fioles .hero__fioles::after {
+  /* Contact avec le marbre : une ombre douce et plate sous les trois pieds. */
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  width: min(30vh, 300px);
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(70, 52, 22, 0.22), rgba(70, 52, 22, 0) 70%);
+  z-index: -1;
+}
+/* La legende vit sur la tablette, sous les fioles. */
+.hero--fioles .hero__legende {
+  position: absolute;
+  top: calc(100% + 34px);
+  left: 0;
+  right: 0;
+  padding: 0 var(--px);
+  pointer-events: auto;
+}
+.hero--fioles .hero__proof {
+  justify-content: center;
+}
+.hero--fioles .hero__proof--facts {
+  max-width: none;
+  gap: 8px 16px;
+  color: var(--text-muted);
+}
+.hero--fioles .hero__proof--facts .hero__proof-sep {
+  display: block;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Entree : les deux lignes du titre montent, puis les fioles se posent. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero--fioles .hero__eyebrow,
+  .hero--fioles .hero__line,
+  .hero--fioles .hero__sub,
+  .hero--fioles .hero__ctas {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: hero-pose 0.9s var(--pose) forwards;
+  }
+  .hero--fioles .hero__line:nth-child(1) { animation-delay: 0.1s; }
+  .hero--fioles .hero__line:nth-child(2) { animation-delay: 0.22s; }
+  .hero--fioles .hero__sub { animation-delay: 0.38s; }
+  .hero--fioles .hero__ctas { animation-delay: 0.5s; }
+  .hero--fioles .hero__fioles img {
+    opacity: 0;
+    transform: translateY(26px);
+    animation: hero-pose 1.1s var(--pose) 0.45s forwards;
+  }
+  .hero--fioles .hero__legende {
+    opacity: 0;
+    animation: hero-pose 0.9s var(--pose) 0.9s forwards;
+  }
+}
+@keyframes hero-pose {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 860px) {
+  .hero--fioles {
+    /* La barre d'onglets fixe couvre les 64 derniers pixels de l'ecran. */
+    --hero-h: max(calc(100svh - 64px), 700px);
+  }
+  .hero--fioles .hero__media {
+    position: absolute;
+    height: auto;
+  }
+  .hero--fioles .hero__inner {
+    padding-top: calc(49.98px + 28px);
+  }
+  .hero--fioles .hero__content {
+    gap: 18px;
+  }
+  .hero--fioles .hero__title {
+    font-size: clamp(2.5rem, 1.4rem + 6vw, 3.4rem);
+  }
+  .hero--fioles .hero__sub {
+    font-size: var(--text-15);
+    max-width: 34ch;
+  }
+  .hero--fioles .hero__ctas {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .hero--fioles .hero__cta {
+    width: auto;
+  }
+  .hero--fioles .hero__fioles img {
+    height: clamp(170px, 24vh, 220px);
+  }
+  .hero--fioles .hero__legende {
+    top: calc(100% + 18px);
+  }
+  .hero--fioles .hero__proof--facts {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    font-size: 9px;
+  }
+  /* Les fioles montrent deja les trois formats : le rappel saute. */
+  .hero--fioles .hero__fact--formats,
+  .hero--fioles .hero__proof--facts .hero__proof-sep {
+    display: none;
+  }
+}

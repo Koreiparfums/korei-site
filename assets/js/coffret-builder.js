@@ -400,65 +400,96 @@
     const state = getCartState(items);
     const nextStep = getNextStep(state);
 
+    // Anneau de progression : le coffret en cours le plus proche d'etre
+    // complet ; a defaut, le total des flacons, anneau plein.
+    let ringNum = state.qty, ringDen = state.qty, ringPct = 100;
+    if (nextStep) {
+      const slots = SLOT_COUNTS[nextStep.format];
+      const count = countFor(nextStep.format, items);
+      ringNum = count % slots || (count ? slots : 0);
+      ringDen = slots;
+      ringPct = Math.round((ringNum / slots) * 100);
+    }
+    const RAYON = 34;
+    const PERIM = Math.round(2 * Math.PI * RAYON * 100) / 100;
+    const message = nextStep
+      ? `Plus que <strong>${nextStep.missing} parfum${nextStep.missing > 1 ? "s" : ""}</strong> en ${nextStep.format.replace("ml", " ml")} pour débloquer −10 % et la livraison offerte`
+      : state.boxes > 0
+        ? `<strong>${state.boxes} coffret${state.boxes > 1 ? "s" : ""}</strong> complet${state.boxes > 1 ? "s" : ""} : −10 % par flacon${state.freeShipping ? " et livraison offerte" : ""}`
+        : `Choisissez un 5 ml ou un 10 ml pour commencer un coffret`;
+
+    const imageDe = (it) => {
+      const produit = getProduct(it.productId);
+      const src = produit && global.KoreiUI?.productImageSrc ? global.KoreiUI.productImageSrc(produit, basePath) : null;
+      return src
+        ? `<img src="${src.replace(/\.webp$/, "-sm.webp")}" alt="" width="64" height="64" loading="lazy" decoding="async">`
+        : `<span class="cw-item__vide" aria-hidden="true"><i class="ti ti-bottle"></i></span>`;
+    };
+    const itemsDe = (groupItems) => `
+      <ul class="cw-items">
+        ${groupItems
+          .map(
+            (it) => `
+          <li class="cw-item">
+            <span class="cw-item__img">${imageDe(it)}</span>
+            <span class="cw-item__txt">
+              <span class="cw-item__name">${esc(it.brand)} — ${esc(it.name)}${it.qty > 1 ? ` <small>× ${it.qty}</small>` : ""}</span>
+              <span class="cw-item__price">${money((it.price || 0) * (it.qty || 1))}</span>
+            </span>
+            <button type="button" data-remove="${it.productId}|${it.format}" aria-label="Retirer ${esc(it.name)} du panier"><i class="ti ti-x"></i></button>
+          </li>`
+          )
+          .join("")}
+      </ul>`;
+
     body.innerHTML = `
-      <div class="coffret-summary${state.discount > 0 ? " is-won" : ""}">
-        <div class="coffret-summary__row">
-          <span>${state.qty} flacon${state.qty > 1 ? "s" : ""}</span>
-          <strong>${money(state.total)}</strong>
-        </div>
-        ${state.boxes > 0 ? `<div class="coffret-summary__auto"><i class="ti ti-package" aria-hidden="true"></i> ${state.boxes} coffret${state.boxes > 1 ? "s" : ""} créé${state.boxes > 1 ? "s" : ""} automatiquement</div>` : ""}
-        ${state.discount > 0 ? `<div class="coffret-summary__saved">−10 % par flacon confirmé · vous économisez ${money(state.discount)}</div>` : state.boxes > 0 ? `<div class="coffret-summary__pending">−10 % par flacon en validation Shopify</div>` : ""}
-        ${state.freeShipping ? `<div class="coffret-summary__saved">Livraison offerte</div>` : ""}
-        ${state.synchronisationEnCours ? `<div class="coffret-summary__next">Vérification du panier…</div>` : ""}
-        ${state.erreurSynchronisation ? `<div class="coffret-summary__next">${esc(state.erreurSynchronisation)}</div>` : ""}
-        ${nextStep ? `<p class="coffret-summary__next">Plus que <strong>${nextStep.missing} parfum${nextStep.missing > 1 ? "s" : ""}</strong> en ${nextStep.format.replace("ml", " ml")} pour −10 % et la livraison offerte</p>` : ""}
-      </div>` +
+      <div class="cw-progress${state.discount > 0 ? " is-won" : ""}">
+        <span class="cw-ring" style="--p:${ringPct}">
+          <svg viewBox="0 0 80 80" aria-hidden="true">
+            <circle class="cw-ring__bg" cx="40" cy="40" r="${RAYON}"></circle>
+            <circle class="cw-ring__val" cx="40" cy="40" r="${RAYON}" stroke-dasharray="${PERIM}" stroke-dashoffset="${Math.round(PERIM * (1 - ringPct / 100) * 100) / 100}"></circle>
+          </svg>
+          <span class="cw-ring__txt"><strong>${ringNum}/${ringDen}</strong><small>flacon${ringDen > 1 ? "s" : ""}</small></span>
+        </span>
+        <span class="cw-progress__txt">
+          <i class="ti ti-gift" aria-hidden="true"></i>
+          <p>${message}</p>
+          <span class="cw-bar"><span style="width:${ringPct}%"></span></span>
+          ${state.synchronisationEnCours ? `<em class="cw-note">Vérification du panier…</em>` : ""}
+          ${state.erreurSynchronisation ? `<em class="cw-note">${esc(state.erreurSynchronisation)}</em>` : ""}
+        </span>
+      </div>
+      <p class="cw-total">Total : <strong>${money(state.total)}</strong>${state.discount > 0 ? `<small>dont ${money(state.discount)} de remise</small>` : ""}</p>
+      <span class="cw-rule" aria-hidden="true"><i></i></span>` +
       CART_FORMATS
       .map((format) => {
         const groupItems = items.filter((it) => it.format === format);
         if (!groupItems.length) return "";
         const totalQty = groupItems.reduce((sum, it) => sum + (it.qty || 1), 0);
-        const itemsHtml = `
-            <ul class="coffret-items">
-              ${groupItems
-                .map(
-                  (it) => `
-                <li>
-                  <span>${esc(it.brand)} — ${esc(it.name)}${it.qty > 1 ? ` ×${it.qty}` : ""}</span>
-                  <button type="button" data-remove="${it.productId}|${it.format}" aria-label="Retirer ${esc(it.name)} du panier">
-                    <i class="ti ti-x"></i>
-                  </button>
-                </li>`
-                )
-                .join("")}
-            </ul>`;
+        const ml = format.replace("ml", " ml");
         // Le 2 ml n'entre dans aucun coffret : il se liste a l'unite.
         if (!hasBox(format)) {
           return `
-          <div class="coffret-group">
-            <div class="coffret-group__head">
-              <span>${format.replace("ml", " ml")} · à l'unité</span>
-              <span>${totalQty} flacon${totalQty > 1 ? "s" : ""}</span>
-            </div>
-            ${itemsHtml}
-          </div>`;
+          <section class="cw-group">
+            <h3 class="cw-group__head"><i class="ti ti-bottle" aria-hidden="true"></i>Découverte · ${ml} — <em>${totalQty} flacon${totalQty > 1 ? "s" : ""}</em></h3>
+            ${itemsDe(groupItems)}
+          </section>`;
         }
         const slots = SLOT_COUNTS[format];
-        const inBox = totalQty % slots === 0 ? slots : totalQty % slots;
-        const pct = Math.min(100, (inBox / slots) * 100);
-        const complete = totalQty >= slots;
         const boxes = Math.floor(totalQty / slots);
         const singles = totalQty % slots;
+        const inBox = singles || (totalQty ? slots : 0);
+        const pct = Math.min(100, (inBox / slots) * 100);
+        const etat = boxes
+          ? `${boxes} coffret${boxes > 1 ? "s" : ""}${singles ? ` + ${singles}/${slots}` : ""}`
+          : `${totalQty}/${slots} flacons`;
         return `
-          <div class="coffret-group${complete ? " is-complete" : ""}">
-            <div class="coffret-group__head">
-              <span>${PACK_LABELS[format]} · ${format.replace("ml", " ml")}</span>
-              <span>${totalQty > slots ? `${boxes} coffret${boxes > 1 ? "s" : ""}${singles ? ` + ${singles}` : ""}` : `${totalQty}/${slots}`}</span>
-            </div>
-            ${complete ? `<p class="coffret-group__benefit">Créé automatiquement · ${boxes * slots} flacon${boxes * slots > 1 ? "s" : ""} à −10 % chacun${singles ? ` · ${singles} seul${singles > 1 ? "s" : ""} au prix normal` : ""}</p>` : ""}
-            <span class="coffret-group__bar"><span style="width:${pct}%"></span></span>
-            ${itemsHtml}
-          </div>`;
+          <section class="cw-group${boxes ? " is-complete" : ""}">
+            <h3 class="cw-group__head"><i class="ti ti-bottle" aria-hidden="true"></i>${PACK_LABELS[format]} · ${ml} — <em>${etat}</em></h3>
+            <span class="cw-group__bar"><span style="width:${pct}%"></span></span>
+            ${itemsDe(groupItems)}
+            ${singles || !boxes ? `<a class="cw-add" href="${basePath}pages/catalogue.html"><span aria-hidden="true">+</span>Ajouter un parfum</a>` : ""}
+          </section>`;
       })
       .join("");
 
@@ -490,6 +521,7 @@
         <div class="coffret-panel__body" id="coffret-body"></div>
         <div class="coffret-panel__foot">
           <a class="btn-dark" href="${basePath}pages/panier.html">Voir mon panier</a>
+          <p class="cw-trust"><i class="ti ti-shield-check" aria-hidden="true"></i>Décants 100 % authentiques</p>
         </div>
       </div>`;
     document.body.appendChild(el);

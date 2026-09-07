@@ -25,7 +25,7 @@
     <meta name="twitter:image" content="https://korei-parfum.com/assets/images/og/og-default.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400;1,9..40,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Manrope:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" />
     <link rel="stylesheet" href="../assets/css/styles.css" />
   </head>
@@ -240,6 +240,33 @@
             <span class="box-card__cta">Composer ce coffret <span aria-hidden="true">→</span></span>
           </div>
         </a>
+      </div>
+
+      <!-- Les deux coffrets ligne a ligne (audit du 4 septembre, lot 2) :
+           ce qui les distingue se lit d'un coup d'oeil, sans ouvrir les
+           deux cartes. Les prix « a partir de » sont calcules par main.js
+           sur le parfum le moins cher du catalogue, remise comprise. -->
+      <div class="box-compare">
+        <table>
+          <caption class="sr-only">Comparaison des coffrets Voyage et Iconique</caption>
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Voyage<small>5 × 5 ml</small></th>
+              <th scope="col">Iconique<small>3 × 10 ml</small></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Flacons</td><td><b>5</b></td><td><b>3</b></td></tr>
+            <tr><td>Par flacon</td><td><b>5 ml</b></td><td><b>10 ml</b></td></tr>
+            <tr><td>Pulvérisations par flacon</td><td><b>~75</b></td><td><b>~150</b></td></tr>
+            <tr><td>Parfum au total</td><td><b>25 ml</b></td><td><b>30 ml</b></td></tr>
+            <tr><td>Fait pour</td><td>Départager cinq parfums</td><td>Porter trois parfums</td></tr>
+            <tr><td>Remise</td><td><b>−10 %</b> sur chaque flacon</td><td><b>−10 %</b> sur chaque flacon</td></tr>
+            <tr><td>Livraison</td><td><i class="ti ti-check" aria-hidden="true"></i> Offerte</td><td><i class="ti ti-check" aria-hidden="true"></i> Offerte</td></tr>
+            <tr class="is-price"><td>À partir de</td><td><b data-coffret-from="5ml">—</b></td><td><b data-coffret-from="10ml">—</b></td></tr>
+          </tbody>
+        </table>
       </div>
 
       <div class="box-trust">

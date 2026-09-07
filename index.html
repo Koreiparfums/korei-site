@@ -45,7 +45,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Manrope:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
     <link
@@ -173,13 +173,13 @@
     </div>
 
     <main>
-    <section class="hero">
-      <!-- Photo fournie par le client : espace libre a gauche pour le texte. -->
+    <section class="hero hero--fioles">
+      <!-- Le decor : un mur clair et une tablette de marbre eclaires de
+           biais. Les trois fioles Korei se posent sur la tablette. -->
       <picture class="hero__media">
-        <source media="(max-width: 640px)" srcset="assets/images/hero/hero-flacons-niche-sm.webp" />
-        <img src="assets/images/hero/hero-flacons-niche.webp"
-             alt="Flacons de parfums de niche Byredo, Creed, Amouage et Tom Ford sur un plateau de marbre"
-             width="1600" height="900" fetchpriority="high" decoding="async" />
+        <source media="(max-width: 640px)" srcset="assets/images/hero/hero-fond-sm.webp" />
+        <img src="assets/images/hero/hero-fond.webp" alt=""
+             width="1600" height="730" fetchpriority="high" decoding="async" />
       </picture>
 
       <div class="hero__inner">
@@ -187,52 +187,52 @@
           <p class="hero__eyebrow">Parfumerie de niche</p>
           <!-- Le titre ne porte plus de compteur. « Essayez 163 parfums »
                changeait a chaque parfum ajoute ou retire, et un inventaire
-               n'est pas une promesse. Les chiffres exacts vivent en dessous,
-               en petites capitales, la ou leur variation ne se voit pas. -->
+               n'est pas une promesse. -->
           <h1 class="hero__title">
-            Le parfum d'abord.<br />
-            Le flacon ensuite.
+            <span class="hero__line">Le parfum d'abord.</span>
+            <span class="hero__line">Le flacon <em>ensuite.</em></span>
           </h1>
           <p class="hero__sub">
             Tom Ford, Amouage, Memo Paris : le jus d'origine, transvasé à la
             main dans un flacon de 2, 5 ou 10&nbsp;ml. Portez-le une semaine
             avant de choisir.
           </p>
-
-          <!-- KOR-D7 — preuve sociale. Ne s'affiche que si les chiffres sont
-               reels : voir SOCIAL_PROOF dans assets/js/main.js. Rien n'est
-               invente ici, le bloc reste masque tant que la donnee manque. -->
-          <div class="hero__proof" id="hero-proof" hidden>
-            <span class="hero__proof-score" id="hero-proof-score"></span>
-            <span class="hero__proof-sep" aria-hidden="true"></span>
-            <span class="hero__proof-orders">
-              <i class="ti ti-package" aria-hidden="true"></i>
-              <span id="hero-proof-orders"></span>
-            </span>
-          </div>
-
-          <!-- Repli honnete tant que la preuve sociale n'existe pas : des faits
-               verifiables, tires du catalogue. -->
-          <div class="hero__proof hero__proof--facts" id="hero-facts">
-            <span class="hero__proof-orders">
-              <i class="ti ti-building-store" aria-hidden="true"></i>
-              <span id="hero-brand-count">Maisons de niche sélectionnées</span>
-            </span>
-            <span class="hero__proof-sep" aria-hidden="true"></span>
-            <span class="hero__proof-orders">
-              <i class="ti ti-certificate" aria-hidden="true"></i>
-              <span>Rempli à la main depuis le flacon d'origine</span>
-            </span>
-          </div>
-
-          <!-- Deux boutons (devis §1) : explorer le catalogue, et comprendre
-               ce qu'est un decant avant d'acheter. Le second pointe sur la
-               section « Le principe du decant », plus bas sur cette page. -->
+          <!-- Deux actions (devis §1) : explorer le catalogue, et comprendre
+               ce qu'est un decant. La seconde est un simple lien souligne :
+               un seul bouton, l'oeil sait ou aller. -->
           <div class="hero__ctas">
             <a href="pages/catalogue.html" class="hero__cta">Voir les parfums</a>
             <a href="#le-decant" class="hero__cta hero__cta--ghost">Pourquoi un décant ?</a>
           </div>
         </div>
+
+        <!-- Les trois formats, a l'echelle, poses sur la tablette. -->
+        <figure class="hero__fioles">
+          <img src="assets/images/formats/fioles-korei-2-5-10ml.webp"
+               alt="Les trois fioles Kōrei de 2, 5 et 10 ml, côte à côte"
+               width="566" height="996" decoding="async" />
+          <figcaption class="hero__legende">
+            <!-- KOR-D7 — preuve sociale. Ne s'affiche que si les chiffres sont
+                 reels : voir SOCIAL_PROOF dans assets/js/main.js. -->
+            <div class="hero__proof" id="hero-proof" hidden>
+              <span class="hero__proof-score" id="hero-proof-score"></span>
+              <span class="hero__proof-sep" aria-hidden="true"></span>
+              <span class="hero__proof-orders">
+                <i class="ti ti-package" aria-hidden="true"></i>
+                <span id="hero-proof-orders"></span>
+              </span>
+            </div>
+            <!-- Repli honnete tant que la preuve sociale n'existe pas : des
+                 faits verifiables, tires du catalogue. -->
+            <div class="hero__proof hero__proof--facts" id="hero-facts">
+              <span class="hero__proof-orders hero__fact--formats"><span>2, 5 et 10&nbsp;ml</span></span>
+              <span class="hero__proof-sep" aria-hidden="true"></span>
+              <span class="hero__proof-orders"><span id="hero-brand-count">Maisons de niche sélectionnées</span></span>
+              <span class="hero__proof-sep" aria-hidden="true"></span>
+              <span class="hero__proof-orders"><span>Rempli à la main depuis le flacon d'origine</span></span>
+            </div>
+          </figcaption>
+        </figure>
       </div>
     </section>
 
@@ -284,6 +284,16 @@
         </p>
         <span class="dose-title-rule" aria-hidden="true"></span>
       </div>
+      <!-- Les trois formats en une image, a l'echelle (audit du 4 septembre,
+           lot 2). Visuel genere le 7 septembre 2026 d'apres la fiole Korei. -->
+      <figure class="formats-scale">
+        <img src="assets/images/formats/fioles-korei-2-5-10ml-sm.webp"
+             srcset="assets/images/formats/fioles-korei-2-5-10ml-sm.webp 360w, assets/images/formats/fioles-korei-2-5-10ml.webp 566w"
+             sizes="(max-width: 640px) 220px, 300px"
+             alt="Les trois flacons Kōrei côte à côte : 2 ml, 5 ml et 10 ml, à l'échelle"
+             width="566" height="996" loading="lazy" decoding="async" />
+        <figcaption>Les trois flacons, à l'échelle. Verre transparent, vaporisateur, étiquette Kōrei.</figcaption>
+      </figure>
       <div class="formats-carousel">
         <button class="formats-arrow formats-arrow--prev" type="button" aria-label="Format précédent" data-formats-dir="-1">
           <i class="ti ti-chevron-left" aria-hidden="true"></i>

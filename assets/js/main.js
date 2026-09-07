@@ -548,6 +548,14 @@
 
     const minWidth = options.grid ? "style=\"min-width: 0\"" : "";
 
+    // Note de la communaute (assets/js/sensoriel.js) : une etoile, la note
+    // sur 5 et le nombre d'avis, comme la maquette. Rien si on ne l'a pas.
+    const mesure = (global.KoreiProducts && global.KoreiProducts.SENSORIEL || {})[product.id];
+    const ratingHtml =
+      mesure && mesure.note
+        ? `<span class="card-rating" aria-label="Note ${String(mesure.note).replace(".", ",")} sur 5${mesure.votes ? `, ${mesure.votes} avis` : ""}">${STAR_SVG}${Number(mesure.note).toFixed(1).replace(".", ",")}${mesure.votes ? `<small>(${Number(mesure.votes).toLocaleString("fr-FR")} avis)</small>` : ""}</span>`
+        : "";
+
     // Parfum en attente de sa photo : la carte reste visible, mais le prix
     // laisse la place a « Bientot disponible ». On ne propose pas a l'achat
     // un parfum que le client n'a pas en stock.
@@ -576,6 +584,7 @@
         <div class="card-body">
           <div class="card-brand">${esc(product.brand)}</div>
           <h3 class="card-name">${esc(product.name)}</h3>
+          ${ratingHtml}
           <div class="card-note-strip${keyNotes.length ? "" : " is-vide"}" aria-label="Notes principales">
             ${keyNotes
               .map(
@@ -689,9 +698,31 @@
   // ── KOR-D2 : carrousel « Nos formats »
   // Les prix de depart viennent du catalogue, pas d'une valeur ecrite en dur :
   // le jour ou un prix Shopify bouge, l'accueil suit tout seul.
+  // Page coffrets : « a partir de » pour chaque coffret = le parfum le moins
+  // cher du catalogue dans ce format, fois le nombre de flacons, moins 10 %.
+  const COFFRET_FLACONS = { "5ml": 5, "10ml": 3 };
+  function initCoffretCompare(store) {
+    const cibles = document.querySelectorAll("[data-coffret-from]");
+    if (!cibles.length || !store) return;
+    const products = store.getAllProducts?.() || [];
+    cibles.forEach((el) => {
+      const format = el.getAttribute("data-coffret-from");
+      const flacons = COFFRET_FLACONS[format];
+      const prices = products
+        .map((p) => store.getFormatPrice(p, format))
+        .filter((v) => Number.isFinite(v) && v > 0);
+      if (!flacons || !prices.length) {
+        el.closest("tr")?.setAttribute("hidden", "");
+        return;
+      }
+      el.textContent = formatPrix(Math.round(Math.min(...prices) * flacons * 0.9 * 100) / 100);
+    });
+  }
+
   function initFormatsSection() {
     const track = document.getElementById("formats-track");
     const store = global.KoreiProductStore;
+    initCoffretCompare(store);
     if (!track || !store) return;
 
     const products = store.getAllProducts?.() || [];
@@ -1649,6 +1680,7 @@
     const page = document.body.dataset.page;
     if (page === "home") initHomePage();
     else if (page === "catalogue") initCataloguePage();
+    else if (page === "coffret") initCoffretCompare(global.KoreiProductStore);
   }
 
   global.toggleFaq = toggleFaq;

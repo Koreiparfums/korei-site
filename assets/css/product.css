@@ -29,7 +29,7 @@ body[data-page="product"] {
 }
 
 .pdp {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   color: var(--pdp-ink);
   background: var(--pdp-bg);
 }
@@ -73,11 +73,7 @@ body[data-page="product"] {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: var(--text-12);
-  font-weight: 500;
-  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
-  color: var(--pdp-gold);
   margin-bottom: 14px;
 }
 .pdp-eyebrow::before {
@@ -90,7 +86,7 @@ body[data-page="product"] {
   display: none;
 }
 .pdp-title {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 400;
   font-size: clamp(22px, 1.9vw, 28px);
   line-height: 1.25;
@@ -128,14 +124,12 @@ body[data-page="product"] {
   margin: 20px 0 4px;
 }
 .pdp-price__amount {
-  font-size: clamp(30px, 3vw, 40px);
   font-weight: 400;
   line-height: 1;
   font-variant-numeric: tabular-nums lining-nums;
   color: var(--pdp-ink);
 }
 .pdp-price__unit {
-  font-size: 14px;
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
@@ -147,15 +141,9 @@ body[data-page="product"] {
    transforme un achat de 18€ en achat de coffret. */
 .pdp-rail {
   margin: 20px 0 24px;
-  padding: 16px 18px;
-  border: 1px solid var(--border-dark);
   border-radius: var(--pdp-radius-md);
-  background: var(--surface);
 }
-.pdp-rail.is-complete {
-  border-color: var(--pdp-gold);
-  background: var(--accent-light);
-}
+
 .pdp-rail__head {
   display: flex;
   align-items: baseline;
@@ -164,33 +152,26 @@ body[data-page="product"] {
   margin-bottom: 10px;
 }
 .pdp-rail__name {
-  font-size: 12px;
   font-weight: 500;
-  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   color: var(--pdp-ink);
 }
 .pdp-rail__count {
-  font-size: 14px;
   font-variant-numeric: tabular-nums;
   color: var(--text-muted);
 }
 .pdp-rail__track {
-  height: 6px;
-  border-radius: var(--radius-pill);
   background: var(--border);
   overflow: hidden;
 }
 .pdp-rail__fill {
   display: block;
   height: 100%;
-  border-radius: inherit;
   background: var(--pdp-gold);
   transition: width 0.35s var(--pdp-ease);
 }
 .pdp-rail__msg {
   margin: 10px 0 0;
-  font-size: 14px;
   line-height: 1.5;
   color: var(--text-muted);
 }
@@ -235,7 +216,6 @@ body[data-page="product"] {
   top: 96px;
   display: flex;
   flex-direction: column;
-  gap: 22px;
 }
 .pdp-col {
   min-width: 0;
@@ -335,11 +315,7 @@ body[data-page="product"] {
   /* Les visuels produit sont au format portrait 3:4. Un cadre carre laissait
      une large bande vide de chaque cote du flacon et le rapetissait. */
   aspect-ratio: 4 / 5;
-  max-width: 560px;
   border-radius: var(--pdp-radius-lg);
-  background: radial-gradient(ellipse at 50% 40%, var(--pdp-white) 0%, var(--pdp-panel) 100%);
-  /* Sans filet, le degrade est presque blanc et le flacon flotte sur le vide. */
-  border: 1px solid var(--pdp-line);
   overflow: hidden;
 }
 .pdp-gallery__main-img {
@@ -368,11 +344,7 @@ body[data-page="product"] {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 16px;
-  border-radius: var(--radius-pill);
-  font-size: var(--text-11);
   font-weight: 500;
-  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -398,20 +370,9 @@ body[data-page="product"] {
   min-width: 0;
 }
 .pdp-brand {
-  font-size: var(--text-15);
-  font-weight: 500;
-  letter-spacing: var(--tracking-loud);
   text-transform: uppercase;
-  color: var(--pdp-ink-soft);
-  margin-bottom: 12px;
 }
-.pdp-name {
-  font-family: "DM Sans", sans-serif;
-  font-weight: 400;
-  font-size: clamp(34px, 3.2vw, 46px);
-  line-height: 1.1;
-  margin: 0 0 12px;
-}
+
 .pdp-rating-line .star,
 .pdp-rating-line .star-half-fill,
 .pdp-rating-line .star-half-bg {
@@ -435,23 +396,11 @@ body[data-page="product"] {
 .pdp-formats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  /* Le bandeau des cartes deborde de 8 px vers le haut : sans cette reserve
-     il venait mordre le titre de la section. */
-  padding-top: 12px;
-  margin-top: 12px;
-  margin-bottom: 28px;
 }
 .pdp-format {
-  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 2px;
-  padding: 18px 12px 14px;
-  border: 1px solid var(--border-dark);
-  border-radius: var(--pdp-radius-md);
-  background: var(--pdp-white);
   color: var(--pdp-ink);
   cursor: pointer;
   transition:
@@ -459,17 +408,11 @@ body[data-page="product"] {
     box-shadow 0.25s var(--pdp-ease),
     transform 0.2s var(--pdp-ease);
 }
-.pdp-format:hover {
-  transform: translateY(var(--lift-hover));
-  border-color: var(--pdp-gold);
-}
+
 .pdp-format.is-active {
   border-color: var(--pdp-gold);
-  box-shadow: inset 0 0 0 1px var(--pdp-gold);
-  background: var(--accent-light);
 }
 .pdp-format.is-active::before {
-  content: "\2713";
   position: absolute;
   top: 8px;
   right: 10px;
@@ -479,11 +422,9 @@ body[data-page="product"] {
 }
 /* Le flacon est a l'echelle : un 10 ml est plus grand qu'un 2 ml. */
 .pdp-format__vial {
-  height: 72px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  margin-bottom: 8px;
 }
 .pdp-format__vial img {
   width: auto;
@@ -500,27 +441,18 @@ body[data-page="product"] {
 }
 .pdp-format__vol {
   font-family: "Cormorant Garamond", serif;
-  font-size: 25px;
   font-variant-numeric: lining-nums;
   line-height: 1.1;
   color: var(--pdp-ink);
 }
 .pdp-format__price {
-  margin-top: 6px;
   font-family: "Cormorant Garamond", serif;
-  font-size: 23px;
   font-variant-numeric: lining-nums;
   color: var(--pdp-ink);
 }
 /* Le detail est separe par un filet, comme la maquette. */
 .pdp-format__detail {
-  /* Une seule ligne de texte : l'icone, le filet et la phrase d'usage
-     ajoutaient 60 px par carte sans rien apprendre de plus. */
-  margin-top: 8px;
-  width: 100%;
-  font-size: 12px;
   line-height: 1.4;
-  color: var(--text-muted);
   text-align: center;
 }
 .pdp-format__detail i {
@@ -534,7 +466,6 @@ body[data-page="product"] {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 32px;
 }
 .pdp-actions__row {
   display: flex;
@@ -551,8 +482,7 @@ body[data-page="product"] {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-family: "DM Sans", sans-serif;
-  font-size: var(--text-10);
+  font-family: "Manrope", sans-serif;
   font-weight: 500;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
@@ -570,10 +500,7 @@ body[data-page="product"] {
   background: var(--pdp-ink);
   color: var(--pdp-white);
 }
-.pdp-btn--primary:hover:not(:disabled) {
-  background: var(--pdp-gold);
-  transform: translateY(var(--lift-hover));
-}
+
 .pdp-btn--primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -606,8 +533,10 @@ body[data-page="product"] {
   width: 1em;
   height: 1em;
   background-color: var(--danger);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
 }
 .pdp-btn--outline.is-active {
   border-color: var(--pdp-gold);
@@ -731,7 +660,7 @@ body[data-page="product"] {
   border-radius: var(--pdp-radius-lg);
 }
 .pdp-reviews__score {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 56px;
   line-height: 1;
   color: var(--pdp-ink);
@@ -772,7 +701,7 @@ body[data-page="product"] {
   padding: 120px 20px;
 }
 .pdp-not-found h1 {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 32px;
   margin-bottom: 14px;
 }
@@ -883,7 +812,6 @@ body[data-page="product"] {
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
-  background: var(--accent);
   color: #fff;
   font-size: var(--text-9);
   letter-spacing: var(--tracking-label);
@@ -893,7 +821,6 @@ body[data-page="product"] {
   line-height: 1.2;
 }
 .pdp-format.is-unavailable {
-  opacity: 0.42;
   cursor: not-allowed;
 }
 .pdp-format.is-unavailable .pdp-format__price {
@@ -953,7 +880,9 @@ body[data-page="product"] {
   /* Au-dessus de la barre d'onglets et du bandeau cookies, jamais dessous.
      --bottom-chrome est mesuré par tabbar.js, jamais deviné. */
   .pdp-sticky {
-    bottom: calc(var(--bottom-bars, 56px) + 8px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(
+      var(--bottom-bars, 56px) + 8px + env(safe-area-inset-bottom, 0px)
+    );
     padding-bottom: 11.2px;
   }
   .pdp-sticky__info {
@@ -1154,20 +1083,13 @@ body[data-page="product"] {
   padding: 16px 0 0;
   border-top: 1px solid var(--pdp-line);
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 18px;
 }
 .pdp-trustrow li {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  line-height: 1.4;
   color: var(--pdp-ink-soft, #6b6b64);
 }
 .pdp-trustrow i {
   color: var(--pdp-gold);
-  font-size: 16px;
   flex: none;
 }
 /* La description venait se coller a zero pixel sous la reassurance : les deux
@@ -1429,7 +1351,6 @@ body[data-page="product"] {
    continu. Photos et libelles sont jointifs, sans gouttiere ni arrondi. */
 .pdp-py-strip {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   min-width: 0;
 }
 .pdp-py-pair {
@@ -1554,33 +1475,16 @@ body[data-page="product"] {
    besoin d'une photo qui n'existe pas. */
 .pdp-editorial {
   margin: 0 auto;
-  padding: 56px var(--px);
-  max-width: var(--pdp-max);
 }
 .pdp-editorial__grid {
-  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 24px;
 }
-.pdp-editorial__col {
-  padding: 36px 36px 40px;
-  border: 1px solid var(--pdp-line);
-  border-radius: var(--pdp-radius-lg);
-  background: var(--surface);
-}
+
 .pdp-editorial__title {
-  margin: 12px 0 14px;
-  font-family: "DM Sans", sans-serif;
-  font-weight: 500;
-  font-size: clamp(22px, 1.9vw, 28px);
-  line-height: 1.2;
   color: var(--pdp-ink);
 }
 .pdp-editorial__col p {
   margin: 0 0 14px;
-  max-width: 56ch;
-  font-size: 15px;
-  line-height: 1.75;
   color: var(--pdp-ink-soft);
 }
 .pdp-editorial__col p:last-child {
@@ -1595,54 +1499,15 @@ body[data-page="product"] {
    Trois cartes de meme hauteur. Les deux premieres portent une jauge en dix
    segments (la note est sur 10, la jauge le montre au lieu de l'ecrire),
    la troisieme des pastilles de saisons et d'occasions. */
-.pdp-feel {
-  padding: 56px 0 8px;
-}
-.pdp-feel__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
-  gap: 20px;
-  align-items: stretch;
-}
-.pdp-feel__card {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 28px 24px 26px;
-  border: 1px solid var(--pdp-line);
-  border-radius: var(--pdp-radius-md);
-  background: var(--surface, #faf7f2);
-}
+
 .pdp-feel__icon {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  margin-bottom: 4px;
-  border: 1px solid var(--pdp-gold);
   border-radius: 50%;
-  color: var(--pdp-gold);
-  font-size: 20px;
 }
-.pdp-feel__title {
-  font-size: var(--text-12);
-  font-weight: 500;
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-  color: var(--pdp-ink-soft);
-}
+
 .pdp-feel__label {
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 23px;
   line-height: 1.2;
-  color: var(--pdp-ink);
 }
-.pdp-feel__gauge {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 2px;
-}
+
 .pdp-feel__segs {
   display: flex;
   gap: 4px;
@@ -1662,29 +1527,8 @@ body[data-page="product"] {
 }
 .pdp-feel__score {
   flex: 0 0 auto;
-  font-variant-numeric: tabular-nums;
-  font-size: 17px;
-  font-weight: 500;
-  color: var(--badge-text, #8a6825);
 }
-.pdp-feel__score small {
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--pdp-ink-soft);
-}
-.pdp-feel__text {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.65;
-  color: var(--pdp-ink-soft);
-}
-.pdp-feel__sub {
-  margin: 6px 0 0;
-  font-size: var(--text-12);
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-  color: var(--pdp-ink-soft);
-}
+
 .pdp-feel__chips {
   display: flex;
   flex-wrap: wrap;
@@ -1693,20 +1537,10 @@ body[data-page="product"] {
   margin: 0;
   padding: 0;
 }
-.pdp-feel__chip {
-  padding: 5px 11px;
-  border: 1px solid var(--pdp-line);
-  border-radius: 999px;
-  font-size: 13px;
-  color: var(--pdp-ink-soft);
-}
+
 /* Une saison non retenue reste lisible, mais visiblement en retrait :
    l'interet de la carte est de voir d'un coup celles qui comptent. */
-.pdp-feel__chip.is-on {
-  border-color: var(--pdp-gold);
-  background: var(--accent-light, #f4ecda);
-  color: var(--badge-text, #8a6825);
-}
+
 @media (max-width: 640px) {
   .pdp-feel {
     padding-top: 40px;
@@ -1845,18 +1679,7 @@ body[data-page="product"] {
   letter-spacing: 0.04em;
 }
 .pdp-format__vol {
-  font-size: 21px;
   letter-spacing: -0.03em;
-}
-.pdp-format__price {
-  margin-top: 9px;
-  font-size: 13px;
-}
-.pdp-format__detail {
-  margin-top: 6px;
-  font-size: 10px;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
 }
 
 /* ── 3. Le dore quitte les aplats ────────────────────────────────────────
@@ -1873,24 +1696,13 @@ body[data-page="product"] {
   text-align: left;
 }
 .pdp-format:hover {
-  transform: none;
   border-top-color: var(--pdp-ink-soft);
 }
-.pdp-format.is-active {
-  border-top: 2px solid var(--pdp-ink);
-  box-shadow: none;
-  background: transparent;
-}
+
 .pdp-format.is-active::before {
   content: none;
 }
-.pdp-format:not(.is-active) .pdp-format__vol,
-.pdp-format:not(.is-active) .pdp-format__price {
-  color: var(--pdp-ink-soft);
-}
-.pdp-formats {
-  gap: 0;
-}
+
 .pdp-format + .pdp-format {
   padding-left: 20px;
 }
@@ -1906,9 +1718,6 @@ body[data-page="product"] {
 .pdp-rail {
   background: transparent;
   border: 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  padding: 18px 0;
 }
 .pdp-rail.is-complete {
   background: transparent;
@@ -1926,9 +1735,6 @@ body[data-page="product"] {
    sous-dimensionne. Le prix passe a droite, en chasse fixe. */
 .pdp-btn--primary {
   height: 60px;
-  padding: 0 26px;
-  font-size: 11.5px;
-  letter-spacing: 0.19em;
   justify-content: center;
 }
 .pdp-btn--primary:hover:not(:disabled) {
@@ -1949,26 +1755,54 @@ body[data-page="product"] {
    son tour. Une sequence tenue vaut mieux que des effets disperses. Coupee
    si le visiteur a demande moins d'animation. */
 @keyframes pdpPose {
-  from { opacity: 0; transform: translateY(30px) scale(1.012); }
-  to   { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(1.012);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 @keyframes pdpMonte {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 .pdp-sticky-media {
-  animation: pdpPose 1000ms var(--pdp-ease, cubic-bezier(.22,.61,.36,1)) both;
+  animation: pdpPose 1000ms var(--pdp-ease, cubic-bezier(0.22, 0.61, 0.36, 1))
+    both;
 }
 .pdp-info > * {
-  animation: pdpMonte 700ms var(--pdp-ease, cubic-bezier(.22,.61,.36,1)) both;
+  animation: pdpMonte 700ms var(--pdp-ease, cubic-bezier(0.22, 0.61, 0.36, 1))
+    both;
 }
-.pdp-info > *:nth-child(1) { animation-delay: 120ms; }
-.pdp-info > *:nth-child(2) { animation-delay: 200ms; }
-.pdp-info > *:nth-child(3) { animation-delay: 290ms; }
-.pdp-info > *:nth-child(4) { animation-delay: 380ms; }
-.pdp-info > *:nth-child(5) { animation-delay: 470ms; }
-.pdp-info > *:nth-child(6) { animation-delay: 560ms; }
-.pdp-info > *:nth-child(7) { animation-delay: 650ms; }
+.pdp-info > *:nth-child(1) {
+  animation-delay: 120ms;
+}
+.pdp-info > *:nth-child(2) {
+  animation-delay: 200ms;
+}
+.pdp-info > *:nth-child(3) {
+  animation-delay: 290ms;
+}
+.pdp-info > *:nth-child(4) {
+  animation-delay: 380ms;
+}
+.pdp-info > *:nth-child(5) {
+  animation-delay: 470ms;
+}
+.pdp-info > *:nth-child(6) {
+  animation-delay: 560ms;
+}
+.pdp-info > *:nth-child(7) {
+  animation-delay: 650ms;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .pdp-sticky-media,
@@ -1991,7 +1825,6 @@ body[data-page="product"] {
   margin-bottom: 12px;
   border-radius: 0;
   background: transparent;
-  color: var(--pdp-gold);
   font-family: var(--pdp-mesure);
   font-size: 9px;
   font-weight: 500;
@@ -1999,10 +1832,6 @@ body[data-page="product"] {
   text-align: left;
 }
 /* Les colonnes sans repere gardent la meme hauteur de depart. */
-.pdp-format:not(:has(.pdp-format__flag)):not(:has(.pdp-format__badge))
-  .pdp-format__vial {
-  margin-top: 21px;
-}
 
 /* Le dore de la marque (#cc9a36) tombe a 2,9:1 sur blanc : illisible a
    9 px. Les petits reperes prennent donc le dore foncé du sceau, 4,7:1,
@@ -2147,20 +1976,13 @@ body[data-page="product"] {
    comparables, et la phrase d'usage qui dit a qui s'adresse le flacon.
    Elles s'empilent sous le prix dans l'ordre de lecture : combien, puis
    combien de fois, puis pour qui. */
-.pdp-format__ml {
-  margin-top: 3px;
-  font-family: var(--pdp-mesure);
-  font-variant-numeric: tabular-nums lining-nums;
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  color: var(--text-muted);
-}
+
 .pdp-format.is-best .pdp-format__ml {
   color: var(--pdp-gold);
 }
 .pdp-format__usage {
   margin-top: 2px;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 11px;
   line-height: 1.35;
   letter-spacing: 0;
@@ -2189,9 +2011,7 @@ body[data-page="product"] {
    a 72 px de haut il ne mesurait plus que 8 px de large et se lisait comme
    une rayure. Porte a 96 px il redevient un objet, sans deformer l'echelle
    entre les trois formats. */
-.pdp-format__vial {
-  height: 96px;
-}
+
 @media (max-width: 640px) {
   .pdp-format__vial {
     height: 78px;
@@ -2291,9 +2111,6 @@ body[data-page="product"] {
    13 px la, 11,4 px partout ailleurs. Le bloc est sur fond sombre : il
    garde ses couleurs, qui tiennent le contraste sur du noir. Seule la
    taille rejoint celle des autres puces du site. */
-.pdp-feel__chip {
-  font-size: 11.4px;
-}
 
 /* ── 4 septembre 2026 : la photo prend moins de place ─────────────────── */
 @media (min-width: 861px) {
@@ -2445,69 +2262,91 @@ body[data-page="product"] {
   color: var(--badge-text, #8a6825);
 }
 .pdp-pyramid-section {
-  padding: 72px 0 32px;
+  padding: 56px 0 24px;
   border-top: 1px solid var(--pdp-line);
 }
 .pdp-pyramid-section .pdp-head {
-  margin-bottom: 40px;
+  margin-bottom: 28px;
 }
+/* Etages resserres a la mesure de la maquette « Pyramide olfactive
+   couleurs fond blanc » : un etage tient dans ~200 px sur un ecran de
+   1 440 px, la photo garde toute la hauteur de l'etage. */
 .pdp-pyramid-section .pdp-py-row {
-  grid-template-columns: 64px minmax(0, 1fr);
-  column-gap: 28px;
-  padding: 40px 0 44px;
+  grid-template-columns: 56px minmax(0, 1fr);
+  column-gap: 22px;
+  padding: 22px 0 26px;
 }
 .pdp-pyramid-section .pdp-py-row:first-child {
-  padding-top: 8px;
+  padding-top: 4px;
 }
 .pdp-pyramid-section .pdp-py-row__rail::after {
-  bottom: -44px;
+  bottom: -26px;
 }
 .pdp-pyramid-section .pdp-py-row__title {
-  font-size: clamp(24px, 2.2vw, 32px);
+  font-size: clamp(21px, 1.8vw, 26px);
+  margin-top: 8px;
+}
+.pdp-pyramid-section .pdp-py-row__rule {
+  margin: 12px 0;
+}
+.pdp-pyramid-section .pdp-py-row__short {
+  margin-bottom: 6px;
+  font-size: 13.5px;
+}
+.pdp-pyramid-section .pdp-py-row__more summary {
+  min-height: 36px;
 }
 .pdp-pyramid-section .pdp-py-pair {
-  min-height: 220px;
-  grid-template-columns: minmax(0, 1fr) minmax(130px, 170px);
+  min-height: 156px;
+  grid-template-columns: minmax(0, 1fr) minmax(120px, 150px);
 }
 .pdp-pyramid-section .pdp-py-pair:nth-child(even) {
-  grid-template-columns: minmax(130px, 170px) minmax(0, 1fr);
+  grid-template-columns: minmax(120px, 150px) minmax(0, 1fr);
+}
+.pdp-pyramid-section .pdp-py-cap {
+  gap: 9px;
 }
 .pdp-pyramid-section .pdp-py-cap__name {
-  font-size: 19px;
+  font-size: 17px;
 }
 .pdp-pyramid-section .pdp-py-cap__latin {
-  font-size: 15px;
+  font-size: 14px;
 }
 @media (min-width: 861px) {
   .pdp-pyramid-section .pdp-py-row__body {
     display: grid;
-    grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
-    column-gap: 48px;
-    align-items: center;
+    grid-template-columns: minmax(200px, 250px) minmax(0, 1fr);
+    column-gap: 36px;
+    /* L'intro reste en haut de l'etage, a hauteur du numero, meme quand le
+       ruban de photos prend plusieurs lignes (parfums a huit ou neuf notes). */
+    align-items: start;
+  }
+  .pdp-pyramid-section .pdp-py-row__intro {
+    padding-top: 4px;
   }
   .pdp-pyramid-section .pdp-py-row__intro {
     margin-bottom: 0;
   }
   .pdp-pyramid-section .pdp-py-strip {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   }
 }
 @media (max-width: 640px) {
   .pdp-pyramid-section {
-    padding: 48px 0 16px;
+    padding: 40px 0 12px;
   }
   .pdp-pyramid-section .pdp-py-row {
     grid-template-columns: 42px minmax(0, 1fr);
     column-gap: 14px;
-    padding: 28px 0 32px;
+    padding: 22px 0 26px;
   }
   .pdp-pyramid-section .pdp-py-row__rail::after {
-    bottom: -32px;
+    bottom: -26px;
   }
   .pdp-pyramid-section .pdp-py-pair,
   .pdp-pyramid-section .pdp-py-pair:nth-child(even) {
-    grid-template-columns: minmax(0, 140px) minmax(0, 1fr);
-    min-height: 140px;
+    grid-template-columns: minmax(0, 120px) minmax(0, 1fr);
+    min-height: 116px;
   }
 }
 
@@ -2564,10 +2403,7 @@ body[data-page="product"] {
 }
 .pdp-feel__icon {
   width: auto;
-  height: auto;
-  margin-bottom: 10px;
   border: 0;
-  color: var(--pdp-gold);
   font-size: 44px;
   line-height: 1;
 }
@@ -2599,7 +2435,6 @@ body[data-page="product"] {
   max-width: 300px;
   height: 6px;
   background: var(--accent-light, #f4ecda);
-  overflow: hidden;
 }
 .pdp-feel__fill {
   display: block;
@@ -2619,7 +2454,7 @@ body[data-page="product"] {
 }
 .pdp-feel__label {
   margin: 6px 0 0;
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
   font-size: 15px;
   font-weight: 500;
   color: var(--pdp-ink);
@@ -2688,7 +2523,6 @@ body[data-page="product"] {
   padding-top: 6px;
 }
 
-
 /* ── Icones animees du Ressenti ─────────────────────────────────────────
    Trait d'or fin, mouvement lent et discret. Immobiles quand la personne
    demande moins de mouvement. */
@@ -2720,28 +2554,55 @@ body[data-page="product"] {
   animation: pdp-sable-bas 9s linear infinite;
 }
 .pdp-feel__sable-filet {
-  animation: pdp-sable-filet 0.6s linear infinite, pdp-sable-filet-vie 9s linear infinite;
+  animation:
+    pdp-sable-filet 0.6s linear infinite,
+    pdp-sable-filet-vie 9s linear infinite;
 }
 @keyframes pdp-sable-haut {
-  0% { transform: scaleY(1); }
-  80% { transform: scaleY(0.04); }
-  100% { transform: scaleY(0.04); }
+  0% {
+    transform: scaleY(1);
+  }
+  80% {
+    transform: scaleY(0.04);
+  }
+  100% {
+    transform: scaleY(0.04);
+  }
 }
 @keyframes pdp-sable-bas {
-  0% { transform: scaleY(0.04); }
-  80% { transform: scaleY(1); }
-  100% { transform: scaleY(1); }
+  0% {
+    transform: scaleY(0.04);
+  }
+  80% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(1);
+  }
 }
 @keyframes pdp-sable-filet {
-  to { stroke-dashoffset: -5; }
+  to {
+    stroke-dashoffset: -5;
+  }
 }
 @keyframes pdp-sable-filet-vie {
-  0%, 78% { opacity: 1; }
-  82%, 100% { opacity: 0; }
+  0%,
+  78% {
+    opacity: 1;
+  }
+  82%,
+  100% {
+    opacity: 0;
+  }
 }
 @keyframes pdp-sablier-tour {
-  0%, 84% { transform: rotate(0deg); }
-  100% { transform: rotate(180deg); }
+  0%,
+  84% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
 }
 /* La goutte reste suspendue au-dessus de son onde la plupart du temps,
    comme sur la maquette ; toutes les six secondes elle tombe, disparait dans
@@ -2768,21 +2629,55 @@ body[data-page="product"] {
   animation: pdp-onde 6s ease-out infinite;
 }
 @keyframes pdp-goutte {
-  0%, 58% { transform: translateY(0) scale(1); opacity: 1; }
-  66% { transform: translateY(24px) scale(1); opacity: 1; }
-  69% { transform: translateY(30px) scale(0.5, 0.25); opacity: 0; }
-  84% { transform: translateY(-5px) scale(0.7); opacity: 0; }
-  100% { transform: translateY(0) scale(1); opacity: 1; }
+  0%,
+  58% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  66% {
+    transform: translateY(24px) scale(1);
+    opacity: 1;
+  }
+  69% {
+    transform: translateY(30px) scale(0.5, 0.25);
+    opacity: 0;
+  }
+  84% {
+    transform: translateY(-5px) scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 @keyframes pdp-onde-base {
-  0%, 66% { transform: scale(1); }
-  70% { transform: scale(0.75); }
-  80%, 100% { transform: scale(1); }
+  0%,
+  66% {
+    transform: scale(1);
+  }
+  70% {
+    transform: scale(0.75);
+  }
+  80%,
+  100% {
+    transform: scale(1);
+  }
 }
 @keyframes pdp-onde {
-  0%, 68% { transform: scale(0.4); opacity: 0; }
-  72% { opacity: 0.8; }
-  96%, 100% { transform: scale(2.8); opacity: 0; }
+  0%,
+  68% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  72% {
+    opacity: 0.8;
+  }
+  96%,
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
 }
 /* Les saisons : quatre motifs separes d'un filet ; les saisons retenues sont
    en or, les autres en gris. */
@@ -2823,11 +2718,18 @@ body[data-page="product"] {
   animation: pdp-saison-rayons 36s linear infinite;
 }
 @keyframes pdp-saison-balance {
-  0%, 100% { transform: rotate(-4deg); }
-  50% { transform: rotate(4deg); }
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
 }
 @keyframes pdp-saison-rayons {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .pdp-feel__svg--sablier,
@@ -2842,11 +2744,24 @@ body[data-page="product"] {
   .pdp-feel__saison.is-on .pdp-feel__saison-svg--hiver {
     animation: none;
   }
-  .pdp-feel__sable-haut { transform: scaleY(0.5); }
-  .pdp-feel__sable-bas { transform: scaleY(0.5); }
-  .pdp-feel__goutte { transform: none; opacity: 1; }
-  .pdp-feel__onde:nth-child(1) { opacity: 0.75; transform: scale(1); }
-  .pdp-feel__onde:nth-child(2) { opacity: 0.4; transform: scale(1); }
+  .pdp-feel__sable-haut {
+    transform: scaleY(0.5);
+  }
+  .pdp-feel__sable-bas {
+    transform: scaleY(0.5);
+  }
+  .pdp-feel__goutte {
+    transform: none;
+    opacity: 1;
+  }
+  .pdp-feel__onde:nth-child(1) {
+    opacity: 0.75;
+    transform: scale(1);
+  }
+  .pdp-feel__onde:nth-child(2) {
+    opacity: 0.4;
+    transform: scale(1);
+  }
 }
 @media (max-width: 640px) {
   .pdp-feel__saison {
@@ -3012,4 +2927,841 @@ body[data-page="product"] {
   .pdp-note__label {
     text-align: center;
   }
+}
+
+/* ── Ressenti : finesse et animations a l'apparition ─────────────────────
+   Les cartes arrivent l'une apres l'autre (--i), la barre se remplit et la
+   note se compte quand la carte entre dans l'ecran (classe is-visible posee
+   par initReveal). La note de la communaute suit la meme logique : etoiles
+   qui se remplissent, chiffre qui se compte. Tout est immobile et deja
+   rempli si la personne demande moins de mouvement. */
+.pdp-feel__card.pdp-reveal {
+  transition-delay: calc(var(--i, 0) * 140ms);
+}
+.pdp-feel__card {
+  position: relative;
+  transition:
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.6s ease,
+    box-shadow 0.35s ease;
+}
+.pdp-feel__card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background: var(--pdp-gold, #cc9a36);
+  transition:
+    width 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    left 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pdp-feel__card:hover {
+  box-shadow: 0 18px 40px -28px rgba(31, 27, 20, 0.35);
+}
+.pdp-feel__card:hover::before {
+  left: 0;
+  width: 100%;
+}
+.pdp-feel__icon svg {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pdp-feel__card:hover .pdp-feel__icon svg {
+  transform: translateY(-2px);
+}
+/* La barre : remplissage retenu par --fill jusqu'a l'apparition, puis un
+   reflet qui la parcourt une fois. */
+.pdp-feel__bar {
+  position: relative;
+  overflow: hidden;
+}
+.pdp-feel__fill {
+  width: 0;
+  transition: width 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.25s;
+}
+.pdp-feel__fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translateX(-120%);
+}
+.pdp-feel__card.is-visible .pdp-feel__fill {
+  width: var(--fill, 0%);
+}
+.pdp-feel__card.is-visible .pdp-feel__fill::after {
+  animation: pdp-reflet 1.4s ease-out 0.9s 1;
+}
+@keyframes pdp-reflet {
+  to {
+    transform: translateX(220%);
+  }
+}
+.pdp-feel__score {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.pdp-feel__score [data-count] {
+  display: inline-block;
+  min-width: 1.2ch;
+  text-align: right;
+}
+.pdp-feel__chip {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+/* Grain de sable qui tombe au bout du filet. */
+.pdp-feel__sable-grain {
+  transform-origin: 50px 84px;
+  animation: pdp-grain 1.5s ease-in infinite;
+}
+@keyframes pdp-grain {
+  0% {
+    transform: translateY(-34px);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+}
+/* Petit eclat a l'impact de la goutte, cale sur son cycle de 6 s. */
+.pdp-feel__eclat {
+  opacity: 0;
+  transform-origin: 50px 66px;
+  animation: pdp-eclat 6s ease-out infinite;
+}
+@keyframes pdp-eclat {
+  0%,
+  42% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  48% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  60%,
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+/* Note de la communaute : le bloc arrive en fondu, les etoiles se
+   remplissent, le medaillon respire une fois. */
+.pdp-note__etoiles-plein {
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+}
+.pdp-reveal.is-visible .pdp-note__etoiles-plein {
+  width: var(--part, 0%);
+}
+.pdp-note__chiffre [data-count] {
+  display: inline-block;
+  min-width: 2.2ch;
+  text-align: right;
+}
+.pdp-note__medaillon {
+  position: relative;
+}
+.pdp-note__medaillon::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--pdp-gold, #cc9a36);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(1);
+}
+.pdp-reveal.is-visible .pdp-note__medaillon::after {
+  animation: pdp-medaillon 1.6s ease-out 0.5s 1;
+}
+@keyframes pdp-medaillon {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.45);
+  }
+}
+/* Pyramide : les paires photo/libelle se suivent en cascade dans l'etage. */
+.pdp-pyramid-section .pdp-py-pair {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pdp-pyramid-section .pdp-py-pair:nth-child(1) {
+  transition-delay: 0.1s;
+}
+.pdp-pyramid-section .pdp-py-pair:nth-child(2) {
+  transition-delay: 0.22s;
+}
+.pdp-pyramid-section .pdp-py-pair:nth-child(3) {
+  transition-delay: 0.34s;
+}
+.pdp-pyramid-section .pdp-py-pair:nth-child(n + 4) {
+  transition-delay: 0.46s;
+}
+.pdp-pyramid-section .pdp-reveal.is-visible .pdp-py-pair,
+.pdp-pyramid-section .pdp-py-row:not(.pdp-reveal) .pdp-py-pair {
+  opacity: 1;
+  transform: none;
+}
+.pdp-pyramid-section .pdp-py-shot img {
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pdp-pyramid-section .pdp-py-pair:hover .pdp-py-shot img {
+  transform: scale(1.04);
+}
+.pdp-py-row__more p {
+  animation: pdp-fondu 0.45s ease both;
+}
+@keyframes pdp-fondu {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pdp-feel__card,
+  .pdp-feel__card::before,
+  .pdp-feel__fill,
+  .pdp-feel__icon svg,
+  .pdp-note__etoiles-plein,
+  .pdp-pyramid-section .pdp-py-pair,
+  .pdp-pyramid-section .pdp-py-shot img {
+    transition: none;
+  }
+  .pdp-feel__fill,
+  .pdp-feel__card .pdp-feel__fill {
+    width: var(--fill, 0%);
+  }
+  .pdp-note__etoiles-plein,
+  .pdp-reveal .pdp-note__etoiles-plein {
+    width: var(--part, 0%);
+  }
+  .pdp-pyramid-section .pdp-py-pair {
+    opacity: 1;
+    transform: none;
+  }
+  .pdp-feel__sable-grain,
+  .pdp-feel__eclat,
+  .pdp-feel__fill::after,
+  .pdp-note__medaillon::after,
+  .pdp-py-row__more p {
+    animation: none;
+  }
+  .pdp-feel__eclat {
+    opacity: 0;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   Fiche produit d'apres la maquette du 7 septembre 2026 : a gauche la
+   photo et la pyramide en petit ; a droite maison, nom, etoiles, filet or,
+   « Formats disponibles », « Nos coffrets decouverte », le bouton noir et
+   trois reassurances. La pyramide pleine largeur a disparu.
+   ══════════════════════════════════════════════════════════════════════ */
+.pdp-sticky-media {
+  gap: 18px;
+}
+/* Pyramide en petit : un rail vertical relie les numeros, chaque etage
+   aligne les photos des notes avec leur nom dessous. */
+.pdp-mini {
+  list-style: none;
+  margin: 0;
+  padding: 0 4px;
+}
+.pdp-mini__row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  column-gap: 18px;
+  align-items: center;
+}
+.pdp-mini__row::before {
+  content: "";
+  position: absolute;
+  left: 19.5px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--pdp-gold);
+  opacity: 0.45;
+}
+.pdp-mini__row:first-child::before {
+  top: 50%;
+}
+.pdp-mini__row:last-child::before {
+  bottom: 50%;
+}
+.pdp-mini__row:only-child::before {
+  display: none;
+}
+.pdp-mini__num {
+  position: relative;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--pdp-gold);
+  border-radius: 50%;
+  background: var(--pdp-white, #fff);
+  display: grid;
+  place-items: center;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 16px;
+  font-variant-numeric: lining-nums;
+  color: var(--pdp-gold);
+}
+.pdp-mini__body {
+  min-width: 0;
+  border-bottom: 1px solid var(--pdp-line);
+}
+.pdp-mini__row:last-child .pdp-mini__body {
+  border-bottom: 0;
+}
+.pdp-mini__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--pdp-gold);
+}
+.pdp-mini__notes {
+  display: flex;
+  flex-wrap: wrap;
+}
+/* Les tuiles reprennent le rendu des notes (photo + nom + latin) en colonne. */
+.pdp-mini .pdp-py-pair,
+.pdp-mini .pdp-py-pair:nth-child(even) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 0;
+  margin: 0;
+}
+.pdp-mini .pdp-py-pair:nth-child(even) .pdp-py-shot {
+  order: 0;
+}
+.pdp-mini .pdp-py-shot {
+  background: transparent;
+}
+.pdp-mini .pdp-py-shot img {
+  padding: 2px;
+}
+
+.pdp-mini .pdp-py-cap {
+  padding: 0;
+  gap: 3px;
+}
+.pdp-mini .pdp-py-cap__name {
+  line-height: 1.15;
+}
+.pdp-mini .pdp-py-cap__rule {
+  display: none;
+}
+.pdp-mini .pdp-py-cap__latin {
+  font-size: 11.5px;
+  line-height: 1.2;
+}
+
+/* Colonne droite */
+.pdp-brand {
+  color: var(--pdp-gold);
+}
+.pdp-rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: -2px 0 14px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 19px;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--pdp-ink);
+}
+.pdp-rating__stars {
+  display: inline-flex;
+  gap: 2px;
+  color: var(--pdp-gold);
+}
+.pdp-rating__stars .star-icon,
+.pdp-rating__stars .star,
+.pdp-rating__stars .star-half-wrap {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+.pdp-rating__stars .star-empty {
+  opacity: 0.35;
+}
+.pdp-rating__val small {
+  font-size: 15px;
+  color: var(--pdp-ink-soft);
+}
+.pdp-rating__votes {
+  font-family: "Manrope", sans-serif;
+  font-size: 12px;
+  color: var(--pdp-ink-soft);
+}
+.pdp-info .pdp-desc {
+  margin: 0 0 4px;
+  max-width: 52ch;
+}
+/* Filet or avec un losange au centre, comme la maquette. */
+.pdp-rule {
+  display: flex;
+  align-items: center;
+  margin: 22px 0 18px;
+}
+.pdp-rule::before,
+.pdp-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--pdp-gold);
+  opacity: 0.55;
+}
+.pdp-rule i {
+  width: 6px;
+  height: 6px;
+  margin: 0 8px;
+  background: var(--pdp-gold);
+  transform: rotate(45deg);
+}
+.pdp-h2 {
+  margin: 0 0 8px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--pdp-ink);
+}
+.pdp-formats {
+  margin-top: 6px;
+  margin-bottom: 26px;
+}
+/* Cartes coffret : photo, nom, prix remise et prix barre, livraison. */
+.pdp-coffrets {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 4px 0 24px;
+}
+.pdp-coffret-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 12px 12px 12px 10px;
+  border: 1px solid var(--border-dark);
+  background: var(--pdp-white, #fff);
+  color: var(--pdp-ink);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    border-color 0.25s var(--pdp-ease),
+    transform 0.2s var(--pdp-ease),
+    box-shadow 0.25s var(--pdp-ease);
+}
+.pdp-coffret-card:hover {
+  border-color: var(--pdp-gold);
+  transform: translateY(var(--lift-hover));
+  box-shadow: 0 14px 30px -20px rgba(31, 27, 20, 0.35);
+}
+.pdp-coffret-card__img {
+  display: block;
+  overflow: hidden;
+}
+.pdp-coffret-card__img img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.pdp-coffret-card__txt {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.pdp-coffret-card__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 19px;
+  line-height: 1.15;
+  font-variant-numeric: lining-nums;
+}
+.pdp-coffret-card__title em {
+  display: block;
+  font-style: normal;
+  font-family: "Manrope", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--pdp-ink-soft);
+  margin-top: 2px;
+}
+.pdp-coffret-card__price {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 22px;
+  line-height: 1;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.pdp-coffret-card__price s {
+  margin-left: 8px;
+  font-size: 15px;
+  color: var(--pdp-ink-soft);
+}
+.pdp-coffret-card__ship {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--badge-text, #8a6825);
+}
+.pdp-coffret-card__ship i {
+  font-size: 15px;
+}
+.pdp-coffret-card__count {
+  font-size: 12px;
+  color: var(--pdp-ink-soft);
+}
+.pdp-coffret-card__count:empty {
+  display: none;
+}
+.pdp-coffret-card__badge {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  padding: 4px 10px;
+  background: var(--pdp-gold);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  font-variant-numeric: lining-nums;
+}
+/* Bouton noir pleine largeur, angles droits. */
+.pdp-actions {
+  margin-bottom: 18px;
+}
+.pdp-btn--primary {
+  padding: 17px 24px;
+  border-radius: 0;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+}
+.pdp-btn--ghost,
+.pdp-qty {
+  border-radius: 0;
+}
+/* Trois reassurances, titre + precision. */
+.pdp-trustrow {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 16px;
+  margin-top: 0;
+}
+.pdp-trustrow li {
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.pdp-trustrow i {
+  font-size: 22px;
+  margin-top: -2px;
+}
+.pdp-trustrow strong {
+  display: block;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--pdp-ink);
+  margin-bottom: 2px;
+}
+@media (max-width: 860px) {
+  .pdp-mini .pdp-py-pair,
+  .pdp-mini .pdp-py-pair:nth-child(even) {
+    width: 84px;
+  }
+  .pdp-mini .pdp-py-shot {
+    width: 76px;
+    height: 76px;
+  }
+}
+@media (max-width: 640px) {
+  .pdp-coffrets {
+    grid-template-columns: 1fr;
+  }
+  .pdp-trustrow {
+    grid-template-columns: 1fr;
+  }
+  .pdp-mini__row {
+    grid-template-columns: 34px minmax(0, 1fr);
+    column-gap: 12px;
+  }
+  .pdp-mini__row::before {
+    left: 16.5px;
+  }
+  .pdp-mini__num {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+  }
+  .pdp-mini__body {
+    padding: 6px 4px;
+  }
+  .pdp-mini .pdp-py-pair,
+  .pdp-mini .pdp-py-pair:nth-child(even) {
+    width: 72px;
+  }
+  .pdp-mini .pdp-py-shot {
+    width: 64px;
+    height: 64px;
+  }
+  .pdp-mini .pdp-py-cap__name {
+    font-size: 11px;
+  }
+  .pdp-mini .pdp-py-cap__latin {
+    display: none;
+  }
+}
+
+/* ── Cartes de format comme la maquette du 7 septembre : trois cartes
+   cadrees, flacon dessine, volume et prix en Cormorant, prix au ml en or,
+   pulverisations sous un filet, « Populaire » en pastille au-dessus. */
+.pdp-formats {
+  gap: 14px;
+  padding-top: 14px;
+}
+.pdp-format,
+.pdp-format + .pdp-format {
+  align-items: center;
+  padding: 22px 12px 14px;
+  border: 1px solid var(--border-dark);
+  border-radius: 0;
+  background: var(--pdp-white, #fff);
+  text-align: center;
+}
+.pdp-format:hover {
+  border-color: var(--pdp-gold);
+  transform: translateY(var(--lift-hover));
+}
+.pdp-format.is-active {
+  border: 1px solid var(--pdp-gold);
+  box-shadow: inset 0 0 0 1px var(--pdp-gold);
+  background: var(--pdp-white, #fff);
+}
+.pdp-format:not(.is-active) .pdp-format__vol,
+.pdp-format:not(.is-active) .pdp-format__price {
+  color: var(--pdp-ink);
+}
+.pdp-format__vial {
+  height: 76px;
+  margin-bottom: 10px;
+}
+.pdp-format__vol,
+.pdp-format__price {
+  font-family: "Cormorant Garamond", serif;
+  letter-spacing: 0;
+}
+.pdp-format__vol {
+  font-size: 24px;
+  font-weight: 500;
+}
+.pdp-format__price {
+  margin-top: 4px;
+  font-size: 22px;
+  font-weight: 400;
+}
+.pdp-format__ml {
+  margin-top: 2px;
+  font-family: "Manrope", sans-serif;
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--badge-text, #8a6825);
+  font-variant-numeric: tabular-nums;
+}
+.pdp-format__detail {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--pdp-line);
+  width: 100%;
+  font-family: "Manrope", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--pdp-ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.pdp-format__detail::before {
+  content: "";
+  width: 12px;
+  height: 14px;
+  border: 1px solid var(--pdp-gold);
+  border-radius: 2px 2px 3px 3px;
+  flex: none;
+}
+.pdp-format__usage {
+  display: none;
+}
+.pdp-format__badge,
+.pdp-format__flag {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--pdp-gold);
+  color: #fff;
+  font-family: "Manrope", sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+.pdp-format__flag {
+  background: var(--pdp-ink);
+}
+.pdp-format.is-unavailable {
+  opacity: 0.5;
+}
+/* Pyramide en petit : le nom suffit, le latin repasse dans le Ressenti. */
+.pdp-mini .pdp-py-cap__latin {
+  display: none;
+}
+@media (max-width: 640px) {
+  .pdp-formats {
+    gap: 8px;
+  }
+  .pdp-format,
+  .pdp-format + .pdp-format {
+    padding: 18px 6px 12px;
+  }
+  .pdp-format__vol {
+    font-size: 20px;
+  }
+  .pdp-format__price {
+    font-size: 18px;
+  }
+  .pdp-format__detail {
+    font-size: 10px;
+  }
+}
+/* Les trois cartes de format s'alignent par le bas : meme hauteur, le
+   flacon et les chiffres a la meme ligne d'une carte a l'autre. */
+.pdp-format,
+.pdp-format + .pdp-format {
+  justify-content: flex-end;
+}
+.pdp-format.is-active .pdp-format__price,
+.pdp-format .pdp-format__price {
+  color: var(--pdp-ink);
+}
+.pdp-format.is-active .pdp-format__ml,
+.pdp-format .pdp-format__ml {
+  color: var(--badge-text, #8a6825);
+}
+@media (max-width: 860px) {
+  /* Sur mobile la pyramide passe sous le bloc d'achat (deplacee par
+     product-page.js) : elle reprend la largeur de la page. */
+  .pdp-info + .pdp-mini {
+    margin: 8px 0 24px;
+    padding: 0;
+  }
+}
+/* Note sans photo dans la pyramide en petit : picto de famille en or. */
+.pdp-mini .pdp-py-tile__fallback {
+  color: var(--pdp-gold);
+}
+/* Pyramide en petit, resserree : tuiles de 64 px, cinq par etage, le reste
+   derriere un « +N ». La galerie perd son cadre, comme la maquette. */
+.pdp-mini .pdp-py-pair,
+.pdp-mini .pdp-py-pair:nth-child(even) {
+  width: 72px;
+}
+.pdp-mini .pdp-py-shot {
+  width: 64px;
+  height: 64px;
+}
+.pdp-mini .pdp-py-cap__name {
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+.pdp-mini .pdp-py-shot .pdp-py-tile__fallback {
+  font-size: 22px;
+}
+.pdp-mini__row {
+  padding: 8px 0;
+}
+.pdp-mini__body {
+  padding: 4px 10px 8px;
+}
+.pdp-mini__notes {
+  gap: 2px 4px;
+  align-items: flex-start;
+}
+.pdp-mini__plus {
+  width: 40px;
+  height: 40px;
+  margin: 12px 0 0 6px;
+  border: 1px solid var(--pdp-gold);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--badge-text, #8a6825);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 15px;
+  font-variant-numeric: lining-nums;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.pdp-mini__plus:hover {
+  background: var(--accent-light);
+}
+.pdp-gallery__main {
+  border: 0;
+  background: var(--surface, #faf7f2);
+}
+@media (max-width: 640px) {
+  .pdp-mini .pdp-py-pair,
+  .pdp-mini .pdp-py-pair:nth-child(even) {
+    width: 66px;
+  }
+  .pdp-mini .pdp-py-shot {
+    width: 58px;
+    height: 58px;
+  }
+}
+
+/* ── Un seul carrousel « Vous aimerez aussi » (meme famille puis meme
+   maison). Fond clair : la bande noire a ete refusee le 7 septembre. */
+.pdp-carousel-track .product-card {
+  flex: 0 0 clamp(220px, 19vw, 280px);
 }

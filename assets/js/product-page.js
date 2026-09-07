@@ -93,12 +93,17 @@
   // Une seule photo existe pour la plupart des parfums. On ne la duplique plus
   // en quatre miniatures identiques : quatre fois la meme image donne
   // l'impression d'une galerie cassee, pas d'un produit photographie.
+  // Apres la photo de la maison, la fiole Korei : c'est elle qu'on recoit.
+  // En attendant le packshot etiquete au nom du parfum (a demander a Anis),
+  // la fiole 10 ml extraite de la photo des trois decants sert pour tous.
+  const DECANT_KOREI = "assets/images/hero/fiole-korei-10ml.webp";
   function galleryImages(product, basePath) {
+    const decant = site?.withBase ? site.withBase(DECANT_KOREI, basePath) : `${basePath}${DECANT_KOREI}`;
     if (Array.isArray(product.images) && product.images.length) {
-      return product.images.map((p) => (site?.withBase ? site.withBase(p, basePath) : `${basePath}${p}`));
+      return [...product.images.map((p) => (site?.withBase ? site.withBase(p, basePath) : `${basePath}${p}`)), decant];
     }
     const src = ui.productImageSrc ? ui.productImageSrc(product, basePath) : null;
-    return src ? [src] : [];
+    return src ? [src, decant] : [];
   }
 
   // Aucune photo : un visuel Korei plutot qu'un cadre vide.
@@ -298,7 +303,7 @@
                   ${f.available ? "" : "disabled"}
                   data-price="${f.price}" data-vol="${f.key}" data-available="${f.available}"
                   aria-label="${f.vol} — ${f.available ? `${formatPriceLabel(f.price)} euros` : "indisponible"}">
-            ${f.best ? '<span class="pdp-format__flag">Meilleur prix</span>' : info.popular ? '<span class="pdp-format__badge">Notre conseil</span>' : ""}
+            ${f.best ? '<span class="pdp-format__flag">Meilleur prix</span>' : info.popular ? '<span class="pdp-format__badge">Populaire</span>' : ""}
             ${
               vial
                 ? `<span class="pdp-format__vial"><img src="../assets/images/hero/${vial}.webp" alt="" width="112" height="851" loading="lazy" decoding="async"></span>`
@@ -438,58 +443,16 @@
     desc: "La maison n'a pas publié le détail par étage pour ce parfum. Nous affichons la liste telle qu'elle nous a été transmise, sans deviner quelle note s'évapore la première.",
   };
 
-  // Intitule de l'etage, deduit de la famille dominante de ses notes. Il n'est
-  // pas ecrit en dur produit par produit : un etage boise ne peut pas
-  // s'intituler « Florales & Raffinees ».
-  // Les familles proches se regroupent en un caractere : un etage d'ananas et
-  // de bergamote est « frais », meme si ce sont deux familles differentes.
-  // C'est la lecture de la maquette du 24 aout.
-  const TIER_MOODS = {
-    fraiche: { familles: ["agrume", "fruit"], titre: "Fraîches & Pétillantes" },
-    florale: { familles: ["fleur"], titre: "Florales & Raffinées" },
-    boisee: { familles: ["bois", "musc", "resine"], titre: "Boisées & Sensuelles" },
-    chaude: { familles: ["epice", "gourmand"], titre: "Chaudes & Gourmandes" },
-  };
-
-  const MOOD_BY_FAMILY = (() => {
-    const map = {};
-    Object.entries(TIER_MOODS).forEach(([mood, def]) => def.familles.forEach((f) => (map[f] = mood)));
-    return map;
-  })();
-
-  // `deja` : les intitules employes par les etages precedents. Deux etages
-  // gourmands d'affilee donnaient deux fois « Chaudes & Gourmandes », ce qui
-  // se lit comme un bug. Le second reprend alors son intitule neutre.
-  function tierTitle(notes, fallback, deja) {
-    const compte = {};
-    let classees = 0;
-    notes.forEach((n) => {
-      const f = ui.noteFamilyOf ? ui.noteFamilyOf(n)?.family : null;
-      const mood = f ? MOOD_BY_FAMILY[f] : null;
-      if (!mood) return;
-      compte[mood] = (compte[mood] || 0) + 1;
-      classees += 1;
-    });
-    const ordre = Object.keys(compte).sort((a, b) => compte[b] - compte[a]);
-    // Il faut une vraie majorite pour nommer l'etage. Sinon on garde
-    // l'intitule neutre : annoncer « Boisees » un etage moitie floral
-    // serait faux.
-    if (!ordre.length || compte[ordre[0]] * 2 <= classees) return fallback;
-    const titre = TIER_MOODS[ordre[0]].titre;
-    return deja && deja.has(titre) ? fallback : titre;
-  }
-
-  // Le slug d'une note vient de KoreiUI : la fiche en gardait sa propre
-  // copie, restee sans le traitement des ligatures. « Œillet » y perdait sa
-  // photo pendant que le catalogue la trouvait.
-  const noteSlugLocal = ui.noteSlug || ((note) => String(note || "")
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/œ/g, "oe")
-    .replace(/æ/g, "ae")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, ""));
+  // Slug ASCII d'une note, comme dans main.js : sans accent ni apostrophe.
+  const noteSlugLocal = (note) =>
+    String(note)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/œ/g, "oe")
+      .replace(/æ/g, "ae")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
 
   // Une note = une tuile du bandeau. Avec sa photo d'ingredient quand elle
   // existe, sinon la couleur de sa famille olfactive : jamais un cadre vide.
@@ -532,22 +495,46 @@
     return global.KoreiUI?.slugDeRepli?.(slug) || "";
   }
 
-  function renderPyramidSection(product) {
-    const pyramide = renderPyramid(product);
-    if (!pyramide) return "";
+  // ── KOR-B10 : reassurance juste sous le bouton d'achat.
+  // Les quatre promesses sont exactement celles du bandeau du site : une
+  // promesse affichee ici et nulle part ailleurs serait une promesse inventee.
+  // « Cadeau mystere offert » a ete retire : rien dans le site ni dans la
+  // boutique ne le met en oeuvre. Les avantages du coffret sont confirmes par
+  // Shopify dans le panier avant que le checkout ne soit accessible.
+  const TRUST_ROW = [
+    { icon: "ti-shield-check", titre: "Authentique", sous: "Décants 100 % authentiques" },
+    { icon: "ti-bottle", titre: "Flacon en verre", sous: "Vaporisateur en verre, sans plastique au contact" },
+    { icon: "ti-truck-delivery", titre: "Expédition sous 24 h", sous: "Satisfait ou remboursé 30 jours" },
+  ];
+
+  function renderTrustRow() {
     return `
-      <section class="pdp-pyramid-section" aria-labelledby="pdp-pyramid-title">
-        <div class="pdp-container">
-          <div class="pdp-head pdp-reveal">
-            <div class="pdp-eyebrow">Pyramide olfactive</div>
-            <h2 class="pdp-title pdp-title--serif" id="pdp-pyramid-title">${esc(product.brand)} <em>${esc(product.name)}</em></h2>
-          </div>
-          ${pyramide}
-        </div>
-      </section>`;
+      <ul class="pdp-trustrow">
+        ${TRUST_ROW.map(
+          (it) => `<li><i class="ti ${it.icon}" aria-hidden="true"></i><span><strong>${it.titre}</strong>${it.sous}</span></li>`
+        ).join("")}
+      </ul>`;
   }
 
-  function renderPyramid(product) {
+  // ── Note de la communaute sous le nom : etoiles, note sur 5, nombre d'avis.
+  function renderRatingLine(product) {
+    const m = sensorielDe(product);
+    if (!m || !m.note || !ui.renderStars) return "";
+    const note = Number(m.note);
+    return `
+      <div class="pdp-rating" aria-label="Note ${noteFr(note)} sur 5${m.votes ? `, ${nombreFr(m.votes)} avis` : ""}">
+        <span class="pdp-rating__stars" aria-hidden="true">${ui.renderStars(note)}</span>
+        <span class="pdp-rating__val">${noteFr(note)}<small>/5</small></span>
+        ${m.votes ? `<span class="pdp-rating__votes">${nombreFr(m.votes)} avis</span>` : ""}
+      </div>`;
+  }
+
+  // ── Pyramide en petit sous la photo (maquette du 7 septembre) : trois
+  // etages numerotes, la photo de chaque note et son nom dessous.
+  // Au-dela de cinq notes par etage, les suivantes se replient derriere un
+  // « +N » : la pyramide reste a la hauteur de la photo, comme la maquette.
+  const MINI_VISIBLES = 5;
+  function renderPyramidCompact(product) {
     const notesByTier = {
       top: product.notesTop || [],
       heart: product.notesHeart || [],
@@ -556,130 +543,62 @@
     let tiers = TIER_META.filter((t) => notesByTier[t.key].length);
     if (!tiers.length) return "";
     if (tiers.length === 1) tiers = [{ ...tiers[0], ...TIER_SEUL }];
-
-    const titresPris = new Set();
     return `
-      <div class="pdp-pyramid pdp-reveal">
-        <ol class="pdp-py">
-          ${tiers
-            .map((t, i) => {
-              const notes = notesByTier[t.key];
-              const titre = tierTitle(notes, t.fallback, titresPris);
-              titresPris.add(titre);
-              return `
-            <li class="pdp-py-row${i === tiers.length - 1 ? " is-last" : ""}">
-              <span class="pdp-py-row__rail" aria-hidden="true">
-                ${t.num ? `<span class="pdp-py-row__num">${t.num}</span>` : ""}
-              </span>
-              <div class="pdp-py-row__body">
-              <div class="pdp-py-row__intro">
-                <span class="pdp-py-row__label">${t.label}</span>
-                <h3 class="pdp-py-row__title">${titre}</h3>
-                <span class="pdp-py-row__rule" aria-hidden="true"></span>
-                <p class="pdp-py-row__short">${t.court}</p>
-                <details class="pdp-py-row__more">
-                  <summary><span class="pdp-py-row__plus" aria-hidden="true">+</span> En savoir plus</summary>
-                  <p>${t.desc}</p>
-                </details>
-              </div>
-              <div class="pdp-py-strip">
-                ${notes.map(renderPyramidNote).join("")}
-              </div>
-              </div>
-            </li>`;
-            })
-            .join("")}
-        </ol>
-      </div>`;
+      <ol class="pdp-mini" aria-label="Pyramide olfactive">
+        ${tiers
+          .map(
+            (t) => `
+          <li class="pdp-mini__row">
+            <span class="pdp-mini__num" aria-hidden="true">${t.num || "·"}</span>
+            <div class="pdp-mini__body">
+              <span class="pdp-mini__label">${t.label}</span>
+              <div class="pdp-mini__notes">${notesByTier[t.key]
+                .map((n, i) => (i < MINI_VISIBLES ? renderPyramidNote(n) : renderPyramidNote(n).replace('<figure class="pdp-py-pair"', '<figure class="pdp-py-pair is-repli" hidden')))
+                .join("")}${
+                notesByTier[t.key].length > MINI_VISIBLES
+                  ? `<button class="pdp-mini__plus" type="button" aria-expanded="false" aria-label="Voir les ${notesByTier[t.key].length - MINI_VISIBLES} autres notes">+${notesByTier[t.key].length - MINI_VISIBLES}</button>`
+                  : ""
+              }</div>
+            </div>
+          </li>`
+          )
+          .join("")}
+      </ol>`;
   }
 
-
-  // ── KOR-B10 : reassurance juste sous le bouton d'achat.
-  // Les quatre promesses sont exactement celles du bandeau du site : une
-  // promesse affichee ici et nulle part ailleurs serait une promesse inventee.
-  // « Cadeau mystere offert » a ete retire : rien dans le site ni dans la
-  // boutique ne le met en oeuvre. Les avantages du coffret sont confirmes par
-  // Shopify dans le panier avant que le checkout ne soit accessible.
-  const TRUST_ROW = [
-    { icon: "ti-shield-check", label: "Décants 100 % authentiques" },
-    { icon: "ti-rotate", label: "Satisfait ou remboursé 30 jours" },
-    { icon: "ti-truck-delivery", label: "Expédition sous 24 h" },
-    { icon: "ti-package", label: "Livraison offerte sur coffret éligible" },
-  ];
-
-  function renderTrustRow() {
+  // ── « Nos coffrets decouverte » : deux cartes, Voyage 5 x 5 ml et
+  // Iconique 3 x 10 ml, au prix de CE parfum multiplie par le nombre de
+  // flacons, moins 10 %. Un clic ajoute les flacons au coffret.
+  const COFFRET_IMAGES = { "5ml": "coffret-voyage-5x5ml", "10ml": "coffret-iconique-3x10ml" };
+  function renderCoffretCards(formats) {
+    if (!global.KoreiCoffret) return "";
+    const cards = COFFRET_TIERS.map((t) => {
+      const f = formats.find((x) => x.key === t.format);
+      if (!f || !f.available || !f.price) return "";
+      const plein = Math.round(f.price * t.capacity * 100) / 100;
+      const remise = Math.round(plein * 0.9 * 100) / 100;
+      return `
+        <button class="pdp-coffret-card" type="button" data-coffret-card="${t.format}" aria-label="Ajouter le coffret ${t.label}, ${t.capacity} flacons de ${f.vol}, ${prix(remise)}">
+          <span class="pdp-coffret-card__badge">−10 %</span>
+          <span class="pdp-coffret-card__img"><img src="../assets/images/coffrets/${COFFRET_IMAGES[t.format]}-sm.webp" alt="" width="200" height="150" loading="lazy" decoding="async"></span>
+          <span class="pdp-coffret-card__txt">
+            <span class="pdp-coffret-card__title">Coffret ${t.capacity} × ${f.vol}<em>${t.label}</em></span>
+            <span class="pdp-coffret-card__price">${prix(remise)}<s>${prix(plein)}</s></span>
+            <span class="pdp-coffret-card__ship"><i class="ti ti-truck-delivery" aria-hidden="true"></i>Livraison gratuite</span>
+            <span class="pdp-coffret-card__count" data-coffret-count="${t.format}"></span>
+          </span>
+        </button>`;
+    }).filter(Boolean);
+    if (!cards.length) return "";
     return `
-      <ul class="pdp-trustrow">
-        ${TRUST_ROW.map(
-          (it) => `<li><i class="ti ${it.icon}" aria-hidden="true"></i>${it.label}</li>`
-        ).join("")}
-      </ul>`;
-  }
-
-  // ── Prix du format choisi
-  // Il n'existait qu'a deux endroits : dans une carte de format (23 px) et
-  // dans le libelle du bouton (11 px, en capitales). Plus petit que deux
-  // titres de section. C'est la deuxieme information lue d'une fiche produit.
-  function renderPriceBlock(sel) {
-    // Un parfum annonce mais pas encore reference chez le fournisseur n'a
-    // aucun prix : le client ne l'a pas achete, donc il ne l'a pas tarife.
-    // Afficher « 0 € », ou pire un prix pose au jugé, serait un mensonge sur
-    // une page qui vend. On n'affiche rien.
-    if (!sel || !sel.price) return "";
-    return `
-      <div class="pdp-price" data-price-block>
-        <span class="pdp-price__amount" data-price-amount>${prix(sel.price)}</span>
-        <span class="pdp-price__unit" data-price-unit>${unitPriceLabel(sel)}</span>
-      </div>`;
+      <h2 class="pdp-h2">Nos coffrets découverte</h2>
+      <div class="pdp-coffrets">${cards.join("")}</div>`;
   }
 
   function unitPriceLabel(f) {
     const ml = parseFloat(String(f.key).replace("ml", ""));
     if (!ml || !f.price) return "";
     return `${prix(f.price / ml)} / ml`;
-  }
-
-  // ── Progression du coffret (remplace les trois cartes-coffret)
-  // L'ancien bloc affichait « 162€ » en gras au-dessus d'un bouton qui
-  // ajoutait un seul flacon a 18€ : le visiteur croyait acheter un coffret.
-  // Et la phrase qui explique la remise etait `hidden` tant que le panier
-  // etait vide, donc invisible pour tout nouveau visiteur.
-  // Ici : une seule ligne, toujours visible, qui suit le format selectionne.
-  function renderCoffretRail(product, sel) {
-    // Sans prix, pas de coffret : un parfum non tarife n'est pas vendable.
-    if (!global.KoreiCoffret || !sel || !sel.price) return "";
-    // Les deux coffrets sont toujours visibles ; celui du format choisi est
-    // mis en avant, le 2 ml explique qu'il se commande a l'unite.
-    return `
-      <div class="pdp-rail" data-coffret-rail>
-        <div class="pdp-rail__head">
-          <span class="pdp-rail__name">Composer un coffret</span>
-          <span class="pdp-rail__gain-line">−10 % par flacon · livraison offerte</span>
-        </div>
-        ${COFFRET_TIERS.map(
-          (t) => `
-        <div class="pdp-rail__tier" data-rail-tier="${t.format}">
-          <span class="pdp-rail__tier-name">${t.label}<em>${t.capacity} × ${t.format.replace("ml", " ml")}</em></span>
-          <span class="pdp-rail__track" role="presentation"><span class="pdp-rail__fill" data-rail-fill style="width:0%"></span></span>
-          <span class="pdp-rail__count" data-rail-count>0/${t.capacity}</span>
-        </div>`
-        ).join("")}
-        <p class="pdp-rail__msg" data-rail-msg></p>
-      </div>`;
-  }
-
-  // Texte de la ligne de progression. Aucun prix de coffret n'est annonce :
-  // seule l'economie reelle sur le format choisi, calculee sur son prix.
-  function railMessage(sel, count, tier) {
-    const saved = sel.price * tier.capacity * 0.1;
-    if (count === 0) {
-      return `Composez ${tier.capacity} parfums en ${sel.vol} : <strong>${prix(saved)} économisés</strong>.`;
-    }
-    const rest = tier.capacity - (count % tier.capacity);
-    if (count % tier.capacity === 0) {
-      return `Coffret complet. Avantages estimés : <strong>${prix(saved)} économisés</strong> et livraison offerte, à confirmer dans le panier.`;
-    }
-    return `Plus que <strong>${rest} parfum${rest > 1 ? "s" : ""}</strong> en ${sel.vol}.`;
   }
 
   // Trois cent vingt-cinq fiches sur trois cent trente-huit n'ont pas de
@@ -733,15 +652,16 @@
           <div class="pdp-gallery-col">
             <div class="pdp-sticky-media">
               ${renderGallery(product, basePath)}
-              ${renderKeyNotes(product)}
+              ${renderPyramidCompact(product)}
             </div>
           </div>
           <div class="pdp-col">
             <div class="pdp-info pdp-reveal">
               <div class="pdp-brand">${esc(product.brand)}</div>
               <h1 class="pdp-name">${esc(product.name)}</h1>
-              ${renderPriceBlock(selected)}
-              ${formats.some((f) => f.price > 0) ? renderFormats(formats) : ""}
+              ${renderRatingLine(product)}
+              ${descriptionRedigee(product) ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
+              ${formats.some((f) => f.price > 0) ? `<div class="pdp-rule" aria-hidden="true"><i></i></div><h2 class="pdp-h2">Formats disponibles</h2>${renderFormats(formats)}${renderCoffretCards(formats)}` : ""}
               <div class="pdp-actions">
                 ${bientot ? `<p class="pdp-bientot">Ce parfum arrive bientôt en boutique.${product.photoManquante ? " Sa photo est en cours de préparation." : ""}</p>` : ""}
                 <div class="pdp-actions__row">
@@ -759,34 +679,13 @@
                 </div>
               </div>
 
-              ${renderCoffretRail(product, selected)}
-
               ${renderTrustRow()}
-              ${descriptionRedigee(product) ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
             </div>
             ${renderAccordions(product)}
             ${renderStory(product)}
           </div>
         </div>
       </section>`;
-  }
-
-  // Notes phares sous la photo collante : trois notes, comme la reference.
-  // Elles viennent des notes de tete du produit, pas d'une liste ecrite en dur.
-  function renderKeyNotes(product) {
-    const notes = [...(product.notesTop || []), ...(product.notesHeart || [])].slice(0, 3);
-    if (!notes.length) return "";
-    return `
-      <ul class="pdp-keynotes">
-        ${notes
-          .map(
-            (n) => `<li class="pdp-keynote">
-              ${ui.noteImageHtml ? ui.noteImageHtml(n, "../") : ""}
-              <span>${esc(n)}</span>
-            </li>`
-          )
-          .join("")}
-      </ul>`;
   }
 
   // KOR-A3 — barre d'achat collante, visible dès que le bouton principal sort
@@ -849,37 +748,22 @@
       return n > 1 ? `Ajouter ${n} flacons — ${total}` : `Ajouter au panier — ${total}`;
     }
 
-    const priceAmount = main.querySelector("[data-price-amount]");
-    const priceUnit = main.querySelector("[data-price-unit]");
-    const rail = main.querySelector("[data-coffret-rail]");
-
-    // La ligne de progression suit le format selectionne : changer de format
-    // change de coffret (5x5ml, 3x10ml), donc de quota et d'economie.
-    function syncRail() {
-      if (!rail || !current) return;
-      const active = COFFRET_TIERS.find((t) => t.format === current.key);
-      rail.classList.remove("is-complete");
+    // Les cartes coffret disent ou en est le panier pour leur format.
+    function syncCoffretCards() {
       COFFRET_TIERS.forEach((tier) => {
-        const row = rail.querySelector(`[data-rail-tier="${tier.format}"]`);
-        if (!row) return;
+        const el = main.querySelector(`[data-coffret-count="${tier.format}"]`);
+        if (!el) return;
         const count = coffret?.countFor ? coffret.countFor(tier.format) : 0;
-        const inBox = count % tier.capacity;
-        const done = count > 0 && inBox === 0;
-        row.classList.toggle("is-active", tier === active);
-        row.classList.toggle("is-complete", done);
-        if (tier === active && done) rail.classList.add("is-complete");
-        const countEl = row.querySelector("[data-rail-count]");
-        const fillEl = row.querySelector("[data-rail-fill]");
-        if (countEl) countEl.textContent = `${done ? tier.capacity : inBox}/${tier.capacity}`;
-        if (fillEl) fillEl.style.width = `${((done ? tier.capacity : inBox) / tier.capacity) * 100}%`;
+        if (!count) {
+          el.textContent = "";
+          return;
+        }
+        const boxes = Math.floor(count / tier.capacity);
+        const reste = count % tier.capacity;
+        el.textContent = boxes
+          ? `${boxes} coffret${boxes > 1 ? "s" : ""} dans le panier${reste ? ` + ${reste} flacon${reste > 1 ? "s" : ""}` : ""}`
+          : `${count}/${tier.capacity} flacons dans le panier`;
       });
-      const msgEl = rail.querySelector("[data-rail-msg]");
-      if (!msgEl) return;
-      if (active) {
-        msgEl.innerHTML = railMessage(current, coffret?.countFor ? coffret.countFor(current.key) : 0, active);
-      } else {
-        msgEl.textContent = "Le 2 ml se commande à l'unité. Les coffrets se composent en 5 ml ou en 10 ml.";
-      }
     }
 
     function syncButtons() {
@@ -892,9 +776,7 @@
         btn.disabled = Boolean(disabled);
       });
       if (stickyVol) stickyVol.textContent = current?.available ? current.vol : "";
-      if (priceAmount && current) priceAmount.textContent = `${prix(current.price)}`;
-      if (priceUnit && current) priceUnit.textContent = unitPriceLabel(current);
-      syncRail();
+      syncCoffretCards();
     }
 
     formatBtns.forEach((btn) => {
@@ -938,6 +820,36 @@
       }
     }
 
+    // Une carte coffret ajoute d'un coup les flacons du coffret dans ce
+    // format : cinq 5 ml ou trois 10 ml de ce parfum, remise appliquee au
+    // panier. Le format choisi suit.
+    main.querySelectorAll("[data-coffret-card]").forEach((card) => {
+      card.addEventListener("click", () => {
+        const tier = COFFRET_TIERS.find((t) => t.format === card.dataset.coffretCard);
+        const f = tier && byKey.get(tier.format);
+        if (!tier || !f || !f.available || product.bientot || !coffret) return;
+        const btn = formatBtns.find((b) => b.dataset.vol === tier.format);
+        if (btn && !btn.classList.contains("is-active")) btn.click();
+        const deja = coffret.itemQty ? coffret.itemQty(product.id, tier.format) : 0;
+        let ok;
+        if (deja > 0) {
+          coffret.setQty(product.id, tier.format, deja + tier.capacity);
+          ok = coffret.itemQty(product.id, tier.format) > deja;
+        } else {
+          ok = coffret.addItem({
+            productId: product.id,
+            name: product.name,
+            brand: product.brand,
+            format: tier.format,
+            price: f.price,
+            qty: tier.capacity,
+            variantId: f.variantId || undefined,
+          });
+        }
+        if (ok) coffret.notice?.(`Coffret ${tier.label} · ${tier.capacity} × ${product.name} ajouté au panier`);
+      });
+    });
+
     cta?.addEventListener("click", addToCart);
     stickyCta?.addEventListener("click", addToCart);
     coffret?.onChange(syncButtons);
@@ -967,6 +879,24 @@
     }
 
     global.KoreiFavorites?.initHeartButtons(main);
+
+    // Sur mobile, la pyramide quitte la colonne photo pour venir sous le
+    // bloc d'achat : le visiteur voit d'abord le prix, puis les notes.
+    const mini = main.querySelector(".pdp-mini");
+    main.querySelectorAll(".pdp-mini__plus").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        btn.parentElement.querySelectorAll(".is-repli").forEach((f) => (f.hidden = false));
+        btn.remove();
+      });
+    });
+    const media = main.querySelector(".pdp-sticky-media");
+    const info = main.querySelector(".pdp-info");
+    if (mini && media && info) {
+      const mq = global.matchMedia("(max-width: 860px)");
+      const placer = () => (mq.matches ? info.after(mini) : media.append(mini));
+      placer();
+      mq.addEventListener ? mq.addEventListener("change", placer) : mq.addListener(placer);
+    }
 
     const ingredientsToggle = main.querySelector("#pdp-ingredients-toggle");
     const ingredientsText = main.querySelector("#pdp-ingredients-text");
@@ -1035,13 +965,15 @@
   function iconeSablier() {
     return `
       <svg class="pdp-feel__svg pdp-feel__svg--sablier" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-        <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M28 10 H72 M28 90 H72"></path>
-          <path d="M33 10 C33 30 47 40 50 50 C53 60 67 70 67 90 M67 10 C67 30 53 40 50 50 C47 60 33 70 33 90"></path>
+        <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M26 9 H74 M26 91 H74"></path>
+          <path d="M31 9 C31 26 44 38 48.5 47 C49.5 49 49.5 51 48.5 53 C44 62 31 74 31 91 M69 9 C69 26 56 38 51.5 47 C50.5 49 50.5 51 51.5 53 C56 62 69 74 69 91"></path>
+          <path d="M31 13 H69 M31 87 H69" stroke-opacity="0.45" stroke-width="1"></path>
         </g>
-        <path class="pdp-feel__sable-haut" d="M38 20 L62 20 L50 42 Z" fill="currentColor" fill-opacity="0.45"></path>
-        <line class="pdp-feel__sable-filet" x1="50" y1="46" x2="50" y2="82" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 3"></line>
-        <path class="pdp-feel__sable-bas" d="M36 86 L64 86 L50 64 Z" fill="currentColor" fill-opacity="0.45"></path>
+        <path class="pdp-feel__sable-haut" d="M36 22 Q50 19 64 22 L50 44 Z" fill="currentColor" fill-opacity="0.42"></path>
+        <line class="pdp-feel__sable-filet" x1="50" y1="48" x2="50" y2="84" stroke="currentColor" stroke-width="1.1" stroke-dasharray="1.5 3"></line>
+        <path class="pdp-feel__sable-bas" d="M34 86 Q50 84 66 86 L50 62 Z" fill="currentColor" fill-opacity="0.42"></path>
+        <path class="pdp-feel__sable-grain" d="M50 84 l0 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
       </svg>`;
   }
 
@@ -1053,23 +985,31 @@
           <ellipse class="pdp-feel__onde" cx="50" cy="72" rx="19" ry="6.5"></ellipse>
           <ellipse class="pdp-feel__onde" cx="50" cy="72" rx="9" ry="3"></ellipse>
         </g>
-        <path class="pdp-feel__goutte" d="M50 18 C50 18 41 30 41 36 A9 9 0 0 0 59 36 C59 30 50 18 50 18 Z" fill="currentColor" fill-opacity="0.35" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path>
+        <g class="pdp-feel__goutte">
+          <path d="M50 18 C50 18 41 30 41 36 A9 9 0 0 0 59 36 C59 30 50 18 50 18 Z" fill="currentColor" fill-opacity="0.32" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"></path>
+          <path d="M45.5 36.5 C45.5 33.5 46.5 31 48 29" fill="none" stroke="#fff" stroke-opacity="0.8" stroke-width="1.1" stroke-linecap="round"></path>
+        </g>
+        <g class="pdp-feel__eclat" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round">
+          <path d="M43 66 L40 61 M57 66 L60 61 M50 64 V59"></path>
+        </g>
       </svg>`;
   }
 
   const ICONES_SAISONS = {
     printemps: `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false" class="pdp-feel__saison-svg pdp-feel__saison-svg--printemps">
         <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 35 C20 24 24 14 32 7"></path>
-          <path d="M20 26 C14 26 10 22 9 16 C15 16 19 20 20 26 Z"></path>
-          <path d="M24 17 C24 11 28 7 34 6 C34 12 30 16 24 17 Z"></path>
-          <path d="M17 31 C13 31 10 29 8 25 C12 25 15 27 17 31 Z"></path>
+          <path d="M20 36 C20 26 22 16 30 6"></path>
+          <path d="M21 27 C15 28 10 25 8 19 C14 17 19 21 21 27 Z"></path>
+          <path d="M23 18 C23 12 27 7 33 6 C33 12 29 17 23 18 Z"></path>
+          <path d="M20 33 C16 33 12 31 10 27 C14 26 18 29 20 33 Z"></path>
+          <path d="M8 19 C12 20 16 23 21 27 M33 6 C29 9 26 13 23 18" stroke-opacity="0.45" stroke-width="1"></path>
         </g>
       </svg>`,
     "été": `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false" class="pdp-feel__saison-svg pdp-feel__saison-svg--ete">
         <circle cx="20" cy="20" r="6.5" fill="currentColor" fill-opacity="0.35" stroke="currentColor" stroke-width="1.4"></circle>
         <g class="pdp-feel__rayons" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
-          <path d="M20 4 V9 M20 31 V36 M4 20 H9 M31 20 H36 M8.7 8.7 L12.2 12.2 M27.8 27.8 L31.3 31.3 M8.7 31.3 L12.2 27.8 M27.8 12.2 L31.3 8.7"></path>
+          <path d="M20 3.5 V9 M20 31 V36.5 M3.5 20 H9 M31 20 H36.5"></path>
+          <path d="M9.5 9.5 L12.5 12.5 M27.5 27.5 L30.5 30.5 M9.5 30.5 L12.5 27.5 M27.5 12.5 L30.5 9.5" stroke-width="1.1"></path>
         </g>
       </svg>`,
     automne: `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false" class="pdp-feel__saison-svg pdp-feel__saison-svg--automne">
@@ -1080,8 +1020,9 @@
       </svg>`,
     hiver: `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false" class="pdp-feel__saison-svg pdp-feel__saison-svg--hiver">
         <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
-          <path d="M20 5 V35 M7 12.5 L33 27.5 M7 27.5 L33 12.5"></path>
-          <path d="M20 9 L16.5 12 M20 9 L23.5 12 M20 31 L16.5 28 M20 31 L23.5 28 M10.5 14.5 L10 19 M10.5 14.5 L14.5 13 M29.5 25.5 L30 21 M29.5 25.5 L25.5 27 M10.5 25.5 L14.5 27 M10.5 25.5 L10 21 M29.5 14.5 L25.5 13 M29.5 14.5 L30 19"></path>
+          <path d="M20 5 V35 M7 12.5 L33 27.5 M7 27.5 L33 12.5" stroke-width="1.2"></path>
+          <path d="M20 9.5 L16.8 12.3 M20 9.5 L23.2 12.3 M20 30.5 L16.8 27.7 M20 30.5 L23.2 27.7 M10.9 14.8 L10.4 19 M10.9 14.8 L14.9 13.4 M29.1 25.2 L29.6 21 M29.1 25.2 L25.1 26.6 M10.9 25.2 L14.9 26.6 M10.9 25.2 L10.4 21 M29.1 14.8 L25.1 13.4 M29.1 14.8 L29.6 19" stroke-width="1.1"></path>
+          <circle cx="20" cy="20" r="2.2" fill="currentColor" fill-opacity="0.35" stroke="none"></circle>
         </g>
       </svg>`,
   };
@@ -1093,16 +1034,16 @@
       </span>`;
   }
 
-  function feelGauge(icone, titre, sousTitre, note, palier) {
+  function feelGauge(icone, titre, sousTitre, note, palier, index) {
     const pct = Math.max(0, Math.min(100, Math.round((Number(note) / 10) * 100)));
     return `
-      <article class="pdp-feel__card">
+      <article class="pdp-feel__card pdp-reveal" style="--i:${index}">
         <span class="pdp-feel__icon" aria-hidden="true">${icone === "hourglass" ? iconeSablier() : iconeGoutte()}</span>
         <h3 class="pdp-feel__title">${titre}</h3>
         <p class="pdp-feel__sous">${sousTitre}</p>
         <div class="pdp-feel__gauge" role="img" aria-label="${titre} : ${note} sur 10">
-          <span class="pdp-feel__bar"><span class="pdp-feel__fill" style="width:${pct}%"></span></span>
-          <span class="pdp-feel__score">${note}<small> / 10</small></span>
+          <span class="pdp-feel__bar"><span class="pdp-feel__fill" style="--fill:${pct}%"></span></span>
+          <span class="pdp-feel__score"><span data-count="${note}">0</span><small> / 10</small></span>
         </div>
         <p class="pdp-feel__text">${palier.texte}</p>
         <ul class="pdp-feel__chips"><li class="pdp-feel__chip is-on">${palier.label}</li></ul>
@@ -1147,7 +1088,7 @@
     return pour ? `À porter ${quand}, pour ${pour}.` : `À porter ${quand}.`;
   }
 
-  function feelSeasons(product) {
+  function feelSeasons(product, index) {
     const actives = new Set(product.seasons || []);
     const chips = SAISONS.map(
       ([cle, libelle]) => `<li class="pdp-feel__chip${actives.has(cle) ? " is-on" : ""}">${libelle}</li>`
@@ -1155,7 +1096,7 @@
     const occasions = product.occasions || [];
     const phrase = phraseSaisons(product.seasons || [], occasions);
     return `
-      <article class="pdp-feel__card">
+      <article class="pdp-feel__card pdp-reveal" style="--i:${index}">
         <span class="pdp-feel__icon pdp-feel__icon--saisons">${iconeSaisons(actives)}</span>
         <h3 class="pdp-feel__title">Saisons</h3>
         <p class="pdp-feel__sous">Quand le porter</p>
@@ -1214,10 +1155,10 @@
         <div class="pdp-note__bloc">
           <p class="pdp-note__label">Note de la communauté</p>
           <div class="pdp-note__mesure">
-            <p class="pdp-note__chiffre">${noteFr(sur5)}<span class="pdp-note__sur">/ 5</span></p>
+            <p class="pdp-note__chiffre"><span data-count="${sur5}" data-decimales="1">0,0</span><span class="pdp-note__sur">/ 5</span></p>
             <span class="pdp-note__etoiles" aria-hidden="true">
               <span class="pdp-note__etoiles-vide">${ETOILE.repeat(5)}</span>
-              <span class="pdp-note__etoiles-plein" style="width:${part}%">${ETOILE.repeat(5)}</span>
+              <span class="pdp-note__etoiles-plein" style="--part:${part}%">${ETOILE.repeat(5)}</span>
             </span>
             <p class="pdp-note__avis">Basée sur ${avis}</p>
           </div>
@@ -1229,17 +1170,17 @@
     const notes = sensorielDe(product);
     const cartes = [];
     if (notes && notes.tenue) {
-      cartes.push(feelGauge("hourglass", "Longévité", "Tenue sur la peau", notes.tenue, palierDe(TENUE_PALIERS, notes.tenue)));
+      cartes.push(feelGauge("hourglass", "Longévité", "Tenue sur la peau", notes.tenue, palierDe(TENUE_PALIERS, notes.tenue), cartes.length));
     }
     if (notes && notes.projection) {
       cartes.push(
-        feelGauge("ripple", "Projection", "Sillage et diffusion", notes.projection, palierDe(PROJECTION_PALIERS, notes.projection))
+        feelGauge("ripple", "Projection", "Sillage et diffusion", notes.projection, palierDe(PROJECTION_PALIERS, notes.projection), cartes.length)
       );
     }
-    if ((product.seasons || []).length) cartes.push(feelSeasons(product));
+    if ((product.seasons || []).length) cartes.push(feelSeasons(product, cartes.length));
     // Une seule carte ne fait pas une section : elle ne dit rien de plus que
     // le tableau des details, juste en plus gros.
-    const grille = cartes.length < 2 ? "" : `<div class="pdp-feel__grid pdp-reveal">${cartes.join("")}</div>`;
+    const grille = cartes.length < 2 ? "" : `<div class="pdp-feel__grid">${cartes.join("")}</div>`;
     const note = notes && notes.note ? feelNote(notes) : "";
     if (!grille && !note) return "";
     return `
@@ -1496,10 +1437,36 @@
   }
 
   // ── Reveal au scroll
+  // Un chiffre se compte de zero a sa valeur a l'apparition (note sur 10,
+  // note sur 5 avec une decimale), en une seconde ; d'un coup si la personne
+  // demande moins de mouvement.
+  function compterNote(el) {
+    const cible = Number(el.dataset.count) || 0;
+    const decimales = Number(el.dataset.decimales) || 0;
+    const fmt = (n) => n.toFixed(decimales).replace(".", ",");
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      el.textContent = fmt(cible);
+      return;
+    }
+    const debut = performance.now();
+    const duree = 1100;
+    const pas = (now) => {
+      const p = Math.min(1, (now - debut) / duree);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(cible * ease);
+      if (p < 1) requestAnimationFrame(pas);
+    };
+    requestAnimationFrame(pas);
+  }
+
   function initReveal(main) {
     const targets = Array.from(main.querySelectorAll(".pdp-reveal"));
     if (!targets.length) return;
-    const reveal = (el) => el.classList.add("is-visible");
+    const reveal = (el) => {
+      if (el.classList.contains("is-visible")) return;
+      el.classList.add("is-visible");
+      el.querySelectorAll("[data-count]").forEach(compterNote);
+    };
     if (!("IntersectionObserver" in window)) {
       targets.forEach(reveal);
       return;
@@ -1564,10 +1531,8 @@
         <span>${esc(product.name)}</span>
       </nav>
       ${renderHero(product, "../")}
-      ${renderPyramidSection(product)}
       ${renderRessenti(product)}
-      ${renderCarouselSection("pdp-similar", "Sélection", "Parfums similaires")}
-      ${renderCarouselSection("pdp-suggested", "La maison", `Autres créations ${esc(product.brand)}`)}
+      ${renderCarouselSection("pdp-related", "Sélection", "Vous aimerez aussi")}
       ${renderFaq(product)}
     `;
 
@@ -1599,12 +1564,14 @@
       const bientot = avecBientot ? autres.filter((p) => p.bientot === true) : [];
       return [...dispo, ...bientot].slice(0, 8);
     }
-    // « Parfums similaires » : jamais de « bientot disponible ».
-    fillCarousel("pdp-similar", achetablesDabord(store.getProductsByFamily(product.family), false));
-
-    // Autres creations de la maison : les achetables d'abord, les « bientot »
-    // ferment la rangee, comme dans la liste des parfums.
-    fillCarousel("pdp-suggested", achetablesDabord(store.getProductsByBrand(product.brandId), true));
+    // Un seul carrousel (audit du 4 septembre) : les parfums de la meme
+    // famille d'abord, puis les autres creations de la maison, sans doublon,
+    // jamais de « bientot disponible ». Dix cartes au plus.
+    const memeFamille = achetablesDabord(store.getProductsByFamily(product.family), false);
+    const memeMaison = achetablesDabord(store.getProductsByBrand(product.brandId), false);
+    const vus = new Set();
+    const lies = [...memeFamille, ...memeMaison].filter((p) => !vus.has(p.id) && vus.add(p.id)).slice(0, 10);
+    fillCarousel("pdp-related", lies);
 
     site?.initMediaSlots();
   }
