@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /pages/admin.html
 
-Sitemap: https://korei.fr/sitemap.xml
+Sitemap: https://korei-parfum.com/sitemap.xml

@@ -17,14 +17,25 @@ function shopDomain() {
   }
 }
 
+function storefrontToken() {
+  // Jeton privé : seul type accepté quand la boutique est protégée par mot de passe.
+  const privateToken = String(process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN || "").trim();
+  if (privateToken) return { token: privateToken, header: "Shopify-Storefront-Private-Token" };
+
+  const publicToken = String(process.env.SHOPIFY_STOREFRONT_PUBLIC_TOKEN || "").trim();
+  if (publicToken) return { token: publicToken, header: "X-Shopify-Storefront-Access-Token" };
+
+  return null;
+}
+
 function isConfigured() {
-  return Boolean(shopDomain() && process.env.SHOPIFY_STOREFRONT_PUBLIC_TOKEN);
+  return Boolean(shopDomain() && storefrontToken());
 }
 
 async function shopifyGraphQL(query, variables) {
   const domain = shopDomain();
-  const token = process.env.SHOPIFY_STOREFRONT_PUBLIC_TOKEN;
-  if (!domain || !token) {
+  const credentials = storefrontToken();
+  if (!domain || !credentials) {
     return {
       ok: false,
       status: 503,
@@ -38,7 +49,7 @@ async function shopifyGraphQL(query, variables) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Shopify-Storefront-Access-Token": token,
+        [credentials.header]: credentials.token,
       },
       body: JSON.stringify({ query, variables }),
     });

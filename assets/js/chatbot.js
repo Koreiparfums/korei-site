@@ -99,7 +99,7 @@
   function formatProductLine(product, index) {
     const notes = global.KoreiProducts?.formatNotes(product.notes.slice(0, 3)) || product.notes.join(", ");
     const url = productPageUrl(product.id);
-    return `${index + 1}. <a href="${url}" class="chatbot-product-link">${product.name}</a> (${product.brand}) — dès ${product.price}€ · ${notes}`;
+    return `${index + 1}. <a href="${url}" class="chatbot-product-link">${product.name}</a> (${product.brand}) — dès ${global.KoreiProducts?.prixEuros(product.price) ?? product.price + "\u00a0€"} · ${notes}`;
   }
 
   function detectTopic(query) {

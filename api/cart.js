@@ -2,6 +2,9 @@
  * Korei — API panier (Shopify Storefront Cart API).
  *
  * POST /api/cart avec { action, ... } :
+ *   sync   → { lines, previousDiscountId } — recrée atomiquement le panier avec
+ *            toutes ses lignes, calcule la remise coffret et pose un code unique
+ *   forget → { previousDiscountId } — supprime le code unique d'un panier vidé
  *   create → { variantId, quantity } — crée un panier avec une ligne initiale
  *   add    → { cartId, variantId, quantity } — ajoute une ligne
  *   update → { cartId, lineId, quantity } — change la quantité d'une ligne
@@ -15,6 +18,23 @@
  * 503 et le front reste en mode panier local uniquement.
  */
 const { shopifyGraphQL } = require("./lib/shopify");
+const { adminGraphQL } = require("./lib/shopify-admin");
+const {
+  formatOfOptions,
+  computeCoffretRemise,
+  createUniqueDiscount,
+  deleteManagedDiscount,
+  isDiscountNodeId,
+} = require("./coffret-remise");
+
+const SHIPPING_CODE = "LIVRAISON-COFFRET";
+
+// Le seul code que le navigateur peut demander. La remise produit n'est
+// jamais un code choisi par le client : le serveur la calcule et la crée
+// (voir coffret-remise.js).
+function isAllowedPromotionCode(code) {
+  return code === SHIPPING_CODE;
+}
 
 const CART_FIELDS = `
   id
@@ -24,15 +44,23 @@ const CART_FIELDS = `
     subtotalAmount { amount currencyCode }
     totalAmount { amount currencyCode }
   }
+  discountCodes { code applicable }
+  discountAllocations {
+    discountedAmount { amount currencyCode }
+  }
   lines(first: 50) {
     nodes {
       id
       quantity
+      discountAllocations {
+        discountedAmount { amount currencyCode }
+      }
       merchandise {
         ... on ProductVariant {
           id
           title
           price { amount currencyCode }
+          selectedOptions { name value }
           product { handle title }
         }
       }
@@ -41,8 +69,8 @@ const CART_FIELDS = `
 `;
 
 const CART_CREATE_MUTATION = `
-  mutation KoreiCartCreate($lines: [CartLineInput!]!) {
-    cartCreate(input: { lines: $lines }) {
+  mutation KoreiCartCreate($lines: [CartLineInput!]!, $codes: [String!]) {
+    cartCreate(input: { lines: $lines, discountCodes: $codes }) {
       cart { ${CART_FIELDS} }
       userErrors { field message }
     }
@@ -70,6 +98,20 @@ const CART_LINES_UPDATE_MUTATION = `
 const CART_LINES_REMOVE_MUTATION = `
   mutation KoreiCartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+      cart { ${CART_FIELDS} }
+      userErrors { field message }
+    }
+  }
+`;
+
+// Poser un code de reduction sur le panier. C'est le seul moyen, avec les
+// autorisations de l'application, de faire porter la remise coffret par
+// Shopify plutot que par le navigateur. Shopify repond « applicable: false »
+// quand le code n'existe pas : le site le lit et n'annonce alors aucune
+// remise, au lieu d'en promettre une qui ne sera pas facturee.
+const CART_DISCOUNT_MUTATION = `
+  mutation KoreiCartDiscount($cartId: ID!, $codes: [String!]!) {
+    cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $codes) {
       cart { ${CART_FIELDS} }
       userErrors { field message }
     }
@@ -104,6 +146,15 @@ function normalizeCart(cart) {
     checkoutUrl: cart.checkoutUrl,
     totalQuantity: cart.totalQuantity,
     cost: cart.cost,
+    // Ce que Shopify a reellement accepte de remiser. Le site n'affiche que
+    // ca : une remise annoncee et non facturee est un prix trompeur. Une
+    // remise sur produits est ventilee ligne par ligne, une remise sur la
+    // commande reste au niveau du panier : on additionne les deux.
+    discountCodes: cart.discountCodes || [],
+    discountApplied: [
+      ...(cart.discountAllocations || []),
+      ...(cart.lines?.nodes || []).flatMap((line) => line.discountAllocations || []),
+    ].reduce((total, a) => total + Number(a.discountedAmount?.amount || 0), 0),
     lines: (cart.lines?.nodes || []).map((line) => ({
       id: line.id,
       quantity: line.quantity,
@@ -111,10 +162,49 @@ function normalizeCart(cart) {
       variantTitle: line.merchandise?.title,
       productHandle: line.merchandise?.product?.handle,
       productTitle: line.merchandise?.product?.title,
+      format: formatOfOptions(line.merchandise?.selectedOptions),
       price: Number(line.merchandise?.price?.amount || 0),
       currencyCode: line.merchandise?.price?.currencyCode || "EUR",
     })),
   };
+}
+
+function normalizeLines(lines) {
+  if (!Array.isArray(lines)) return null;
+  const normalized = [];
+  for (const line of lines) {
+    const variantId = String(line?.variantId || "").trim();
+    const quantity = Number(line?.quantity);
+    if (!variantId.startsWith("gid://shopify/ProductVariant/") || !Number.isInteger(quantity) || quantity < 1) {
+      return null;
+    }
+    normalized.push({ merchandiseId: variantId, quantity });
+  }
+  return normalized.length > 0 && normalized.length <= 50 ? normalized : null;
+}
+
+function normalizeCodes(codes) {
+  if (!Array.isArray(codes)) return [];
+  return [
+    ...new Set(
+      codes
+        .map((code) => String(code || "").trim().toUpperCase())
+        .filter(isAllowedPromotionCode),
+    ),
+  ];
+}
+
+// Les lignes telles que le navigateur les a envoyées (ordre d'ajout), avec
+// le prix et le format réels que Shopify vient de renvoyer.
+function orderedLines(requestLines, cart) {
+  const byVariant = new Map((cart?.lines || []).map((line) => [line.variantId, line]));
+  return requestLines
+    .map((line) => {
+      const known = byVariant.get(line.merchandiseId);
+      if (!known) return null;
+      return { variantId: line.merchandiseId, quantity: line.quantity, price: known.price, format: known.format };
+    })
+    .filter(Boolean);
 }
 
 async function runCartMutation(query, variables, mutationName) {
@@ -142,11 +232,56 @@ async function handler(req, res) {
 
   const { action, cartId, lineId, variantId, quantity } = body;
 
+  if (action === "sync") {
+    const lines = normalizeLines(body.lines);
+    if (!lines) return sendJson(res, 400, { error: "invalid_lines" });
+    const previousDiscountId = String(body.previousDiscountId || "");
+
+    // 1. Le panier Shopify, sans remise : il donne les prix et formats réels.
+    const created = await runCartMutation(CART_CREATE_MUTATION, { lines, codes: [] }, "cartCreate");
+    if (!created.ok) return sendJson(res, created.status, { error: created.error, message: created.message });
+    const cart = created.cart;
+
+    // 2. Un panier, un code : celui de l'instantané précédent ne sert plus.
+    if (isDiscountNodeId(previousDiscountId)) await deleteManagedDiscount(adminGraphQL, previousDiscountId);
+
+    // 3. La règle du coffret sur les lignes, dans l'ordre d'ajout. Sans
+    //    coffret complet, aucun code : ni remise, ni livraison offerte.
+    const remise = computeCoffretRemise(orderedLines(lines, cart));
+    if (!remise.boxes) return sendJson(res, 200, { cart, coffretDiscount: null });
+
+    // 4. Le code unique du montant exact, puis les codes posés sur le panier.
+    //    Si Shopify Admin refuse, le panier part sans remise produit : le
+    //    navigateur le voit (remise non confirmée) et bloque la commande.
+    const codes = [SHIPPING_CODE];
+    let coffretDiscount = null;
+    let warning = null;
+    if (remise.amount > 0) {
+      const unique = await createUniqueDiscount(adminGraphQL, remise);
+      if (unique.ok) {
+        coffretDiscount = { id: unique.id, code: unique.code, amount: unique.amount };
+        codes.unshift(unique.code);
+      } else {
+        warning = unique.error || "remise_indisponible";
+      }
+    }
+    const applied = await runCartMutation(CART_DISCOUNT_MUTATION, { cartId: cart.id, codes }, "cartDiscountCodesUpdate");
+    if (!applied.ok) return sendJson(res, applied.status, { error: applied.error, message: applied.message });
+    return sendJson(res, 200, { cart: applied.cart, coffretDiscount, warning });
+  }
+
+  if (action === "forget") {
+    const previousDiscountId = String(body.previousDiscountId || "");
+    if (!isDiscountNodeId(previousDiscountId)) return sendJson(res, 400, { error: "discount_id_invalide" });
+    const result = await deleteManagedDiscount(adminGraphQL, previousDiscountId);
+    return sendJson(res, 200, { deleted: result.ok === true });
+  }
+
   if (action === "create") {
     if (!variantId || !quantity) return sendJson(res, 400, { error: "missing_fields" });
     const result = await runCartMutation(
       CART_CREATE_MUTATION,
-      { lines: [{ merchandiseId: variantId, quantity }] },
+      { lines: [{ merchandiseId: variantId, quantity }], codes: [] },
       "cartCreate",
     );
     if (!result.ok) return sendJson(res, result.status, { error: result.error, message: result.message });
@@ -186,6 +321,18 @@ async function handler(req, res) {
     return sendJson(res, 200, { cart: result.cart });
   }
 
+  if (action === "discount") {
+    if (!cartId) return sendJson(res, 400, { error: "cart_id_requis" });
+    const codes = normalizeCodes(body.codes);
+    const result = await runCartMutation(
+      CART_DISCOUNT_MUTATION,
+      { cartId, codes },
+      "cartDiscountCodesUpdate",
+    );
+    if (!result.ok) return sendJson(res, result.status, { error: result.error, message: result.message });
+    return sendJson(res, 200, { cart: result.cart });
+  }
+
   if (action === "get") {
     if (!cartId) return sendJson(res, 400, { error: "missing_fields" });
     const result = await shopifyGraphQL(CART_QUERY, { cartId });
@@ -197,3 +344,7 @@ async function handler(req, res) {
 }
 
 module.exports = handler;
+module.exports.normalizeCodes = normalizeCodes;
+module.exports.normalizeLines = normalizeLines;
+module.exports.isAllowedPromotionCode = isAllowedPromotionCode;
+module.exports.orderedLines = orderedLines;
