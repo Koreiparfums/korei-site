@@ -13,7 +13,9 @@
     "shopify:discounts:apply": "node scripts/configure-shopify-discounts.js --apply",
     "shopify:discounts:nettoyer": "node scripts/configure-shopify-discounts.js --nettoyer",
     "shopify:inventory": "node scripts/configure-shopify-inventory.js",
-    "shopify:inventory:apply": "node scripts/configure-shopify-inventory.js --apply"
+    "shopify:inventory:apply": "node scripts/configure-shopify-inventory.js --apply",
+    "shopify:flacons": "node scripts/configure-shopify-flacons.js",
+    "shopify:flacons:apply": "node scripts/configure-shopify-flacons.js --apply"
   },
   "dependencies": {
     "@netlify/blobs": "^8.1.0"

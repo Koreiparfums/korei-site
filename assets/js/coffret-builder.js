@@ -11,7 +11,8 @@
   const esc = (v) => (global.KoreiSite?.escapeHtml || ((x) => x))(v);
   const SLOT_COUNTS = { "5ml": 5, "10ml": 3 };
   // Formats que le panier accepte, coffret ou non.
-  const CART_FORMATS = ["2ml", "5ml", "10ml"];
+  // Le flacon complet se vend a l'unite, comme le 2 ml : aucun coffret.
+  const CART_FORMATS = ["2ml", "5ml", "10ml", "flacon"];
   // Dix coffrets par format couvrent largement un panier particulier.
   // Au-dela, la demande releve d'une commande en volume et ne doit pas
   // partir au checkout avec une remise incomplete (le serveur applique le
@@ -55,6 +56,11 @@
   function onChange(fn) {
     listeners.add(fn);
     return () => listeners.delete(fn);
+  }
+
+  // Intitule d'un groupe du panier : « 2 ml », « Flacon complet ».
+  function groupLabel(format) {
+    return format === "flacon" ? "Flacon complet" : String(format).replace("ml", " ml");
   }
 
   function isEligibleFormat(format) {
@@ -466,12 +472,12 @@
         const groupItems = items.filter((it) => it.format === format);
         if (!groupItems.length) return "";
         const totalQty = groupItems.reduce((sum, it) => sum + (it.qty || 1), 0);
-        const ml = format.replace("ml", " ml");
+        const ml = groupLabel(format);
         // Le 2 ml n'entre dans aucun coffret : il se liste a l'unite.
         if (!hasBox(format)) {
           return `
           <section class="cw-group">
-            <h3 class="cw-group__head"><i class="ti ti-bottle" aria-hidden="true"></i>Découverte · ${ml} — <em>${totalQty} flacon${totalQty > 1 ? "s" : ""}</em></h3>
+            <h3 class="cw-group__head"><i class="ti ti-bottle" aria-hidden="true"></i>${format === "flacon" ? ml : `Découverte · ${ml}`} — <em>${totalQty} flacon${totalQty > 1 ? "s" : ""}</em></h3>
             ${itemsDe(groupItems)}
           </section>`;
         }
@@ -601,7 +607,7 @@
         // Le 2 ml n'a pas de coffret : un groupe simple, sans progression.
         const horsCoffret = !group.slots;
         const title = horsCoffret
-          ? `${group.format.replace("ml", " ml")} · à l'unité`
+          ? `${groupLabel(group.format)} · à l'unité`
           : group.boxes > 1
           ? `${group.boxes} coffrets ${group.label}${singles ? ` + ${singles} flacon${singles > 1 ? "s" : ""} seul${singles > 1 ? "s" : ""}` : ""}`
           : complete
@@ -615,7 +621,7 @@
             <div class="panier-group__head">
               <div class="panier-group__id">
                 <span class="panier-group__name">${title}</span>
-                <span class="panier-group__meta">${horsCoffret ? `${group.count} flacon${group.count > 1 ? "s" : ""} · prix normal` : `${complete ? `${group.inBoxes} flacon${group.inBoxes > 1 ? "s" : ""} dans ${group.boxes > 1 ? "les coffrets" : "le coffret"}${singles ? ` · ${singles} seul au prix normal` : ""}` : `${group.count}/${group.slots}`} · ${group.format.replace("ml", " ml")}`}</span>
+                <span class="panier-group__meta">${horsCoffret ? `${group.count} flacon${group.count > 1 ? "s" : ""} · prix normal` : `${complete ? `${group.inBoxes} flacon${group.inBoxes > 1 ? "s" : ""} dans ${group.boxes > 1 ? "les coffrets" : "le coffret"}${singles ? ` · ${singles} seul au prix normal` : ""}` : `${group.count}/${group.slots}`} · ${groupLabel(group.format)}`}</span>
               </div>
               <div class="panier-group__money">
                 <span class="panier-group__total">${money(net)}</span>
@@ -646,9 +652,12 @@
     const lineTotal = (Number(item.price) || 0) * qty;
     const available = product ? store?.isVariantAvailable(product, item.format) !== false : true;
     const optionsHtml = CART_FORMATS
+      // Le flacon ne se propose que pour les parfums qui en ont un.
+      .filter((f) => f !== "flacon" || (product && store?.getFlacon?.(product)))
       .map((f) => {
         const optAvailable = product ? store?.isVariantAvailable(product, f) !== false : true;
-        return `<option value="${f}"${f === item.format ? " selected" : ""}${optAvailable ? "" : " disabled"}>${f.replace("ml", " ml")}${optAvailable ? "" : " — rupture"}</option>`;
+        const libelle = store?.formatLabel ? store.formatLabel(product, f) : f.replace("ml", " ml");
+        return `<option value="${f}"${f === item.format ? " selected" : ""}${optAvailable ? "" : " disabled"}>${libelle}${optAvailable ? "" : f === "flacon" ? " — bientôt" : " — rupture"}</option>`;
       })
       .join("");
 

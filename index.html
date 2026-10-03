@@ -131,11 +131,7 @@
       <div class="mobile-drawer">
         <div class="mobile-drawer-head">
           <span class="logo">Kōrei</span>
-          <button
-            data-toggle-menu
-            type="button"
-            class="mobile-drawer-close"
-          >
+          <button data-toggle-menu type="button" class="mobile-drawer-close">
             <i class="ti ti-x"></i>
           </button>
         </div>
@@ -173,298 +169,332 @@
     </div>
 
     <main>
-    <section class="hero hero--fioles">
-      <!-- Le decor : un mur clair et une tablette de marbre eclaires de
-           biais. Les trois fioles Korei se posent sur la tablette. -->
-      <picture class="hero__media">
-        <source media="(max-width: 640px)" srcset="assets/images/hero/hero-fond-sm.webp" />
-        <img src="assets/images/hero/hero-fond.webp" alt=""
-             width="1600" height="730" fetchpriority="high" decoding="async" />
-      </picture>
+      <section class="hero hero--centre">
+        <!-- Le fond : une photo plein cadre. Pour la changer, remplacer
+           hero-fond.webp (1600 px de large) et hero-fond-sm.webp (mobile). -->
+        <picture class="hero__media">
+          <source
+            media="(max-width: 640px)"
+            srcset="assets/images/hero/hero-fond-sm.webp"
+          />
+          <img
+            src="assets/images/hero/hero-fond.webp"
+            alt=""
+            width="1600"
+            height="730"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </picture>
 
-      <div class="hero__inner">
-        <div class="hero__content">
-          <p class="hero__eyebrow">Parfumerie de niche</p>
-          <!-- Le titre ne porte plus de compteur. « Essayez 163 parfums »
+        <div class="hero__inner">
+          <div class="hero__content">
+            <p class="hero__eyebrow">Parfumerie de niche</p>
+            <!-- Le titre ne porte plus de compteur. « Essayez 163 parfums »
                changeait a chaque parfum ajoute ou retire, et un inventaire
                n'est pas une promesse. -->
-          <h1 class="hero__title">
-            <span class="hero__line">Le parfum d'abord.</span>
-            <span class="hero__line">Le flacon <em>ensuite.</em></span>
-          </h1>
-          <p class="hero__sub">
-            Tom Ford, Amouage, Memo Paris : le jus d'origine, transvasé à la
-            main dans un flacon de 2, 5 ou 10&nbsp;ml. Portez-le une semaine
-            avant de choisir.
-          </p>
-          <!-- Deux actions (devis §1) : explorer le catalogue, et comprendre
+            <h1 class="hero__title">
+              <span class="hero__line">Le parfum d'abord.</span>
+              <span class="hero__line">Le flacon <em>ensuite.</em></span>
+            </h1>
+            <p class="hero__sub">
+              Tom Ford, Amouage, Memo Paris : le jus d'origine, transvasé à la
+              main dans un flacon de 2, 5 ou 10&nbsp;ml. Portez-le une semaine
+              avant de choisir.
+            </p>
+            <!-- Deux actions (devis §1) : explorer le catalogue, et comprendre
                ce qu'est un decant. La seconde est un simple lien souligne :
                un seul bouton, l'oeil sait ou aller. -->
-          <div class="hero__ctas">
-            <a href="pages/catalogue.html" class="hero__cta">Voir les parfums</a>
-            <a href="#le-decant" class="hero__cta hero__cta--ghost">Pourquoi un décant ?</a>
+            <div class="hero__ctas">
+              <a href="pages/catalogue.html" class="hero__cta"
+                >Voir les parfums</a
+              >
+              <a href="#le-decant" class="hero__cta hero__cta--ghost"
+                >Pourquoi un décant ?</a
+              >
+            </div>
           </div>
         </div>
+      </section>
 
-        <!-- Les trois formats, a l'echelle, poses sur la tablette. -->
-        <figure class="hero__fioles">
-          <img src="assets/images/formats/fioles-korei-2-5-10ml.webp"
-               alt="Les trois fioles Kōrei de 2, 5 et 10 ml, côte à côte"
-               width="566" height="996" decoding="async" />
-          <figcaption class="hero__legende">
-            <p class="hero__indice">Passez la souris : le flacon d'origine apparaît</p>
-            <!-- KOR-D7 — preuve sociale. Ne s'affiche que si les chiffres sont
-                 reels : voir SOCIAL_PROOF dans assets/js/main.js. -->
-            <div class="hero__proof" id="hero-proof" hidden>
-              <span class="hero__proof-score" id="hero-proof-score"></span>
-              <span class="hero__proof-sep" aria-hidden="true"></span>
-              <span class="hero__proof-orders">
-                <i class="ti ti-package" aria-hidden="true"></i>
-                <span id="hero-proof-orders"></span>
-              </span>
-            </div>
-            <!-- Repli honnete tant que la preuve sociale n'existe pas : des
-                 faits verifiables, tires du catalogue. -->
-            <div class="hero__proof hero__proof--facts" id="hero-facts">
-              <span class="hero__proof-orders hero__fact--formats"><span>2, 5 et 10&nbsp;ml</span></span>
-              <span class="hero__proof-sep" aria-hidden="true"></span>
-              <span class="hero__proof-orders"><span id="hero-brand-count">Maisons de niche sélectionnées</span></span>
-              <span class="hero__proof-sep" aria-hidden="true"></span>
-              <span class="hero__proof-orders"><span>Rempli à la main depuis le flacon d'origine</span></span>
-            </div>
-          </figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <!-- KOR-D4 — le second bandeau de promesses a ete retire : il repetait
+      <!-- KOR-D4 — le second bandeau de promesses a ete retire : il repetait
          mot pour mot celui du haut de page. Le brief §1 demande un seul
          bandeau de reassurance, pas un empilement. -->
 
-<section class="favorites-section">
-      <div class="favorites-head">
-        <div class="favorites-heading">
-          <div class="favorites-eyebrow">Par où commencer</div>
-          <h2 class="favorites-title">Les grands <em>classiques</em> de la niche</h2>
-        </div>
-        <div class="favorites-controls">
-          <a href="pages/catalogue.html" class="btn-white">Tout voir →</a>
-          <div class="favorites-nav">
-            <button
-              class="favorites-nav-btn"
-              type="button"
-              aria-label="Précédent"
-              data-scroll-dir="-1"
-            >
-              <i class="ti ti-chevron-left"></i>
-            </button>
-            <button
-              class="favorites-nav-btn"
-              type="button"
-              aria-label="Suivant"
-              data-scroll-dir="1"
-            >
-              <i class="ti ti-chevron-right"></i>
-            </button>
+      <section class="favorites-section">
+        <div class="favorites-head">
+          <div class="favorites-heading">
+            <div class="favorites-eyebrow">Par où commencer</div>
+            <h2 class="favorites-title">
+              Les grands <em>classiques</em> de la niche
+            </h2>
+          </div>
+          <div class="favorites-controls">
+            <a href="pages/catalogue.html" class="btn-white">Tout voir →</a>
+            <div class="favorites-nav">
+              <button
+                class="favorites-nav-btn"
+                type="button"
+                aria-label="Précédent"
+                data-scroll-dir="-1"
+              >
+                <i class="ti ti-chevron-left"></i>
+              </button>
+              <button
+                class="favorites-nav-btn"
+                type="button"
+                aria-label="Suivant"
+                data-scroll-dir="1"
+              >
+                <i class="ti ti-chevron-right"></i>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="products-scroll" id="bestsellers-grid"></div>
-    </section>
+        <div class="products-scroll" id="bestsellers-grid"></div>
+      </section>
 
-
-    <!-- KOR-D2 — carrousel « Nos formats ». Les prix de depart sont calcules
+      <!-- KOR-D2 — carrousel « Nos formats ». Les prix de depart sont calcules
          sur le catalogue reel (main.js), jamais ecrits en dur : un prix affiche
          doit toujours etre un prix vendable. -->
-    <section class="formats-section" id="le-decant">
-      <div class="dose-head">
-        <div class="dose-eyebrow">Le principe du décant</div>
-        <h2 class="dose-title">Nos <em>formats</em></h2>
-        <p class="dose-subtitle">
-          Le parfum d'origine, reconditionné dans nos flacons. Vous payez le jus, pas le flacon de la maison.
-        </p>
-        <span class="dose-title-rule" aria-hidden="true"></span>
-      </div>
-      <!-- Les trois formats en une image, a l'echelle (audit du 4 septembre,
-           lot 2). Visuel genere le 7 septembre 2026 d'apres la fiole Korei. -->
-      <figure class="formats-scale">
-        <img src="assets/images/formats/fioles-korei-2-5-10ml-sm.webp"
-             srcset="assets/images/formats/fioles-korei-2-5-10ml-sm.webp 360w, assets/images/formats/fioles-korei-2-5-10ml.webp 566w"
-             sizes="(max-width: 640px) 220px, 300px"
-             alt="Les trois flacons Kōrei côte à côte : 2 ml, 5 ml et 10 ml, à l'échelle"
-             width="566" height="996" loading="lazy" decoding="async" />
-        <figcaption>Les trois flacons, à l'échelle. Verre transparent, vaporisateur, étiquette Kōrei.</figcaption>
-      </figure>
-      <div class="formats-carousel">
-        <button class="formats-arrow formats-arrow--prev" type="button" aria-label="Format précédent" data-formats-dir="-1">
-          <i class="ti ti-chevron-left" aria-hidden="true"></i>
-        </button>
-        <ul class="formats-track" id="formats-track">
-          <li class="format-card" data-vial="2ml">
-            <div class="format-card__media">
-              <img src="assets/images/hero/hero-decant-2ml.webp" alt="Flacon Kōrei de 2 ml" width="94" height="494" loading="lazy" decoding="async" />
-            </div>
-            <div class="format-card__body">
-              <span class="format-card__size">2 ml</span>
-              <p class="format-card__use">Environ 30 pulvérisations. Pour le porter quelques jours et savoir.</p>
-              <span class="format-card__price">À partir de <b data-format-from="2ml">—</b></span>
-              <a class="format-card__cta" href="pages/catalogue.html">Choisir un parfum <span aria-hidden="true">→</span></a>
-            </div>
-          </li>
-          <li class="format-card" data-vial="5ml">
-            <span class="format-card__flag">Notre conseil</span>
-            <div class="format-card__media">
-              <img src="assets/images/hero/hero-decant-5ml.webp" alt="Flacon Kōrei de 5 ml" width="105" height="659" loading="lazy" decoding="async" />
-            </div>
-            <div class="format-card__body">
-              <span class="format-card__size">5 ml</span>
-              <p class="format-card__use">Environ 75 pulvérisations. Pour se décider sans se presser.</p>
-              <span class="format-card__price">À partir de <b data-format-from="5ml">—</b></span>
-              <a class="format-card__cta" href="pages/catalogue.html">Choisir un parfum <span aria-hidden="true">→</span></a>
-            </div>
-          </li>
-          <li class="format-card" data-vial="10ml">
-            <div class="format-card__media">
-              <img src="assets/images/hero/hero-decant-10ml.webp" alt="Flacon Kōrei de 10 ml" width="112" height="851" loading="lazy" decoding="async" />
-            </div>
-            <div class="format-card__body">
-              <span class="format-card__size">10 ml</span>
-              <p class="format-card__use">Environ 150 pulvérisations. Pour un parfum que vous portez déjà.</p>
-              <span class="format-card__price">À partir de <b data-format-from="10ml">—</b></span>
-              <a class="format-card__cta" href="pages/catalogue.html">Choisir un parfum <span aria-hidden="true">→</span></a>
-            </div>
-          </li>
-        </ul>
-        <button class="formats-arrow formats-arrow--next" type="button" aria-label="Format suivant" data-formats-dir="1">
-          <i class="ti ti-chevron-right" aria-hidden="true"></i>
-        </button>
-      </div>
-      <div class="formats-dots" id="formats-dots" aria-hidden="true"></div>
-    </section>
+      <section class="formats-section" id="le-decant">
+        <div class="dose-head">
+          <div class="dose-eyebrow">Le principe du décant</div>
+          <h2 class="dose-title">Nos <em>formats</em></h2>
+          <p class="dose-subtitle">
+            Le parfum d'origine, reconditionné dans nos flacons. Vous payez le
+            jus, pas le flacon de la maison.
+          </p>
+          <span class="dose-title-rule" aria-hidden="true"></span>
+        </div>
+        <div class="formats-carousel">
+          <button
+            class="formats-arrow formats-arrow--prev"
+            type="button"
+            aria-label="Format précédent"
+            data-formats-dir="-1"
+          >
+            <i class="ti ti-chevron-left" aria-hidden="true"></i>
+          </button>
+          <ul class="formats-track" id="formats-track">
+            <li class="format-card" data-vial="2ml">
+              <div class="format-card__media">
+                <img
+                  src="assets/images/hero/hero-decant-2ml.webp"
+                  alt="Flacon Kōrei de 2 ml"
+                  width="94"
+                  height="494"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="format-card__body">
+                <span class="format-card__size">2 ml</span>
+                <p class="format-card__use">
+                  Environ 30 pulvérisations. Pour le porter quelques jours et
+                  savoir.
+                </p>
+                <span class="format-card__price"
+                  >À partir de <b data-format-from="2ml">—</b></span
+                >
+                <a class="format-card__cta" href="pages/catalogue.html"
+                  >Choisir un parfum <span aria-hidden="true">→</span></a
+                >
+              </div>
+            </li>
+            <li class="format-card" data-vial="5ml">
+              <span class="format-card__flag">Notre conseil</span>
+              <div class="format-card__media">
+                <img
+                  src="assets/images/hero/hero-decant-5ml.webp"
+                  alt="Flacon Kōrei de 5 ml"
+                  width="105"
+                  height="659"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="format-card__body">
+                <span class="format-card__size">5 ml</span>
+                <p class="format-card__use">
+                  Environ 75 pulvérisations. Pour se décider sans se presser.
+                </p>
+                <span class="format-card__price"
+                  >À partir de <b data-format-from="5ml">—</b></span
+                >
+                <a class="format-card__cta" href="pages/catalogue.html"
+                  >Choisir un parfum <span aria-hidden="true">→</span></a
+                >
+              </div>
+            </li>
+            <li class="format-card" data-vial="10ml">
+              <div class="format-card__media">
+                <img
+                  src="assets/images/hero/hero-decant-10ml.webp"
+                  alt="Flacon Kōrei de 10 ml"
+                  width="112"
+                  height="851"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="format-card__body">
+                <span class="format-card__size">10 ml</span>
+                <p class="format-card__use">
+                  Environ 150 pulvérisations. Pour un parfum que vous portez
+                  déjà.
+                </p>
+                <span class="format-card__price"
+                  >À partir de <b data-format-from="10ml">—</b></span
+                >
+                <a class="format-card__cta" href="pages/catalogue.html"
+                  >Choisir un parfum <span aria-hidden="true">→</span></a
+                >
+              </div>
+            </li>
+          </ul>
+          <button
+            class="formats-arrow formats-arrow--next"
+            type="button"
+            aria-label="Format suivant"
+            data-formats-dir="1"
+          >
+            <i class="ti ti-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="formats-dots" id="formats-dots" aria-hidden="true"></div>
+      </section>
 
-    <!-- KOR-D6 — bloc coffret de l'accueil. L'ancien bloc menait a
+      <!-- KOR-D6 — bloc coffret de l'accueil. L'ancien bloc menait a
          catalogue.html?type=pack : ce parametre n'est lu nulle part, le
          visiteur tombait sur le catalogue complet. Les trois cartes menent
          maintenant au configurateur, format deja selectionne. -->
-    <section class="packs-section">
-      <div class="dose-head">
-        <div class="dose-eyebrow">Coffrets à composer</div>
-        <h2 class="dose-title">Composez votre <em>coffret</em></h2>
-        <p class="dose-subtitle">
-          Choisissez le format, puis vos parfums.
+      <section class="packs-section">
+        <div class="dose-head">
+          <div class="dose-eyebrow">Coffrets à composer</div>
+          <h2 class="dose-title">Composez votre <em>coffret</em></h2>
+          <p class="dose-subtitle">Choisissez le format, puis vos parfums.</p>
+          <span class="dose-title-rule" aria-hidden="true"></span>
+        </div>
+
+        <p class="packs-promise">
+          <span class="packs-promise__item"
+            ><i class="ti ti-discount-2" aria-hidden="true"></i>
+            <b>−10 %</b> sur chaque flacon</span
+          >
+          <span class="packs-promise__sep" aria-hidden="true"></span>
+          <span class="packs-promise__item"
+            ><i class="ti ti-truck-delivery" aria-hidden="true"></i>
+            <b>Livraison offerte</b></span
+          >
         </p>
-        <span class="dose-title-rule" aria-hidden="true"></span>
-      </div>
 
-      <p class="packs-promise">
-        <span class="packs-promise__item"><i class="ti ti-discount-2" aria-hidden="true"></i> <b>−10 %</b> sur chaque flacon</span>
-        <span class="packs-promise__sep" aria-hidden="true"></span>
-        <span class="packs-promise__item"><i class="ti ti-truck-delivery" aria-hidden="true"></i> <b>Livraison offerte</b></span>
-      </p>
-
-      <div class="box-grid packs-boxes">
-        <a class="box-card box-card--popular" href="pages/coffret.html?format=5x5ml#personnaliser">
-          <span class="box-card__badge">Notre conseil</span>
-          <span class="box-card__discount">−10 %</span>
-          <div class="box-card__media">
-            <img src="assets/images/coffrets/coffret-voyage-5x5ml.webp"
-                 srcset="assets/images/coffrets/coffret-voyage-5x5ml-sm.webp 800w, assets/images/coffrets/coffret-voyage-5x5ml.webp 1024w"
-                 sizes="(max-width: 640px) 90vw, 320px"
-                 alt="Coffret Voyage Kōrei ouvert, cinq décants de 5 ml"
-                 width="1024" height="1024" loading="lazy" decoding="async" />
-          </div>
-          <div class="box-card__body">
-            <h3 class="box-card__name">Coffret Voyage</h3>
-            <p class="box-card__format">5 × 5 ml</p>
-            <p class="box-card__desc">Cinq parfums. Pour départager ceux qui vous ont plu.</p>
-            <span class="box-card__cta">Composer ce coffret <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-
-        <a class="box-card" href="pages/coffret.html?format=3x10ml#personnaliser">
-          <span class="box-card__discount">−10 %</span>
-          <div class="box-card__media">
-            <img src="assets/images/coffrets/coffret-iconique-3x10ml.webp"
-                 srcset="assets/images/coffrets/coffret-iconique-3x10ml-sm.webp 800w, assets/images/coffrets/coffret-iconique-3x10ml.webp 1024w"
-                 sizes="(max-width: 640px) 90vw, 320px"
-                 alt="Coffret Iconique Kōrei ouvert, trois décants de 10 ml"
-                 width="1024" height="1024" loading="lazy" decoding="async" />
-          </div>
-          <div class="box-card__body">
-            <h3 class="box-card__name">Coffret Iconique</h3>
-            <p class="box-card__format">3 × 10 ml</p>
-            <p class="box-card__desc">Trois parfums. Pour ceux que vous portez déjà.</p>
-            <span class="box-card__cta">Composer ce coffret <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-      </div>
-
-      <div class="packs-cta-row">
-        <a href="pages/coffret.html#personnaliser" class="btn-dark">Composer mon coffret</a>
-      </div>
-    </section>
-
-    <section class="collections-section">
-      <div class="dose-head">
-        <div class="dose-eyebrow">Par famille</div>
-        <h2 class="dose-title">Choisissez votre <em>collection</em></h2>
-        <a href="pages/collections.html" class="btn-white collections-head-link"
-          >Tout voir →</a
-        >
-      </div>
-      <div class="home-collections-editorial">
-        <div class="home-collections-editorial__top">
+        <div class="box-grid packs-boxes">
           <a
-            href="pages/catalogue.html?season=été"
-            class="home-collection-card home-collection-card--feature"
+            class="box-card box-card--popular"
+            href="pages/coffret.html?format=5x5ml#personnaliser"
           >
-            <div
-              class="home-collection-card__media media-slot"
-              data-slot="collection-ete"
-            >
+            <span class="box-card__badge">Notre conseil</span>
+            <span class="box-card__discount">−10 %</span>
+            <div class="box-card__media">
               <img
-                class="media-slot__image"
-                src="assets/images/collections/ete.webp"
-                alt="Collection Été — Kōrei" width="1536" height="1024" loading="lazy" decoding="async" />
-              <div
-                class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
-                data-variant="0"
-              >
-                <div
-                  class="placeholder-premium__pattern"
-                  aria-hidden="true"
-                ></div>
-                <div class="placeholder-premium__content">
-                  <i
-                    class="ti ti-sun placeholder-premium__icon"
-                    aria-hidden="true"
-                  ></i>
-                </div>
-              </div>
+                src="assets/images/coffrets/coffret-voyage-5x5ml.webp"
+                srcset="
+                  assets/images/coffrets/coffret-voyage-5x5ml-sm.webp  800w,
+                  assets/images/coffrets/coffret-voyage-5x5ml.webp    1024w
+                "
+                sizes="(max-width: 640px) 90vw, 320px"
+                alt="Coffret Voyage Kōrei ouvert, cinq décants de 5 ml"
+                width="1024"
+                height="1024"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
-            <div class="home-collection-card__overlay">
-              <span class="home-collection-card__name">Été</span>
-              <span class="home-collection-card__cta"
-                >Découvrir <span aria-hidden="true">→</span></span
+            <div class="box-card__body">
+              <h3 class="box-card__name">Coffret Voyage</h3>
+              <p class="box-card__format">5 × 5 ml</p>
+              <p class="box-card__desc">
+                Cinq parfums. Pour départager ceux qui vous ont plu.
+              </p>
+              <span class="box-card__cta"
+                >Composer ce coffret <span aria-hidden="true">→</span></span
               >
             </div>
           </a>
-          <div class="home-collections-editorial__stack">
+
+          <a
+            class="box-card"
+            href="pages/coffret.html?format=3x10ml#personnaliser"
+          >
+            <span class="box-card__discount">−10 %</span>
+            <div class="box-card__media">
+              <img
+                src="assets/images/coffrets/coffret-iconique-3x10ml.webp"
+                srcset="
+                  assets/images/coffrets/coffret-iconique-3x10ml-sm.webp  800w,
+                  assets/images/coffrets/coffret-iconique-3x10ml.webp    1024w
+                "
+                sizes="(max-width: 640px) 90vw, 320px"
+                alt="Coffret Iconique Kōrei ouvert, trois décants de 10 ml"
+                width="1024"
+                height="1024"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="box-card__body">
+              <h3 class="box-card__name">Coffret Iconique</h3>
+              <p class="box-card__format">3 × 10 ml</p>
+              <p class="box-card__desc">
+                Trois parfums. Pour ceux que vous portez déjà.
+              </p>
+              <span class="box-card__cta"
+                >Composer ce coffret <span aria-hidden="true">→</span></span
+              >
+            </div>
+          </a>
+        </div>
+
+        <div class="packs-cta-row">
+          <a href="pages/coffret.html#personnaliser" class="btn-dark"
+            >Composer mon coffret</a
+          >
+        </div>
+      </section>
+
+      <section class="collections-section">
+        <div class="dose-head">
+          <div class="dose-eyebrow">Par famille</div>
+          <h2 class="dose-title">Choisissez votre <em>collection</em></h2>
+          <a
+            href="pages/collections.html"
+            class="btn-white collections-head-link"
+            >Tout voir →</a
+          >
+        </div>
+        <div class="home-collections-editorial">
+          <div class="home-collections-editorial__top">
             <a
-              href="pages/catalogue.html?family=floral"
-              class="home-collection-card"
+              href="pages/catalogue.html?season=été"
+              class="home-collection-card home-collection-card--feature"
             >
               <div
                 class="home-collection-card__media media-slot"
-                data-slot="collection-floral"
+                data-slot="collection-ete"
               >
                 <img
                   class="media-slot__image"
-                  src="assets/images/collections/floral.webp"
-                  alt="Collection Floral — Kōrei" width="1586" height="992" loading="lazy" decoding="async" />
+                  src="assets/images/collections/ete.webp"
+                  alt="Collection Été — Kōrei"
+                  width="1536"
+                  height="1024"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <div
                   class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
-                  data-variant="2"
+                  data-variant="0"
                 >
                   <div
                     class="placeholder-premium__pattern"
@@ -472,34 +502,123 @@
                   ></div>
                   <div class="placeholder-premium__content">
                     <i
-                      class="ti ti-sparkles placeholder-premium__icon"
+                      class="ti ti-sun placeholder-premium__icon"
                       aria-hidden="true"
                     ></i>
                   </div>
                 </div>
               </div>
               <div class="home-collection-card__overlay">
-                <span class="home-collection-card__name">Floral</span>
+                <span class="home-collection-card__name">Été</span>
                 <span class="home-collection-card__cta"
                   >Découvrir <span aria-hidden="true">→</span></span
                 >
               </div>
             </a>
+            <div class="home-collections-editorial__stack">
+              <a
+                href="pages/catalogue.html?family=floral"
+                class="home-collection-card"
+              >
+                <div
+                  class="home-collection-card__media media-slot"
+                  data-slot="collection-floral"
+                >
+                  <img
+                    class="media-slot__image"
+                    src="assets/images/collections/floral.webp"
+                    alt="Collection Floral — Kōrei"
+                    width="1586"
+                    height="992"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div
+                    class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
+                    data-variant="2"
+                  >
+                    <div
+                      class="placeholder-premium__pattern"
+                      aria-hidden="true"
+                    ></div>
+                    <div class="placeholder-premium__content">
+                      <i
+                        class="ti ti-sparkles placeholder-premium__icon"
+                        aria-hidden="true"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+                <div class="home-collection-card__overlay">
+                  <span class="home-collection-card__name">Floral</span>
+                  <span class="home-collection-card__cta"
+                    >Découvrir <span aria-hidden="true">→</span></span
+                  >
+                </div>
+              </a>
+              <a
+                href="pages/catalogue.html?family=boisé"
+                class="home-collection-card"
+              >
+                <div
+                  class="home-collection-card__media media-slot"
+                  data-slot="collection-boise"
+                >
+                  <img
+                    class="media-slot__image"
+                    src="assets/images/collections/boise.webp"
+                    alt="Collection Boisé — Kōrei"
+                    width="1586"
+                    height="992"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div
+                    class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
+                    data-variant="3"
+                  >
+                    <div
+                      class="placeholder-premium__pattern"
+                      aria-hidden="true"
+                    ></div>
+                    <div class="placeholder-premium__content">
+                      <i
+                        class="ti ti-trees placeholder-premium__icon"
+                        aria-hidden="true"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+                <div class="home-collection-card__overlay">
+                  <span class="home-collection-card__name">Boisé</span>
+                  <span class="home-collection-card__cta"
+                    >Découvrir <span aria-hidden="true">→</span></span
+                  >
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="home-collections-editorial__bottom">
             <a
-              href="pages/catalogue.html?family=boisé"
+              href="pages/catalogue.html?season=hiver"
               class="home-collection-card"
             >
               <div
                 class="home-collection-card__media media-slot"
-                data-slot="collection-boise"
+                data-slot="collection-hiver"
               >
                 <img
                   class="media-slot__image"
-                  src="assets/images/collections/boise.webp"
-                  alt="Collection Boisé — Kōrei" width="1586" height="992" loading="lazy" decoding="async" />
+                  src="assets/images/collections/hiver.webp"
+                  alt="Collection Hiver — Kōrei"
+                  width="1586"
+                  height="992"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <div
                   class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
-                  data-variant="3"
+                  data-variant="1"
                 >
                   <div
                     class="placeholder-premium__pattern"
@@ -507,14 +626,94 @@
                   ></div>
                   <div class="placeholder-premium__content">
                     <i
-                      class="ti ti-trees placeholder-premium__icon"
+                      class="ti ti-snowflake placeholder-premium__icon"
                       aria-hidden="true"
                     ></i>
                   </div>
                 </div>
               </div>
               <div class="home-collection-card__overlay">
-                <span class="home-collection-card__name">Boisé</span>
+                <span class="home-collection-card__name">Hiver</span>
+                <span class="home-collection-card__cta"
+                  >Découvrir <span aria-hidden="true">→</span></span
+                >
+              </div>
+            </a>
+            <a
+              href="pages/catalogue.html?family=gourmand"
+              class="home-collection-card"
+            >
+              <div
+                class="home-collection-card__media media-slot"
+                data-slot="collection-gourmand"
+              >
+                <img
+                  class="media-slot__image"
+                  src="assets/images/collections/gourmand.webp"
+                  alt="Collection Gourmand — Kōrei"
+                  width="1122"
+                  height="1402"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div
+                  class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
+                  data-variant="4"
+                >
+                  <div
+                    class="placeholder-premium__pattern"
+                    aria-hidden="true"
+                  ></div>
+                  <div class="placeholder-premium__content">
+                    <i
+                      class="ti ti-cookie placeholder-premium__icon"
+                      aria-hidden="true"
+                    ></i>
+                  </div>
+                </div>
+              </div>
+              <div class="home-collection-card__overlay">
+                <span class="home-collection-card__name">Gourmand</span>
+                <span class="home-collection-card__cta"
+                  >Découvrir <span aria-hidden="true">→</span></span
+                >
+              </div>
+            </a>
+            <a
+              href="pages/catalogue.html?note=oud"
+              class="home-collection-card"
+            >
+              <div
+                class="home-collection-card__media media-slot"
+                data-slot="collection-oud"
+              >
+                <img
+                  class="media-slot__image"
+                  src="assets/images/collections/oud.webp"
+                  alt="Collection Oud — Kōrei"
+                  width="1586"
+                  height="992"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div
+                  class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
+                  data-variant="5"
+                >
+                  <div
+                    class="placeholder-premium__pattern"
+                    aria-hidden="true"
+                  ></div>
+                  <div class="placeholder-premium__content">
+                    <i
+                      class="ti ti-flame placeholder-premium__icon"
+                      aria-hidden="true"
+                    ></i>
+                  </div>
+                </div>
+              </div>
+              <div class="home-collection-card__overlay">
+                <span class="home-collection-card__name">Oud</span>
                 <span class="home-collection-card__cta"
                   >Découvrir <span aria-hidden="true">→</span></span
                 >
@@ -522,310 +721,203 @@
             </a>
           </div>
         </div>
-        <div class="home-collections-editorial__bottom">
-          <a
-            href="pages/catalogue.html?season=hiver"
-            class="home-collection-card"
-          >
-            <div
-              class="home-collection-card__media media-slot"
-              data-slot="collection-hiver"
-            >
-              <img
-                class="media-slot__image"
-                src="assets/images/collections/hiver.webp"
-                alt="Collection Hiver — Kōrei" width="1586" height="992" loading="lazy" decoding="async" />
-              <div
-                class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
-                data-variant="1"
-              >
-                <div
-                  class="placeholder-premium__pattern"
-                  aria-hidden="true"
-                ></div>
-                <div class="placeholder-premium__content">
-                  <i
-                    class="ti ti-snowflake placeholder-premium__icon"
-                    aria-hidden="true"
-                  ></i>
-                </div>
-              </div>
-            </div>
-            <div class="home-collection-card__overlay">
-              <span class="home-collection-card__name">Hiver</span>
-              <span class="home-collection-card__cta"
-                >Découvrir <span aria-hidden="true">→</span></span
-              >
-            </div>
-          </a>
-          <a
-            href="pages/catalogue.html?family=gourmand"
-            class="home-collection-card"
-          >
-            <div
-              class="home-collection-card__media media-slot"
-              data-slot="collection-gourmand"
-            >
-              <img
-                class="media-slot__image"
-                src="assets/images/collections/gourmand.webp"
-                alt="Collection Gourmand — Kōrei" width="1536" height="1024" loading="lazy" decoding="async" />
-              <div
-                class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
-                data-variant="4"
-              >
-                <div
-                  class="placeholder-premium__pattern"
-                  aria-hidden="true"
-                ></div>
-                <div class="placeholder-premium__content">
-                  <i
-                    class="ti ti-cookie placeholder-premium__icon"
-                    aria-hidden="true"
-                  ></i>
-                </div>
-              </div>
-            </div>
-            <div class="home-collection-card__overlay">
-              <span class="home-collection-card__name">Gourmand</span>
-              <span class="home-collection-card__cta"
-                >Découvrir <span aria-hidden="true">→</span></span
-              >
-            </div>
-          </a>
-          <a href="pages/catalogue.html?note=oud" class="home-collection-card">
-            <div
-              class="home-collection-card__media media-slot"
-              data-slot="collection-oud"
-            >
-              <img
-                class="media-slot__image"
-                src="assets/images/collections/oud.webp"
-                alt="Collection Oud — Kōrei" width="1586" height="992" loading="lazy" decoding="async" />
-              <div
-                class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
-                data-variant="5"
-              >
-                <div
-                  class="placeholder-premium__pattern"
-                  aria-hidden="true"
-                ></div>
-                <div class="placeholder-premium__content">
-                  <i
-                    class="ti ti-flame placeholder-premium__icon"
-                    aria-hidden="true"
-                  ></i>
-                </div>
-              </div>
-            </div>
-            <div class="home-collection-card__overlay">
-              <span class="home-collection-card__name">Oud</span>
-              <span class="home-collection-card__cta"
-                >Découvrir <span aria-hidden="true">→</span></span
-              >
-            </div>
-          </a>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- KOR-D3 — grille des maisons, remplace le bandeau defilant. La grille
+      <!-- KOR-D3 — grille des maisons, remplace le bandeau defilant. La grille
          est construite par main.js a partir du catalogue reel : une maison sans
          parfum en vente n'apparait pas, et le lien mene au catalogue filtre.
          L'ancien texte « Plus de 250 maisons » etait faux. -->
-    <section class="brands-section">
-      <div class="dose-head">
-        <div class="dose-eyebrow">Nos maisons</div>
-        <h2 class="dose-title">Des maisons que vous <em>reconnaissez</em></h2>
-        <span class="dose-title-rule" aria-hidden="true"></span>
-      </div>
-      <div class="home-maisons" id="home-maisons-grid"></div>
-      <div class="brands-outro">
-        <p class="brands-outro-sub">
-          Et d'autres que vous ne connaissez
-          <em>pas encore</em>.
-        </p>
-        <a href="pages/brands.html" class="btn-white"
-          >Toutes les maisons →</a
-        >
-      </div>
-    </section>
-
-    <section class="favorites-section" style="padding-top: 0">
-      <div class="favorites-head">
-        <div class="favorites-heading">
-          <div class="favorites-eyebrow">Fraîchement arrivé</div>
-          <h2 class="favorites-title">Les nouveautés <em>du moment</em></h2>
+      <section class="brands-section">
+        <div class="dose-head">
+          <div class="dose-eyebrow">Nos maisons</div>
+          <h2 class="dose-title">Des maisons que vous <em>reconnaissez</em></h2>
+          <span class="dose-title-rule" aria-hidden="true"></span>
         </div>
-        <div class="favorites-controls">
-          <a href="pages/catalogue.html" class="btn-white">Tout voir →</a>
-          <div class="favorites-nav">
-            <button
-              class="favorites-nav-btn"
-              type="button"
-              aria-label="Précédent"
-              data-scroll-dir="-1"
-            >
-              <i class="ti ti-chevron-left"></i>
-            </button>
-            <button
-              class="favorites-nav-btn"
-              type="button"
-              aria-label="Suivant"
-              data-scroll-dir="1"
-            >
-              <i class="ti ti-chevron-right"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="products-scroll" id="new-products-grid"></div>
-    </section>
-
-    <section class="quiz-cta">
-      <div class="quiz-cta-inner">
-        <div>
-          <div class="quiz-eyebrow">Découverte olfactive</div>
-          <h2 class="quiz-title">
-            Vous ne savez pas<br />par où <em>commencer ?</em>
-          </h2>
-          <p class="quiz-sub">
-            Répondez à quelques questions, vos notes préférées, vos
-            occasions, votre budget, et le conseiller vous propose des
-            parfums du catalogue. Version démo : l'assistant complet arrive
-            bientôt.
+        <div class="home-maisons" id="home-maisons-grid"></div>
+        <div class="brands-outro">
+          <p class="brands-outro-sub">
+            Et d'autres que vous ne connaissez
+            <em>pas encore</em>.
           </p>
-          <button class="btn-dark btn-lg" type="button" data-open-chatbot>
-            Essayer le conseiller <i class="ti ti-arrow-right"></i>
-          </button>
+          <a href="pages/brands.html" class="btn-white">Toutes les maisons →</a>
         </div>
-        <div class="quiz-notes">
-          <button type="button" class="quiz-note-chip" data-open-chatbot>
-            Boisé
-          </button>
-          <button type="button" class="quiz-note-chip" data-open-chatbot>
-            Floral
-          </button>
-          <button type="button" class="quiz-note-chip" data-open-chatbot>
-            Oriental
-          </button>
-          <button type="button" class="quiz-note-chip" data-open-chatbot>
-            Frais
-          </button>
-          <button type="button" class="quiz-note-chip" data-open-chatbot>
-            Aromatique
-          </button>
-          <button type="button" class="quiz-note-chip" data-open-chatbot>
-            Hespéridé
-          </button>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="faq">
-      <div class="section-head">
-        <h2 class="section-title">Questions <em>fréquentes</em></h2>
-      </div>
-      <div class="faq-list">
-        <div class="faq-item">
-          <button class="faq-question" data-toggle-faq type="button">
-            <span>C'est quoi un décant ?</span>
-            <i class="ti ti-plus faq-icon"></i>
-          </button>
-          <div class="faq-answer">
-            Un flacon de 2&nbsp;ml, 5&nbsp;ml ou 10&nbsp;ml, rempli à la main
-            depuis le flacon d'origine. Même jus, même concentration. Vous
-            l'essayez sur votre peau, plusieurs jours, avant de décider d'un
-            grand format.
+      <section class="favorites-section">
+        <div class="favorites-head">
+          <div class="favorites-heading">
+            <div class="favorites-eyebrow">Fraîchement arrivé</div>
+            <h2 class="favorites-title">Les nouveautés <em>du moment</em></h2>
+          </div>
+          <div class="favorites-controls">
+            <a href="pages/catalogue.html" class="btn-white">Tout voir →</a>
+            <div class="favorites-nav">
+              <button
+                class="favorites-nav-btn"
+                type="button"
+                aria-label="Précédent"
+                data-scroll-dir="-1"
+              >
+                <i class="ti ti-chevron-left"></i>
+              </button>
+              <button
+                class="favorites-nav-btn"
+                type="button"
+                aria-label="Suivant"
+                data-scroll-dir="1"
+              >
+                <i class="ti ti-chevron-right"></i>
+              </button>
+            </div>
           </div>
         </div>
-        <div class="faq-item">
-          <button class="faq-question" data-toggle-faq type="button">
-            <span>Les parfums sont-ils 100&nbsp;% authentiques ?</span>
-            <i class="ti ti-plus faq-icon"></i>
-          </button>
-          <div class="faq-answer">
-            Oui, sans exception. Chaque parfum vient d'un distributeur officiel
-            ou d'une maison agréée. Nous ne vendons ni inspirations, ni
-            équivalents : le nom sur l'étiquette est celui du jus dans le
-            flacon.
-          </div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question" data-toggle-faq type="button">
-            <span>Comment sont expédiés les décants ?</span>
-            <i class="ti ti-plus faq-icon"></i>
-          </button>
-          <div class="faq-answer">
-            Votre commande part sous 24&nbsp;h, jours ouvrés. Chaque flacon est
-            rempli puis contrôlé avant l'emballage. Livraison en France
-            métropolitaine, offerte dès un coffret.
-            <a href="pages/livraison-retours.html">Voir le détail</a>.
-          </div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question" data-toggle-faq type="button">
-            <span>Comment fonctionne le conseiller IA ?</span>
-            <i class="ti ti-plus faq-icon"></i>
-          </button>
-          <div class="faq-answer">
-            Vous décrivez ce que vous aimez, notes, occasions, budget, et il
-            vous propose des parfums du catalogue. C'est une version démo :
-            l'assistant complet arrive bientôt.
-          </div>
-        </div>
-      </div>
-    </section>
+        <div class="products-scroll" id="new-products-grid"></div>
+      </section>
 
-    <section class="newsletter" id="newsletter">
-      <div class="newsletter-inner">
-        <div class="newsletter-eyebrow">Newsletter</div>
-        <h2 class="newsletter-title">
-          Les nouvelles maisons, <em>avant tout le monde.</em>
-        </h2>
-        <p class="newsletter-sub">
-          Un e-mail quand une maison entre au catalogue, et de quoi mieux choisir.
-        </p>
-        <form
-          class="newsletter-form"
-          name="newsletter"
-          method="POST"
-          action="/?newsletter=success#newsletter"
-          data-netlify="true"
-          netlify-honeypot="bot-field"
-          data-newsletter-form
-        >
-          <input type="hidden" name="form-name" value="newsletter" />
-          <label class="newsletter-honeypot">
-            Ne pas remplir
+      <section class="quiz-cta">
+        <div class="quiz-cta-inner">
+          <div>
+            <div class="quiz-eyebrow">Découverte olfactive</div>
+            <h2 class="quiz-title">
+              Vous ne savez pas<br />par où <em>commencer ?</em>
+            </h2>
+            <p class="quiz-sub">
+              Répondez à quelques questions, vos notes préférées, vos occasions,
+              votre budget, et le conseiller vous propose des parfums du
+              catalogue. Version démo : l'assistant complet arrive bientôt.
+            </p>
+            <button class="btn-dark btn-lg" type="button" data-open-chatbot>
+              Essayer le conseiller <i class="ti ti-arrow-right"></i>
+            </button>
+          </div>
+          <div class="quiz-notes">
+            <button type="button" class="quiz-note-chip" data-open-chatbot>
+              Boisé
+            </button>
+            <button type="button" class="quiz-note-chip" data-open-chatbot>
+              Floral
+            </button>
+            <button type="button" class="quiz-note-chip" data-open-chatbot>
+              Oriental
+            </button>
+            <button type="button" class="quiz-note-chip" data-open-chatbot>
+              Frais
+            </button>
+            <button type="button" class="quiz-note-chip" data-open-chatbot>
+              Aromatique
+            </button>
+            <button type="button" class="quiz-note-chip" data-open-chatbot>
+              Hespéridé
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq">
+        <div class="section-head">
+          <h2 class="section-title">Questions <em>fréquentes</em></h2>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question" data-toggle-faq type="button">
+              <span>C'est quoi un décant ?</span>
+              <i class="ti ti-plus faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+              Un flacon de 2&nbsp;ml, 5&nbsp;ml ou 10&nbsp;ml, rempli à la main
+              depuis le flacon d'origine. Même jus, même concentration. Vous
+              l'essayez sur votre peau, plusieurs jours, avant de décider d'un
+              grand format.
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" data-toggle-faq type="button">
+              <span>Les parfums sont-ils 100&nbsp;% authentiques ?</span>
+              <i class="ti ti-plus faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+              Oui, sans exception. Chaque parfum vient d'un distributeur
+              officiel ou d'une maison agréée. Nous ne vendons ni inspirations,
+              ni équivalents : le nom sur l'étiquette est celui du jus dans le
+              flacon.
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" data-toggle-faq type="button">
+              <span>Comment sont expédiés les décants ?</span>
+              <i class="ti ti-plus faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+              Votre commande part sous 24&nbsp;h, jours ouvrés. Chaque flacon
+              est rempli puis contrôlé avant l'emballage. Livraison en France
+              métropolitaine, offerte dès un coffret.
+              <a href="pages/livraison-retours.html">Voir le détail</a>.
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" data-toggle-faq type="button">
+              <span>Comment fonctionne le conseiller IA ?</span>
+              <i class="ti ti-plus faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+              Vous décrivez ce que vous aimez, notes, occasions, budget, et il
+              vous propose des parfums du catalogue. C'est une version démo :
+              l'assistant complet arrive bientôt.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="newsletter" id="newsletter">
+        <div class="newsletter-inner">
+          <div class="newsletter-eyebrow">Newsletter</div>
+          <h2 class="newsletter-title">
+            Les nouvelles maisons, <em>avant tout le monde.</em>
+          </h2>
+          <p class="newsletter-sub">
+            Un e-mail quand une maison entre au catalogue, et de quoi mieux
+            choisir.
+          </p>
+          <form
+            class="newsletter-form"
+            name="newsletter"
+            method="POST"
+            action="/?newsletter=success#newsletter"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            data-newsletter-form
+          >
+            <input type="hidden" name="form-name" value="newsletter" />
+            <label class="newsletter-honeypot">
+              Ne pas remplir
+              <input
+                type="text"
+                name="bot-field"
+                tabindex="-1"
+                autocomplete="off"
+              />
+            </label>
             <input
-              type="text"
-              name="bot-field"
-              tabindex="-1"
-              autocomplete="off"
+              type="email"
+              name="email"
+              class="newsletter-input"
+              placeholder="votre@email.com"
+              aria-label="Adresse email"
+              autocomplete="email"
+              required
             />
-          </label>
-          <input
-            type="email"
-            name="email"
-            class="newsletter-input"
-            placeholder="votre@email.com"
-            aria-label="Adresse email"
-            autocomplete="email"
-            required
-          />
-          <button type="submit" class="btn-dark">S'abonner</button>
-        </form>
-        <p
-          class="newsletter-legal"
-          data-newsletter-status
-          role="status"
-          aria-live="polite"
-        >
-          Pas de spam. Désabonnement en un clic.
-        </p>
-      </div>
-    </section>
+            <button type="submit" class="btn-dark">S'abonner</button>
+          </form>
+          <p
+            class="newsletter-legal"
+            data-newsletter-status
+            role="status"
+            aria-live="polite"
+          >
+            Pas de spam. Désabonnement en un clic.
+          </p>
+        </div>
+      </section>
     </main>
 
     <footer>
@@ -902,7 +994,9 @@
             </button>
           </form>
         </div>
-        <div class="chatbot-mock-badge">Version démo : l'assistant complet arrive bientôt.</div>
+        <div class="chatbot-mock-badge">
+          Version démo : l'assistant complet arrive bientôt.
+        </div>
       </div>
       <button
         type="button"
@@ -919,6 +1013,8 @@
     <script src="assets/js/products.js"></script>
     <script src="assets/js/catalogue-bientot.js"></script>
     <script src="assets/js/catalogue-client.js"></script>
+    <script src="assets/js/flacons.js"></script>
+    <script src="assets/js/retraits.js"></script>
     <script src="assets/js/sensoriel.js"></script>
     <script src="assets/js/product-store.js"></script>
     <script src="assets/js/notes-catalogue.js"></script>
@@ -927,7 +1023,6 @@
     <script src="assets/js/main.js"></script>
     <script src="assets/js/favorites.js"></script>
     <script src="assets/js/coffret-builder.js"></script>
-    <script src="assets/js/hero-scene.js" defer></script>
     <script src="assets/js/tabbar.js"></script>
     <script src="assets/js/chatbot.js"></script>
   </body>

@@ -36,7 +36,7 @@ for (const file of htmlFiles) {
     errors.push(`${relative} : ${openingMain} ouverture(s) <main>, ${closingMain} fermeture(s)`);
   }
 
-  for (const match of html.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/gi)) {
+  for (const match of html.matchAll(/<a\b[^>]*>[\s\S]*?<\/a\s*>/gi)) {
     if (/<button\b/i.test(match[0])) {
       errors.push(`${relative} : bouton imbriqué dans un lien`);
       break;

@@ -431,7 +431,6 @@
     // Deux maisons deja vendues sur la boutique en ligne, qui manquaient ici :
     // sans leur fiche, leurs parfums restaient hors de la page Maisons et
     // Montale s'affichait sous la marque « Korei ».
-    { id: "bdk-parfums", name: "BDK Parfums", country: "France", tagline: "Parfumerie parisienne contemporaine" },
     { id: "montale", name: "Montale", country: "France", tagline: "Ouds et fruits, signature orientale" },
     // Les 40 maisons du catalogue du client figurent désormais ici. Sans fiche,
     // une maison n'apparaît pas sur la page Maisons et ses parfums restent

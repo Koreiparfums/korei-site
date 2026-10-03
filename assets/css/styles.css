@@ -201,6 +201,15 @@ textarea {
   cursor: pointer;
   padding: 4.8px;
   min-width: 44px;
+  align-items: center;
+  justify-content: center;
+}
+/* Sans line-height: 1, la ligne de l'icone fait 35 px pour un glyphe de
+   21 px, et le trait se dessine en haut : le menu parait plus haut que les
+   icones de droite. */
+.hamburger i {
+  display: block;
+  line-height: 1;
 }
 .logo {
   font-family: "Cormorant Garamond", serif;
@@ -213,6 +222,10 @@ textarea {
 }
 .logo-center {
   flex: 0 0 auto;
+  /* Sur mobile le logo prend 44 px de haut (cible tactile) : le texte doit
+     se centrer dans cette hauteur, pas rester colle en haut. */
+  display: inline-flex;
+  align-items: center;
 }
 .nav {
   display: flex;
@@ -247,7 +260,10 @@ textarea {
   align-items: center;
   justify-content: flex-end;
   gap: 12.85px;
-  flex: 0 1 auto;
+  /* Meme flex que .header-left : l'espace libre se partage a parts egales,
+     donc l'ecart nav → logo egale l'ecart logo → recherche. Avec 0 1 auto,
+     seule la gauche grandissait et poussait le logo vers la droite. */
+  flex: 1 1 auto;
   min-width: 0;
 }
 .search {
@@ -6023,7 +6039,9 @@ body[data-page="favoris"] .favoris-hero {
 @media (min-width: 1121px) {
   .fav-card--cta {
     grid-row: 1;
-    grid-column: 4;
+    /* Derniere colonne reelle : "4" creait une colonne implicite etroite
+       quand la grille auto-fill n'en avait que 3. */
+    grid-column: -2 / -1;
   }
 }
 .fav-card--cta__media {
@@ -8655,8 +8673,9 @@ body.has-cookie-banner .chatbot-widget {
 .maisons-toolbar {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 16px 24px;
   max-width: var(--max-w);
   margin: 0 auto;
   padding: 24px var(--px);
@@ -8667,18 +8686,6 @@ body.has-cookie-banner .chatbot-widget {
   gap: 12px;
   align-items: center;
 }
-.maisons-select {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.maisons-select__label {
-  font-size: var(--text-10);
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-.maisons-select select,
 .maisons-search input {
   min-height: 44px;
   padding: 0 14px;
@@ -8703,7 +8710,14 @@ body.has-cookie-banner .chatbot-widget {
 }
 .maisons-search input {
   padding-left: 38px;
-  min-width: 220px;
+  width: 520px;
+}
+/* Tablette : la barre raccourcit pour que compteur et « Reinitialiser »
+   restent sur la meme ligne. Sous 640 px, elle prend toute la largeur. */
+@media (max-width: 860px) {
+  .maisons-search input {
+    width: 400px;
+  }
 }
 .maisons-count {
   color: var(--accent);
@@ -8715,7 +8729,6 @@ body.has-cookie-banner .chatbot-widget {
   align-items: center;
   gap: 6.4px;
   min-height: 44px;
-  margin-left: auto;
   padding: 0 8px;
   border: 0;
   background: none;
@@ -8912,27 +8925,12 @@ body.has-cookie-banner .chatbot-widget {
   .maisons-toolbar__filters {
     width: 100%;
   }
-  /* Les deux libelles n'ont pas la meme longueur : cote a cote, chaque menu
-     demarrait a une abscisse differente. Le libelle passe au-dessus, les
-     deux menus s'alignent. */
-  .maisons-select {
-    flex: 1 1 100%;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-  }
-  .maisons-select select {
-    width: 100%;
-  }
   .maisons-search input {
     min-width: 0;
     width: 100%;
   }
   .maisons-search {
     flex: 1 1 100%;
-  }
-  .maisons-reset {
-    margin-left: 0;
   }
   .maisons-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -9847,27 +9845,6 @@ body.has-cookie-banner .chatbot-widget {
   animation-delay: 660ms;
 }
 
-/* ─── 5 · La revelation au defilement ─────────────────────────────────── */
-
-/* Pilote par main.js : la classe n'est posee que si l'observateur existe,
-   pour qu'un navigateur sans JavaScript affiche tout, tout de suite. */
-/* La transition ne porte QUE sur l'arrivee. Si on la met sur .js-reveal, le
-   bloc part de son opacite normale et s'efface sous les yeux pendant une
-   seconde avant de revenir : on voit le contenu disparaitre, puis reapparaitre.
-   Masquer doit etre instantane, reveler seul s'anime. */
-.js-reveal {
-  opacity: 0;
-  transform: translateY(26px);
-  will-change: opacity, transform;
-}
-.js-reveal.est-visible {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity 900ms var(--pose),
-    transform 900ms var(--pose);
-}
-
 /* ─── 6 · Les images vivent au survol ─────────────────────────────────── */
 
 .product-card .card-img,
@@ -9892,11 +9869,6 @@ body.has-cookie-banner .chatbot-widget {
   .hero__media img,
   .hero__content > * {
     animation: none;
-  }
-  .js-reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
   }
   .product-card:hover .card-img img,
   .collection-card:hover .collection-card-media img,
@@ -11075,6 +11047,14 @@ body {
   .header-right {
     justify-content: flex-end;
   }
+  /* La barre d'onglets du bas porte deja Recherche, Favoris, Panier et
+     Compte : en haut, il ne reste que le menu et le logo, en grand. */
+  body.has-tabbar .header-actions {
+    display: none;
+  }
+  body.has-tabbar .logo-center {
+    font-size: 26px;
+  }
 }
 
 /* ── Carte produit, 7 septembre 2026 : « plus large et un peu moins longue,
@@ -11113,6 +11093,9 @@ body {
   font-size: 17px;
   font-variant-numeric: lining-nums tabular-nums;
   color: var(--text);
+}
+.card-rating.is-vide {
+  visibility: hidden;
 }
 .card-rating .star-icon {
   width: 14px;
@@ -11705,31 +11688,6 @@ body {
   }
 }
 
-/* ── Les trois formats en une image (accueil, section « Nos formats »). */
-.formats-scale {
-  max-width: 300px;
-  margin: 4px auto 28px;
-  text-align: center;
-}
-.formats-scale img {
-  display: block;
-  width: 100%;
-  height: auto;
-  margin: 0 auto;
-}
-.formats-scale figcaption {
-  margin-top: 10px;
-  font-size: var(--text-12);
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
-}
-@media (max-width: 640px) {
-  .formats-scale {
-    max-width: 220px;
-    margin-bottom: 20px;
-  }
-}
-
 /* ── Hero de l'accueil, 7 septembre 2026 : plus de voile.
    Telephone : la photo devient une bande nette en haut, le texte vient
    dessous sur le fond de la page. Ordinateur : le texte est centre, le
@@ -11846,28 +11804,22 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   Hero « les trois fioles », 7 septembre 2026.
-   Le sujet de Korei n'est pas une pile de flacons de marques, c'est la fiole
-   remplie a la main. Un mur clair, une tablette de marbre, trois fioles a
-   l'echelle, un titre centre. Tout le reste se tait.
-   La tablette de la photo commence a 85 % de sa hauteur : la photo est calee
-   en bas, les fioles ont leur pied a 15 % du bas du hero.
+   Hero de l'accueil : une photo plein cadre, un titre centre, deux actions.
+   Il prend 99 % de l'ecran (90 % + 10 %, 3 octobre) : la section suivante apparait sous la ligne de
+   flottaison et invite a descendre. S'il faut plus de place, le texte pousse.
    ══════════════════════════════════════════════════════════════════════════ */
-.hero--fioles {
-  /* Hauteur du hero et hauteur de la tablette (15 % de la photo, calee en
-     bas) : les deux partent de la meme mesure, les fioles tombent juste. */
-  --hero-h: max(100svh, 820px);
-  --tablette: calc(var(--hero-h) * 0.15);
+.hero--centre {
+  --hero-h: 99svh;
   display: block;
   padding: 0;
   gap: 0;
   min-height: var(--hero-h);
   overflow: hidden;
 }
-.hero--fioles::before {
+.hero--centre::before {
   display: none;
 }
-.hero--fioles .hero__media {
+.hero--centre .hero__media {
   position: absolute;
   inset: 0;
   z-index: -2;
@@ -11875,14 +11827,14 @@ body {
   height: auto;
   grid-column: auto;
 }
-.hero--fioles .hero__media img {
+.hero--centre .hero__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 100%;
+  object-position: 50% 50%;
   transform: none;
 }
-.hero--fioles .hero__inner {
+.hero--centre .hero__inner {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -11890,51 +11842,52 @@ body {
   max-width: none;
   margin: 0;
   min-height: var(--hero-h);
-  padding: calc(78.54px + clamp(24px, 4.5vh, 56px)) var(--px) var(--tablette);
+  padding: calc(78.54px + clamp(16px, 3vh, 32px)) var(--px) clamp(20px, 3vh, 32px);
 }
-.hero--fioles .hero__content {
+.hero--centre .hero__content {
   flex: none;
   align-items: center;
   text-align: center;
   max-width: 52rem;
-  margin: 0 auto;
+  /* Marges auto : le texte se centre dans la hauteur du hero. */
+  margin: auto;
   padding: 0;
   gap: 20px;
   background: none;
 }
-.hero--fioles .hero__eyebrow {
+.hero--centre .hero__eyebrow {
   gap: 14px;
 }
-.hero--fioles .hero__eyebrow::before,
-.hero--fioles .hero__eyebrow::after {
+.hero--centre .hero__eyebrow::before,
+.hero--centre .hero__eyebrow::after {
   content: "";
   width: 44px;
   height: 1px;
   background: currentColor;
   opacity: 0.5;
 }
-.hero--fioles .hero__title {
+.hero--centre .hero__title {
   font-size: clamp(2.8rem, 1.4rem + 3.8vw, 4.6rem);
   line-height: 1;
   letter-spacing: -0.02em;
 }
-.hero--fioles .hero__line {
+.hero--centre .hero__line {
   display: block;
 }
-.hero--fioles .hero__title em {
+.hero--centre .hero__title em {
   font-style: italic;
   font-weight: 400;
   color: var(--sceau);
 }
-.hero--fioles .hero__sub {
+.hero--centre .hero__sub {
   max-width: 50ch;
   margin: 0 auto;
 }
-.hero--fioles .hero__ctas {
+.hero--centre .hero__ctas {
   justify-content: center;
   gap: 28px;
 }
-.hero--fioles .hero__cta {
+.hero--centre .hero__cta {
   margin-top: 4px;
   padding: 17px 32px;
   font-family: "Manrope", sans-serif;
@@ -11944,7 +11897,7 @@ body {
   text-transform: uppercase;
 }
 /* La seconde action redevient un lien : un souligne dore, pas un cadre. */
-.hero--fioles .hero__cta--ghost {
+.hero--centre .hero__cta--ghost {
   min-height: 0;
   height: auto;
   padding: 0 0 5px;
@@ -11955,89 +11908,26 @@ body {
   line-height: 1.2;
   align-self: center;
 }
-.hero--fioles .hero__cta--ghost:hover {
+.hero--centre .hero__cta--ghost:hover {
   color: var(--sceau);
   background: none;
   transform: none;
 }
 
-/* Les fioles : pied sur la tablette, ombre portee vers la gauche comme la
-   lumiere de la photo qui vient de droite. */
-.hero--fioles .hero__fioles {
-  position: relative;
-  width: 100%;
-  margin: auto 0 0;
-  padding-top: 18px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  pointer-events: none;
-}
-.hero--fioles .hero__fioles img {
-  display: block;
-  width: auto;
-  height: clamp(200px, 30vh, 320px);
-  filter: drop-shadow(-16px 20px 22px rgba(70, 52, 22, 0.28));
-}
-.hero--fioles .hero__fioles::after {
-  /* Contact avec le marbre : une ombre douce et plate sous les trois pieds. */
-  content: "";
-  position: absolute;
-  bottom: -8px;
-  width: min(30vh, 300px);
-  height: 18px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(70, 52, 22, 0.22), rgba(70, 52, 22, 0) 70%);
-  z-index: -1;
-}
-/* La legende vit sur la tablette, sous les fioles. */
-.hero--fioles .hero__legende {
-  position: absolute;
-  top: calc(100% + 34px);
-  left: 0;
-  right: 0;
-  padding: 0 var(--px);
-  pointer-events: auto;
-}
-.hero--fioles .hero__proof {
-  justify-content: center;
-}
-.hero--fioles .hero__proof--facts {
-  max-width: none;
-  gap: 8px 16px;
-  color: var(--text-muted);
-}
-.hero--fioles .hero__proof--facts .hero__proof-sep {
-  display: block;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-/* Entree : les deux lignes du titre montent, puis les fioles se posent. */
+/* Entree : les deux lignes du titre montent, puis le reste suit. */
 @media (prefers-reduced-motion: no-preference) {
-  .hero--fioles .hero__eyebrow,
-  .hero--fioles .hero__line,
-  .hero--fioles .hero__sub,
-  .hero--fioles .hero__ctas {
+  .hero--centre .hero__eyebrow,
+  .hero--centre .hero__line,
+  .hero--centre .hero__sub,
+  .hero--centre .hero__ctas {
     opacity: 0;
     transform: translateY(14px);
     animation: hero-pose 0.9s var(--pose) forwards;
   }
-  .hero--fioles .hero__line:nth-child(1) { animation-delay: 0.1s; }
-  .hero--fioles .hero__line:nth-child(2) { animation-delay: 0.22s; }
-  .hero--fioles .hero__sub { animation-delay: 0.38s; }
-  .hero--fioles .hero__ctas { animation-delay: 0.5s; }
-  .hero--fioles .hero__fioles img {
-    opacity: 0;
-    transform: translateY(26px);
-    animation: hero-pose 1.1s var(--pose) 0.45s forwards;
-  }
-  .hero--fioles .hero__legende {
-    opacity: 0;
-    animation: hero-pose 0.9s var(--pose) 0.9s forwards;
-  }
+  .hero--centre .hero__line:nth-child(1) { animation-delay: 0.1s; }
+  .hero--centre .hero__line:nth-child(2) { animation-delay: 0.22s; }
+  .hero--centre .hero__sub { animation-delay: 0.38s; }
+  .hero--centre .hero__ctas { animation-delay: 0.5s; }
 }
 @keyframes hero-pose {
   to {
@@ -12047,99 +11937,78 @@ body {
 }
 
 @media (max-width: 860px) {
-  .hero--fioles {
+  .hero--centre {
     /* La barre d'onglets fixe couvre les 64 derniers pixels de l'ecran. */
-    --hero-h: max(calc(100svh - 64px), 700px);
+    --hero-h: calc((100svh - 64px) * 0.968);
   }
-  .hero--fioles .hero__media {
-    position: absolute;
-    height: auto;
-  }
-  .hero--fioles .hero__inner {
+  .hero--centre .hero__inner {
     padding-top: calc(49.98px + 28px);
   }
-  .hero--fioles .hero__content {
+  .hero--centre .hero__content {
     gap: 18px;
   }
-  .hero--fioles .hero__title {
+  .hero--centre .hero__title {
     font-size: clamp(2.5rem, 1.4rem + 6vw, 3.4rem);
   }
-  .hero--fioles .hero__sub {
+  .hero--centre .hero__sub {
     font-size: var(--text-15);
     max-width: 34ch;
   }
-  .hero--fioles .hero__ctas {
+  .hero--centre .hero__ctas {
     flex-direction: column;
     gap: 18px;
   }
-  .hero--fioles .hero__cta {
+  .hero--centre .hero__cta {
     width: auto;
-  }
-  .hero--fioles .hero__fioles img {
-    height: clamp(170px, 24vh, 220px);
-  }
-  .hero--fioles .hero__legende {
-    top: calc(100% + 18px);
-  }
-  .hero--fioles .hero__proof--facts {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 6px;
-    font-size: 9px;
-  }
-  /* Les fioles montrent deja les trois formats : le rappel saute. */
-  .hero--fioles .hero__fact--formats,
-  .hero--fioles .hero__proof--facts .hero__proof-sep {
-    display: none;
   }
 }
 
-/* ── Scene WebGL du hero : la lentille qui revele les flacons d'origine.
-   Le canvas prend la place de la photo et des fioles CSS une fois pret ;
-   le DOM reste en place (mesures, repli sans WebGL, animations reduites). */
-.hero--fioles .hero__scene {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  display: block;
+/* ══════════════════════════════════════════════════════════════════════════
+   Accueil, 3 octobre : un seul ecart entre deux sections, celui de
+   « coffrets → collections » (128 px = 64 px en bas + 64 px en haut).
+   Le hero reste a part : c'est une photo plein cadre, pas un bloc de texte.
+   ══════════════════════════════════════════════════════════════════════════ */
+body[data-page="home"] main > section:not(.hero):not(.quiz-cta) {
+  padding-top: 64px;
+  padding-bottom: 64px;
+  margin-top: 0;
+  margin-bottom: 0;
 }
-.hero--fioles.is-scene .hero__media,
-.hero--fioles.is-scene .hero__fioles img,
-.hero--fioles.is-scene .hero__fioles::after {
-  visibility: hidden;
+/* Le quiz est une carte encadree : l'ecart se compte depuis son cadre. */
+body[data-page="home"] main > .quiz-cta {
+  margin-top: 64px;
+  margin-bottom: 64px;
 }
-.hero--fioles .hero__content,
-.hero--fioles .hero__legende {
-  will-change: transform;
-}
-.hero--fioles .hero__indice {
-  display: none;
-  margin: 0 0 12px;
-  font-family: var(--mesure);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--sceau);
-  text-align: center;
-  transition: opacity 0.6s ease;
-}
-@media (hover: hover) and (pointer: fine) {
-  .hero--fioles.is-scene .hero__indice {
-    display: block;
+
+/* Accueil, coffrets sur ordinateur (3 octobre) : la section faisait 972 px,
+   plus qu'un ecran de portable. Les cartes passent a l'horizontale, photo
+   carree a gauche, texte a droite : meme contenu, un tiers de la hauteur. */
+@media (min-width: 861px) {
+  .packs-section .box-grid {
+    grid-template-columns: repeat(2, minmax(0, 520px));
+    margin-top: 0;
   }
-  .hero--fioles .hero__indice.is-vu {
-    opacity: 0;
+  .packs-section .box-card {
+    flex-direction: row;
+    align-items: stretch;
   }
-}
-/* Quand la lentille passe sous le texte, un halo clair garde les petites
-   lignes lisibles sur les flacons sombres. */
-.hero--fioles.is-scene .hero__eyebrow,
-.hero--fioles.is-scene .hero__sub,
-.hero--fioles.is-scene .hero__cta--ghost {
-  text-shadow:
-    0 0 16px rgba(250, 247, 242, 0.95),
-    0 0 6px rgba(250, 247, 242, 0.9);
+  .packs-section .box-card__media {
+    flex: 0 0 200px;
+    width: 200px;
+    aspect-ratio: auto;
+    min-height: 200px;
+  }
+  .packs-section .box-card__body {
+    justify-content: center;
+    padding: 20px 24px;
+  }
+  /* Le badge « Notre conseil » reste sur la photo ; la remise passe dans le
+     coin du texte. */
+  .packs-section .box-card__badge {
+    top: 10px;
+    left: 10px;
+  }
+  .packs-section .packs-cta-row {
+    margin-top: 28px;
+  }
 }

@@ -549,12 +549,14 @@
     const minWidth = options.grid ? "style=\"min-width: 0\"" : "";
 
     // Note de la communaute (assets/js/sensoriel.js) : une etoile, la note
-    // sur 5 et le nombre d'avis, comme la maquette. Rien si on ne l'a pas.
+    // sur 5 et le nombre d'avis, comme la maquette. Sans note, la ligne reste
+    // la, invisible et de meme hauteur : les notes et le prix restent alignes
+    // d'une carte a l'autre.
     const mesure = (global.KoreiProducts && global.KoreiProducts.SENSORIEL || {})[product.id];
     const ratingHtml =
       mesure && mesure.note
         ? `<span class="card-rating" aria-label="Note ${String(mesure.note).replace(".", ",")} sur 5${mesure.votes ? `, ${mesure.votes} avis` : ""}">${STAR_SVG}${Number(mesure.note).toFixed(1).replace(".", ",")}${mesure.votes ? `<small>(${Number(mesure.votes).toLocaleString("fr-FR")} avis)</small>` : ""}</span>`
-        : "";
+        : `<span class="card-rating is-vide" aria-hidden="true">${STAR_SVG}&nbsp;</span>`;
 
     // Parfum en attente de sa photo : la carte reste visible, mais le prix
     // laisse la place a « Bientot disponible ». On ne propose pas a l'achat
@@ -637,62 +639,6 @@
         if (global.KoreiChatbot) global.KoreiChatbot.open();
       });
     });
-  }
-
-  // ── Init page accueil
-  /**
-   * KOR-D7 — preuve sociale du hero.
-   *
-   * Le brief montre « 4.8/5 » et « 1200+ commandes ». La boutique n'a aucune
-   * commande a ce jour : ces deux chiffres ne sont donc pas affiches. Le bloc
-   * reste masque tant que ces valeurs ne sont pas renseignees ici avec des
-   * donnees reelles. Ne rien inventer : une fausse note se voit et se paie.
-   */
-  const SOCIAL_PROOF = {
-    rating: null, // ex. 4.8
-    ratingMax: 5,
-    orders: null, // ex. "1200+ commandes"
-  };
-
-  function initHeroProof() {
-    const store = global.KoreiProductStore;
-    if (!store) return;
-    // « Testez X parfums des Y € » est une promesse de vente : elle ne peut
-    // porter que sur ce qui est reellement achetable. Les fiches annoncees en
-    // « bientot disponible » sont au catalogue mais pas au panier, elles ne
-    // comptent donc pas ici.
-    const products = (store.getAllProducts?.() || []).filter(
-      (p) => p.supplierAvailable !== false,
-    );
-
-    // Le titre ne porte plus ni compteur ni prix d'appel : « Essayez 163
-    // parfums des 5,90 € » se perimait au premier parfum ajoute, et ouvrir
-    // sur son prix plancher n'est pas une facon de vendre du parfum de niche.
-    //
-    // Reste ce chiffre-ci, en petites capitales sous le sous-titre. On
-    // l'arrondit vers le bas au multiple de cinq pour qu'il tienne quand le
-    // catalogue bouge : « plus de 45 maisons » reste vrai a 46 comme a 49.
-    const brandEl = document.getElementById("hero-brand-count");
-    if (brandEl && products.length) {
-      const brands = new Set(products.map((p) => p.brandId || p.brand)).size;
-      let seuil = Math.floor(brands / 5) * 5;
-      // A 45 pile, « plus de 45 » serait faux : on descend d'un cran.
-      if (seuil >= brands) seuil -= 5;
-      brandEl.textContent =
-        seuil >= 10
-          ? `Plus de ${seuil} maisons de niche`
-          : `${brands} maisons de niche sélectionnées`;
-    }
-
-    // Preuve sociale : uniquement si les chiffres existent vraiment.
-    const proof = document.getElementById("hero-proof");
-    const facts = document.getElementById("hero-facts");
-    if (!proof || SOCIAL_PROOF.rating == null || !SOCIAL_PROOF.orders) return;
-    document.getElementById("hero-proof-score").textContent =
-      `${String(SOCIAL_PROOF.rating).replace(".", ",")}/${SOCIAL_PROOF.ratingMax}`;
-    document.getElementById("hero-proof-orders").textContent = SOCIAL_PROOF.orders;
-    proof.hidden = false;
-    if (facts) facts.hidden = true;
   }
 
   // ── KOR-D2 : carrousel « Nos formats »
@@ -798,7 +744,7 @@
   // Les fichiers .svg du dossier brands/ ne sont PAS des logos : ce sont des
   // placeholders qui ecrivent le nom en Georgia. Les vrais logos sont les .webp.
   const HOME_LOGOS = new Set([
-    "amouage", "arte-profumi", "bdk-parfums", "bohoboco",
+    "amouage", "arte-profumi", "bohoboco",
     "born-to-stand-out", "byredo", "byron", "calisto", "casamorati",
     "castel", "chanel", "creed", "dior", "eau-de-soie", "ella-k", "fomowa",
     "frederic-malle", "giardini-di-toscana", "gritti", "guerlain", "initio",
@@ -845,73 +791,7 @@
       .join("");
   }
 
-  /**
-   * KOR-D9 — les sections se revelent au defilement.
-   *
-   * La classe qui masque est posee ICI, en JavaScript, et jamais dans le
-   * HTML : un navigateur sans script, ou un observateur indisponible, doit
-   * afficher la page entiere tout de suite. Une page blanche vaut toujours
-   * moins qu'une page sans animation.
-   *
-   * Le hero est exclu : il a sa propre mise en scene a l'ouverture, en CSS.
-   * Chaque bloc ne se revele qu'une fois, puis on cesse de l'observer.
-   */
-  function initReveal() {
-    if (!("IntersectionObserver" in global)) return;
-    if (global.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
-
-    const blocs = document.querySelectorAll(
-      "main > section:not(.hero), .favorites-section, .formats-section, " +
-        ".packs-section, .collections-section, .brands-section, .quiz-cta, " +
-        ".faq, .newsletter",
-    );
-    if (!blocs.length) return;
-
-    let aRepondu = false;
-    const observateur = new IntersectionObserver(
-      (entrees) => {
-        aRepondu = true;
-        entrees.forEach((entree) => {
-          if (!entree.isIntersecting) return;
-          entree.target.classList.add("est-visible");
-          observateur.unobserve(entree.target);
-        });
-      },
-      // 12 % de hauteur de fenetre en avance : le bloc a fini de monter
-      // quand le regard arrive dessus, il ne s'anime pas sous les yeux.
-      { rootMargin: "0px 0px -12% 0px", threshold: 0.06 },
-    );
-
-    const suivis = [];
-    blocs.forEach((bloc) => {
-      // Ce qui est deja a l'ecran au chargement ne s'anime pas : sinon la
-      // premiere section clignote juste apres le hero.
-      if (bloc.getBoundingClientRect().top < global.innerHeight * 0.9) return;
-      bloc.classList.add("js-reveal");
-      observateur.observe(bloc);
-      suivis.push(bloc);
-    });
-    if (!suivis.length) return;
-
-    // Filet de securite. L'observateur ne rend la main que si le navigateur
-    // dessine : onglet ouvert en arriere-plan, fenetre masquee, moteur qui
-    // met le rendu en pause. Dans ces cas-la il ne repond jamais, et la page
-    // reste blanche sous le hero.
-    //
-    // Deux secondes apres le chargement, si l'observateur n'a pas emis une
-    // seule fois, on considere qu'il ne le fera pas : on montre tout et on
-    // s'arrete. Une section sans animation vaut toujours mieux qu'une
-    // section invisible.
-    global.setTimeout(() => {
-      if (aRepondu) return;
-      observateur.disconnect();
-      suivis.forEach((bloc) => bloc.classList.add("est-visible"));
-    }, 2000);
-  }
-
   function initHomePage() {
-    initHeroProof();
-    initReveal();
     const store = global.KoreiProductStore;
 
     const bestsellers = store.getBestsellers();

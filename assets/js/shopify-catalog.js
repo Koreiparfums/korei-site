@@ -445,8 +445,14 @@
     };
   }
 
+  // Parfums et maisons retires de la vente (retraits.js). Un produit encore
+  // present dans la boutique Shopify reviendrait par la fusion ci-dessous :
+  // on l'ecarte ici. Repli sur BDK si retraits.js n'est pas charge.
+  const estRetiree = (produit) =>
+    global.KoreiRetraits ? global.KoreiRetraits.estRetire(produit) : /^bdk\b/i.test(produit.brand || "");
+
   function useShopifyProducts(bruts) {
-    const shopifyProducts = bruts.map(nettoyerIdentite);
+    const shopifyProducts = bruts.map(nettoyerIdentite).filter((produit) => !estRetiree(produit));
     const byHandle = new Map(
       shopifyProducts.map((product) => [product.shopifyHandle || product.id, product]),
     );

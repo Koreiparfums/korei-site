@@ -9,7 +9,7 @@
   // Les seize maisons du catalogue ont desormais leur logo dans
   // assets/images/brands (voir scripts/logos_marques.py).
   const LOGOS = new Set([
-    "amouage", "arte-profumi", "bdk-parfums", "bohoboco",
+    "amouage", "arte-profumi", "bohoboco",
     "born-to-stand-out", "byredo", "byron", "calisto", "casamorati",
     "castel", "chanel", "creed", "dior", "eau-de-soie", "ella-k", "fomowa",
     "frederic-malle", "giardini-di-toscana", "gritti", "guerlain", "initio",
@@ -22,20 +22,6 @@
     // Ajoutes le 4 septembre 2026 (sites officiels et Wikimedia Commons).
     "bvlgari", "carner-barcelona", "essential-parfums", "ex-nihilo", "lancome", "nayu-parfums", "pause-coreenne", "stephane-humbert-lucas",
   ]);
-
-  const FAMILY_LABELS = {
-    "boisé": "Boisé",
-    floral: "Floral",
-    oriental: "Oriental",
-    gourmand: "Gourmand",
-    cuir: "Cuir",
-    fruity: "Fruité",
-    aromatique: "Aromatique",
-    // 19 parfums portent cette famille. Sans son intitule, le filtre du
-    // catalogue affichait « frais » en minuscule entre « Floral » et
-    // « Fruite ».
-    frais: "Frais",
-  };
 
   function normalize(str) {
     return (str || "")
@@ -52,8 +38,6 @@
 
     const searchInput = document.getElementById("brands-search-input");
     const alphaEl = document.getElementById("maisons-alpha");
-    const countrySel = document.getElementById("maisons-country");
-    const familySel = document.getElementById("maisons-family");
     const countEl = document.getElementById("maisons-count");
     const resetBtn = document.getElementById("maisons-reset");
     const emptyEl = document.getElementById("brands-empty");
@@ -67,14 +51,10 @@
     // Elle reste au catalogue et dans les filtres par marque.
     const brandsData = store.getBrands().filter((brand) => LOGOS.has(brand.id)).map((brand) => {
       const products = store.getProductsByBrand(brand.id);
-      const families = [...new Set(products.map((p) => p.family))];
-      return { ...brand, count: products.length, families, products };
+      return { ...brand, count: products.length, products };
     });
 
-    const countries = [...new Set(brandsData.map((b) => b.country).filter(Boolean))].sort();
-    const families = [...new Set(brandsData.flatMap((b) => b.families).filter(Boolean))].sort();
-
-    const state = { search: "", country: "", family: "", letter: "" };
+    const state = { search: "", letter: "" };
 
     // Les maisons qui ont au moins un parfum au catalogue : elles seules
     // peuvent etre mises en avant en bas de page.
@@ -83,16 +63,6 @@
     if (subEl) {
       subEl.textContent = `${brandsData.length} maisons de parfumerie de niche sélectionnées avec soin.`;
     }
-
-    // ── Listes deroulantes Pays et Famille (maquette du client)
-    function fillSelect(el, values, allLabel, labels) {
-      if (!el) return;
-      el.innerHTML =
-        `<option value="">${allLabel}</option>` +
-        values.map((v) => `<option value="${v}">${(labels && labels[v]) || v}</option>`).join("");
-    }
-    fillSelect(countrySel, countries, "Tous les pays");
-    fillSelect(familySel, families, "Toutes les familles", FAMILY_LABELS);
 
     // ── KOR-E4 : barre alphabetique
     const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -120,22 +90,10 @@
       alphaEl?.querySelectorAll("[data-letter]").forEach((b) => {
         b.classList.toggle("is-active", b.dataset.letter === state.letter);
       });
-      if (countrySel) countrySel.value = state.country;
-      if (familySel) familySel.value = state.family;
     }
 
-    countrySel?.addEventListener("change", () => {
-      state.country = countrySel.value;
-      render();
-    });
-    familySel?.addEventListener("change", () => {
-      state.family = familySel.value;
-      render();
-    });
     resetBtn?.addEventListener("click", () => {
       state.search = "";
-      state.country = "";
-      state.family = "";
       state.letter = "";
       if (searchInput) searchInput.value = "";
       syncUI();
@@ -146,8 +104,6 @@
       // Toutes les maisons sont affichees, meme celles dont aucun parfum n'est
       // encore au catalogue : la carte existe, elle n'est simplement pas
       // cliquable. Le client veut voir la maison des maintenant.
-      if (state.country && brand.country !== state.country) return false;
-      if (state.family && !brand.families.includes(state.family)) return false;
       if (state.letter && firstLetter(brand.name) !== state.letter) return false;
       if (state.search && !normalize(brand.name).includes(state.search)) return false;
       return true;

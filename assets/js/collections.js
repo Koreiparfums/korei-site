@@ -42,7 +42,7 @@
     {
       name: "Collection gourmande",
       tagline: "Caramel · Cacao · Praliné",
-      icon: "ti-cookie",
+      image: "../assets/images/collections/gourmand.webp",
       params: {
         note: ["caramel", "cacao", "chocolat", "praliné", "noisette", "barbe à papa", "guimauve"],
       },

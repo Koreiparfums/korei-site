@@ -248,6 +248,26 @@
       };
     });
 
+    // Le flacon d'origine, pour les parfums que les fournisseurs proposent
+    // entiers. Il ne se vend qu'avec sa variante Shopify (isVariantAvailable).
+    const flacon = store?.getFlacon?.(product);
+    if (flacon) {
+      const variant = store.getVariantForFormat(product, "flacon");
+      const price = store.getFormatPrice(product, "flacon");
+      formats.push({
+        key: "flacon",
+        ml: flacon.ml,
+        vol: `Flacon ${flacon.ml} ml`,
+        price,
+        pricePerMl: price / flacon.ml,
+        variantId: variant?.id || null,
+        real: Boolean(variant),
+        available: store.isVariantAvailable(product, "flacon"),
+        flacon: true,
+        sansBoite: flacon.sansBoite,
+      });
+    }
+
     // « Meilleur rapport » : le format disponible au plus bas prix au ml.
     const candidates = formats.filter((f) => f.available && f.price > 0);
     const best = candidates.reduce((acc, f) => (!acc || f.pricePerMl < acc.pricePerMl ? f : acc), null);
@@ -288,13 +308,15 @@
   // Photo du flacon Korei par format, comme la maquette du 24 aout.
   const FORMAT_VIALS = { "2ml": "hero-decant-2ml", "5ml": "hero-decant-5ml", "10ml": "hero-decant-10ml" };
 
-  function renderFormats(formats) {
+  function renderFormats(formats, product) {
     const selected = firstSelectable(formats);
+    const photo = product && global.KoreiUI?.productImageSrc ? global.KoreiUI.productImageSrc(product, "../") : null;
     return `
       <div class="pdp-formats" role="radiogroup" aria-label="Format">
         ${formats
           .map((f) => {
             const isActive = f === selected;
+            if (f.flacon) return renderFlaconCard(f, isActive, photo);
             const info = FORMAT_INFO[f.key] || {};
             const vial = FORMAT_VIALS[f.key];
             return `
@@ -326,6 +348,30 @@
           })
           .join("")}
       </div>`;
+  }
+
+  // Le flacon complet tient toute la largeur sous les trois decants : ce
+  // n'est pas un quatrieme decant, c'est le parfum tel que la maison le vend.
+  // Tant que sa variante Shopify n'existe pas, il s'annonce sans se vendre.
+  function renderFlaconCard(f, isActive, photo) {
+    const etat = f.sansBoite ? "Flacon d'origine · sans boîte" : "Flacon d'origine";
+    return `
+          <button class="pdp-format pdp-format--flacon${isActive ? " is-active" : ""}${f.best ? " is-best" : ""}${f.available ? "" : " is-unavailable"}"
+                  type="button" role="radio" aria-checked="${isActive}"
+                  ${f.available ? "" : "disabled"}
+                  data-price="${f.price}" data-vol="${f.key}" data-available="${f.available}"
+                  aria-label="${f.vol} — ${f.available ? `${formatPriceLabel(f.price)} euros` : "bientôt disponible"}">
+            ${f.best && f.available ? '<span class="pdp-format__flag">Meilleur prix</span>' : ""}
+            ${photo ? `<span class="pdp-format__photo"><img src="${photo}" alt="" width="750" height="1000" loading="lazy" decoding="async"></span>` : ""}
+            <span class="pdp-format__body">
+              <span class="pdp-format__kind">${etat}</span>
+              <span class="pdp-format__vol">${f.ml} ml</span>
+            </span>
+            <span class="pdp-format__side">
+              <span class="pdp-format__price">${f.available ? prix(f.price) : "Bientôt disponible"}</span>
+              ${f.available && f.pricePerMl ? `<span class="pdp-format__ml">${unitPriceLabel(f)}</span>` : ""}
+            </span>
+          </button>`;
   }
 
   // ── Pyramide olfactive (sous la galerie, colonne gauche)
@@ -596,7 +642,7 @@
   }
 
   function unitPriceLabel(f) {
-    const ml = parseFloat(String(f.key).replace("ml", ""));
+    const ml = f.ml || parseFloat(String(f.key).replace("ml", ""));
     if (!ml || !f.price) return "";
     return `${prix(f.price / ml)} / ml`;
   }
@@ -656,12 +702,12 @@
             </div>
           </div>
           <div class="pdp-col">
-            <div class="pdp-info pdp-reveal">
+            <div class="pdp-info">
               <div class="pdp-brand">${esc(product.brand)}</div>
               <h1 class="pdp-name">${esc(product.name)}</h1>
               ${renderRatingLine(product)}
               ${descriptionRedigee(product) ? `<p class="pdp-desc">${esc(product.description)}</p>` : ""}
-              ${formats.some((f) => f.price > 0) ? `<div class="pdp-rule" aria-hidden="true"><i></i></div><h2 class="pdp-h2">Formats disponibles</h2>${renderFormats(formats)}${renderCoffretCards(formats)}` : ""}
+              ${formats.some((f) => f.price > 0) ? `<div class="pdp-rule" aria-hidden="true"><i></i></div><h2 class="pdp-h2">Formats disponibles</h2>${renderFormats(formats, product)}${renderCoffretCards(formats)}` : ""}
               <div class="pdp-actions">
                 ${bientot ? `<p class="pdp-bientot">Ce parfum arrive bientôt en boutique.${product.photoManquante ? " Sa photo est en cours de préparation." : ""}</p>` : ""}
                 <div class="pdp-actions__row">
@@ -1037,13 +1083,13 @@
   function feelGauge(icone, titre, sousTitre, note, palier, index) {
     const pct = Math.max(0, Math.min(100, Math.round((Number(note) / 10) * 100)));
     return `
-      <article class="pdp-feel__card pdp-reveal" style="--i:${index}">
+      <article class="pdp-feel__card" style="--i:${index}">
         <span class="pdp-feel__icon" aria-hidden="true">${icone === "hourglass" ? iconeSablier() : iconeGoutte()}</span>
         <h3 class="pdp-feel__title">${titre}</h3>
         <p class="pdp-feel__sous">${sousTitre}</p>
         <div class="pdp-feel__gauge" role="img" aria-label="${titre} : ${note} sur 10">
           <span class="pdp-feel__bar"><span class="pdp-feel__fill" style="--fill:${pct}%"></span></span>
-          <span class="pdp-feel__score"><span data-count="${note}">0</span><small> / 10</small></span>
+          <span class="pdp-feel__score"><span>${(Number(note) || 0).toFixed(0)}</span><small> / 10</small></span>
         </div>
         <p class="pdp-feel__text">${palier.texte}</p>
         <ul class="pdp-feel__chips"><li class="pdp-feel__chip is-on">${palier.label}</li></ul>
@@ -1096,7 +1142,7 @@
     const occasions = product.occasions || [];
     const phrase = phraseSaisons(product.seasons || [], occasions);
     return `
-      <article class="pdp-feel__card pdp-reveal" style="--i:${index}">
+      <article class="pdp-feel__card" style="--i:${index}">
         <span class="pdp-feel__icon pdp-feel__icon--saisons">${iconeSaisons(actives)}</span>
         <h3 class="pdp-feel__title">Saisons</h3>
         <p class="pdp-feel__sous">Quand le porter</p>
@@ -1155,7 +1201,7 @@
         <div class="pdp-note__bloc">
           <p class="pdp-note__label">Note de la communauté</p>
           <div class="pdp-note__mesure">
-            <p class="pdp-note__chiffre"><span data-count="${sur5}" data-decimales="1">0,0</span><span class="pdp-note__sur">/ 5</span></p>
+            <p class="pdp-note__chiffre"><span>${noteFr(sur5)}</span><span class="pdp-note__sur">/ 5</span></p>
             <span class="pdp-note__etoiles" aria-hidden="true">
               <span class="pdp-note__etoiles-vide">${ETOILE.repeat(5)}</span>
               <span class="pdp-note__etoiles-plein" style="--part:${part}%">${ETOILE.repeat(5)}</span>
@@ -1186,13 +1232,13 @@
     return `
       <section class="pdp-feel" aria-labelledby="pdp-feel-title">
         <div class="pdp-container">
-          <div class="pdp-head pdp-head--ressenti pdp-reveal">
+          <div class="pdp-head pdp-head--ressenti">
             <h2 class="pdp-title pdp-title--serif" id="pdp-feel-title">Ressenti</h2>
             <span class="pdp-head__rule" aria-hidden="true"></span>
             <p class="pdp-head__sub">L'expérience olfactive de <em>${esc(product.name)}</em></p>
           </div>
           ${grille}
-          ${note ? `<div class="pdp-reveal">${note}</div>` : ""}
+          ${note ? `<div>${note}</div>` : ""}
         </div>
       </section>`;
   }
@@ -1200,7 +1246,7 @@
   function renderStory(product) {
     return `
       <section class="pdp-editorial">
-        <div class="pdp-editorial__grid pdp-reveal">
+        <div class="pdp-editorial__grid">
           ${
             familleConnue(product)
               ? `<div class="pdp-editorial__col">
@@ -1318,7 +1364,7 @@
           <div class="pdp-eyebrow">Questions</div>
           <h2 class="pdp-title">Foire aux <em>questions</em></h2>
         </div>
-        <div class="pdp-faq__list faq-list pdp-reveal">
+        <div class="pdp-faq__list faq-list">
           ${items
             .map(
               (it) => `
@@ -1436,58 +1482,6 @@
     mobile.addEventListener("change", applyViewport);
   }
 
-  // ── Reveal au scroll
-  // Un chiffre se compte de zero a sa valeur a l'apparition (note sur 10,
-  // note sur 5 avec une decimale), en une seconde ; d'un coup si la personne
-  // demande moins de mouvement.
-  function compterNote(el) {
-    const cible = Number(el.dataset.count) || 0;
-    const decimales = Number(el.dataset.decimales) || 0;
-    const fmt = (n) => n.toFixed(decimales).replace(".", ",");
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      el.textContent = fmt(cible);
-      return;
-    }
-    const debut = performance.now();
-    const duree = 1100;
-    const pas = (now) => {
-      const p = Math.min(1, (now - debut) / duree);
-      const ease = 1 - Math.pow(1 - p, 3);
-      el.textContent = fmt(cible * ease);
-      if (p < 1) requestAnimationFrame(pas);
-    };
-    requestAnimationFrame(pas);
-  }
-
-  function initReveal(main) {
-    const targets = Array.from(main.querySelectorAll(".pdp-reveal"));
-    if (!targets.length) return;
-    const reveal = (el) => {
-      if (el.classList.contains("is-visible")) return;
-      el.classList.add("is-visible");
-      el.querySelectorAll("[data-count]").forEach(compterNote);
-    };
-    if (!("IntersectionObserver" in window)) {
-      targets.forEach(reveal);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            reveal(entry.target);
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -10% 0px" }
-    );
-    targets.forEach((t) => observer.observe(t));
-    // Filet de sécurité : un contenu jamais scrollé (page très longue, robot
-    // d'indexation qui ne scrolle pas) doit rester lisible, jamais figé à opacity:0.
-    setTimeout(() => targets.forEach(reveal), 4000);
-  }
-
   // ── Init général
   function initProductPage() {
     const params = new URLSearchParams(window.location.search);
@@ -1539,7 +1533,6 @@
     initGallery(main, galleryImages(product, "../"));
     initHero(main, product);
     initAccordions(main);
-    initReveal(main);
 
     // KOR-B11 — sous trois resultats, la section disparait entierement : une
     // rangee d'un seul parfum donne l'impression d'un catalogue vide.

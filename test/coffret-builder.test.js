@@ -89,8 +89,20 @@ test("les deux coffrets utilisent leurs seuils 5 et 3, le 2 ml reste hors coffre
   assert.equal(state.discountAttendu, 7);
   assert.deepEqual(
     Array.from(state.groups, ({ format, boxes }) => [format, boxes]),
-    [["2ml", 0], ["5ml", 1], ["10ml", 1]],
+    [["2ml", 0], ["5ml", 1], ["10ml", 1], ["flacon", 0]],
   );
+});
+
+test("le flacon complet entre au panier, a l'unite, sans coffret ni remise", () => {
+  const { api } = loadCoffret();
+  assert.equal(api.isEligibleFormat("flacon"), true);
+  assert.equal(api.hasBox("flacon"), false);
+  const state = api.getCartState([item("1", "flacon", 189.9, 2), item("2", "5ml", 8, 5)]);
+  assert.equal(state.boxes, 1);
+  assert.equal(state.discountAttendu, 4);
+  const flacons = Array.from(state.groups).find((g) => g.format === "flacon");
+  assert.equal(flacons.count, 2);
+  assert.equal(flacons.discount, 0);
 });
 
 test("le 2 ml entre au panier mais dans aucun coffret", () => {

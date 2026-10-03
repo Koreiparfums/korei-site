@@ -32,7 +32,6 @@ maison (en-tête, pied de page, favicon haute résolution ou `og:image`).
 | Mancera | manceraparfums.com, logo de pied de page |
 | Montale | montaleparfums.com, logo d'en-tête |
 | Arte Profumi | arteprofumi.it, `arte-profumi-logo.svg` |
-| BDK Parfums | bdkparfums.com, logo `og:image` (blanc sur plaque noire, ré-encré) |
 | Bohoboco | bohobocoperfume.com, `LOGO BB Perfume.png` |
 | Born to Stand Out | borntostandout.com, `LOGO.png` (blanc, ré-encré) |
 | Byron | byron-parfums.fr, `logo_preloader.svg` |

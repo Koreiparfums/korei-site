@@ -367,7 +367,24 @@
   // le panier reste alors en mode local uniquement pour cet article.
   const FORMAT_OPTION_VALUES = { "2ml": "2 ml", "5ml": "5 ml", "10ml": "10 ml" };
 
+  // Le flacon complet : une seule variante par parfum, dont la valeur
+  // d'option commence par « Flacon » (« Flacon 100 ml »). Sa contenance
+  // change d'un parfum a l'autre, d'ou une regle a part.
+  function getFlacon(product) {
+    return (product && global.KoreiFlacons?.[product.id]) || null;
+  }
+
   function getVariantForFormat(product, format) {
+    if (format === "flacon") {
+      if (!product?.variants?.length) return null;
+      return (
+        product.variants.find((variant) =>
+          (variant.selectedOptions || []).some((option) =>
+            String(option.value || "").trim().toLowerCase().startsWith("flacon"),
+          ),
+        ) || null
+      );
+    }
     const target = FORMAT_OPTION_VALUES[format];
     if (!target || !product?.variants?.length) return null;
 
@@ -386,7 +403,24 @@
   // `availableForSale === false` → en rupture.
   function isVariantAvailable(product, format) {
     const variant = getVariantForFormat(product, format);
+    // Le flacon n'existe que pour les parfums de la liste, et ne se vend
+    // qu'une fois sa variante creee dans Shopify : sans elle, le paiement
+    // refuserait la ligne.
+    if (format === "flacon") {
+      if (!getFlacon(product)) return false;
+      if (product?.variants?.length) return Boolean(variant) && variant.availableForSale !== false;
+      return true;
+    }
     return !variant || variant.availableForSale !== false;
+  }
+
+  // Le libelle d'un format, partout ou il s'affiche : « 5 ml », « Flacon 100 ml ».
+  function formatLabel(product, format) {
+    if (format === "flacon") {
+      const flacon = getFlacon(product);
+      return flacon ? `Flacon ${flacon.ml} ml` : "Flacon";
+    }
+    return String(format).replace("ml", " ml");
   }
 
   /**
@@ -402,6 +436,9 @@
   function getFormatPrice(product, format) {
     const variant = getVariantForFormat(product, format);
     if (variant) return Number(variant.price);
+
+    // Le flacon complet n'a qu'un prix : celui que le client a valide.
+    if (format === "flacon") return getFlacon(product)?.prix || 0;
 
     // Le bareme du client : un prix par parfum ET par format, releve dans son
     // tableur. Il ne se deduit d'aucun coefficient — deux parfums a 8,90 EUR
@@ -434,5 +471,7 @@
     buildCatalogContext,
     getVariantForFormat,
     isVariantAvailable,
+    getFlacon,
+    formatLabel,
   };
 })(window);
