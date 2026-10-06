@@ -1123,6 +1123,13 @@
       if (resultCountEl) resultCountEl.textContent = `${list.length} parfum${list.length > 1 ? "s" : ""}`;
       if (emptyEl) emptyEl.hidden = list.length > 0;
       renderProducts(grid, list, { basePath: "../", grid: true });
+      // Le Pack Signature du mois ouvre le catalogue, tant qu'aucune
+      // recherche ni aucun filtre de marque, famille ou note n'est actif.
+      const sansFiltre =
+        !filters.search && !filters.brand.length && !filters.family.length && !filters.note.length &&
+        !filters.season.length && !filters.occasion.length && !filters.gender && !filters.intensity &&
+        !filters.isNew && !filters.bestseller;
+      if (sansFiltre && global.KoreiPack) grid.insertAdjacentHTML("afterbegin", global.KoreiPack.renderCard("../"));
       renderActiveFilterPills();
     }
 
@@ -1514,12 +1521,6 @@
     document.querySelectorAll(".footer-socials:empty").forEach((container) => container.remove());
   }
 
-  // Les Boxes sont encore une page d'annonce, sans offre ni lien de commande.
-  // Elles restent accessibles directement pour la préparation éditoriale,
-  // mais ne doivent pas être présentées comme une rubrique achetable.
-  function removeUnavailableBoxesLinks() {
-    document.querySelectorAll('a[href$="boxes.html"]').forEach((link) => link.remove());
-  }
 
   // ── Délégation des actions déclarées en data-attributes (CSP : pas d'onclick inline)
   function initInlineActionDelegation() {
@@ -1555,7 +1556,6 @@
     initNewsletterForm();
     initContactForm();
     removeUnavailableSocialLinks();
-    removeUnavailableBoxesLinks();
 
     const page = document.body.dataset.page;
     if (page === "home") initHomePage();

@@ -65,24 +65,9 @@
       image: "../assets/images/collections/soir.webp",
       params: { occasion: "soirée" },
     },
-    {
-      name: "Pour le bureau",
-      tagline: "Discret · Élégant · Quotidien",
-      icon: "ti-briefcase",
-      params: { occasion: "bureau" },
-    },
-    {
-      name: "Rendez-vous",
-      tagline: "Séduisant · Mémorable",
-      icon: "ti-heart",
-      params: { occasion: "date" },
-    },
-    {
-      name: "Nouveautés",
-      tagline: "Les derniers arrivages",
-      icon: "ti-sparkles",
-      params: { isNew: "1" },
-    },
+    // Retirees (7 oct.) : « Nouveautes », qui a deja son carrousel a l'accueil
+    // et son filtre dans le catalogue, et « Pour le bureau » / « Rendez-vous »,
+    // a la demande du client.
   ];
 
   // Une collection qui ouvre sur trois parfums n'est pas une collection.

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * Cree dans Shopify la variante « Flacon » des parfums vendus entiers, et
- * aligne les prix des decants que le client a modifies.
+ * Cree dans Shopify la variante « Flacon » des parfums vendus entiers,
+ * aligne les prix des decants que le client a modifies, et cree le Pack
+ * Signature du mois (assets/js/pack-signature.js) avec une variante par format.
  *
  * Le site lit les flacons dans assets/js/flacons.js (genere depuis le tableur
  * valide par le client). Il n'en vend un qu'une fois sa variante Shopify
@@ -29,9 +30,66 @@ const ROOT = path.resolve(__dirname, "..");
 const ENV_PATH = path.join(ROOT, ".env");
 const API_VERSION = "2026-07";
 
-// Prix des decants modifies par le client (3 octobre 2026) : le flacon de
-// 30 ml de Callisto revenait moins cher au ml que trois decants de 10 ml.
-const PRIX_DECANTS = ["calisto-cur-de-patchouli", "calisto-iris-gourmand", "calisto-mirage"];
+// Prix des decants modifies par le client, a aligner dans Shopify sur le
+// tarif de catalogue-client.js :
+//  - 3 octobre 2026, Callisto : le flacon de 30 ml revenait moins cher au ml
+//    que trois decants de 10 ml ;
+//  - 3 octobre 2026, les 45 parfums aussi vendus par Scento : 2 ml a -5 %,
+//    5 ml a -10 %, 10 ml a -10 % du prix au ml de leur 8 ml, sans jamais
+//    descendre sous 15 % de marge (apres remise coffret pour 5 et 10 ml) ;
+//  - 3 octobre 2026, Dior Oud Ispahan : decants en Esprit de Parfum, alignes
+//    environ 10 % sous les vendeurs de decants (17,90 ; 32,90 ; 59,90).
+const PRIX_DECANTS = [
+  "dior-oud-ispahan",
+  "calisto-cur-de-patchouli",
+  "calisto-iris-gourmand",
+  "calisto-mirage",
+  "amouage-love-delight-woman",
+  "dior-cuir-saddle",
+  "giardini-di-toscana-bianco-latte",
+  "giardini-di-toscana-borabora",
+  "initio-atomic-rose",
+  "initio-narcotic-delight",
+  "initio-psychedelic-love",
+  "kajal-almaz",
+  "kajal-dahab",
+  "kajal-lamar",
+  "mancera-instant-crush",
+  "mancera-coco-vanille",
+  "marc-antoine-barrois-ganymede",
+  "parfums-de-marly-haltane",
+  "parfums-de-marly-palatine",
+  "parfums-de-marly-pegasus-exclusif",
+  "matiere-premiere-vanilla-powder",
+  "matiere-premiere-encens-suave",
+  "matiere-premiere-parisian-musc",
+  "memo-paris-african-leather",
+  "memo-paris-sintra",
+  "montale-arabian-tonka",
+  "montale-intense-cafe",
+  "montale-starry-nights",
+  "nishane-ani",
+  "nishane-hacivat",
+  "nishane-hundred-silent-ways",
+  "nishane-nefs",
+  "sospiro-il-padrino",
+  "tiziana-terenzi-halley",
+  "tiziana-terenzi-kirke",
+  "tiziana-terenzi-spirito-fiorentino",
+  "tiziana-terenzi-andromeda",
+  "tiziana-terenzi-cassiopea",
+  "tiziana-terenzi-draco",
+  "tom-ford-azure-lime",
+  "tom-ford-black-orchid-reserve",
+  "tom-ford-ombre-leather",
+  "xerjoff-erba-gold",
+  "xerjoff-alexandria-ii",
+  "xerjoff-erba-pura",
+  "byredo-mojave-ghost",
+  "byredo-rose-of-no-mans",
+  "essential-parfums-bois-imperial",
+  "stephane-humbert-lucas-venom-incarnat",
+];
 const FORMAT_VALUES = { "2ml": "2 ml", "5ml": "5 ml", "10ml": "10 ml" };
 
 function readEnv(filePath = ENV_PATH) {
@@ -101,6 +159,14 @@ function chargerDonneesSite() {
   return { catalogue, flacons: sandbox.window.KoreiFlacons || {} };
 }
 
+// Le Pack Signature du mois, tel que la page des Boxes le decrit.
+function chargerPack() {
+  const sandbox = { window: {}, document: { readyState: "complete", getElementById: () => null } };
+  vm.createContext(sandbox);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, "assets/js/pack-signature.js"), "utf8"), sandbox);
+  return sandbox.window.KoreiPack || null;
+}
+
 const SHOP_QUERY = `
   {
     appInstallation { accessScopes { handle } }
@@ -138,6 +204,15 @@ const UPDATE_VARIANTS = `
   mutation KoreiDecantPrix($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
     productVariantsBulkUpdate(productId: $productId, variants: $variants) {
       userErrors { field code message }
+    }
+  }
+`;
+
+const CREATE_PRODUCT = `
+  mutation KoreiPackCreate($product: ProductCreateInput!) {
+    productCreate(product: $product) {
+      product { id handle variants(first: 5) { nodes { id selectedOptions { name value } } } }
+      userErrors { field message }
     }
   }
 `;
@@ -232,6 +307,18 @@ async function main() {
     if (variants.length) prixAChanger.push({ id, product, variants });
   }
 
+  // 3. Le Pack Signature : un produit, une variante par format, prix fixe.
+  const pack = chargerPack();
+  const produitPack = pack && byHandle.get(pack.id);
+  const packAFaire = [];
+  if (pack) {
+    for (const f of pack.formats) {
+      const variante = produitPack?.variants.nodes.find((v) => v.selectedOptions.some((o) => valeur(o) === f.libelle.toLowerCase()));
+      if (!variante) packAFaire.push({ type: "creer", f });
+      else if (Number(variante.price) !== f.prix) packAFaire.push({ type: "prix", f, variante });
+    }
+  }
+
   console.log(`Mode                  : ${apply ? "ECRITURE" : "simulation"}`);
   console.log(`Emplacement           : ${location.name}`);
   console.log(`Flacons dans la liste : ${Object.keys(flacons).length}`);
@@ -242,6 +329,10 @@ async function main() {
   console.log(`Prix de decants       : ${prixAChanger.reduce((n, p) => n + p.variants.length, 0)} variante(s)`);
   for (const p of prixAChanger) {
     for (const v of p.variants) console.log(`  ${p.id} ${v.format} : ${v.avant} -> ${v.price}`);
+  }
+  if (pack) {
+    console.log(`Pack Signature        : ${pack.nom} (${pack.id}) ${produitPack ? "existe" : "a creer"}`);
+    for (const a of packAFaire) console.log(`  ${a.type === "creer" ? "+" : "~"} ${a.f.libelle} a ${a.f.prix.toFixed(2)} EUR`);
   }
   if (!stock) console.log("Stock 0 : les flacons resteront « bientot disponibles » tant que le stock n'est pas saisi.");
   if (!apply) {
@@ -276,6 +367,44 @@ async function main() {
     ensureNoUserErrors(data, "productVariantsBulkUpdate");
   }
   if (prixAChanger.length) console.log(`Prix de decants alignes : ${prixAChanger.length} produit(s)`);
+
+  if (pack && packAFaire.length) {
+    let produitId = produitPack?.id;
+    if (!produitId) {
+      const data = await graphql(CREATE_PRODUCT, {
+        product: {
+          title: pack.nom,
+          handle: pack.id,
+          status: "ACTIVE",
+          productOptions: [{ name: "Format", values: pack.formats.map((f) => ({ name: f.libelle })) }],
+        },
+      });
+      ensureNoUserErrors(data, "productCreate");
+      produitId = data.productCreate.product.id;
+      // Shopify cree une premiere variante : on lui donne son prix.
+      const premiere = data.productCreate.product.variants.nodes[0];
+      const f0 = pack.formats.find((f) => premiere.selectedOptions.some((o) => valeur(o) === f.libelle.toLowerCase()));
+      if (f0) {
+        ensureNoUserErrors(await graphql(UPDATE_VARIANTS, { productId: produitId, variants: [{ id: premiere.id, price: f0.prix.toFixed(2) }] }), "productVariantsBulkUpdate");
+        packAFaire.splice(packAFaire.findIndex((a) => a.f === f0), 1);
+      }
+    }
+    const aCreerPack = packAFaire.filter((a) => a.type === "creer");
+    if (aCreerPack.length) {
+      ensureNoUserErrors(await graphql(CREATE_VARIANTS, {
+        productId: produitId,
+        variants: aCreerPack.map(({ f }) => ({ optionValues: [{ optionName: "Format", name: f.libelle }], price: f.prix.toFixed(2) })),
+      }), "productVariantsBulkCreate");
+    }
+    const prixPack = packAFaire.filter((a) => a.type === "prix");
+    if (prixPack.length) {
+      ensureNoUserErrors(await graphql(UPDATE_VARIANTS, {
+        productId: produitId,
+        variants: prixPack.map(({ f, variante }) => ({ id: variante.id, price: f.prix.toFixed(2) })),
+      }), "productVariantsBulkUpdate");
+    }
+    console.log(`Pack Signature configure. A publier sur le canal de vente du site si Shopify ne le fait pas seul.`);
+  }
 
   console.log("Flacons Shopify configures.");
 }

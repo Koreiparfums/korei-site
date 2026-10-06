@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
@@ -89,7 +89,6 @@
           <a href="index.html" class="active">Accueil</a>
           <a href="pages/catalogue.html">Parfums</a>
           <a href="pages/coffret.html">Coffrets</a>
-          <a href="pages/boxes.html">Les Boxes</a>
           <a href="pages/brands.html">Marques</a>
           <a href="pages/collections.html">Collections</a>
         </nav>
@@ -138,7 +137,6 @@
         <a href="index.html">Accueil</a>
         <a href="pages/catalogue.html">Tous les parfums</a>
         <a href="pages/coffret.html">Coffrets</a>
-        <a href="pages/boxes.html">Les Boxes</a>
         <a href="pages/brands.html">Marques</a>
         <a href="pages/collections.html">Collections</a>
         <a href="#" data-open-chatbot>Conseiller IA</a>
@@ -220,6 +218,15 @@
       <!-- KOR-D4 — le second bandeau de promesses a ete retire : il repetait
          mot pour mot celui du haut de page. Le brief §1 demande un seul
          bandeau de reassurance, pas un empilement. -->
+
+      <!-- Le Pack Signature du mois, mis en avant juste sous le hero
+           (pack-signature.js remplit la vitrine). -->
+      <section
+        class="pack-vitrine"
+        data-pack-vitrine
+        data-base-path=""
+        hidden
+      ></section>
 
       <section class="favorites-section">
         <div class="favorites-head">
@@ -679,46 +686,6 @@
                 >
               </div>
             </a>
-            <a
-              href="pages/catalogue.html?note=oud"
-              class="home-collection-card"
-            >
-              <div
-                class="home-collection-card__media media-slot"
-                data-slot="collection-oud"
-              >
-                <img
-                  class="media-slot__image"
-                  src="assets/images/collections/oud.webp"
-                  alt="Collection Oud — Kōrei"
-                  width="1586"
-                  height="992"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <div
-                  class="media-slot__placeholder placeholder-premium placeholder-premium--lifestyle"
-                  data-variant="5"
-                >
-                  <div
-                    class="placeholder-premium__pattern"
-                    aria-hidden="true"
-                  ></div>
-                  <div class="placeholder-premium__content">
-                    <i
-                      class="ti ti-flame placeholder-premium__icon"
-                      aria-hidden="true"
-                    ></i>
-                  </div>
-                </div>
-              </div>
-              <div class="home-collection-card__overlay">
-                <span class="home-collection-card__name">Oud</span>
-                <span class="home-collection-card__cta"
-                  >Découvrir <span aria-hidden="true">→</span></span
-                >
-              </div>
-            </a>
           </div>
         </div>
       </section>
@@ -933,7 +900,6 @@
           <div class="footer-col-title">Boutique</div>
           <a href="pages/catalogue.html">Tous les parfums</a>
           <a href="pages/coffret.html">Coffrets</a>
-          <a href="pages/boxes.html">Les Boxes</a>
           <a href="pages/brands.html">Marques</a>
           <a href="pages/collections.html">Collections</a>
         </div>
@@ -1015,6 +981,7 @@
     <script src="assets/js/catalogue-client.js"></script>
     <script src="assets/js/flacons.js"></script>
     <script src="assets/js/retraits.js"></script>
+    <script src="assets/js/pack-signature.js"></script>
     <script src="assets/js/sensoriel.js"></script>
     <script src="assets/js/product-store.js"></script>
     <script src="assets/js/notes-catalogue.js"></script>

@@ -3697,3 +3697,13 @@ body[data-page="product"] {
     height: 58px;
   }
 }
+/* Flacon en promo : le prix boutique officiel, barre, au-dessus du prix. */
+.pdp-format__was {
+  font-family: "Manrope", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--pdp-ink-soft);
+}
+.pdp-format__was s {
+  margin-left: 4px;
+}

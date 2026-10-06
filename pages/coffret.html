@@ -59,7 +59,6 @@
           <a href="../index.html">Accueil</a>
           <a href="catalogue.html">Parfums</a>
           <a href="coffret.html" class="active">Coffrets</a>
-          <a href="boxes.html">Les Boxes</a>
           <a href="brands.html">Marques</a>
           <a href="collections.html">Collections</a>
         </nav>
@@ -99,7 +98,6 @@
         <a href="../index.html">Accueil</a>
         <a href="catalogue.html">Parfums</a>
         <a href="coffret.html" aria-current="page">Coffrets</a>
-        <a href="boxes.html">Les Boxes</a>
         <a href="brands.html">Marques</a>
         <a href="collections.html">Collections</a>
         <a href="#" data-open-chatbot>Conseiller IA</a>
@@ -183,6 +181,9 @@
          Remplace quatre cartes « Ete / Hiver / Floral / Gourmand » qui
          pointaient vers le catalogue filtre : ce sont des collections, pas des
          coffrets. Elles existent deja sur la page Collections. -->
+    <!-- Le Pack Signature du mois, avant les coffrets a composer. -->
+    <section class="pack-vitrine" data-pack-vitrine data-base-path="../" hidden></section>
+
     <section class="coffret-collections" id="coffrets">
       <div class="dose-head">
         <div class="dose-eyebrow">Nos coffrets</div>
@@ -454,7 +455,6 @@
           <div class="footer-col-title">Boutique</div>
           <a href="catalogue.html">Tous les parfums</a>
           <a href="coffret.html">Coffrets</a>
-          <a href="boxes.html">Les Boxes</a>
           <a href="brands.html">Marques</a>
           <a href="collections.html">Collections</a>
         </div>
@@ -508,6 +508,7 @@
     <script src="../assets/js/catalogue-client.js"></script>
     <script src="../assets/js/flacons.js"></script>
     <script src="../assets/js/retraits.js"></script>
+    <script src="../assets/js/pack-signature.js"></script>
     <script src="../assets/js/sensoriel.js"></script>
     <script src="../assets/js/product-store.js"></script>
     <!-- Sans ces deux chargeurs, le compositeur de coffret ne voyait que le

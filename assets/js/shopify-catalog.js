@@ -451,8 +451,18 @@
   const estRetiree = (produit) =>
     global.KoreiRetraits ? global.KoreiRetraits.estRetire(produit) : /^bdk\b/i.test(produit.brand || "");
 
+  // Le Pack Signature est un produit Shopify, pas un parfum : il ne rejoint
+  // pas le catalogue, la page des Boxes y lit seulement ses variantes.
+  const estPack = (produit) => /^pack-signature/.test(produit.shopifyHandle || produit.id || "");
+
   function useShopifyProducts(bruts) {
-    const shopifyProducts = bruts.map(nettoyerIdentite).filter((produit) => !estRetiree(produit));
+    global.KoreiShopifyPacks = Object.fromEntries(
+      bruts.filter(estPack).map((produit) => [produit.shopifyHandle || produit.id, produit]),
+    );
+    const shopifyProducts = bruts
+      .filter((produit) => !estPack(produit))
+      .map(nettoyerIdentite)
+      .filter((produit) => !estRetiree(produit));
     const byHandle = new Map(
       shopifyProducts.map((product) => [product.shopifyHandle || product.id, product]),
     );
@@ -507,14 +517,7 @@
 
     // Les saisons ensuite, puisqu'elles s'appuient sur la famille quand le
     // parfum n'a pas d'accords.
-    merged.forEach((produit) => {
-      const manque = !(produit.seasons || []).length || !(produit.occasions || []).length;
-      if (!manque) return;
-      const chaleur = chaleurDe(produit);
-      if (chaleur === null) return;
-      if (!(produit.seasons || []).length) produit.seasons = saisonsDeduites(chaleur);
-      if (!(produit.occasions || []).length) produit.occasions = occasionsDeduites(chaleur);
-    });
+    completerSaisons(merged);
 
     // Le tarif du client fait foi, pas la boutique. Ses prix Shopify sont des
     // valeurs de test, l'audit du 16 juillet le dit, et un parfum absent de son
@@ -535,6 +538,31 @@
     return merged;
   }
 
+  function completerSaisons(produits) {
+    produits.forEach((produit) => {
+      const manque = !(produit.seasons || []).length || !(produit.occasions || []).length;
+      if (!manque) return;
+      const chaleur = chaleurDe(produit);
+      if (chaleur === null) return;
+      if (!(produit.seasons || []).length) produit.seasons = saisonsDeduites(chaleur);
+      if (!(produit.occasions || []).length) produit.occasions = occasionsDeduites(chaleur);
+    });
+  }
+
+  // Sans Shopify (developpement local, boutique injoignable), le catalogue
+  // local recoit les memes familles et saisons deduites : sinon seules les
+  // 13 fiches ecrites a la main ont une saison, et « Ete » ou « Pour le
+  // bureau » disparaissent de la page Collections faute de parfums.
+  function sansShopify() {
+    fallbackProducts.forEach((produit) => {
+      if (produit.family) return;
+      const famille = familleDeduite(produit);
+      if (famille) produit.family = famille;
+    });
+    completerSaisons(fallbackProducts);
+    return fallbackProducts;
+  }
+
   async function load() {
     if (loadPromise) return loadPromise;
 
@@ -546,12 +574,12 @@
         const response = await fetch(API_ENDPOINT, { headers: { Accept: "application/json" } });
         if (!response.ok) throw new Error("Shopify catalogue unavailable");
         const data = await response.json();
-        if (!Array.isArray(data.products) || !data.products.length) return fallbackProducts;
+        if (!Array.isArray(data.products) || !data.products.length) return sansShopify();
 
         cacheProducts(data.products);
         return useShopifyProducts(data.products);
       } catch (error) {
-        return fallbackProducts;
+        return sansShopify();
       }
     })();
 

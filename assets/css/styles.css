@@ -2984,7 +2984,7 @@ body[data-page="coffret"] .coffret-hero {
 }
 .home-collections-editorial__bottom {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr); /* Hiver et Gourmand, depuis le retrait d'Oud (7 oct.) */
   gap: 18.5px;
 }
 .home-collection-card {
@@ -3815,7 +3815,7 @@ footer {
   }
 }
 
-/* Le menu compte six entrees depuis « Les Boxes » : sous 1200 px, le champ de
+/* Sous 1200 px, le champ de
    recherche du header laisse place a la loupe, sinon l'en-tete depasse la
    largeur de la fenetre et toute la page defile sur le cote. */
 @media (max-width: 1200px) {
@@ -6125,7 +6125,7 @@ body[data-page="favoris"] .favoris-hero {
 }
 .favoris-explore__grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr); /* quatre collections depuis le retrait d'Oud (7 oct.) */
   gap: 14px;
 }
 .favoris-explore__tile {
@@ -6241,7 +6241,7 @@ body[data-page="favoris"] .favoris-hero {
 
 @media (max-width: 1120px) {
   .favoris-explore__grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
   .favoris-trust__bar {
     grid-template-columns: repeat(2, 1fr);
@@ -9236,248 +9236,6 @@ body.has-cookie-banner .chatbot-widget {
   display: none;
 }
 
-/* ─── KOR-G1 · page « Les Boxes Kōrei » ──────────────────────────────────
-   Gabarit livre avant son contenu (brief §9). Aucune box n'est presentee
-   comme achetable tant que l'offre n'est pas arretee. */
-.boxes-hero {
-  padding: 56px var(--px) 40px;
-  max-width: 640px;
-  margin: 0 auto;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.boxes-hero__eyebrow {
-  font-size: var(--text-10);
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-  color: var(--accent);
-}
-.boxes-hero__title {
-  margin-top: 10px;
-  font-family: "Manrope", sans-serif;
-  font-size: clamp(2rem, 1.4rem + 3vw, 3.25rem);
-  font-weight: 300;
-  line-height: 1.1;
-  color: var(--text);
-}
-.boxes-hero__title em {
-  font-style: italic;
-  color: var(--accent);
-}
-.boxes-hero__rule {
-  display: block;
-  width: 48px;
-  height: 1.6px;
-  margin: 18px auto;
-  background: var(--accent);
-}
-.boxes-hero__sub {
-  font-size: var(--text-16);
-  line-height: 1.65;
-  color: var(--text-muted);
-  max-width: 46ch;
-}
-.boxes-hero__note {
-  margin-top: 22px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  font-size: var(--text-13);
-  color: var(--text);
-  text-align: left;
-}
-.boxes-hero__note i {
-  color: var(--accent);
-  flex: none;
-}
-.boxes-hero__cta {
-  margin-top: 24px;
-}
-
-/* Offre 10 × 10 ml */
-.boxes-feature {
-  max-width: var(--max-w);
-  margin: 0 auto;
-  padding: 16px var(--px) 64px;
-  display: grid;
-  grid-template-columns: minmax(0, 480px) minmax(0, 1fr);
-  gap: 44px;
-  align-items: center;
-}
-.boxes-feature__media {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: #fff;
-}
-.boxes-feature__media img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.boxes-feature__flag {
-  display: inline-block;
-  padding: 4.8px 11.2px;
-  border-radius: var(--radius-pill);
-  background: var(--text);
-  color: #fff;
-  font-size: var(--text-10);
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-}
-.boxes-feature__title {
-  margin-top: 14px;
-  font-family: "Cormorant Garamond", serif;
-  font-size: clamp(1.75rem, 1.2rem + 2.4vw, 2.5rem);
-  font-variant-numeric: lining-nums;
-  color: var(--text);
-  line-height: 1.15;
-}
-.boxes-feature__desc {
-  margin-top: 12px;
-  font-size: var(--text-15);
-  line-height: 1.65;
-  color: var(--text-muted);
-  max-width: 46ch;
-}
-.boxes-feature__list {
-  list-style: none;
-  margin: 20px 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.boxes-feature__list li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: var(--text-14);
-  color: var(--text);
-}
-.boxes-feature__list i {
-  color: var(--accent);
-}
-.boxes-feature__pending {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
-  font-size: var(--text-13);
-  color: var(--text-muted);
-}
-
-/* Univers annonces */
-.boxes-themes {
-  padding: 0 var(--px) 64px;
-}
-.boxes-grid {
-  max-width: var(--max-w);
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-.box-theme {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--surface);
-  text-decoration: none;
-}
-.box-theme__media {
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  background: #fff;
-}
-.box-theme__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-/* Une box qui n'existe pas encore ne doit pas ressembler a un produit
-   cliquable : image plus sourde et pas d'effet au survol. */
-.box-theme--soon .box-theme__media img {
-  filter: saturate(0.55);
-}
-.box-theme__body {
-  padding: 18px 20px 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.box-theme__name {
-  font-family: "Cormorant Garamond", serif;
-  font-size: var(--text-22);
-  color: var(--text);
-}
-.box-theme__desc {
-  font-size: var(--text-13);
-  line-height: 1.6;
-  color: var(--text-muted);
-}
-.box-theme__soon {
-  margin-top: 4px;
-  font-size: var(--text-10);
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-.box-theme__cta {
-  margin-top: 4px;
-  font-size: var(--text-11);
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-  color: var(--text);
-}
-
-.boxes-alt {
-  padding: 48px var(--px) 72px;
-  text-align: center;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-}
-.boxes-alt__title {
-  font-family: "Manrope", sans-serif;
-  font-size: var(--text-22);
-  font-weight: 400;
-  color: var(--text);
-}
-.boxes-alt__sub {
-  margin: 10px auto 24px;
-  max-width: 52ch;
-  font-size: var(--text-14);
-  line-height: 1.65;
-  color: var(--text-muted);
-}
-
-@media (max-width: 1120px) {
-  .boxes-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (max-width: 860px) {
-  .boxes-feature {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-}
-@media (max-width: 640px) {
-  .boxes-grid {
-    grid-template-columns: 1fr;
-  }
-  .boxes-hero {
-    padding-top: 36px;
-  }
-}
-
 /* ─── Vignettes de notes par famille olfactive ───────────────────────────
    Les photos d'ingredients n'existent que pour 5 des 51 notes du catalogue.
    En attendant les vraies photos, la vignette dit la famille de la note :
@@ -10317,7 +10075,6 @@ textarea:focus-visible {
 .fav-card__tag,
 .box-card__badge,
 .box-card__discount,
-.boxes-feature__flag,
 .box-theme,
 .admin-usage-badge,
 .admin-pill,
@@ -10358,7 +10115,6 @@ textarea:focus-visible {
    ════════════════════════════════════════════════════════════════════════ */
 
 .coffret-hero__title,
-.boxes-hero__title,
 .collections-head-title,
 .favoris-hero__title,
 .panier-head__title,
@@ -10372,7 +10128,6 @@ textarea:focus-visible {
   text-wrap: balance;
 }
 .coffret-hero__title em,
-.boxes-hero__title em,
 .collections-head-title em,
 .favoris-hero__title em,
 .panier-head__title em,
@@ -10386,7 +10141,6 @@ textarea:focus-visible {
    grand interlettrage, prolonge d'un filet. Quatre pages n'en avaient
    aucun, trois le declinaient a leur maniere. */
 .coffret-hero__eyebrow,
-.boxes-hero__eyebrow,
 .collections-head-eyebrow,
 .favoris-hero__eyebrow,
 .panier-head__eyebrow,
@@ -10403,7 +10157,6 @@ textarea:focus-visible {
   margin-bottom: 16px;
 }
 .coffret-hero__eyebrow::after,
-.boxes-hero__eyebrow::after,
 .collections-head-eyebrow::after,
 .favoris-hero__eyebrow::after,
 .panier-head__eyebrow::after,
@@ -10539,7 +10292,6 @@ body[data-page="home"] .card-cta {
 .box-card__badge,
 .box-card__discount,
 .format-card__flag,
-.boxes-feature__flag,
 .coffret-card__badge,
 .fav-card__tag,
 .chatbot-mock-badge {
@@ -10558,7 +10310,6 @@ body[data-page="home"] .card-cta {
 .card-badge,
 .box-card__badge,
 .box-card__discount,
-.boxes-feature__flag,
 .coffret-card__badge,
 .fav-card__tag,
 .chatbot-mock-badge {
@@ -10706,8 +10457,7 @@ body[data-page="home"] .card-cta {
   border: 1.2px solid transparent;
 }
 .coffret-hero__ctas .btn-dark,
-.coffret-hero__ctas .btn-outline,
-.boxes-hero__cta {
+.coffret-hero__ctas .btn-outline {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -12010,5 +11760,282 @@ body[data-page="home"] main > .quiz-cta {
   }
   .packs-section .packs-cta-row {
     margin-top: 28px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Pack Signature du mois (fiche produit, 3 octobre 2026) : photo a gauche,
+   composition et prix a droite. Le prix du pack domine ; la valeur a l'unite,
+   barree, et l'economie le suivent pour que l'avantage se lise d'un coup d'oeil.
+   ══════════════════════════════════════════════════════════════════════════ */
+.pack-sig {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 16px var(--px) 64px;
+  display: grid;
+  grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
+  gap: 44px;
+  align-items: center;
+}
+.pack-sig[hidden] {
+  display: none;
+}
+.pack-sig__media {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #fff;
+}
+.pack-sig__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.pack-sig__flag {
+  display: inline-block;
+  padding: 4.8px 11.2px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: #fff;
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+.pack-sig__title {
+  margin-top: 14px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(1.75rem, 1.2rem + 2.4vw, 2.5rem);
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.15;
+}
+.pack-sig__desc {
+  margin-top: 12px;
+  font-size: var(--text-15);
+  line-height: 1.65;
+  color: var(--text-muted);
+  max-width: 50ch;
+}
+.pack-sig__formats {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+}
+.pack-sig__format {
+  padding: 10px 18px;
+  border: 1px solid var(--border-dark, var(--border));
+  background: #fff;
+  font-family: "Manrope", sans-serif;
+  font-size: var(--text-13, 13px);
+  letter-spacing: 0.04em;
+  color: var(--text);
+  cursor: pointer;
+}
+.pack-sig__format.is-active {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.pack-sig__list {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
+.pack-sig__list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.pack-sig__list a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+.pack-sig__brand {
+  font-size: var(--text-10);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.pack-sig__name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 19px;
+  color: var(--text);
+}
+.pack-sig__unit {
+  flex: none;
+  font-size: var(--text-12);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.pack-sig__price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+  margin-top: 22px;
+}
+.pack-sig__amount {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 40px;
+  line-height: 1;
+  color: var(--text);
+}
+.pack-sig__value {
+  font-size: var(--text-13, 13px);
+  color: var(--text-muted);
+}
+.pack-sig__value s {
+  margin-left: 4px;
+}
+.pack-sig__saving {
+  flex-basis: 100%;
+  font-size: var(--text-14);
+  font-weight: 600;
+  color: var(--badge-text, #8a6825);
+}
+.pack-sig__cta {
+  margin-top: 18px;
+}
+.pack-sig__cta[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.pack-sig__note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: var(--text-13, 13px);
+  color: var(--text-muted);
+}
+.pack-sig__note i {
+  color: var(--accent);
+}
+@media (max-width: 860px) {
+  .pack-sig {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* Pack Signature : la carte du catalogue (meme cadre que celle des parfums)
+   et la vitrine de l'accueil et de la page Coffrets. */
+.card-img--pack {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+}
+.card-pack__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 40% 50%;
+}
+.card-pack__meta {
+  display: block;
+  margin-top: 6px;
+  font-size: var(--text-12);
+  color: var(--text-muted);
+}
+.card-pack__saving {
+  display: block;
+  margin-top: 6px;
+  font-size: var(--text-12);
+  font-weight: 600;
+  color: var(--badge-text, #8a6825);
+}
+.product-card--pack {
+  border-color: var(--accent);
+}
+
+.pack-vitrine {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 48px var(--px) 0;
+}
+.pack-vitrine[hidden] {
+  display: none;
+}
+.pack-vitrine__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: center;
+  border: 1px solid var(--accent);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition: box-shadow 0.25s ease;
+}
+.pack-vitrine__inner:hover {
+  box-shadow: var(--shadow-lg);
+}
+.pack-vitrine__media {
+  display: block;
+  height: 100%;
+  min-height: 260px;
+  position: relative;
+}
+.pack-vitrine__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pack-vitrine__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 32px 40px;
+}
+.pack-vitrine__title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(1.7rem, 1.2rem + 1.8vw, 2.4rem);
+  line-height: 1.1;
+  color: var(--text);
+}
+.pack-vitrine__noms {
+  font-size: var(--text-13, 13px);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.pack-vitrine__price {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+}
+.pack-vitrine__amount {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 30px;
+  color: var(--text);
+}
+.pack-vitrine__cta {
+  margin-top: 8px;
+}
+@media (max-width: 860px) {
+  .pack-vitrine {
+    padding-top: 32px;
+  }
+  .pack-vitrine__inner {
+    grid-template-columns: 1fr;
+  }
+  .pack-vitrine__media {
+    min-height: 0;
+    aspect-ratio: 16 / 7;
+  }
+  .pack-vitrine__body {
+    padding: 22px 20px 26px;
   }
 }

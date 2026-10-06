@@ -12,7 +12,8 @@
   const SLOT_COUNTS = { "5ml": 5, "10ml": 3 };
   // Formats que le panier accepte, coffret ou non.
   // Le flacon complet se vend a l'unite, comme le 2 ml : aucun coffret.
-  const CART_FORMATS = ["2ml", "5ml", "10ml", "flacon"];
+  // Le Pack Signature du mois (pack-signature.js) : une ligne a prix fixe.
+  const CART_FORMATS = ["2ml", "5ml", "10ml", "flacon", "pack"];
   // Dix coffrets par format couvrent largement un panier particulier.
   // Au-dela, la demande releve d'une commande en volume et ne doit pas
   // partir au checkout avec une remise incomplete (le serveur applique le
@@ -60,6 +61,7 @@
 
   // Intitule d'un groupe du panier : « 2 ml », « Flacon complet ».
   function groupLabel(format) {
+    if (format === "pack") return "Pack Signature";
     return format === "flacon" ? "Flacon complet" : String(format).replace("ml", " ml");
   }
 
@@ -426,7 +428,9 @@
 
     const imageDe = (it) => {
       const produit = getProduct(it.productId);
-      const src = produit && global.KoreiUI?.productImageSrc ? global.KoreiUI.productImageSrc(produit, basePath) : null;
+      const src = it.image
+        ? `${basePath}assets/images/${it.image}.webp`
+        : produit && global.KoreiUI?.productImageSrc ? global.KoreiUI.productImageSrc(produit, basePath) : null;
       return src
         ? `<img src="${src.replace(/\.webp$/, "-sm.webp")}" alt="" width="64" height="64" loading="lazy" decoding="async">`
         : `<span class="cw-item__vide" aria-hidden="true"><i class="ti ti-bottle"></i></span>`;
@@ -477,7 +481,7 @@
         if (!hasBox(format)) {
           return `
           <section class="cw-group">
-            <h3 class="cw-group__head"><i class="ti ti-bottle" aria-hidden="true"></i>${format === "flacon" ? ml : `Découverte · ${ml}`} — <em>${totalQty} flacon${totalQty > 1 ? "s" : ""}</em></h3>
+            <h3 class="cw-group__head"><i class="ti ti-bottle" aria-hidden="true"></i>${format === "flacon" || format === "pack" ? ml : `Découverte · ${ml}`} — <em>${totalQty} ${format === "pack" ? "pack" : "flacon"}${totalQty > 1 ? "s" : ""}</em></h3>
             ${itemsDe(groupItems)}
           </section>`;
         }
@@ -607,7 +611,7 @@
         // Le 2 ml n'a pas de coffret : un groupe simple, sans progression.
         const horsCoffret = !group.slots;
         const title = horsCoffret
-          ? `${groupLabel(group.format)} · à l'unité`
+          ? group.format === "pack" ? groupLabel(group.format) : `${groupLabel(group.format)} · à l'unité`
           : group.boxes > 1
           ? `${group.boxes} coffrets ${group.label}${singles ? ` + ${singles} flacon${singles > 1 ? "s" : ""} seul${singles > 1 ? "s" : ""}` : ""}`
           : complete
@@ -621,7 +625,7 @@
             <div class="panier-group__head">
               <div class="panier-group__id">
                 <span class="panier-group__name">${title}</span>
-                <span class="panier-group__meta">${horsCoffret ? `${group.count} flacon${group.count > 1 ? "s" : ""} · prix normal` : `${complete ? `${group.inBoxes} flacon${group.inBoxes > 1 ? "s" : ""} dans ${group.boxes > 1 ? "les coffrets" : "le coffret"}${singles ? ` · ${singles} seul au prix normal` : ""}` : `${group.count}/${group.slots}`} · ${groupLabel(group.format)}`}</span>
+                <span class="panier-group__meta">${horsCoffret ? group.format === "pack" ? `${group.count} pack${group.count > 1 ? "s" : ""} · prix fixe` : `${group.count} flacon${group.count > 1 ? "s" : ""} · prix normal` : `${complete ? `${group.inBoxes} flacon${group.inBoxes > 1 ? "s" : ""} dans ${group.boxes > 1 ? "les coffrets" : "le coffret"}${singles ? ` · ${singles} seul au prix normal` : ""}` : `${group.count}/${group.slots}`} · ${groupLabel(group.format)}`}</span>
               </div>
               <div class="panier-group__money">
                 <span class="panier-group__total">${money(net)}</span>
@@ -647,7 +651,11 @@
     const ui = global.KoreiUI || {};
     const store = global.KoreiProductStore;
     const product = getProduct(item.productId);
-    const src = product && ui.productImageSrc ? ui.productImageSrc(product, "../") : null;
+    const src = item.image
+      ? `../assets/images/${item.image}.webp`
+      : product && ui.productImageSrc ? ui.productImageSrc(product, "../") : null;
+    // Le pack renvoie a la page des Boxes, les parfums a leur fiche.
+    const lien = item.format === "pack" ? "../pages/product.html?id=" + item.productId.replace(/-(5x5|3x10)$/, "") : `../pages/product.html?id=${item.productId}`;
     const qty = item.qty || 1;
     const lineTotal = (Number(item.price) || 0) * qty;
     const available = product ? store?.isVariantAvailable(product, item.format) !== false : true;
@@ -663,17 +671,21 @@
 
     return `
       <li class="panier-item${available ? "" : " is-soldout"}" data-product-id="${item.productId}" data-format="${item.format}">
-        <a href="../pages/product.html?id=${item.productId}" class="panier-item__media">
+        <a href="${lien}" class="panier-item__media">
           ${src ? `<img src="${src}" alt="" width="750" height="1000" loading="lazy" decoding="async" />` : ""}
         </a>
         <div class="panier-item__body">
-          <a href="../pages/product.html?id=${item.productId}" class="panier-item__link">
+          <a href="${lien}" class="panier-item__link">
             <span class="panier-item__brand">${esc(item.brand)}</span>
             <span class="panier-item__name">${esc(item.name)}</span>
           </a>
-          <select class="panier-item__select" data-format-select data-product-id="${item.productId}" data-current-format="${item.format}" aria-label="Format">
+          ${
+            item.format === "pack"
+              ? `<span class="panier-item__select panier-item__select--fixe">${esc(item.formatLabel || "Pack")}</span>`
+              : `<select class="panier-item__select" data-format-select data-product-id="${item.productId}" data-current-format="${item.format}" aria-label="Format">
             ${optionsHtml}
-          </select>
+          </select>`
+          }
           ${available ? "" : `<span class="panier-item__stock">Rupture de stock</span>`}
         </div>
         <div class="panier-item__qty">

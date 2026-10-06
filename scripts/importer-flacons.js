@@ -49,12 +49,30 @@ function main() {
     process.exit(1);
   }
 
+  const nombre = (valeur) => Number(String(valeur || "").replace(",", "."));
+  // Le prix promo s'arrondit a ,90 en dessous : la remise annoncee n'est
+  // jamais plus petite que celle pratiquee.
+  const arrondi90 = (valeur) => Math.floor(valeur + 0.1) - 0.1;
+
   const flacons = {};
+  const sansOfficiel = [];
   for (const ligne of lireCsv(source)) {
-    const ml = Number(ligne.contenance_ml);
-    const prix = Number(String(ligne.prix_vente_propose).replace(",", "."));
-    if (!ligne.id || !(ml > 0) || !(prix > 0)) continue;
-    flacons[ligne.id] = { ml, prix, sansBoite: /sans boite/i.test(ligne.etat || "") };
+    const ml = nombre(ligne.contenance_ml);
+    // Le flacon se vend au prix boutique officiel (decision du client,
+    // 3 octobre 2026), avec une promo facultative de quelques pourcents.
+    // Sans prix officiel releve, on garde le prix calcule sur l'achat.
+    const officiel = nombre(ligne.prix_officiel);
+    const propose = nombre(ligne.prix_vente_propose);
+    const promo = nombre(ligne.promo_pct);
+    if (!ligne.id || !(ml > 0) || !(officiel > 0 || propose > 0)) continue;
+    const flacon = { ml, prix: officiel > 0 ? officiel : propose, sansBoite: /sans boite/i.test(ligne.etat || "") };
+    if (officiel > 0 && promo > 0 && promo < 100) {
+      flacon.prix = Math.round(arrondi90(officiel * (1 - promo / 100)) * 100) / 100;
+      flacon.prixBoutique = officiel;
+      flacon.promo = promo;
+    }
+    if (!(officiel > 0)) sansOfficiel.push(ligne.id);
+    flacons[ligne.id] = flacon;
   }
 
   const ids = Object.keys(flacons).sort();
@@ -79,6 +97,9 @@ ${corps}
 `;
   fs.writeFileSync(OUT, contenu);
   console.log(`${ids.length} flacons ecrits dans ${path.relative(ROOT, OUT)}`);
+  const enPromo = ids.filter((id) => flacons[id].promo);
+  console.log(`  en promo : ${enPromo.length}`);
+  if (sansOfficiel.length) console.log(`  sans prix officiel (prix calcule sur l'achat) : ${sansOfficiel.join(", ")}`);
 }
 
 main();

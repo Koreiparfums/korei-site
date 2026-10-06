@@ -265,6 +265,10 @@
         available: store.isVariantAvailable(product, "flacon"),
         flacon: true,
         sansBoite: flacon.sansBoite,
+        // En promo, le prix boutique officiel reste affiche, barre. Il ne
+        // vaut que tant que la variante Shopify ne fixe pas un autre prix.
+        prixBoutique: !variant && flacon.prixBoutique > price ? flacon.prixBoutique : 0,
+        promo: !variant && flacon.prixBoutique > price ? flacon.promo : 0,
       });
     }
 
@@ -361,13 +365,14 @@
                   ${f.available ? "" : "disabled"}
                   data-price="${f.price}" data-vol="${f.key}" data-available="${f.available}"
                   aria-label="${f.vol} — ${f.available ? `${formatPriceLabel(f.price)} euros` : "bientôt disponible"}">
-            ${f.best && f.available ? '<span class="pdp-format__flag">Meilleur prix</span>' : ""}
+            ${f.promo && f.available ? `<span class="pdp-format__badge">−${f.promo} %</span>` : f.best && f.available ? '<span class="pdp-format__flag">Meilleur prix</span>' : ""}
             ${photo ? `<span class="pdp-format__photo"><img src="${photo}" alt="" width="750" height="1000" loading="lazy" decoding="async"></span>` : ""}
             <span class="pdp-format__body">
               <span class="pdp-format__kind">${etat}</span>
               <span class="pdp-format__vol">${f.ml} ml</span>
             </span>
             <span class="pdp-format__side">
+              ${f.available && f.prixBoutique ? `<span class="pdp-format__was">Prix boutique <s>${prix(f.prixBoutique)}</s></span>` : ""}
               <span class="pdp-format__price">${f.available ? prix(f.price) : "Bientôt disponible"}</span>
               ${f.available && f.pricePerMl ? `<span class="pdp-format__ml">${unitPriceLabel(f)}</span>` : ""}
             </span>
@@ -1489,6 +1494,19 @@
     const product = id && store ? store.getProductById(id) : null;
     const main = document.getElementById("product-main");
     if (!main) return;
+
+    // Le Pack Signature du mois a sa propre fiche (pack-signature.js).
+    const pack = global.KoreiPack;
+    if (pack && id === pack.id && pack.renderFiche(main)) {
+      site?.setPageMeta({
+        title: `${pack.nom} | Kōrei`,
+        description: pack.description,
+        path: `pages/product?id=${pack.id}`,
+        type: "product",
+        basePath: "../",
+      });
+      return;
+    }
 
     if (!product) {
       main.innerHTML = `

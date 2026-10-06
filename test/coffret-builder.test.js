@@ -89,8 +89,18 @@ test("les deux coffrets utilisent leurs seuils 5 et 3, le 2 ml reste hors coffre
   assert.equal(state.discountAttendu, 7);
   assert.deepEqual(
     Array.from(state.groups, ({ format, boxes }) => [format, boxes]),
-    [["2ml", 0], ["5ml", 1], ["10ml", 1], ["flacon", 0]],
+    [["2ml", 0], ["5ml", 1], ["10ml", 1], ["flacon", 0], ["pack", 0]],
   );
+});
+
+test("le Pack Signature entre au panier a prix fixe, sans remise de coffret", () => {
+  const { api } = loadCoffret();
+  assert.equal(api.isEligibleFormat("pack"), true);
+  assert.equal(api.hasBox("pack"), false);
+  const state = api.getCartState([item("pack-signature-octobre-5x5", "pack", 57.9, 1)]);
+  assert.equal(state.boxes, 0);
+  assert.equal(state.discountAttendu, 0);
+  assert.equal(state.gross, 57.9);
 });
 
 test("le flacon complet entre au panier, a l'unite, sans coffret ni remise", () => {
